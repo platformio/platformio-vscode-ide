@@ -81,13 +81,21 @@ export default class PlatformIOVSCodeExtension {
         progress.report({
           message: 'Installing PlatformIO IDE...',
         });
+        const outputChannel = vscode.window.createOutputChannel('PlatformIO Instalation');
+
+        outputChannel.appendLine('Installing PlatformIO Core...');
+        outputChannel.appendLine("Please don't close this window and don't "
+          + 'open other folders until this process is completed.');
+
         try {
           im.lock();
           await im.install();
+          outputChannel.appendLine('PlatformIO IDE installed successfully.');
         } catch (err) {
           vscode.window.showErrorMessage(err.toString(), {
             modal: true,
           });
+          outputChannel.appendLine('Failed to install PlatformIO IDE.');
         } finally {
           im.unlock();
         }
