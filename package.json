@@ -1,0 +1,129 @@
+{
+  "name": "platformio-ide",
+  "displayName": "PlatformIO IDE",
+  "description": "Official PlatformIO IDE for VSCode: The next generation integrated development environment for IoT. Cross-platform build system and unified debugger. Remote unit testing and firmware updates.",
+  "keywords": [
+    "PlatformIO",
+    "IoT",
+    "debugger",
+    "unittest",    
+    "embedded",
+    "arduino",
+    "mbed",
+    "flash",
+    "firmware",
+    "esp8266",
+    "esp32",
+    "avr",
+    "arm",
+    "fpga",
+    "verilog",
+    "hardware",
+    "serial",
+    "monitor"
+  ], 
+  "categories": [
+    "Languages",
+    "Debuggers",
+    "Other"
+  ],
+  "icon": "images/icon.svg",  
+  "version": "0.1.0",
+  "author": {
+    "name": "PlatformIO.Org"
+  },  
+  "publisher": "platformio",
+  "license": "Apache-2.0",
+  "engines": {
+    "vscode": "^1.12.0"
+  },
+  "bugs": {
+      "url": "https://github.com/platformio/platformio-vscode-ide/issues"
+  },
+  "homepage": "http://platformio.org",
+  "repository": {
+      "type": "git",
+      "url": "https://github.com/platformio/platformio-vscode-ide.git"
+  },  
+  "activationEvents": [
+    "*"
+  ],
+  "main": "./lib/index",
+  "contributes": {
+    "commands": [
+      {
+        "command": "platformio-ide.initProject",
+        "title": "Initialize or update project",
+        "category": "PlatformIO"
+      },
+      {
+        "command": "platformio-ide.rebuildProjectIndex",
+        "title": "Rebuild C/C++ Project Index",
+        "category": "PlatformIO"
+      },
+      {
+        "command": "platformio-ide.newTerminal",
+        "title": "New Terminal",
+        "category": "PlatformIO"
+      }      
+    ],
+    "configuration": {
+      "type": "object",
+      "title": "PlatformIO IDE configuration",
+      "properties": {
+        "platformio-ide.useBuiltinPIOCore": {
+          "type": "boolean",
+          "default": true,
+          "description": "Use built-in PlatformIO Core"
+        },
+        "platformio-ide.useDevelopmentPIOCore": {
+          "type": "boolean",
+          "default": false,
+          "description": "Use development version of PlatformIO Core"
+        },
+        "platformio-ide.autoRebuildAutocompleteIndex": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically rebuild C/C++ Project Index when platformio.ini is changed or when new libraries are installed."
+        },
+        "platformio-ide.customPATH": {
+          "type": ["string", "null"],
+          "default": null,
+          "description": "Custom PATH for `platformio` command. Paste here the result of `echo $PATH` (Unix) / `echo %PATH%` (Windows) command by typing into your system terminal if you prefer to use custom version of PlatformIO Core"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "lint": "eslint .eslintrc.js src",
+    "format": "esformatter -i .eslintrc.js 'src/**.js' && eslint --fix .eslintrc.js src",
+    "build": "babel src --out-dir lib && echo 'Done!'",
+    "postinstall": "node ./node_modules/vscode/bin/install",
+    "test": "node ./node_modules/vscode/bin/test",
+    "vscode:prepublish": "npm run build"
+  },
+  "devDependencies": {
+    "@types/node": "^7.0.21",
+    "babel-cli": "^6.24.1",
+    "babel-eslint": "^7.2.3",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-preset-env": "^1.5.1",
+    "esformatter": "^0.10.0",
+    "eslint": "^3.19.0",
+    "eslint-plugin-sort-imports-es6-autofix": "^0.1.1",
+    "vscode": "^1.0.0"
+  },
+  "dependencies": {
+    "cross-spawn": "^5.1.0",
+    "fs-plus": "^3.0.0",
+    "open": "^0.0.5",
+    "request": "^2.81.0",
+    "semver": "^5.3.0",
+    "tar": "^2.2.1",
+    "tmp": "^0.0.31"
+  },
+  "extensionDependencies": [
+    "ms-vscode.cpptools",
+    "webfreak.debug"
+  ]
+}
