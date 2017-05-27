@@ -6,7 +6,7 @@
  * the root directory of this source tree.
  */
 
-import { ensureDirExists } from './utils';
+import * as utils from './utils';
 
 import InstallationManager from './installer/manager';
 import ProjectIndexer from './project/indexer';
@@ -29,11 +29,9 @@ export default class PlatformIOVSCodeExtension {
     if (!vscode.workspace.rootPath) {
       return;
     }
-
-    const ext = vscode.extensions.getExtension('platformio.platformio-ide');
-    const isPrerelease = Boolean(semver.prerelease(ext.packageJSON.version));
-
-    await this.startInstaller(context.globalState, context.extensionPath, isPrerelease);
+    utils.updateOSEnviron();
+    
+    await this.startInstaller(context.globalState, context.extensionPath);
 
     const indexer = new ProjectIndexer(vscode.workspace.rootPath);
     context.subscriptions.push(indexer);
@@ -56,7 +54,7 @@ export default class PlatformIOVSCodeExtension {
     );
   }
 
-  startInstaller(globalState, extensionPath, isPrerelease) {
+  startInstaller(globalState, extensionPath) {
     return vscode.window.withProgress({
       location: vscode.ProgressLocation.Window,
       title: 'PlatformIO',
@@ -66,9 +64,10 @@ export default class PlatformIOVSCodeExtension {
       });
 
       const cacheDir = path.join(extensionPath, '.cache');
-      await ensureDirExists(cacheDir);
+      await utils.ensureDirExists(cacheDir);
 
       const config = vscode.workspace.getConfiguration('platformio-ide');
+      const isPrerelease = Boolean(semver.prerelease(utils.getIDEVersion()));
       const im = new InstallationManager(globalState, config, cacheDir, isPrerelease);
 
       if (im.locked()) {
