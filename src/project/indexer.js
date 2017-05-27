@@ -176,7 +176,7 @@ export default class ProjectIndexer {
         }
       } catch (error) {
         console.error(error);
-        vscode.window.showErrorMessage(`C/C++ project index rebuild failed: ${error.toString}`);
+        vscode.window.showErrorMessage(`PlatformIO: C/C++ Project Index failed: ${error.toString()}`);
       }
     });
   }
