@@ -53,15 +53,18 @@
     "commands": [
       {
         "command": "platformio-ide.initProject",
-        "title": "PlatformIO: Initialize or update existing project"
+        "title": "Initialize or update project",
+        "category": "PlatformIO"
       },
       {
         "command": "platformio-ide.rebuildProjectIndex",
-        "title": "PlatformIO: Rebuild C/C++ Project Index"
+        "title": "Rebuild C/C++ Project Index",
+        "category": "PlatformIO"
       },
       {
         "command": "platformio-ide.newTerminal",
-        "title": "PlatformIO: New Terminal"
+        "title": "New Terminal",
+        "category": "PlatformIO"
       }      
     ],
     "configuration": {
