@@ -57,7 +57,7 @@ export default async function initCommand() {
         });
 
         await new Promise((resolve, reject) => {
-          runPioCommand(['init', '--board', selectedBoard.boardId, '--project-dir', vscode.workspace.rootPath], (code, stdout, stderr) => {
+          runPioCommand(['init', '--ide', '--vscode', '--board', selectedBoard.boardId, '--project-dir', vscode.workspace.rootPath], (code, stdout, stderr) => {
             if (code !== 0) {
               reject(stderr);
             } else {

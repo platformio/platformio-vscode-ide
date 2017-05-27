@@ -162,7 +162,7 @@ export default class ProjectIndexer {
           message: 'Performing index rebuild',
         });
         await new Promise((resolve, reject) => {
-          runPioCommand(['init', '--project-dir', this.projectPath], (code, stdout, stderr) => {
+          runPioCommand(['init', '--ide', 'vscode', '--project-dir', this.projectPath], (code, stdout, stderr) => {
             if (code === 0) {
               resolve();
             } else {
