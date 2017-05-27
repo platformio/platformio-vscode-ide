@@ -29,6 +29,9 @@
   ],
   "icon": "images/icon.svg",  
   "version": "0.0.1-beta.0",
+  "author": {
+    "name": "PlatformIO.Org"
+  },  
   "publisher": "platformio",
   "license": "Apache-2.0",
   "engines": {
@@ -49,13 +52,17 @@
   "contributes": {
     "commands": [
       {
-        "command": "platformio-ide.init-project",
-        "title": "PlatformIO: Initialize project"
+        "command": "platformio-ide.initProject",
+        "title": "PlatformIO: Initialize or update existing project"
       },
       {
-        "command": "platformio-ide.rebuild-index",
-        "title": "PlatformIO: Rebuild index"
-      }
+        "command": "platformio-ide.rebuildProjectIndex",
+        "title": "PlatformIO: Rebuild C/C++ Project Index"
+      },
+      {
+        "command": "platformio-ide.newTerminal",
+        "title": "PlatformIO: New Terminal"
+      }      
     ],
     "configuration": {
       "type": "object",

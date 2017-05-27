@@ -29,7 +29,7 @@ export function updateOSEnviron() {
     }
   }
 
-  const config = vscode.workspace.getConfiguration('platformio-ide');
+  const config = vscode.workspace.getConfiguration('platformio-ide');  
   if (config.get('useBuiltinPIOCore')) { // Insert bin directory into PATH
     if (!process.env.PATH.includes(ENV_BIN_DIR)) {
       process.env.PATH = ENV_BIN_DIR + path.delimiter + process.env.PATH;

@@ -6,6 +6,7 @@
  * the root directory of this source tree.
  */
 
+import * as constants from './constants';
 import * as utils from './utils';
 
 import InstallationManager from './installer/manager';
@@ -30,28 +31,47 @@ export default class PlatformIOVSCodeExtension {
       return;
     }
     utils.updateOSEnviron();
-    
+
     await this.startInstaller(context.globalState, context.extensionPath);
 
     const indexer = new ProjectIndexer(vscode.workspace.rootPath);
     context.subscriptions.push(indexer);
     context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(() => indexer.toggle()));
-
     await indexer.toggle();
 
-    context.subscriptions.push(
-      vscode.commands.registerCommand(
-        'platformio-ide.init-project',
-        initCommand)
-    );
+    // Create Terminal Instance with pre-configured environment PATH
+    this.initTerminal();
 
     context.subscriptions.push(
       vscode.commands.registerCommand(
-        'platformio-ide.rebuild-index',
+        'platformio-ide.newTerminal',
+        () => this.initTerminal().show())
+    );    
+    context.subscriptions.push(
+      vscode.commands.registerCommand(
+        'platformio-ide.initProject',
+        initCommand)
+    );
+    context.subscriptions.push(
+      vscode.commands.registerCommand(
+        'platformio-ide.rebuildProjectIndex',
         () => indexer.doRebuild({
           verbose: true,
         }))
     );
+  }
+
+  initTerminal() {
+    const terminal = vscode.window.createTerminal('PlatformIO');
+    if (constants.IS_WINDOWS) {
+      terminal.sendText('set PATH=' + process.env.PATH);
+    } else if (process.env.SHELL && process.env.SHELL.includes('fish')) {
+      terminal.sendText('set -gx PATH ' + process.env.PATH.replace(/\:/g, ' '));
+    } else {
+      terminal.sendText('export PATH=' + process.env.PATH);
+    }    
+    terminal.sendText('pio --help');
+    return terminal;
   }
 
   startInstaller(globalState, extensionPath) {
