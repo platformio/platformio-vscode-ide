@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2016-present, PlatformIO Plus <contact@pioplus.com>
+ * Copyright 2017-present PlatformIO <contact@platformio.org>
  * All rights reserved.
  *
  * This source code is licensed under the license found in the LICENSE file in
