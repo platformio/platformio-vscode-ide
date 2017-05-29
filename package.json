@@ -1,12 +1,13 @@
 {
   "name": "platformio-ide",
+  "preview": true,
   "displayName": "PlatformIO IDE",
   "description": "Official PlatformIO IDE for VSCode: The next generation integrated development environment for IoT. Cross-platform build system and unified debugger. Remote unit testing and firmware updates.",
   "keywords": [
     "PlatformIO",
     "IoT",
     "debugger",
-    "unittest",    
+    "unittest",
     "embedded",
     "arduino",
     "mbed",
@@ -21,21 +22,21 @@
     "hardware",
     "serial",
     "monitor"
-  ], 
+  ],
   "categories": [
     "Languages",
     "Debuggers",
     "Other"
   ],
-  "icon": "images/icon.svg",  
-  "version": "0.1.0",
+  "icon": "images/icon.svg",
+  "version": "0.2.0",
   "author": {
     "name": "PlatformIO.Org"
-  },  
+  },
   "publisher": "platformio",
   "license": "Apache-2.0",
   "engines": {
-    "vscode": "^1.12.0"
+    "vscode": "^1.9.0"
   },
   "bugs": {
       "url": "https://github.com/platformio/platformio-vscode-ide/issues"
@@ -44,13 +45,33 @@
   "repository": {
       "type": "git",
       "url": "https://github.com/platformio/platformio-vscode-ide.git"
-  },  
+  },
   "activationEvents": [
     "*"
   ],
   "main": "./lib/index",
   "contributes": {
     "commands": [
+      {
+        "command": "platformio-ide.build",
+        "title": "Build",
+        "category": "PlatformIO"
+      },
+      {
+        "command": "platformio-ide.upload",
+        "title": "Upload",
+        "category": "PlatformIO"
+      },
+      {
+        "command": "platformio-ide.clean",
+        "title": "Clean",
+        "category": "PlatformIO"
+      },
+      {
+        "command": "platformio-ide.serialMonitor",
+        "title": "Serial Monitor",
+        "category": "PlatformIO"
+      },
       {
         "command": "platformio-ide.initProject",
         "title": "Initialize or update project",
@@ -65,7 +86,12 @@
         "command": "platformio-ide.newTerminal",
         "title": "New Terminal",
         "category": "PlatformIO"
-      }      
+      },
+      {
+        "command": "platformio-ide.libraryManager",
+        "title": "Library Manager",
+        "category": "PlatformIO"
+      }
     ],
     "configuration": {
       "type": "object",

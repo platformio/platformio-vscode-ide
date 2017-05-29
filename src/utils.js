@@ -13,6 +13,7 @@ import path from 'path';
 import spawn from 'cross-spawn';
 import vscode from 'vscode';
 
+
 export function updateOSEnviron() {
   // Fix for platformio-atom-ide/issues/112
   process.env.LC_ALL = 'en_US.UTF-8';
@@ -29,7 +30,7 @@ export function updateOSEnviron() {
     }
   }
 
-  const config = vscode.workspace.getConfiguration('platformio-ide');  
+  const config = vscode.workspace.getConfiguration('platformio-ide');
   if (config.get('useBuiltinPIOCore')) { // Insert bin directory into PATH
     if (!process.env.PATH.includes(ENV_BIN_DIR)) {
       process.env.PATH = ENV_BIN_DIR + path.delimiter + process.env.PATH;
@@ -186,4 +187,17 @@ function isPython2(executable) {
       }
     );
   });
+}
+
+export function makeCommandWithArgs(command, ...args) {
+  return () => vscode.commands.executeCommand(command, ...args);
+}
+
+export function makeStatusBarItem(text, tooltip, command, priority) {
+  const item = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, priority);
+  item.text = text;
+  item.tooltip = tooltip;
+  item.command = command;
+  item.show();
+  return item;
 }

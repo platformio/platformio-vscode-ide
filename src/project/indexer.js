@@ -12,6 +12,7 @@ import { getCurrentPythonExecutable, isPioProject, runPioCommand, spawnCommand }
 import path from 'path';
 import vscode from 'vscode';
 
+
 export default class ProjectIndexer {
 
   constructor(projectPath) {

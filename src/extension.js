@@ -16,14 +16,11 @@ import path from 'path';
 import semver from 'semver';
 import vscode from 'vscode';
 
+
 export default class PlatformIOVSCodeExtension {
 
   constructor() {
     this.activate = this.activate.bind(this);
-
-    const min = 100;
-    const max = 999;
-    this.instanceId = Math.floor(Math.random() * (max - min)) + min;
   }
 
   async activate(context) {
@@ -40,13 +37,40 @@ export default class PlatformIOVSCodeExtension {
     await indexer.toggle();
 
     // Create Terminal Instance with pre-configured environment PATH
-    this.initTerminal();
+    let pioTerm = this.newPIOTerminal();
 
+    // Commands
     context.subscriptions.push(
       vscode.commands.registerCommand(
-        'platformio-ide.newTerminal',
-        () => this.initTerminal().show())
-    );    
+        'platformio-ide.build',
+        utils.makeCommandWithArgs('workbench.action.tasks.runTask', 'PlatformIO: Build'))
+    );
+    context.subscriptions.push(
+      vscode.commands.registerCommand(
+        'platformio-ide.upload',
+        utils.makeCommandWithArgs('workbench.action.tasks.runTask', 'PlatformIO: Upload'))
+    );
+    context.subscriptions.push(
+      vscode.commands.registerCommand(
+        'platformio-ide.clean',
+        utils.makeCommandWithArgs('workbench.action.tasks.runTask', 'PlatformIO: Clean'))
+    );
+    context.subscriptions.push(
+      vscode.commands.registerCommand(
+        'platformio-ide.serialMonitor',
+        () => {
+          pioTerm.sendText('pio device monitor');
+          pioTerm.show();
+        })
+    );
+    context.subscriptions.push(
+      vscode.commands.registerCommand(
+        'platformio-ide.libraryManager',
+        () => {
+          pioTerm.sendText('pio lib');
+          pioTerm.show();
+        })
+    );
     context.subscriptions.push(
       vscode.commands.registerCommand(
         'platformio-ide.initProject',
@@ -59,9 +83,43 @@ export default class PlatformIOVSCodeExtension {
           verbose: true,
         }))
     );
+    context.subscriptions.push(
+      vscode.commands.registerCommand(
+        'platformio-ide.newTerminal',
+        () => {
+          pioTerm = this.newPIOTerminal();
+          pioTerm.show() ;
+      })
+    );
+
+    // Status Bar
+    context.subscriptions.push(
+      utils.makeStatusBarItem('$(check)', 'PlatformIO: Build', 'platformio-ide.build', 8)
+    );
+    context.subscriptions.push(
+      utils.makeStatusBarItem('$(arrow-right)', 'PlatformIO: Upload', 'platformio-ide.upload', 7)
+    );
+    context.subscriptions.push(
+      utils.makeStatusBarItem('$(trashcan)', 'PlatformIO: Clean', 'platformio-ide.clean', 5)
+    );
+    context.subscriptions.push(
+      utils.makeStatusBarItem('$(checklist)', 'PlatformIO: Run a Task', 'workbench.action.tasks.runTask', 5)
+    );
+    context.subscriptions.push(
+      utils.makeStatusBarItem('$(file-code)', 'PlatformIO: Initialize or update project', 'platformio-ide.initProject', 4)
+    );
+    context.subscriptions.push(
+      utils.makeStatusBarItem('$(code)', 'PlatformIO: Library Manager', 'platformio-ide.libraryManager', 3)
+    );
+    context.subscriptions.push(
+      utils.makeStatusBarItem('$(plug)', 'PlatformIO: Serial Monitor', 'platformio-ide.serialMonitor', 2)
+    );
+    context.subscriptions.push(
+      utils.makeStatusBarItem('$(terminal)', 'PlatformIO: New Terminal', 'platformio-ide.newTerminal', 1)
+    );
   }
 
-  initTerminal() {
+  newPIOTerminal() {
     const terminal = vscode.window.createTerminal('PlatformIO');
     if (constants.IS_WINDOWS) {
       terminal.sendText('set PATH=' + process.env.PATH);
@@ -69,7 +127,7 @@ export default class PlatformIOVSCodeExtension {
       terminal.sendText('set -gx PATH ' + process.env.PATH.replace(/\:/g, ' '));
     } else {
       terminal.sendText('export PATH=' + process.env.PATH);
-    }    
+    }
     terminal.sendText('pio --help');
     return terminal;
   }
@@ -101,6 +159,7 @@ export default class PlatformIOVSCodeExtension {
           message: 'Installing PlatformIO IDE...',
         });
         const outputChannel = vscode.window.createOutputChannel('PlatformIO Instalation');
+        outputChannel.show();
 
         outputChannel.appendLine('Installing PlatformIO Core...');
         outputChannel.appendLine("Please don't close this window and don't "

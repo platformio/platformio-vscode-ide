@@ -26,7 +26,7 @@ export default class InstallationManager {
       new PlatformIOCoreStage(this.onDidStatusChange.bind(this), this.stateStorage, {
         useBuiltinPIOCore: config.get('useBuiltinPIOCore'),
         setUseBuiltinPIOCore: (value) => config.update('platformio-ide.useBuiltinPIOCore', value),
-        useDevelopmentPIOCore: config.get('useDevelopmentPIOCore') || true, // FIXME: remove "|| true" when released
+        useDevelopmentPIOCore: config.get('useDevelopmentPIOCore') || true, // @FIXME: remove "|| true" when released
         installConfirm: new VscodePythonInstallConfirm(),
         cacheDir: cacheDir,
         isPrerelease: isPrerelease,
@@ -84,7 +84,6 @@ export default class InstallationManager {
       vscode.commands.executeCommand('workbench.action.reloadWindow');
     }
   }
-
 
   destroy() {
     return this.stages.map(stage => stage.destroy());
