@@ -65,6 +65,14 @@ export default class PlatformIOVSCodeExtension {
     );
     context.subscriptions.push(
       vscode.commands.registerCommand(
+        'platformio-ide.libraryManager',
+        () => {
+          pioTerm.sendText('pio lib');
+          pioTerm.show();
+        })
+    );
+    context.subscriptions.push(
+      vscode.commands.registerCommand(
         'platformio-ide.initProject',
         initCommand)
     );
@@ -86,19 +94,22 @@ export default class PlatformIOVSCodeExtension {
 
     // Status Bar
     context.subscriptions.push(
-      utils.makeStatusBarItem('$(check)', 'PlatformIO: Build', 'platformio-ide.build', 7)
+      utils.makeStatusBarItem('$(check)', 'PlatformIO: Build', 'platformio-ide.build', 8)
     );
     context.subscriptions.push(
-      utils.makeStatusBarItem('$(arrow-right)', 'PlatformIO: Upload', 'platformio-ide.upload', 6)
+      utils.makeStatusBarItem('$(arrow-right)', 'PlatformIO: Upload', 'platformio-ide.upload', 7)
     );
     context.subscriptions.push(
       utils.makeStatusBarItem('$(trashcan)', 'PlatformIO: Clean', 'platformio-ide.clean', 5)
     );
     context.subscriptions.push(
-      utils.makeStatusBarItem('$(checklist)', 'PlatformIO: Run a Task', 'workbench.action.tasks.runTask', 4)
+      utils.makeStatusBarItem('$(checklist)', 'PlatformIO: Run a Task', 'workbench.action.tasks.runTask', 5)
     );
     context.subscriptions.push(
-      utils.makeStatusBarItem('$(file-code)', 'PlatformIO: Initialize or update project', 'platformio-ide.initProject', 3)
+      utils.makeStatusBarItem('$(file-code)', 'PlatformIO: Initialize or update project', 'platformio-ide.initProject', 4)
+    );
+    context.subscriptions.push(
+      utils.makeStatusBarItem('$(code)', 'PlatformIO: Library Manager', 'platformio-ide.libraryManager', 3)
     );
     context.subscriptions.push(
       utils.makeStatusBarItem('$(plug)', 'PlatformIO: Serial Monitor', 'platformio-ide.serialMonitor', 2)

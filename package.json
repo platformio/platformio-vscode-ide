@@ -86,6 +86,11 @@
         "command": "platformio-ide.newTerminal",
         "title": "New Terminal",
         "category": "PlatformIO"
+      },
+      {
+        "command": "platformio-ide.libraryManager",
+        "title": "Library Manager",
+        "category": "PlatformIO"
       }
     ],
     "configuration": {
