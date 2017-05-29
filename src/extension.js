@@ -20,10 +20,6 @@ export default class PlatformIOVSCodeExtension {
 
   constructor() {
     this.activate = this.activate.bind(this);
-
-    const min = 100;
-    const max = 999;
-    this.instanceId = Math.floor(Math.random() * (max - min)) + min;
   }
 
   async activate(context) {
@@ -101,6 +97,7 @@ export default class PlatformIOVSCodeExtension {
           message: 'Installing PlatformIO IDE...',
         });
         const outputChannel = vscode.window.createOutputChannel('PlatformIO Instalation');
+        outputChannel.show();
 
         outputChannel.appendLine('Installing PlatformIO Core...');
         outputChannel.appendLine("Please don't close this window and don't "
