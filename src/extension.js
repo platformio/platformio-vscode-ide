@@ -42,11 +42,31 @@ export default class PlatformIOVSCodeExtension {
     // Create Terminal Instance with pre-configured environment PATH
     this.initTerminal();
 
+    // Commands
     context.subscriptions.push(
       vscode.commands.registerCommand(
-        'platformio-ide.newTerminal',
-        () => this.initTerminal().show())
-    );    
+        'platformio-ide.build',
+        utils.makeCommandWithArgs('workbench.action.tasks.runTask', 'PlatformIO: Build'))
+    );
+    context.subscriptions.push(
+      vscode.commands.registerCommand(
+        'platformio-ide.upload',
+        utils.makeCommandWithArgs('workbench.action.tasks.runTask', 'PlatformIO: Upload'))
+    );
+    context.subscriptions.push(
+      vscode.commands.registerCommand(
+        'platformio-ide.clean',
+        utils.makeCommandWithArgs('workbench.action.tasks.runTask', 'PlatformIO: Clean'))
+    );
+    context.subscriptions.push(
+      vscode.commands.registerCommand(
+        'platformio-ide.serial-monitor',
+        () => {
+          const term = this.initTerminal();
+          term.sendText('pio device monitor');
+          term.show();
+        })
+    );
     context.subscriptions.push(
       vscode.commands.registerCommand(
         'platformio-ide.initProject',
@@ -59,6 +79,28 @@ export default class PlatformIOVSCodeExtension {
           verbose: true,
         }))
     );
+    context.subscriptions.push(
+      vscode.commands.registerCommand(
+        'platformio-ide.newTerminal',
+        () => this.initTerminal().show())
+    );
+
+    // Status Bar
+    context.subscriptions.push(
+      utils.makeStatusBarItem('$(checklist)', 'Run a Task', 'workbench.action.tasks.runTask', 5)
+    );
+    context.subscriptions.push(
+      utils.makeStatusBarItem('$(check)', 'Build', 'platformio-ide.build', 4)
+    );
+    context.subscriptions.push(
+      utils.makeStatusBarItem('$(arrow-right)', 'Upload', 'platformio-ide.upload', 3)
+    );
+    context.subscriptions.push(
+      utils.makeStatusBarItem('$(trashcan)', 'Clean', 'platformio-ide.clean', 2)
+    );
+    context.subscriptions.push(
+      utils.makeStatusBarItem('$(plug)', 'Serial Monitor', 'platformio-ide.serial-monitor', 1)
+    );
   }
 
   initTerminal() {
@@ -69,7 +111,7 @@ export default class PlatformIOVSCodeExtension {
       terminal.sendText('set -gx PATH ' + process.env.PATH.replace(/\:/g, ' '));
     } else {
       terminal.sendText('export PATH=' + process.env.PATH);
-    }    
+    }
     terminal.sendText('pio --help');
     return terminal;
   }
