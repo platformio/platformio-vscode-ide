@@ -1,5 +1,6 @@
 {
   "name": "platformio-ide",
+  "preview": true,
   "displayName": "PlatformIO IDE",
   "description": "Official PlatformIO IDE for VSCode: The next generation integrated development environment for IoT. Cross-platform build system and unified debugger. Remote unit testing and firmware updates.",
   "keywords": [
