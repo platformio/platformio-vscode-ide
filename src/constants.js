@@ -15,7 +15,7 @@ export const IS_WINDOWS = process.platform.startsWith('win');
 export const PIO_HOME_DIR = _getPioHomeDir(process.env.PLATFORMIO_HOME_DIR || path.join(fs.getHomeDirectory() || '~', '.platformio'));
 export const ENV_DIR = path.join(PIO_HOME_DIR, 'penv');
 export const ENV_BIN_DIR = path.join(ENV_DIR, IS_WINDOWS ? 'Scripts' : 'bin');
-export const PIO_CORE_MIN_VERSION = '3.4.0-b.7';
+export const PIO_CORE_MIN_VERSION = '3.4.0-b.9';
 
 
 function _getPioHomeDir(pioHomeDir) {
