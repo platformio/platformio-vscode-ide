@@ -36,7 +36,7 @@
   "publisher": "platformio",
   "license": "Apache-2.0",
   "engines": {
-    "vscode": "^1.12.0"
+    "vscode": "^1.9.0"
   },
   "bugs": {
       "url": "https://github.com/platformio/platformio-vscode-ide/issues"
@@ -68,7 +68,7 @@
         "category": "PlatformIO"
       },
       {
-        "command": "platformio-ide.serial-monitor",
+        "command": "platformio-ide.serialMonitor",
         "title": "Serial Monitor",
         "category": "PlatformIO"
       },

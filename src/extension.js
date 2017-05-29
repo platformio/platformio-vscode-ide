@@ -57,7 +57,7 @@ export default class PlatformIOVSCodeExtension {
     );
     context.subscriptions.push(
       vscode.commands.registerCommand(
-        'platformio-ide.serial-monitor',
+        'platformio-ide.serialMonitor',
         () => {
           const term = this.initTerminal();
           term.sendText('pio device monitor');
@@ -84,19 +84,19 @@ export default class PlatformIOVSCodeExtension {
 
     // Status Bar
     context.subscriptions.push(
-      utils.makeStatusBarItem('$(checklist)', 'Run a Task', 'workbench.action.tasks.runTask', 5)
+      utils.makeStatusBarItem('$(checklist)', 'PlatformIO: Run a Task', 'workbench.action.tasks.runTask', 5)
     );
     context.subscriptions.push(
-      utils.makeStatusBarItem('$(check)', 'Build', 'platformio-ide.build', 4)
+      utils.makeStatusBarItem('$(check)', 'PlatformIO: Build', 'platformio-ide.build', 4)
     );
     context.subscriptions.push(
-      utils.makeStatusBarItem('$(arrow-right)', 'Upload', 'platformio-ide.upload', 3)
+      utils.makeStatusBarItem('$(arrow-right)', 'PlatformIO: Upload', 'platformio-ide.upload', 3)
     );
     context.subscriptions.push(
-      utils.makeStatusBarItem('$(trashcan)', 'Clean', 'platformio-ide.clean', 2)
+      utils.makeStatusBarItem('$(trashcan)', 'PlatformIO: Clean', 'platformio-ide.clean', 2)
     );
     context.subscriptions.push(
-      utils.makeStatusBarItem('$(plug)', 'Serial Monitor', 'platformio-ide.serial-monitor', 1)
+      utils.makeStatusBarItem('$(plug)', 'PlatformIO: Serial Monitor', 'platformio-ide.serialMonitor', 1)
     );
   }
 
