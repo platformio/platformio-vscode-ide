@@ -86,16 +86,19 @@ export default class PlatformIOVSCodeExtension {
 
     // Status Bar
     context.subscriptions.push(
-      utils.makeStatusBarItem('$(checklist)', 'PlatformIO: Run a Task', 'workbench.action.tasks.runTask', 6)
+      utils.makeStatusBarItem('$(check)', 'PlatformIO: Build', 'platformio-ide.build', 7)
     );
     context.subscriptions.push(
-      utils.makeStatusBarItem('$(check)', 'PlatformIO: Build', 'platformio-ide.build', 5)
+      utils.makeStatusBarItem('$(arrow-right)', 'PlatformIO: Upload', 'platformio-ide.upload', 6)
     );
     context.subscriptions.push(
-      utils.makeStatusBarItem('$(arrow-right)', 'PlatformIO: Upload', 'platformio-ide.upload', 4)
+      utils.makeStatusBarItem('$(trashcan)', 'PlatformIO: Clean', 'platformio-ide.clean', 5)
     );
     context.subscriptions.push(
-      utils.makeStatusBarItem('$(trashcan)', 'PlatformIO: Clean', 'platformio-ide.clean', 3)
+      utils.makeStatusBarItem('$(checklist)', 'PlatformIO: Run a Task', 'workbench.action.tasks.runTask', 4)
+    );
+    context.subscriptions.push(
+      utils.makeStatusBarItem('$(file-code)', 'PlatformIO: Initialize or update project', 'platformio-ide.initProject', 3)
     );
     context.subscriptions.push(
       utils.makeStatusBarItem('$(plug)', 'PlatformIO: Serial Monitor', 'platformio-ide.serialMonitor', 2)
