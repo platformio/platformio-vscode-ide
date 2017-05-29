@@ -17,6 +17,7 @@ export const ENV_DIR = path.join(PIO_HOME_DIR, 'penv');
 export const ENV_BIN_DIR = path.join(ENV_DIR, IS_WINDOWS ? 'Scripts' : 'bin');
 export const PIO_CORE_MIN_VERSION = '3.4.0-b.7';
 
+
 function _getPioHomeDir(pioHomeDir) {
   if (IS_WINDOWS) {
     // Make sure that all path characters have valid ASCII codes.

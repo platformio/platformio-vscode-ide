@@ -9,15 +9,16 @@
 import { runPioCommand } from '../utils';
 import vscode from 'vscode';
 
+
 export default async function initCommand() {
   if (!vscode.workspace.rootPath) {
     vscode.window.showWarningMessage(
-      'PlatformIO projec could not be initialized. Please open a folder '
+      'PlatformIO project could not be initialized. Please open a folder '
       + 'first before performing initialization.'
     );
   }
   await vscode.window.withProgress({
-    title: 'PlatformIO Project initialization',
+    title: 'PlatformIO Project initialization...',
     location: vscode.ProgressLocation.Window,
   }, async (progress) => {
     progress.report({

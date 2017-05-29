@@ -13,6 +13,7 @@ import path from 'path';
 import spawn from 'cross-spawn';
 import vscode from 'vscode';
 
+
 export function updateOSEnviron() {
   // Fix for platformio-atom-ide/issues/112
   process.env.LC_ALL = 'en_US.UTF-8';

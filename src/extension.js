@@ -16,6 +16,7 @@ import path from 'path';
 import semver from 'semver';
 import vscode from 'vscode';
 
+
 export default class PlatformIOVSCodeExtension {
 
   constructor() {
