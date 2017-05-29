@@ -2,40 +2,39 @@
 
 [![Marketplace Version](https://vsmarketplacebadge.apphb.com/version-short/platformio.platformio-ide.svg)](https://marketplace.visualstudio.com/items?itemName=platformio.platformio-ide) [![Installs](https://vsmarketplacebadge.apphb.com/installs-short/platformio.platformio-ide.svg)](https://marketplace.visualstudio.com/items?itemName=platformio.platformio-ide) [![Rating](https://vsmarketplacebadge.apphb.com/rating-short/platformio.platformio-ide.svg)](https://marketplace.visualstudio.com/items?itemName=platformio.platformio-ide)
 
-[PlatformIO IDE](http://platformio.org/platformio-ide) is the next generation integrated development environment for IoT.
+**The next generation integrated development environment for IoT**
 
-[PlatformIO](http://platformio.org/) is an open source ecosystem for IoT development.
+[PlatformIO](http://platformio.org) is an open source ecosystem for IoT development.
 Cross-platform build system and unified debugger. Remote unit testing and firmware updates.
 
 *Atmel AVR & SAM, Espressif 8266 & 32, Freescale Kinetis, Intel ARC32, Lattice iCE40,
-Microchip PIC32, Nordic nRF51, NXP LPC, Silicon Labs EFM32, ST STM32,
+Maxim Integrated MAX32, Microchip PIC32, Nordic nRF51, Nordic nRF52, NXP LPC, Silicon Labs EFM32, ST STM32,
 TI MSP430 & Tiva, Teensy, Arduino, ARM mbed, libOpenCM3, ESP8266, etc.*
 
 ## Features
 
 * Cross-platform code builder without external dependencies to a system software:
 
-    - 350+ embedded boards
+    - 400+ embedded boards
     - 20+ development platforms
     - 10+ frameworks
 
+* [PIO Remote™](http://docs.platformio.org/page/plus/pio-remote.html)
 * [PIO Unified Debugger](http://docs.platformio.org/page/plus/debugging.html)
+* [Unit Testing](http://docs.platformio.org/page/plus/unit-testing.html)
 * C/C++ Intelligent Code Completion
 * C/C++ Smart Code Linter for rapid professional development
 * Library Manager for the hundreds popular libraries
 * Multi-projects workflow with multiple panes
 * Themes support with dark and light colors
 * Serial Port Monitor
-* Built-in Terminal with PlatformIO Core tool (``pio``, ``platformio``)
-
-## Quick Start
-
-1. Create empty directory and open it as a new project
-2. Please be patient and let the installation complete (only the first time, see progress in status bar)
-3. Launch VS Code Quick Open (`Ctrl+Shift+P` or `Cmd+Shift+P`), search for `PlatformIO: Initialize or update project`, and press enter
-4. Happy coding with PlatformIO!
+* Built-in Terminal with [PlatformIO Core](http://docs.platformio.org/page/core.html) tool (``pio``, ``platformio``)
 
 ## How it works
+
+* [Installation](http://docs.platformio.org/page/ide/vscode.html#installation)
+* [Quick Start](http://docs.platformio.org/page/ide/vscode.html#quick-start)
+* [User Guide](http://docs.platformio.org/page/ide/vscode.html#user-quide)
 
 Please follow to the official documentation [PlatformIO IDE for VSCode](http://docs.platformio.org/page/ide/vscode.html).
 
