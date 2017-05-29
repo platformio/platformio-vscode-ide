@@ -37,7 +37,7 @@ export default class PlatformIOVSCodeExtension {
     await indexer.toggle();
 
     // Create Terminal Instance with pre-configured environment PATH
-    this.initTerminal();
+    let pioTerm = this.newPIOTerminal();
 
     // Commands
     context.subscriptions.push(
@@ -59,9 +59,8 @@ export default class PlatformIOVSCodeExtension {
       vscode.commands.registerCommand(
         'platformio-ide.serialMonitor',
         () => {
-          const term = this.initTerminal();
-          term.sendText('pio device monitor');
-          term.show();
+          pioTerm.sendText('pio device monitor');
+          pioTerm.show();
         })
     );
     context.subscriptions.push(
@@ -79,28 +78,34 @@ export default class PlatformIOVSCodeExtension {
     context.subscriptions.push(
       vscode.commands.registerCommand(
         'platformio-ide.newTerminal',
-        () => this.initTerminal().show())
+        () => {
+          pioTerm = this.newPIOTerminal();
+          pioTerm.show() ;
+      })
     );
 
     // Status Bar
     context.subscriptions.push(
-      utils.makeStatusBarItem('$(checklist)', 'PlatformIO: Run a Task', 'workbench.action.tasks.runTask', 5)
+      utils.makeStatusBarItem('$(checklist)', 'PlatformIO: Run a Task', 'workbench.action.tasks.runTask', 6)
     );
     context.subscriptions.push(
-      utils.makeStatusBarItem('$(check)', 'PlatformIO: Build', 'platformio-ide.build', 4)
+      utils.makeStatusBarItem('$(check)', 'PlatformIO: Build', 'platformio-ide.build', 5)
     );
     context.subscriptions.push(
-      utils.makeStatusBarItem('$(arrow-right)', 'PlatformIO: Upload', 'platformio-ide.upload', 3)
+      utils.makeStatusBarItem('$(arrow-right)', 'PlatformIO: Upload', 'platformio-ide.upload', 4)
     );
     context.subscriptions.push(
-      utils.makeStatusBarItem('$(trashcan)', 'PlatformIO: Clean', 'platformio-ide.clean', 2)
+      utils.makeStatusBarItem('$(trashcan)', 'PlatformIO: Clean', 'platformio-ide.clean', 3)
     );
     context.subscriptions.push(
-      utils.makeStatusBarItem('$(plug)', 'PlatformIO: Serial Monitor', 'platformio-ide.serialMonitor', 1)
+      utils.makeStatusBarItem('$(plug)', 'PlatformIO: Serial Monitor', 'platformio-ide.serialMonitor', 2)
+    );
+    context.subscriptions.push(
+      utils.makeStatusBarItem('$(terminal)', 'PlatformIO: New Terminal', 'platformio-ide.newTerminal', 1)
     );
   }
 
-  initTerminal() {
+  newPIOTerminal() {
     const terminal = vscode.window.createTerminal('PlatformIO');
     if (constants.IS_WINDOWS) {
       terminal.sendText('set PATH=' + process.env.PATH);
