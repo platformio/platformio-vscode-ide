@@ -28,6 +28,13 @@ TI MSP430 & Tiva, Teensy, Arduino, ARM mbed, libOpenCM3, ESP8266, etc.*
 * Serial Port Monitor
 * Built-in Terminal with PlatformIO Core tool (``pio``, ``platformio``)
 
+## Quick Start
+
+1. Create empty directory and open it as a new project
+2. Please be patient and let the installation complete (only the first time, see progress in status bar)
+3. Launch VS Code Quick Open (`Ctrl+Shift+P` or `Cmd+Shift+P`), search for `PlatformIO: Initialize or update project`, and press enter
+4. Happy coding with PlatformIO!
+
 ## How it works
 
 Please follow to the official documentation [PlatformIO IDE for VSCode](http://docs.platformio.org/page/ide/vscode.html).
