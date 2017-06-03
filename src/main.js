@@ -119,15 +119,18 @@ class PlatformIOVSCodeExtension {
   }
 
   newPIOTerminal() {
-    const terminal = vscode.window.createTerminal('PlatformIO');
+    const commands = [];
     if (constants.IS_WINDOWS) {
-      terminal.sendText('set PATH=' + process.env.PATH);
+      commands.push('set PATH=' + process.env.PATH);
     } else if (process.env.SHELL && process.env.SHELL.includes('fish')) {
-      terminal.sendText('set -gx PATH ' + process.env.PATH.replace(/\:/g, ' '));
+      commands.push('set -gx PATH ' + process.env.PATH.replace(/\:/g, ' '));
     } else {
-      terminal.sendText('export PATH=' + process.env.PATH);
+      commands.push('export PATH=' + process.env.PATH);
     }
-    terminal.sendText('pio --help');
+    commands.push('pio --help');
+
+    const terminal = vscode.window.createTerminal('PlatformIO', constants.IS_WINDOWS ? 'cmd.exe' : null);
+    commands.forEach(cmd => terminal.sendText(cmd));
     return terminal;
   }
 
