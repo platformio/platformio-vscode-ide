@@ -6,7 +6,7 @@
  * the root directory of this source tree.
  */
 
-import { runPioCommand } from '../utils';
+import { runPIOCommand } from '../utils';
 import vscode from 'vscode';
 
 
@@ -27,7 +27,7 @@ export default async function initCommand() {
 
     try {
       const data = JSON.parse(await new Promise((resolve, reject) => {
-        runPioCommand(['boards', '--json-output'], (code, stdout, stderr) => {
+        runPIOCommand(['boards', '--json-output'], (code, stdout, stderr) => {
           if (code !== 0) {
             reject(stderr);
           } else {
@@ -58,7 +58,7 @@ export default async function initCommand() {
         });
 
         await new Promise((resolve, reject) => {
-          runPioCommand(['init', '--ide', 'vscode', '--board', selectedBoard.boardId, '--project-dir', vscode.workspace.rootPath], (code, stdout, stderr) => {
+          runPIOCommand(['init', '--ide', 'vscode', '--board', selectedBoard.boardId, '--project-dir', vscode.workspace.rootPath], (code, stdout, stderr) => {
             if (code !== 0) {
               reject(stderr);
             } else {

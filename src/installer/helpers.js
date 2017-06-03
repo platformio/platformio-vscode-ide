@@ -6,15 +6,22 @@
  * the root directory of this source tree.
  */
 
+import * as constants from '../constants';
+import * as utils from '../utils';
+
 import fs from 'fs-plus';
 import path from 'path';
 import request from 'request';
 import tar from 'tar';
+import vscode from 'vscode';
 import zlib from 'zlib';
 
 
-export function PEPverToSemver(pepver) {
-  return pepver.replace(/(\.\d+)\.?(dev|a|b|rc|post)/, '$1-$2.');
+export function getCacheDir() {
+  if (!fs.isDirectorySync(constants.CACHE_DIR)) {
+    fs.makeTreeSync(constants.CACHE_DIR);
+  }
+  return constants.CACHE_DIR;
 }
 
 export async function download(source, target, retries = 3) {
@@ -24,8 +31,7 @@ export async function download(source, target, retries = 3) {
     return target;
   }
 
-  let lastError = null;
-
+  let lastError = '';
   while (retries >= 0) {
     try {
       await _download(source, target);
@@ -36,17 +42,11 @@ export async function download(source, target, retries = 3) {
       lastError = error;
       console.error(error);
     }
-
     retries--;
   }
 
-  if (lastError) {
-    throw lastError;
-  } else {
-    throw new Error(`Failed to download file ${path.basename(target)}`);
-  }
+  throw new Error(`Failed to download file ${source}: ${lastError}`);
 }
-
 
 function fileExistsAndSizeMatches(target, contentLength) {
   if (fs.isFileSync(target)) {
@@ -84,7 +84,7 @@ async function _download(source, target) {
 function getContentLength(url) {
   return new Promise(resolve => {
     request.head({
-      url,
+      url
     }, (err, response) => {
       if (err || response.statusCode !== 200 || !response.headers.hasOwnProperty('content-length')) {
         resolve(-1);
@@ -99,10 +99,62 @@ export function extractTarGz(source, destination) {
     fs.createReadStream(source)
       .pipe(zlib.createGunzip())
       .on('error', err => reject(err))
-      .pipe(tar.Extract({
-        path: destination,
+      .pipe(tar.extract({
+        cwd: destination
       }))
       .on('error', err => reject(err))
       .on('end', () => resolve(destination));
   });
+}
+
+export async function getPythonExecutable(customDirs = null) {
+  const candidates = new Set();
+  const defaultName = constants.IS_WINDOWS ? 'python.exe' : 'python';
+
+  if (customDirs) {
+    customDirs.forEach(dir => candidates.add(path.join(dir, defaultName)));
+  }
+
+  if (vscode.workspace.getConfiguration('platformio-ide').get('useBuiltinPIOCore')) {
+    candidates.add(path.join(constants.ENV_BIN_DIR, defaultName));
+  }
+
+  if (constants.IS_WINDOWS) {
+    candidates.add(defaultName);
+    candidates.add('C:\\Python27\\' + defaultName);
+  } else {
+    candidates.add('python2.7');
+    candidates.add(defaultName);
+  }
+
+  for (const item of process.env.PATH.split(path.delimiter)) {
+    if (fs.isFileSync(path.join(item, defaultName))) {
+      candidates.add(path.join(item, defaultName));
+    }
+  }
+
+  for (const executable of candidates.values()) {
+    if (await isPython2(executable)) {
+      return executable;
+    }
+  }
+
+  return null;
+}
+
+function isPython2(executable) {
+  const args = ['-c', 'import sys; assert "msys" not in sys.executable.lower(); print ".".join(str(v) for v in sys.version_info[:2])'];
+  return new Promise(resolve => {
+    utils.runCommand(
+      executable,
+      args,
+      (code, stdout) => {
+        resolve(code === 0 && stdout.startsWith('2.7'));
+      }
+    );
+  });
+}
+
+export function PEPverToSemver(pepver) {
+  return pepver.replace(/(\.\d+)\.?(dev|a|b|rc|post)/, '$1-$2.');
 }

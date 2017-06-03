@@ -18,18 +18,17 @@ export default class InstallationManager {
   LOCK_KEY = 'platformio-ide:installer-lock';
   STORAGE_STATE_KEY = 'platformio-ide:installer-state';
 
-  constructor(globalState, config, cacheDir, isPrerelease) {
+  constructor(globalState) {
     this.globalState = globalState;
     this.stateStorage = new VscodeGlobalStateStorage(globalState, this.STORAGE_STATE_KEY);
 
+    const config = vscode.workspace.getConfiguration('platformio-ide');
     this.stages = [
       new PlatformIOCoreStage(this.onDidStatusChange.bind(this), this.stateStorage, {
         useBuiltinPIOCore: config.get('useBuiltinPIOCore'),
         setUseBuiltinPIOCore: (value) => config.update('platformio-ide.useBuiltinPIOCore', value),
         useDevelopmentPIOCore: config.get('useDevelopmentPIOCore') || true, // @FIXME: remove "|| true" when released
-        installConfirm: new VscodePythonInstallConfirm(),
-        cacheDir: cacheDir,
-        isPrerelease: isPrerelease,
+        installConfirm: new VscodePythonInstallConfirm()
       }),
     ];
   }
@@ -66,7 +65,7 @@ export default class InstallationManager {
         }
       } catch (err) {
         result = false;
-        console.log(err);
+        console.error(err);
       }
     }
     return result;

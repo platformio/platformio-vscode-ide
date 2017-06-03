@@ -9,15 +9,14 @@
 import * as constants from './constants';
 import * as utils from './utils';
 
+import { updateOSEnviron } from './maintenance';
 import InstallationManager from './installer/manager';
 import ProjectIndexer from './project/indexer';
 import initCommand from './commands/init';
-import path from 'path';
-import semver from 'semver';
 import vscode from 'vscode';
 
 
-export default class PlatformIOVSCodeExtension {
+class PlatformIOVSCodeExtension {
 
   constructor() {
     this.activate = this.activate.bind(this);
@@ -27,9 +26,9 @@ export default class PlatformIOVSCodeExtension {
     if (!vscode.workspace.rootPath) {
       return;
     }
-    utils.updateOSEnviron();
+    updateOSEnviron();
 
-    await this.startInstaller(context.globalState, context.extensionPath);
+    await this.startInstaller(context.globalState);
 
     const indexer = new ProjectIndexer(vscode.workspace.rootPath);
     context.subscriptions.push(indexer);
@@ -89,7 +88,7 @@ export default class PlatformIOVSCodeExtension {
         () => {
           pioTerm = this.newPIOTerminal();
           pioTerm.show() ;
-      })
+        })
     );
 
     // Status Bar
@@ -132,7 +131,7 @@ export default class PlatformIOVSCodeExtension {
     return terminal;
   }
 
-  startInstaller(globalState, extensionPath) {
+  startInstaller(globalState) {
     return vscode.window.withProgress({
       location: vscode.ProgressLocation.Window,
       title: 'PlatformIO',
@@ -141,13 +140,7 @@ export default class PlatformIOVSCodeExtension {
         message: 'Verifying PlatformIO Core installation...',
       });
 
-      const cacheDir = path.join(extensionPath, '.cache');
-      await utils.ensureDirExists(cacheDir);
-
-      const config = vscode.workspace.getConfiguration('platformio-ide');
-      const isPrerelease = Boolean(semver.prerelease(utils.getIDEVersion()));
-      const im = new InstallationManager(globalState, config, cacheDir, isPrerelease);
-
+      const im = new InstallationManager(globalState);
       if (im.locked()) {
         vscode.window.showInformationMessage(
           'PlatformIO IDE installation has been suspended, because PlatformIO '
@@ -183,3 +176,5 @@ export default class PlatformIOVSCodeExtension {
     });
   }
 }
+
+module.exports = new PlatformIOVSCodeExtension();
