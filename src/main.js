@@ -6,11 +6,11 @@
  * the root directory of this source tree.
  */
 
-import * as constants from './constants';
 import * as utils from './utils';
 
 import { updateOSEnviron } from './maintenance';
 import InstallationManager from './installer/manager';
+import PIOTerminal from './terminal';
 import ProjectIndexer from './project/indexer';
 import initCommand from './commands/init';
 import vscode from 'vscode';
@@ -19,7 +19,7 @@ import vscode from 'vscode';
 class PlatformIOVSCodeExtension {
 
   constructor() {
-    this.activate = this.activate.bind(this);
+    this.pioTerm = new PIOTerminal();
   }
 
   async activate(context) {
@@ -35,61 +35,39 @@ class PlatformIOVSCodeExtension {
     context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(() => indexer.toggle()));
     await indexer.toggle();
 
-    // Create Terminal Instance with pre-configured environment PATH
-    let pioTerm = this.newPIOTerminal();
-
     // Commands
-    context.subscriptions.push(
-      vscode.commands.registerCommand(
-        'platformio-ide.build',
-        utils.makeCommandWithArgs('workbench.action.tasks.runTask', 'PlatformIO: Build'))
-    );
-    context.subscriptions.push(
-      vscode.commands.registerCommand(
-        'platformio-ide.upload',
-        utils.makeCommandWithArgs('workbench.action.tasks.runTask', 'PlatformIO: Upload'))
-    );
-    context.subscriptions.push(
-      vscode.commands.registerCommand(
-        'platformio-ide.clean',
-        utils.makeCommandWithArgs('workbench.action.tasks.runTask', 'PlatformIO: Clean'))
-    );
-    context.subscriptions.push(
-      vscode.commands.registerCommand(
-        'platformio-ide.serialMonitor',
-        () => {
-          pioTerm.sendText('pio device monitor');
-          pioTerm.show();
-        })
-    );
-    context.subscriptions.push(
-      vscode.commands.registerCommand(
-        'platformio-ide.libraryManager',
-        () => {
-          pioTerm.sendText('pio lib');
-          pioTerm.show();
-        })
-    );
-    context.subscriptions.push(
-      vscode.commands.registerCommand(
-        'platformio-ide.initProject',
-        initCommand)
-    );
-    context.subscriptions.push(
-      vscode.commands.registerCommand(
-        'platformio-ide.rebuildProjectIndex',
-        () => indexer.doRebuild({
-          verbose: true,
-        }))
-    );
-    context.subscriptions.push(
-      vscode.commands.registerCommand(
-        'platformio-ide.newTerminal',
-        () => {
-          pioTerm = this.newPIOTerminal();
-          pioTerm.show() ;
-        })
-    );
+    context.subscriptions.push(vscode.commands.registerCommand(
+      'platformio-ide.build',
+      utils.makeCommandWithArgs('workbench.action.tasks.runTask', 'PlatformIO: Build')
+    ));
+    context.subscriptions.push(vscode.commands.registerCommand(
+      'platformio-ide.upload',
+      utils.makeCommandWithArgs('workbench.action.tasks.runTask', 'PlatformIO: Upload')
+    ));
+    context.subscriptions.push(vscode.commands.registerCommand(
+      'platformio-ide.clean',
+      utils.makeCommandWithArgs('workbench.action.tasks.runTask', 'PlatformIO: Clean')
+    ));
+    context.subscriptions.push(vscode.commands.registerCommand(
+      'platformio-ide.serialMonitor',
+      () => this.pioTerm.sendText('pio device monitor')
+    ));
+    context.subscriptions.push(vscode.commands.registerCommand(
+      'platformio-ide.libraryManager',
+      () => this.pioTerm.sendText('pio lib')
+    ));
+    context.subscriptions.push(vscode.commands.registerCommand(
+      'platformio-ide.initProject',
+      initCommand
+    ));
+    context.subscriptions.push(vscode.commands.registerCommand(
+      'platformio-ide.rebuildProjectIndex',
+      () => indexer.doRebuild({ verbose: true })
+    ));
+    context.subscriptions.push(vscode.commands.registerCommand(
+      'platformio-ide.newTerminal',
+      () => this.pioTerm.new().show()
+    ));
 
     // Status Bar
     context.subscriptions.push(
@@ -116,22 +94,6 @@ class PlatformIOVSCodeExtension {
     context.subscriptions.push(
       utils.makeStatusBarItem('$(terminal)', 'PlatformIO: New Terminal', 'platformio-ide.newTerminal', 1)
     );
-  }
-
-  newPIOTerminal() {
-    const commands = [];
-    if (constants.IS_WINDOWS) {
-      commands.push('set PATH=' + process.env.PATH);
-    } else if (process.env.SHELL && process.env.SHELL.includes('fish')) {
-      commands.push('set -gx PATH ' + process.env.PATH.replace(/\:/g, ' '));
-    } else {
-      commands.push('export PATH=' + process.env.PATH);
-    }
-    commands.push('pio --help');
-
-    const terminal = vscode.window.createTerminal('PlatformIO', constants.IS_WINDOWS ? 'cmd.exe' : null);
-    commands.forEach(cmd => terminal.sendText(cmd));
-    return terminal;
   }
 
   startInstaller(globalState) {
@@ -178,6 +140,14 @@ class PlatformIOVSCodeExtension {
       return Promise.reject(null);
     });
   }
+
+  dispose() {
+    this.pioTerm.dispose();
+  }
 }
 
-module.exports = new PlatformIOVSCodeExtension();
+export function activate(context) {
+  const pio = new PlatformIOVSCodeExtension();
+  pio.activate(context);
+  context.subscriptions.push(pio);
+}
