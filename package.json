@@ -94,6 +94,28 @@
         "category": "PlatformIO"
       }
     ],
+    "keybindings": [
+      {
+        "command": "platformio-ide.initProject",
+        "key": "ctrl+alt+i"
+      },
+      {
+        "command": "platformio-ide.build",
+        "key": "ctrl+alt+b"
+      },
+      {
+        "command": "platformio-ide.upload",
+        "key": "ctrl+alt+u"
+      },
+      {
+        "command": "platformio-ide.serialMonitor",
+        "key": "ctrl+alt+s"
+      },
+      {
+        "command": "workbench.action.tasks.runTask",
+        "key": "ctrl+alt+t"
+      }
+    ],
     "configuration": {
       "type": "object",
       "title": "PlatformIO IDE configuration",
