@@ -12,10 +12,10 @@ import vscode from 'vscode';
 
 export default async function initCommand() {
   if (!vscode.workspace.rootPath) {
-    vscode.window.showWarningMessage(
-      'PlatformIO project could not be initialized. Please open a folder '
-      + 'first before performing initialization.'
+    vscode.window.showErrorMessage(
+      'Please open a folder (File > Open...) where PlatformIO should initialize a project, then repeat this command again.'
     );
+    return;
   }
   await vscode.window.withProgress({
     title: 'PlatformIO Project initialization...',
