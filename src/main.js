@@ -6,8 +6,6 @@
  * the root directory of this source tree.
  */
 
-import * as utils from './utils';
-
 import { updateOSEnviron } from './maintenance';
 import InstallationManager from './installer/manager';
 import PIOTerminal from './terminal';
@@ -27,7 +25,7 @@ class PlatformIOVSCodeExtension {
     this._context = context;
 
     updateOSEnviron();
-    this.initCommands();
+    this.registerCommands();
 
     await this.startInstaller();
 
@@ -85,7 +83,7 @@ class PlatformIOVSCodeExtension {
     });
   }
 
-  initCommands() {
+  registerCommands() {
     this._context.subscriptions.push(vscode.commands.registerCommand(
       'platformio-ide.initProject',
       initCommand
@@ -96,7 +94,10 @@ class PlatformIOVSCodeExtension {
     ));
     this._context.subscriptions.push(vscode.commands.registerCommand(
       'platformio-ide.upload',
-      () => vscode.commands.executeCommand('workbench.action.tasks.runTask', 'PlatformIO: Upload')
+      () => {
+        this.pioTerm.closeSerialMonitor();
+        vscode.commands.executeCommand('workbench.action.tasks.runTask', 'PlatformIO: Upload');
+      }
     ));
     this._context.subscriptions.push(vscode.commands.registerCommand(
       'platformio-ide.clean',
