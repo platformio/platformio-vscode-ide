@@ -160,6 +160,7 @@
     "esformatter": "^0.10.0",
     "eslint": "^3.19.0",
     "eslint-plugin-sort-imports-es6-autofix": "^0.1.1",
+    "vsce": "^1.22.0",
     "vscode": "^1.0.0"
   },
   "dependencies": {
