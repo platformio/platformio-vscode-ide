@@ -32,26 +32,19 @@ TI MSP430 & Tiva, Teensy, Arduino, ARM mbed, libOpenCM3, ESP8266, etc.*
 
 ## How it works
 
+**!!! PLEASE READ "QUICK START" AND "USER GUIDE" BEFORE !!!**
+
 * [Installation](http://docs.platformio.org/page/ide/vscode.html#installation)
 * [Quick Start](http://docs.platformio.org/page/ide/vscode.html#quick-start)
 * [User Guide](http://docs.platformio.org/page/ide/vscode.html#user-quide)
 
 Please follow to the official documentation [PlatformIO IDE for VSCode](http://docs.platformio.org/page/ide/vscode.html).
 
-[![PlatformIO IDE for VSCode](https://raw.githubusercontent.com/platformio/platformio-docs/develop/_static/ide/vscode/platformio-ide-vscode.png)](http://platformio.org/platformio-ide)
-
-## Extension Settings
-
-This extension contributes the following settings:
-
-* `platformio-ide.useBuiltinPIOCore`: Use built-in [PlatformIO Core](http://docs.platformio.org/page/core.html) (default configuration is `true`)
-* `platformio-ide.useDevelopmentPIOCore`: Use development version of [PlatformIO Core](http://docs.platformio.org/page/core.html) (default configuration is `false`)
-* `platformio-ide.autoRebuildAutocompleteIndex`: Automatically rebuild C/C++ Project Index when [platformio.ini](http://docs.platformio.org/page/projectconf.html) is changed or when new libraries are installed (default configuration is `true`)
-* `platformio-ide.customPATH`: Custom PATH for `platformio` command. Paste here the result of `echo $PATH` (Unix) / `echo %PATH%` (Windows) command by typing into your system terminal if you prefer to use custom version of [PlatformIO Core](http://docs.platformio.org/page/core.html) (default configuration is `null`)
+[![PlatformIO IDE for VSCode](https://raw.githubusercontent.com/platformio/platformio-docs/develop/_static/ide/vscode/platformio-ide-vscode.png)](http://docs.platformio.org/page/ide/vscode.html)
 
 ## License
 
-Copyright 2017-present PlatformIO <contact@platformio.org>
+Copyright (c) 2017-present PlatformIO <contact@platformio.org>
 
 The PlatformIO IDE for VSCode is licensed under the permissive Apache 2.0 license,
 so you can use it in both commercial and personal projects with confidence.

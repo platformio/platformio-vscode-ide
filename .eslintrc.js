@@ -16,11 +16,6 @@ module.exports = {
   ],
   'rules': {
     'brace-style': ['error', '1tbs'],
-    'comma-dangle': ['error', {
-      'arrays': 'always-multiline',
-      'objects': 'always-multiline',
-      'functions': 'never',
-    }],
     'curly': ['warn', 'all'],
     'indent': [
       'warn',
@@ -32,9 +27,7 @@ module.exports = {
     'linebreak-style': ['error', 'unix'],
     'no-console': [
       'error',
-      {
-        'allow': ['log', 'error'],
-      },
+      {'allow': ['warn', 'error', 'info']},
     ],
     'no-var': 'error',
     'object-curly-spacing': ['warn', 'always'],

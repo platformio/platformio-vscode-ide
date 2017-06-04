@@ -1,15 +1,15 @@
 /**
- * Copyright 2017-present PlatformIO <contact@platformio.org>
+ * Copyright (c) 2017-present PlatformIO <contact@platformio.org>
  * All rights reserved.
  *
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
 
+import * as constants from '../../constants';
 import * as utils from '../../utils';
 
-import { ENV_BIN_DIR, ENV_DIR, IS_WINDOWS, PIO_CORE_MIN_VERSION, PIO_HOME_DIR } from '../../constants';
-import { PEPverToSemver, download, extractTarGz } from '../helpers';
+import { PEPverToSemver, download, extractTarGz, getCacheDir, getPythonExecutable } from '../helpers';
 
 import BaseStage from './base';
 import fs from 'fs-plus';
@@ -34,78 +34,15 @@ export default class PlatformIOCoreStage extends BaseStage {
     return 'PlatformIO Core';
   }
 
-  async check() {
-    if (this.params.useBuiltinPIOCore) {
-      if (!fs.isDirectorySync(ENV_BIN_DIR)) {
-        throw new Error('Virtual environment is not created');
-      }
-      try {
-        await this.autoUpgradePIOCore();
-      } catch (err) {
-        console.log(err);
-      }
-    }
-
-    const customDirs = this.params.useBuiltinPIOCore ? [ENV_BIN_DIR] : null;
-    const coreVersion = await utils.getCoreVersion(await utils.getPythonExecutable(customDirs));
-    if (semver.lt(PEPverToSemver(coreVersion), PIO_CORE_MIN_VERSION)) {
-      this.params.setUseBuiltinPIOCore(true);
-      throw new Error(`Incompatible PIO Core ${coreVersion}`);
-    }
-
-    this.status = BaseStage.STATUS_SUCCESSED;
-    console.log(`Found PIO Core ${coreVersion}`);
-    return true;
-  }
-
-  async install() {
-    if (this.status === BaseStage.STATUS_SUCCESSED) {
-      return true;
-    }
-    if (!this.params.useBuiltinPIOCore) {
-      this.status = BaseStage.STATUS_SUCCESSED;
-      return true;
-    }
-    this.status = BaseStage.STATUS_INSTALLING;
-
-    await this.cleanVirtualEnvDir();
-
-    if (await this.isCondaInstalled()) {
-      await this.createVirtualenvWithConda();
-    } else {
-      const pythonExecutable = await this.whereIsPython();
-      if (!pythonExecutable) {
-        this.status = BaseStage.STATUS_FAILED;
-        throw new Error('Can not find Python Interpreter');
-      }
-      try {
-        await this.createVirtualenvWithUser(pythonExecutable);
-      } catch (err) {
-        console.error(err);
-        await this.createVirtualenvWithDownload(pythonExecutable);
-      }
-    }
-
-    const envPythonExecutable = await utils.getPythonExecutable([ENV_BIN_DIR]);
-    if (!envPythonExecutable) {
-      throw new Error('Python interpreter not found');
-    }
-
-    await this.installPIOCore(envPythonExecutable);
-
-    this.status = BaseStage.STATUS_SUCCESSED;
-    return true;
-  }
-
   async whereIsPython() {
     let status = this.params.installConfirm.TRY_AGAIN;
     do {
-      const pythonExecutable = await utils.getPythonExecutable();
+      const pythonExecutable = await getPythonExecutable();
       if (pythonExecutable) {
         return pythonExecutable;
       }
 
-      if (IS_WINDOWS) {
+      if (constants.IS_WINDOWS) {
         try {
           return await this.installPythonForWindows();
         } catch (err) {
@@ -126,9 +63,9 @@ export default class PlatformIOCoreStage extends BaseStage {
     const msiUrl = `https://www.python.org/ftp/python/${PlatformIOCoreStage.pythonVersion}/python-${PlatformIOCoreStage.pythonVersion}${pythonArch}.msi`;
     const msiInstaller = await download(
       msiUrl,
-      path.join(this.params.cacheDir, path.basename(msiUrl))
+      path.join(getCacheDir(), path.basename(msiUrl))
     );
-    const targetDir = path.join(PIO_HOME_DIR, 'python27');
+    const targetDir = path.join(constants.PIO_HOME_DIR, 'python27');
     const pythonPath = path.join(targetDir, 'python.exe');
 
     if (!fs.isFileSync(pythonPath)) {
@@ -146,21 +83,21 @@ export default class PlatformIOCoreStage extends BaseStage {
 
     // install virtualenv
     return new Promise(resolve => {
-      utils.spawnCommand(
-        pythonPath,
-        ['-m', 'pip', 'install', 'virtualenv'],
+      utils.runCommand(
+        'pip',
+        ['install', 'virtualenv'],
         () => resolve(pythonPath)
       );
     });
   }
 
   async installPythonFromWindowsMSI(msiInstaller, targetDir, administrative = false) {
-    const logFile = path.join(this.params.cacheDir, 'python27msi.log');
+    const logFile = path.join(getCacheDir(), 'python27msi.log');
     await new Promise((resolve, reject) => {
-      utils.spawnCommand(
+      utils.runCommand(
         'msiexec.exe',
         [administrative ? '/a' : '/i', msiInstaller, '/qn', '/li', logFile, `TARGETDIR=${targetDir}`],
-        async (code, stdout, stderr) => {
+        (code, stdout, stderr) => {
           if (code === 0) {
             return resolve(stdout);
           } else {
@@ -172,8 +109,8 @@ export default class PlatformIOCoreStage extends BaseStage {
         },
         {
           spawnOptions: {
-            shell: true,
-          },
+            shell: true
+          }
         }
       );
     });
@@ -182,10 +119,10 @@ export default class PlatformIOCoreStage extends BaseStage {
     }
   }
 
-  async cleanVirtualEnvDir() {
-    if (fs.isFileSync(ENV_DIR)) {
+  cleanVirtualEnvDir() {
+    if (fs.isDirectorySync(constants.ENV_DIR)) {
       try {
-        fs.removeSync(ENV_DIR);
+        fs.removeSync(constants.ENV_DIR);
       } catch (err) {
         console.error(err);
       }
@@ -194,15 +131,15 @@ export default class PlatformIOCoreStage extends BaseStage {
 
   isCondaInstalled() {
     return new Promise(resolve => {
-      utils.spawnCommand('conda', ['--version'], code => resolve(code === 0));
+      utils.runCommand('conda', ['--version'], code => resolve(code === 0));
     });
   }
 
   createVirtualenvWithConda() {
     return new Promise((resolve, reject) => {
-      utils.spawnCommand(
+      utils.runCommand(
         'conda',
-        ['create', '--yes', '--quiet', 'python=2', '--prefix', ENV_DIR],
+        ['create', '--yes', '--quiet', 'python=2', '--prefix', constants.ENV_DIR],
         (code, stdout, stderr) => {
           if (code === 0) {
             return resolve(stdout);
@@ -216,9 +153,9 @@ export default class PlatformIOCoreStage extends BaseStage {
 
   createVirtualenvWithUser(pythonExecutable) {
     return new Promise((resolve, reject) => {
-      utils.spawnCommand(
+      utils.runCommand(
         'virtualenv',
-        ['-p', pythonExecutable, ENV_DIR],
+        ['-p', pythonExecutable, constants.ENV_DIR],
         (code, stdout, stderr) => {
           if (code === 0) {
             return resolve(stdout);
@@ -234,10 +171,10 @@ export default class PlatformIOCoreStage extends BaseStage {
     return new Promise((resolve, reject) => {
       download(
         PlatformIOCoreStage.vitrualenvUrl,
-        path.join(this.params.cacheDir, 'virtualenv.tar.gz')
+        path.join(getCacheDir(), 'virtualenv.tar.gz')
       ).then(archivePath => {
         const tmpDir = tmp.dirSync({
-          unsafeCleanup: true,
+          unsafeCleanup: true
         });
         extractTarGz(archivePath, tmpDir.name).then(dstDir => {
           const virtualenvScript = fs.listTreeSync(dstDir).find(
@@ -245,9 +182,9 @@ export default class PlatformIOCoreStage extends BaseStage {
           if (!virtualenvScript) {
             return reject('Can not find virtualenv.py script');
           }
-          utils.spawnCommand(
+          utils.runCommand(
             pythonExecutable,
-            [virtualenvScript, ENV_DIR],
+            [virtualenvScript, constants.ENV_DIR],
             (code, stdout, stderr) => {
               if (code === 0) {
                 return resolve(stdout);
@@ -261,17 +198,18 @@ export default class PlatformIOCoreStage extends BaseStage {
     });
   }
 
-  async installPIOCore(pythonExecutable) {
-    const cmd = pythonExecutable;
-    const args = ['-m', 'pip', 'install', '--no-cache-dir', '-U'];
+  async installPIOCore() {
+    let cmd = 'pip';
+    const args = ['install', '--no-cache-dir', '-U'];
     if (this.params.useDevelopmentPIOCore) {
+      cmd = path.join(constants.ENV_BIN_DIR, 'pip');
       args.push('https://github.com/platformio/platformio/archive/develop.zip');
     } else {
       args.push('platformio');
     }
     try {
       await new Promise((resolve, reject) => {
-        utils.spawnCommand(cmd, args, (code, stdout, stderr) => {
+        utils.runCommand(cmd, args, (code, stdout, stderr) => {
           if (code === 0) {
             resolve(stdout);
           } else {
@@ -283,7 +221,7 @@ export default class PlatformIOCoreStage extends BaseStage {
       console.error(err);
       // Old versions of PIP don't support `--no-cache-dir` option
       return new Promise((resolve, reject) => {
-        utils.spawnCommand(
+        utils.runCommand(
           cmd,
           args.filter(arg => arg !== '--no-cache-dir'),
           (code, stdout, stderr) => {
@@ -303,7 +241,7 @@ export default class PlatformIOCoreStage extends BaseStage {
     if (!state || !state.hasOwnProperty('pioCoreChecked') || !state.hasOwnProperty('lastIDEVersion')) {
       state = {
         pioCoreChecked: 0,
-        lastIDEVersion: null,
+        lastIDEVersion: null
       };
     }
     return state;
@@ -312,11 +250,14 @@ export default class PlatformIOCoreStage extends BaseStage {
   async autoUpgradePIOCore() {
     const newState = this.initState();
     const now = new Date().getTime();
-    if ((now - PlatformIOCoreStage.UPGRADE_PIOCORE_TIMEOUT) > parseInt(newState.pioCoreChecked)) {
+    if (
+      newState.lastIDEVersion !== utils.getIDEVersion()
+      || ((now - PlatformIOCoreStage.UPGRADE_PIOCORE_TIMEOUT) > parseInt(newState.pioCoreChecked))
+    ) {
       newState.pioCoreChecked = now;
       // PIO Core
       await new Promise(resolve => {
-        utils.runPioCommand(
+        utils.runPIOCommand(
           ['upgrade'],
           (code, stdout, stderr) => {
             if (code !== 0) {
@@ -325,13 +266,13 @@ export default class PlatformIOCoreStage extends BaseStage {
             resolve(true);
           },
           {
-            busyTitle: 'Upgrading PIO Core',
+            busyTitle: 'Upgrading PIO Core'
           }
         );
       });
       // PIO Core Packages
       await new Promise(resolve => {
-        utils.runPioCommand(
+        utils.runPIOCommand(
           ['update', '--core-packages'],
           (code, stdout, stderr) => {
             if (code !== 0) {
@@ -340,12 +281,71 @@ export default class PlatformIOCoreStage extends BaseStage {
             resolve(true);
           },
           {
-            busyTitle: 'Updating PIO Core packages',
+            busyTitle: 'Updating PIO Core packages'
           }
         );
       });
     }
+    newState.lastIDEVersion = utils.getIDEVersion();
     this.state = newState;
+  }
+
+
+  async check() {
+    if (this.params.useBuiltinPIOCore) {
+      if (!fs.isDirectorySync(constants.ENV_BIN_DIR)) {
+        throw new Error('Virtual environment is not created');
+      }
+      try {
+        await this.autoUpgradePIOCore();
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    const coreVersion = await utils.getCoreVersion();
+    if (semver.lt(PEPverToSemver(coreVersion), constants.PIO_CORE_MIN_VERSION)) {
+      this.params.setUseBuiltinPIOCore(true);
+      throw new Error(`Incompatible PIO Core ${coreVersion}`);
+    }
+
+    this.status = BaseStage.STATUS_SUCCESSED;
+    console.error(`Found PIO Core ${coreVersion}`);
+    return true;
+  }
+
+  async install() {
+    if (this.status === BaseStage.STATUS_SUCCESSED) {
+      return true;
+    }
+    if (!this.params.useBuiltinPIOCore) {
+      this.status = BaseStage.STATUS_SUCCESSED;
+      return true;
+    }
+    this.status = BaseStage.STATUS_INSTALLING;
+
+    this.cleanVirtualEnvDir();
+
+    if (await this.isCondaInstalled()) {
+      await this.createVirtualenvWithConda();
+    } else {
+      const pythonExecutable = await this.whereIsPython();
+      if (!pythonExecutable) {
+        this.status = BaseStage.STATUS_FAILED;
+        throw new Error('Can not find Python Interpreter');
+      }
+      try {
+        await this.createVirtualenvWithUser(pythonExecutable);
+      } catch (err) {
+        console.error(err);
+        await this.createVirtualenvWithDownload(pythonExecutable);
+      }
+    }
+
+    await this.installPIOCore();
+
+    this.status = BaseStage.STATUS_SUCCESSED;
+    return true;
   }
 
 }

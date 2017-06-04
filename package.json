@@ -29,7 +29,7 @@
     "Other"
   ],
   "icon": "images/icon.svg",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "author": {
     "name": "PlatformIO.Org"
   },
@@ -39,17 +39,18 @@
     "vscode": "^1.9.0"
   },
   "bugs": {
-      "url": "https://github.com/platformio/platformio-vscode-ide/issues"
+    "url": "https://github.com/platformio/platformio-vscode-ide/issues"
   },
   "homepage": "http://platformio.org",
   "repository": {
-      "type": "git",
-      "url": "https://github.com/platformio/platformio-vscode-ide.git"
+    "type": "git",
+    "url": "https://github.com/platformio/platformio-vscode-ide.git"
   },
   "activationEvents": [
-    "*"
+    "workspaceContains:platformio.ini",
+    "onCommand:platformio-ide.initProject"
   ],
-  "main": "./lib/index",
+  "main": "./lib/main",
   "contributes": {
     "commands": [
       {
@@ -74,7 +75,7 @@
       },
       {
         "command": "platformio-ide.initProject",
-        "title": "Initialize or update project",
+        "title": "Initialize or Update Project",
         "category": "PlatformIO"
       },
       {
@@ -91,6 +92,28 @@
         "command": "platformio-ide.libraryManager",
         "title": "Library Manager",
         "category": "PlatformIO"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "platformio-ide.initProject",
+        "key": "ctrl+alt+i"
+      },
+      {
+        "command": "platformio-ide.build",
+        "key": "ctrl+alt+b"
+      },
+      {
+        "command": "platformio-ide.upload",
+        "key": "ctrl+alt+u"
+      },
+      {
+        "command": "platformio-ide.serialMonitor",
+        "key": "ctrl+alt+s"
+      },
+      {
+        "command": "workbench.action.tasks.runTask",
+        "key": "ctrl+alt+t"
       }
     ],
     "configuration": {
@@ -145,7 +168,7 @@
     "open": "^0.0.5",
     "request": "^2.81.0",
     "semver": "^5.3.0",
-    "tar": "^2.2.1",
+    "tar": "^3.1.3",
     "tmp": "^0.0.31"
   },
   "extensionDependencies": [

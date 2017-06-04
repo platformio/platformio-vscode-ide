@@ -1,21 +1,21 @@
 /**
- * Copyright 2017-present PlatformIO <contact@platformio.org>
+ * Copyright (c) 2017-present PlatformIO <contact@platformio.org>
  * All rights reserved.
  *
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
 
-import { runPioCommand } from '../utils';
+import { runPIOCommand } from '../utils';
 import vscode from 'vscode';
 
 
 export default async function initCommand() {
   if (!vscode.workspace.rootPath) {
-    vscode.window.showWarningMessage(
-      'PlatformIO project could not be initialized. Please open a folder '
-      + 'first before performing initialization.'
+    vscode.window.showErrorMessage(
+      'Please open a folder (File > Open...) where PlatformIO should initialize a project, then repeat this command again.'
     );
+    return;
   }
   await vscode.window.withProgress({
     title: 'PlatformIO Project initialization...',
@@ -27,7 +27,7 @@ export default async function initCommand() {
 
     try {
       const data = JSON.parse(await new Promise((resolve, reject) => {
-        runPioCommand(['boards', '--json-output'], (code, stdout, stderr) => {
+        runPIOCommand(['boards', '--json-output'], (code, stdout, stderr) => {
           if (code !== 0) {
             reject(stderr);
           } else {
@@ -58,7 +58,7 @@ export default async function initCommand() {
         });
 
         await new Promise((resolve, reject) => {
-          runPioCommand(['init', '--ide', 'vscode', '--board', selectedBoard.boardId, '--project-dir', vscode.workspace.rootPath], (code, stdout, stderr) => {
+          runPIOCommand(['init', '--ide', 'vscode', '--board', selectedBoard.boardId, '--project-dir', vscode.workspace.rootPath], (code, stdout, stderr) => {
             if (code !== 0) {
               reject(stderr);
             } else {

@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-present PlatformIO <contact@platformio.org>
+ * Copyright (c) 2017-present PlatformIO <contact@platformio.org>
  * All rights reserved.
  *
  * This source code is licensed under the license found in the LICENSE file in
@@ -7,7 +7,8 @@
  */
 
 import { AUTO_REBUILD_DELAY } from '../constants';
-import { getCurrentPythonExecutable, isPioProject, runPioCommand, spawnCommand } from '../utils';
+import { getPythonExecutable } from '../installer/helpers';
+import { isPIOProject, runCommand, runPIOCommand } from '../utils';
 
 import path from 'path';
 import vscode from 'vscode';
@@ -81,7 +82,7 @@ export default class ProjectIndexer {
       }));
 
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
 
@@ -155,7 +156,7 @@ export default class ProjectIndexer {
         message: 'Verifying if the current directory is a PlatformIO project',
       });
       try {
-        if (!await isPioProject(this.projectPath)) {
+        if (!await isPIOProject(this.projectPath)) {
           return;
         }
 
@@ -163,7 +164,7 @@ export default class ProjectIndexer {
           message: 'Performing index rebuild',
         });
         await new Promise((resolve, reject) => {
-          runPioCommand(['init', '--ide', 'vscode', '--project-dir', this.projectPath], (code, stdout, stderr) => {
+          runPIOCommand(['init', '--ide', 'vscode', '--project-dir', this.projectPath], (code, stdout, stderr) => {
             if (code === 0) {
               resolve();
             } else {
@@ -183,10 +184,10 @@ export default class ProjectIndexer {
   }
 
   async fetchWatchDirs() {
-    if (!await isPioProject(this.projectPath)) {
+    if (!await isPIOProject(this.projectPath)) {
       return [];
     }
-    const pythonExecutable = await getCurrentPythonExecutable();
+    const pythonExecutable = await getPythonExecutable();
     const script = [
       'from os.path import join; from platformio import VERSION,util;',
       'print ":".join([',
@@ -196,7 +197,7 @@ export default class ProjectIndexer {
       ']) if VERSION[0] == 3 else util.get_lib_dir()',
     ].map(s => s.trim()).join(' ');
     return new Promise((resolve, reject) => {
-      spawnCommand(
+      runCommand(
         pythonExecutable,
         ['-c', script],
         (code, stdout, stderr) => {
