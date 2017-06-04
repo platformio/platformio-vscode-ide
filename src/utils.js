@@ -87,16 +87,3 @@ export function getCoreVersion() {
 export function isPIOProject(dir) {
   return fs.isFileSync(path.join(dir, 'platformio.ini'));
 }
-
-export function makeCommandWithArgs(command, ...args) {
-  return () => vscode.commands.executeCommand(command, ...args);
-}
-
-export function makeStatusBarItem(text, tooltip, command, priority) {
-  const item = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, priority);
-  item.text = text;
-  item.tooltip = tooltip;
-  item.command = command;
-  item.show();
-  return item;
-}
