@@ -1,6 +1,6 @@
 # Release Notes
 
-## 0.3.0 (2017-06-04)
+## 0.3.0 (2017-06-05)
 
 * Added default keybindings for the popular commands (Build, Upload, Open Serial Monitor, Initialize New Project, Run Other Tasks)
 * Automatically close Serial Monitor before uploading
