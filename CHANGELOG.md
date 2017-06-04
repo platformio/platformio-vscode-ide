@@ -1,8 +1,8 @@
 # Release Notes
 
-## 0.3.0 (2017-06-04)
+## 0.3.0 (2017-06-05)
 
-* Added default keybindings for the popular commands (Build, Upload, Open Serial Monitor, Initialize New Project)
+* Added default keybindings for the popular commands (Build, Upload, Open Serial Monitor, Initialize New Project, Run Other Tasks)
 * Automatically close Serial Monitor before uploading
 * Synchronize Installer with the latest version from PIO IDE for Atom
 * Don't show PlatformIO Toolbar in non-PlatformIO projects (issue [#6](https://github.com/platformio/platformio-vscode-ide/issues/6))
