@@ -36,7 +36,7 @@ TI MSP430 & Tiva, Teensy, Arduino, ARM mbed, libOpenCM3, ESP8266, etc.*
 
 * [Installation](http://docs.platformio.org/page/ide/vscode.html#installation)
 * [Quick Start](http://docs.platformio.org/page/ide/vscode.html#quick-start)
-* [User Guide](http://docs.platformio.org/page/ide/vscode.html#user-quide)
+* [User Guide](http://docs.platformio.org/page/ide/vscode.html#user-guide)
 
 Please follow to the official documentation [PlatformIO IDE for VSCode](http://docs.platformio.org/page/ide/vscode.html).
 
