@@ -167,34 +167,38 @@ export default class PlatformIOCoreStage extends BaseStage {
     });
   }
 
-  createVirtualenvWithDownload(pythonExecutable) {
+  async createVirtualenvWithDownload(pythonExecutable) {
+    const archivePath = await download(
+      PlatformIOCoreStage.vitrualenvUrl,
+      path.join(getCacheDir(), 'virtualenv.tar.gz')
+    );
+    const tmpItem = tmp.dirSync({
+      dir: getCacheDir(),
+      unsafeCleanup: true
+    });
+    const dstDir = await extractTarGz(archivePath, tmpItem.name);
+    const virtualenvScript = fs.listTreeSync(dstDir).find(
+      item => path.basename(item) === 'virtualenv.py');
+    if (!virtualenvScript) {
+      throw new Error('Can not find virtualenv.py script');
+    }
     return new Promise((resolve, reject) => {
-      download(
-        PlatformIOCoreStage.vitrualenvUrl,
-        path.join(getCacheDir(), 'virtualenv.tar.gz')
-      ).then(archivePath => {
-        const tmpDir = tmp.dirSync({
-          unsafeCleanup: true
-        });
-        extractTarGz(archivePath, tmpDir.name).then(dstDir => {
-          const virtualenvScript = fs.listTreeSync(dstDir).find(
-            item => path.basename(item) === 'virtualenv.py');
-          if (!virtualenvScript) {
-            return reject('Can not find virtualenv.py script');
+      utils.runCommand(
+        pythonExecutable,
+        [virtualenvScript, constants.ENV_DIR],
+        (code, stdout, stderr) => {
+          try {
+            fs.removeSync(dstDir);
+          } catch (err) {
+            console.error(err);
           }
-          utils.runCommand(
-            pythonExecutable,
-            [virtualenvScript, constants.ENV_DIR],
-            (code, stdout, stderr) => {
-              if (code === 0) {
-                return resolve(stdout);
-              } else {
-                return reject(`Virtualenv Download: ${stderr}`);
-              }
-            }
-          );
-        });
-      }).catch(err => reject(`Virtualenv Download: ${err}`));
+          if (code === 0) {
+            return resolve(stdout);
+          } else {
+            return reject(`Virtualenv Create: ${stderr}`);
+          }
+        }
+      );
     });
   }
 
