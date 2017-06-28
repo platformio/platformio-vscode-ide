@@ -28,7 +28,7 @@
     "Debuggers",
     "Other"
   ],
-  "icon": "images/icon.svg",
+  "icon": "images/icon.png",
   "version": "0.3.1",
   "author": {
     "name": "PlatformIO.Org"
