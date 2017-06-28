@@ -8,6 +8,7 @@
 
 import * as constants from './constants';
 
+import path from 'path';
 import vscode from 'vscode';
 
 
@@ -21,9 +22,30 @@ export default class PIOTerminal {
   new() {
     const commands = [];
     if (constants.IS_WINDOWS) {
-      commands.push('set PATH=' + process.env.PATH);
+      let tmpPaths = [];
+      let pathIsSplit = false;
+      for (const p of process.env.PATH.split(path.delimiter)) {
+        if (!p) {
+          continue;
+        }
+        // Workaround for https://support.microsoft.com/en-us/help/830473/command-prompt-cmd.-exe-command-line-string-limitation
+        if ((p.length + tmpPaths.join(path.delimiter).length) > 8000) {
+          if (pathIsSplit) {
+            tmpPaths.unshift('%PATH%');
+          }
+          commands.push('set PATH=' + tmpPaths.join(path.delimiter));
+          tmpPaths = [];
+          pathIsSplit = true;
+        }
+        tmpPaths.push(p);
+      }
+      // leftover PATHs
+      if (pathIsSplit) {
+        tmpPaths.unshift('%PATH%');
+      }
+      commands.push('set PATH=' + tmpPaths.join(path.delimiter));
     } else if (process.env.SHELL && process.env.SHELL.includes('fish')) {
-      commands.push('set -gx PATH ' + process.env.PATH.replace(/\:/g, ' '));
+      commands.push('set -gx PATH ' + process.env.PATH.replace(/:/g, ' '));
     } else {
       commands.push('export PATH=' + process.env.PATH);
     }
