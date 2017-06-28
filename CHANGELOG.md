@@ -1,5 +1,11 @@
 # Release Notes
 
+## 0.3.1 (2017-06-28)
+
+* Improved PIO IDE Installer (issue with `virtualenv` and OS temporary directory)
+* Added workaround for [Windows command-line string limitation](https://support.microsoft.com/en-us/help/830473/command-prompt-cmd.-exe-command-line-string-limitation)
+  (issue [#15](https://github.com/platformio/platformio-vscode-ide/issues/15))
+
 ## 0.3.0 (2017-06-05)
 
 * Added default keybindings for the popular commands (Build, Upload, Open Serial Monitor, Initialize New Project, Run Other Tasks)

@@ -31,9 +31,7 @@ export function updateOSEnviron() {
 
   const config = vscode.workspace.getConfiguration('platformio-ide');
   if (config.get('useBuiltinPIOCore')) { // Insert bin directory into PATH
-    if (!process.env.PATH.includes(constants.ENV_BIN_DIR)) {
-      process.env.PATH = constants.ENV_BIN_DIR + path.delimiter + process.env.PATH;
-    }
+    process.env.PATH = constants.ENV_BIN_DIR + path.delimiter + process.env.PATH;
   } else { // Remove bin directory from PATH
     process.env.PATH = process.env.PATH.replace(constants.ENV_BIN_DIR + path.delimiter, '');
     process.env.PATH = process.env.PATH.replace(path.delimiter + constants.ENV_BIN_DIR, '');
