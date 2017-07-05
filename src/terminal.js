@@ -16,7 +16,6 @@ export default class PIOTerminal {
 
   constructor() {
     this._instance = null;
-    this._lastCommand = null;
   }
 
   new() {
@@ -53,12 +52,10 @@ export default class PIOTerminal {
 
     this._instance = vscode.window.createTerminal('PlatformIO', constants.IS_WINDOWS ? 'cmd.exe' : null);
     commands.forEach(cmd => this._instance.sendText(cmd));
-    this._lastCommand = null;
     return this._instance;
   }
 
   sendText(text) {
-    this._lastCommand = text;
     if (!this._instance) {
       this.new();
     }
@@ -66,17 +63,10 @@ export default class PIOTerminal {
     this._instance.show();
   }
 
-  closeSerialMonitor() {
-    if (this._lastCommand && this._lastCommand.includes('device monitor')) {
-      this.dispose();
-    }
-  }
-
   dispose() {
     if (this._instance) {
       this._instance.dispose();
     }
-    this._lastCommand = null;
     this._instance = null;
   }
 }

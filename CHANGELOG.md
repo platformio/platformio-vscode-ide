@@ -1,5 +1,10 @@
 # Release Notes
 
+## 0.4.0 (2017-07-05)
+
+* New `platformio-ide.forceUploadAndMonitor` configuration option which allows to force "Upload and Monitor" task for `platformio-ide.upload` command
+* Automatically terminate previous PlatformIO Task before a new (fixes issue with uploading when Serial Monitor is run)
+
 ## 0.3.1 (2017-06-28)
 
 * Improved PIO IDE Installer (issue with `virtualenv` and OS temporary directory)

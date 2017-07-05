@@ -28,8 +28,8 @@
     "Debuggers",
     "Other"
   ],
-  "icon": "images/icon.svg",
-  "version": "0.3.1",
+  "icon": "images/icon.png",
+  "version": "0.4.0",
   "author": {
     "name": "PlatformIO.Org"
   },
@@ -139,6 +139,11 @@
           "type": ["string", "null"],
           "default": null,
           "description": "Custom PATH for `platformio` command. Paste here the result of `echo $PATH` (Unix) / `echo %PATH%` (Windows) command by typing into your system terminal if you prefer to use custom version of PlatformIO Core"
+        },
+        "platformio-ide.forceUploadAndMonitor": {
+          "type": "boolean",
+          "default": false,
+          "description": "Force 'Upload and Monitor' task for `platformio-ide.upload` command"
         }
       }
     }
