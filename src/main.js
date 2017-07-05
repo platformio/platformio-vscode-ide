@@ -18,6 +18,7 @@ class PlatformIOVSCodeExtension {
 
   constructor() {
     this._context = null;
+    this._inUploadTask = false;
     this.pioTerm = new PIOTerminal();
   }
 
@@ -90,18 +91,31 @@ class PlatformIOVSCodeExtension {
     ));
     this._context.subscriptions.push(vscode.commands.registerCommand(
       'platformio-ide.build',
-      () => vscode.commands.executeCommand('workbench.action.tasks.runTask', 'PlatformIO: Build')
+      async () => {
+        await this.terminateUploadTask()
+        vscode.commands.executeCommand('workbench.action.tasks.runTask', 'PlatformIO: Build');
+      }
     ));
     this._context.subscriptions.push(vscode.commands.registerCommand(
       'platformio-ide.upload',
-      () => {
-        this.pioTerm.closeSerialMonitor();
-        vscode.commands.executeCommand('workbench.action.tasks.runTask', 'PlatformIO: Upload');
+      async () => {
+        await this.terminateUploadTask()
+
+        let task = "PlatformIO: Upload";
+        const config = vscode.workspace.getConfiguration('platformio-ide');
+        if(config.get("uploadAndMonitor")) {
+          task = "PlatformIO: Upload and Monitor";
+          this._inUploadTask = true;
+        }
+        vscode.commands.executeCommand('workbench.action.tasks.runTask', task);
       }
     ));
     this._context.subscriptions.push(vscode.commands.registerCommand(
       'platformio-ide.clean',
-      () => vscode.commands.executeCommand('workbench.action.tasks.runTask', 'PlatformIO: Clean')
+      async () => {
+        await this.terminateUploadTask()
+        vscode.commands.executeCommand('workbench.action.tasks.runTask', 'PlatformIO: Clean');
+      }
     ));
     this._context.subscriptions.push(vscode.commands.registerCommand(
       'platformio-ide.serialMonitor',
@@ -115,6 +129,20 @@ class PlatformIOVSCodeExtension {
       'platformio-ide.newTerminal',
       () => this.pioTerm.new().show()
     ));
+  }
+
+  async terminateUploadTask() {
+    if(!this._inUploadTask) {
+      return;
+    }
+
+    this._inUploadTask = false;
+    try {
+      await vscode.commands.executeCommand("workbench.action.tasks.terminate");
+    } catch(err) {
+      console.error(err);
+    }
+    return new Promise(resolve => setTimeout(() => resolve(), 200));
   }
 
   initProjectIndexer() {
