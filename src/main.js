@@ -18,7 +18,6 @@ class PlatformIOVSCodeExtension {
 
   constructor() {
     this._context = null;
-    this._inUploadTask = false;
     this.pioTerm = new PIOTerminal();
   }
 
@@ -63,7 +62,7 @@ class PlatformIOVSCodeExtension {
         outputChannel.show();
 
         outputChannel.appendLine('Installing PlatformIO Core...');
-        outputChannel.appendLine("Please don't close this window and don't "
+        outputChannel.appendLine('Please don\'t close this window and don\'t '
           + 'open other folders until this process is completed.');
 
         try {
@@ -92,20 +91,19 @@ class PlatformIOVSCodeExtension {
     this._context.subscriptions.push(vscode.commands.registerCommand(
       'platformio-ide.build',
       async () => {
-        await this.terminateUploadTask()
+        await this.terminateUploadTask();
         vscode.commands.executeCommand('workbench.action.tasks.runTask', 'PlatformIO: Build');
       }
     ));
     this._context.subscriptions.push(vscode.commands.registerCommand(
       'platformio-ide.upload',
       async () => {
-        await this.terminateUploadTask()
+        await this.terminateUploadTask();
 
-        let task = "PlatformIO: Upload";
+        let task = 'PlatformIO: Upload';
         const config = vscode.workspace.getConfiguration('platformio-ide');
-        if(config.get("uploadAndMonitor")) {
-          task = "PlatformIO: Upload and Monitor";
-          this._inUploadTask = true;
+        if(config.get('forceUploadAndMonitor')) {
+          task = 'PlatformIO: Upload and Monitor';
         }
         vscode.commands.executeCommand('workbench.action.tasks.runTask', task);
       }
@@ -113,13 +111,16 @@ class PlatformIOVSCodeExtension {
     this._context.subscriptions.push(vscode.commands.registerCommand(
       'platformio-ide.clean',
       async () => {
-        await this.terminateUploadTask()
+        await this.terminateUploadTask();
         vscode.commands.executeCommand('workbench.action.tasks.runTask', 'PlatformIO: Clean');
       }
     ));
     this._context.subscriptions.push(vscode.commands.registerCommand(
       'platformio-ide.serialMonitor',
-      () => this.pioTerm.sendText('pio device monitor')
+      async () => {
+        await this.terminateUploadTask();
+        vscode.commands.executeCommand('workbench.action.tasks.runTask', 'PlatformIO: Monitor');
+      }
     ));
     this._context.subscriptions.push(vscode.commands.registerCommand(
       'platformio-ide.libraryManager',
@@ -132,17 +133,12 @@ class PlatformIOVSCodeExtension {
   }
 
   async terminateUploadTask() {
-    if(!this._inUploadTask) {
-      return;
-    }
-
-    this._inUploadTask = false;
     try {
-      await vscode.commands.executeCommand("workbench.action.tasks.terminate");
+      await vscode.commands.executeCommand('workbench.action.tasks.terminate');
     } catch(err) {
       console.error(err);
     }
-    return new Promise(resolve => setTimeout(() => resolve(), 200));
+    return new Promise(resolve => setTimeout(() => resolve(), 500));
   }
 
   initProjectIndexer() {

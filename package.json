@@ -140,10 +140,10 @@
           "default": null,
           "description": "Custom PATH for `platformio` command. Paste here the result of `echo $PATH` (Unix) / `echo %PATH%` (Windows) command by typing into your system terminal if you prefer to use custom version of PlatformIO Core"
         },
-        "platformio-ide.uploadAndMonitor": {
+        "platformio-ide.forceUploadAndMonitor": {
           "type": "boolean",
-          "default": true,
-          "description": "Use Upload and Monitor task instead of just uploading the file."
+          "default": false,
+          "description": "Force 'Upload and Monitor' task for `platformio-ide.upload` command"
         }
       }
     }
