@@ -34,7 +34,7 @@ TI MSP430 & Tiva, Teensy, Arduino, ARM mbed, libOpenCM3, ESP8266, etc.*
 
 **!!! PLEASE READ "QUICK START" AND "USER GUIDE" BEFORE !!!**
 
-* [Installation](http://docs.platformio.org/page/ide/vscode.html#installation)
+* [Installation](http://docs.platformio.org/page/ide/vscode.html)
 * [Quick Start](http://docs.platformio.org/page/ide/vscode.html#quick-start)
 * [User Guide](http://docs.platformio.org/page/ide/vscode.html#user-guide)
 
