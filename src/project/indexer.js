@@ -22,20 +22,19 @@ export default class ProjectIndexer {
     this.subscriptions = [];
     this.libDirSubscriptions = new Map();
 
-    this.interval = null;
-    this.lastRebuildRequestedAt = null;
-
-    this.isActive = false;
+    this._isActive = false;
+    this._rebuildTimeout = null;
+    this._updateLibDirWatchersTimeout = null;
   }
 
   async activate() {
-    this.isActive = true;
+    this._isActive = true;
     this.subscriptions = [];
     await this.setup();
   }
 
   deactivate() {
-    this.isActive = false;
+    this._isActive = false;
     for (const subscription of this.subscriptions) {
       subscription.dispose();
     }
@@ -50,9 +49,9 @@ export default class ProjectIndexer {
     const config = vscode.workspace.getConfiguration('platformio-ide');
     const autoRebuildAutocompleteIndex = config.get('autoRebuildAutocompleteIndex');
 
-    if (this.isActive && !autoRebuildAutocompleteIndex) {
+    if (this._isActive && !autoRebuildAutocompleteIndex) {
       this.deactivate();
-    } else if (!this.isActive && autoRebuildAutocompleteIndex) {
+    } else if (!this._isActive && autoRebuildAutocompleteIndex) {
       await this.activate();
     }
   }
@@ -75,7 +74,7 @@ export default class ProjectIndexer {
       }));
       this.subscriptions.push(watcher.onDidChange(() => {
         this.requestIndexRebuild();
-        this.updateLibDirsWatchers();
+        this.requestUpdateLibDirWatchers();
       }));
       this.subscriptions.push(watcher.onDidDelete(() => {
         this.updateLibDirsWatchers();
@@ -84,6 +83,13 @@ export default class ProjectIndexer {
     } catch (err) {
       console.error(err);
     }
+  }
+
+  requestUpdateLibDirWatchers() {
+    if (this._updateLibDirWatchersTimeout) {
+      clearTimeout(this._updateLibDirWatchersTimeout);
+    }
+    this._updateLibDirWatchersTimeout = setTimeout(this.updateLibDirsWatchers.bind(this), AUTO_REBUILD_DELAY);
   }
 
   async updateLibDirsWatchers() {
@@ -127,27 +133,16 @@ export default class ProjectIndexer {
   }
 
   requestIndexRebuild() {
-    this.lastRebuildRequestedAt = new Date();
-    if (this.interval === null) {
-      this.interval = setInterval(this.maybeRebuild.bind(this), AUTO_REBUILD_DELAY);
+    if (this._rebuildTimeout) {
+      clearTimeout(this._rebuildTimeout);
     }
-  }
-
-  async maybeRebuild() {
-    const now = new Date();
-    if (now.getTime() - this.lastRebuildRequestedAt.getTime() > AUTO_REBUILD_DELAY) {
-      if (this.interval !== null) {
-        clearInterval(this.interval);
-      }
-      this.interval = null;
-
-      if (this.isActive) {
-        await this.doRebuild();
-      }
-    }
+    this._rebuildTimeout = setTimeout(this.doRebuild.bind(this), AUTO_REBUILD_DELAY);
   }
 
   doRebuild({ verbose = false } = {}) {
+    if (!this._isActive) {
+      return;
+    }
     return vscode.window.withProgress({
       location: vscode.ProgressLocation.Window,
       title: 'PlatformIO C/C++ Index Rebuild',
