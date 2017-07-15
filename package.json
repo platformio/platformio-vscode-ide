@@ -189,7 +189,7 @@
     "build": "babel src --out-dir lib && echo 'Done!'",
     "postinstall": "node ./node_modules/vscode/bin/install",
     "test": "node ./node_modules/vscode/bin/test",
-    "vscode:prepublish": "npm run build"
+    "vscode:package": "vsce package"
   },
   "devDependencies": {
     "@types/node": "^8.0.4",

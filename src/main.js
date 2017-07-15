@@ -19,6 +19,7 @@ class PlatformIOVSCodeExtension {
 
   constructor() {
     this._context = null;
+    this._isMonitorRun = false;
     this.pioTerm = new PIOTerminal();
   }
 
@@ -105,6 +106,7 @@ class PlatformIOVSCodeExtension {
         const config = vscode.workspace.getConfiguration('platformio-ide');
         if(config.get('forceUploadAndMonitor')) {
           task = 'PlatformIO: Upload and Monitor';
+          this._isMonitorRun = true;
         }
         vscode.commands.executeCommand('workbench.action.tasks.runTask', task);
       }
@@ -120,6 +122,7 @@ class PlatformIOVSCodeExtension {
       'platformio-ide.serialMonitor',
       async () => {
         await this.terminateMonitorTask();
+        this._isMonitorRun = true;
         vscode.commands.executeCommand('workbench.action.tasks.runTask', 'PlatformIO: Monitor');
       }
     ));
@@ -134,11 +137,15 @@ class PlatformIOVSCodeExtension {
   }
 
   async terminateMonitorTask() {
+    if (!this._isMonitorRun) {
+      return;
+    }
     try {
       await vscode.commands.executeCommand('workbench.action.tasks.terminate');
     } catch(err) {
       console.error(err);
     }
+    this._isMonitorRun = false;
     return new Promise(resolve => setTimeout(() => resolve(), 500));
   }
 
