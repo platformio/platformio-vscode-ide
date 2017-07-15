@@ -31,8 +31,16 @@ export default class PIOTasksProvider {
       args: ['run', '--target', 'upload']
     },
     {
+      name: 'Upload and Monitor',
+      args: ['run', '--target', 'upload', '--target', 'monitor']
+    },
+    {
       name: 'Upload using Programmer',
       args: ['run', '--target', 'program']
+    },
+    {
+      name: 'Monitor',
+      args: ['run', '--target', 'monitor']
     },
     {
       name: 'Upload SPIFFS image',
