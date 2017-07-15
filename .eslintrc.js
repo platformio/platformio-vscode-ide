@@ -9,36 +9,46 @@ module.exports = {
   'parser': 'babel-eslint',
   'parserOptions': {
     'ecmaVersion': 6,
-    'sourceType': 'module',
+    'sourceType': 'module'
   },
-  'plugins': [
-    'sort-imports-es6-autofix',
-  ],
   'rules': {
-    'brace-style': ['error', '1tbs'],
-    'curly': ['warn', 'all'],
-    'indent': [
-      'warn',
-      2,
-      {
-        'SwitchCase': 1,
-      },
+    'comma-dangle': [
+      'error',
+      'only-multiline'
     ],
-    'linebreak-style': ['error', 'unix'],
+    'curly': [
+      'warn',
+      'all'
+    ],
+    'linebreak-style': [
+      'error',
+      'unix'
+    ],
     'no-console': [
       'error',
-      {'allow': ['warn', 'error', 'info']},
+      { 'allow': ['warn', 'error', 'info'] },
     ],
-    'no-var': 'error',
-    'object-curly-spacing': ['warn', 'always'],
     'prefer-const': 'error',
-    'quotes': ['error', 'single', 'avoid-escape'],
-    'semi': ['error', 'always'],
-    'sort-imports-es6-autofix/sort-imports-es6': [2, {
-      'ignoreCase': false,
-      'ignoreMemberSort': false,
-      'memberSyntaxSortOrder': ['none', 'all', 'multiple', 'single'],
-    }],
-    'space-infix-ops': 'warn',
+    'quotes': [
+      'error',
+      'single',
+      'avoid-escape'
+    ],
+    'semi': [
+      'error',
+      'always'
+    ],
+    'sort-imports': [
+      'warn',
+      {
+        'ignoreCase': false,
+        'ignoreMemberSort': false,
+        'memberSyntaxSortOrder': ['none', 'all', 'multiple', 'single']
+      }
+    ],
+    'no-useless-escape': [
+      'off'
+    ],
+    'no-empty': [2, { 'allowEmptyCatch': true }]
   },
 };

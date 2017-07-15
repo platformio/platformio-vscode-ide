@@ -6,10 +6,10 @@
  * the root directory of this source tree.
  */
 
-import { AUTO_REBUILD_DELAY } from '../constants';
-import { getPythonExecutable } from '../installer/helpers';
 import { isPIOProject, runCommand, runPIOCommand } from '../utils';
 
+import { AUTO_REBUILD_DELAY } from '../constants';
+import { getPythonExecutable } from '../installer/helpers';
 import path from 'path';
 import vscode from 'vscode';
 

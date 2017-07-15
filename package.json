@@ -36,7 +36,7 @@
   "publisher": "platformio",
   "license": "Apache-2.0",
   "engines": {
-    "vscode": "^1.9.0"
+    "vscode": "^1.13.0"
   },
   "bugs": {
     "url": "https://github.com/platformio/platformio-vscode-ide/issues"
@@ -116,6 +116,38 @@
         "key": "ctrl+alt+t"
       }
     ],
+    "taskDefinitions": [
+      {
+        "type": "PlatformIO",
+        "required": [
+          "args"
+        ],
+        "properties": {
+          "args": {
+            "type": "array",
+            "description": "Arguments for PlatformIO Core"
+          }
+        }
+      }
+    ],
+    "problemMatchers": [
+      {
+        "name": "platformio",
+        "owner": "cpp",
+        "fileLocation": [
+          "relative",
+          "${workspaceRoot}"
+        ],
+        "pattern": {
+          "regexp": "^([^:\\n]+):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
+          "file": 1,
+          "line": 2,
+          "column": 3,
+          "severity": 4,
+          "message": 5
+        }
+      }
+    ],
     "configuration": {
       "type": "object",
       "title": "PlatformIO IDE configuration",
@@ -136,7 +168,10 @@
           "description": "Automatically rebuild C/C++ Project Index when platformio.ini is changed or when new libraries are installed."
         },
         "platformio-ide.customPATH": {
-          "type": ["string", "null"],
+          "type": [
+            "string",
+            "null"
+          ],
           "default": null,
           "description": "Custom PATH for `platformio` command. Paste here the result of `echo $PATH` (Unix) / `echo %PATH%` (Windows) command by typing into your system terminal if you prefer to use custom version of PlatformIO Core"
         },
@@ -164,13 +199,13 @@
     "babel-preset-env": "^1.5.2",
     "esformatter": "^0.10.0",
     "eslint": "^4.1.1",
-    "eslint-plugin-sort-imports-es6-autofix": "^0.1.1",
     "vsce": "^1.27.0",
     "vscode": "^1.1.1"
   },
   "dependencies": {
     "cross-spawn": "^5.1.0",
     "fs-plus": "^3.0.0",
+    "ini": "^1.3.4",
     "open": "^0.0.5",
     "request": "^2.81.0",
     "semver": "^5.3.0",

@@ -6,11 +6,12 @@
  * the root directory of this source tree.
  */
 
-import { updateOSEnviron } from './maintenance';
 import InstallationManager from './installer/manager';
+import PIOTasksProvider from './tasks';
 import PIOTerminal from './terminal';
 import ProjectIndexer from './project/indexer';
 import initCommand from './commands/init';
+import { updateOSEnviron } from './maintenance';
 import vscode from 'vscode';
 
 
@@ -33,9 +34,9 @@ class PlatformIOVSCodeExtension {
       return;
     }
 
+    this.initTasksProvider();
     this.initStatusBar();
     this.initProjectIndexer();
-
   }
 
   startInstaller() {
@@ -91,14 +92,14 @@ class PlatformIOVSCodeExtension {
     this._context.subscriptions.push(vscode.commands.registerCommand(
       'platformio-ide.build',
       async () => {
-        await this.terminateUploadTask();
+        await this.terminateMonitorTask();
         vscode.commands.executeCommand('workbench.action.tasks.runTask', 'PlatformIO: Build');
       }
     ));
     this._context.subscriptions.push(vscode.commands.registerCommand(
       'platformio-ide.upload',
       async () => {
-        await this.terminateUploadTask();
+        await this.terminateMonitorTask();
 
         let task = 'PlatformIO: Upload';
         const config = vscode.workspace.getConfiguration('platformio-ide');
@@ -111,14 +112,14 @@ class PlatformIOVSCodeExtension {
     this._context.subscriptions.push(vscode.commands.registerCommand(
       'platformio-ide.clean',
       async () => {
-        await this.terminateUploadTask();
+        await this.terminateMonitorTask();
         vscode.commands.executeCommand('workbench.action.tasks.runTask', 'PlatformIO: Clean');
       }
     ));
     this._context.subscriptions.push(vscode.commands.registerCommand(
       'platformio-ide.serialMonitor',
       async () => {
-        await this.terminateUploadTask();
+        await this.terminateMonitorTask();
         vscode.commands.executeCommand('workbench.action.tasks.runTask', 'PlatformIO: Monitor');
       }
     ));
@@ -132,7 +133,7 @@ class PlatformIOVSCodeExtension {
     ));
   }
 
-  async terminateUploadTask() {
+  async terminateMonitorTask() {
     try {
       await vscode.commands.executeCommand('workbench.action.tasks.terminate');
     } catch(err) {
@@ -141,15 +142,8 @@ class PlatformIOVSCodeExtension {
     return new Promise(resolve => setTimeout(() => resolve(), 500));
   }
 
-  initProjectIndexer() {
-    const indexer = new ProjectIndexer(vscode.workspace.rootPath);
-    this._context.subscriptions.push(indexer);
-    this._context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(() => indexer.toggle()));
-    indexer.toggle();
-    this._context.subscriptions.push(vscode.commands.registerCommand(
-      'platformio-ide.rebuildProjectIndex',
-      () => indexer.doRebuild({ verbose: true })
-    ));
+  initTasksProvider() {
+    this._context.subscriptions.push(new PIOTasksProvider(vscode.workspace.rootPath));
   }
 
   initStatusBar() {
@@ -172,6 +166,17 @@ class PlatformIOVSCodeExtension {
       sbItem.show();
       this._context.subscriptions.push(sbItem);
     });
+  }
+
+  initProjectIndexer() {
+    const indexer = new ProjectIndexer(vscode.workspace.rootPath);
+    this._context.subscriptions.push(indexer);
+    this._context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(() => indexer.toggle()));
+    indexer.toggle();
+    this._context.subscriptions.push(vscode.commands.registerCommand(
+      'platformio-ide.rebuildProjectIndex',
+      () => indexer.doRebuild({ verbose: true })
+    ));
   }
 
   deactivate() {

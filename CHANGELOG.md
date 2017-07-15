@@ -1,5 +1,9 @@
 # Release Notes
 
+## 0.5.0 (2017-07-??)
+
+* Dynamic Tasks Provider (custom tasks per project environment)
+
 ## 0.4.0 (2017-07-05)
 
 * New `platformio-ide.forceUploadAndMonitor` configuration option which allows to force "Upload and Monitor" task for `platformio-ide.upload` command
