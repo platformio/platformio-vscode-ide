@@ -1,5 +1,6 @@
 {
   "name": "platformio-ide",
+  "version": "0.5.0-beta.1",
   "preview": true,
   "displayName": "PlatformIO IDE",
   "description": "Official PlatformIO IDE for VSCode: The next generation integrated development environment for IoT. Cross-platform build system and unified debugger. Remote unit testing and firmware updates.",
@@ -29,7 +30,6 @@
     "Other"
   ],
   "icon": "images/icon.png",
-  "version": "0.4.0",
   "author": {
     "name": "PlatformIO.Org"
   },

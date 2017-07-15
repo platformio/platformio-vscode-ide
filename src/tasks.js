@@ -6,7 +6,7 @@
  * the root directory of this source tree.
  */
 
-import fs from 'fs';
+import fs from 'fs-plus';
 import ini from 'ini';
 import path from 'path';
 import vscode from 'vscode';
@@ -58,6 +58,7 @@ export default class PIOTasksProvider {
 
     this._refreshTimeout = null;
 
+    this.removeStaticTasks();
     this.requestRefresh();
   }
 
@@ -66,6 +67,28 @@ export default class PIOTasksProvider {
       subscription.dispose();
     }
     this.subscriptions = [];
+  }
+
+  async removeStaticTasks() {
+    const manifestPath = path.join(this.projectDir, '.vscode', 'tasks.json');
+    if (!fs.isFileSync(manifestPath)) {
+      return;
+    }
+    const content = await new Promise(resolve => {
+      fs.readFile(
+        manifestPath,
+        'utf-8',
+        (err, data) => resolve(err ? '' : data)
+      );
+    });
+    if (!content.includes('PlatformIO: Upload SPIFFS image')) {
+      return;
+    }
+    try {
+      fs.unlink(manifestPath);
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   requestRefresh() {
