@@ -6,6 +6,7 @@
  * the root directory of this source tree.
  */
 
+import { IS_WINDOWS } from './constants';
 import fs from 'fs-plus';
 import ini from 'ini';
 import path from 'path';
@@ -240,7 +241,7 @@ class TaskCreator {
       { type: PIOTasksProvider.title, args: this._args },
       this.name,
       PIOTasksProvider.title,
-      new vscode.ProcessExecution('platformio', this._args, { env: process.env }),
+      new vscode.ProcessExecution(IS_WINDOWS ? 'platformio.exe' : 'platformio', this._args, { env: process.env }),
       '$platformio'
     );
     if (this.isBuild()) {
