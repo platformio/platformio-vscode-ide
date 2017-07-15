@@ -17,8 +17,8 @@ export default class VscodeGlobalStateStorage {
     try {
       const value = this._globalState.get(this._stateKey);
       return value || {};
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      console.error(err);
       return {};
     }
   }

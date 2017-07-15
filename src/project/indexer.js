@@ -16,8 +16,8 @@ import vscode from 'vscode';
 
 export default class ProjectIndexer {
 
-  constructor(projectPath) {
-    this.projectPath = projectPath;
+  constructor(projectDir) {
+    this.projectDir = projectDir;
 
     this.subscriptions = [];
     this.libDirSubscriptions = new Map();
@@ -66,7 +66,7 @@ export default class ProjectIndexer {
   addProjectConfigWatcher() {
     try {
       const watcher = vscode.workspace.createFileSystemWatcher(
-        path.join(this.projectPath, 'platformio.ini')
+        path.join(this.projectDir, 'platformio.ini')
       );
       this.subscriptions.push(watcher);
 
@@ -81,8 +81,8 @@ export default class ProjectIndexer {
         this.updateLibDirsWatchers();
       }));
 
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      console.error(err);
     }
   }
 
@@ -111,8 +111,8 @@ export default class ProjectIndexer {
 
       this.subscriptions.push(watcher);
       this.subscriptions.push(subscription);
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      console.error(err);
     }
   }
 
@@ -156,7 +156,7 @@ export default class ProjectIndexer {
         message: 'Verifying if the current directory is a PlatformIO project',
       });
       try {
-        if (!await isPIOProject(this.projectPath)) {
+        if (!await isPIOProject(this.projectDir)) {
           return;
         }
 
@@ -164,7 +164,7 @@ export default class ProjectIndexer {
           message: 'Performing index rebuild',
         });
         await new Promise((resolve, reject) => {
-          runPIOCommand(['init', '--ide', 'vscode', '--project-dir', this.projectPath], (code, stdout, stderr) => {
+          runPIOCommand(['init', '--ide', 'vscode', '--project-dir', this.projectDir], (code, stdout, stderr) => {
             if (code === 0) {
               resolve();
             } else {
@@ -176,15 +176,15 @@ export default class ProjectIndexer {
         if (verbose) {
           vscode.window.showInformationMessage('PlatformIO: C/C++ Project Index (for Autocomplete, Linter) has been successfully rebuilt.');
         }
-      } catch (error) {
-        console.error(error);
-        vscode.window.showErrorMessage(`PlatformIO: C/C++ Project Index failed: ${error.toString()}`);
+      } catch (err) {
+        console.error(err);
+        vscode.window.showErrorMessage(`PlatformIO: C/C++ Project Index failed: ${err.toString()}`);
       }
     });
   }
 
   async fetchWatchDirs() {
-    if (!await isPIOProject(this.projectPath)) {
+    if (!await isPIOProject(this.projectDir)) {
       return [];
     }
     const pythonExecutable = await getPythonExecutable();
@@ -209,7 +209,7 @@ export default class ProjectIndexer {
         },
         {
           spawnOptions: {
-            cwd: this.projectPath,
+            cwd: this.projectDir,
           },
         }
       );
