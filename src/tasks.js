@@ -40,12 +40,12 @@ export default class PIOTasksProvider {
       args: ['run', '--target', 'program']
     },
     {
-      name: 'Monitor',
-      args: ['run', '--target', 'monitor']
-    },
-    {
       name: 'Upload SPIFFS image',
       args: ['run', '--target', 'uploadfs']
+    },
+    {
+      name: 'Monitor',
+      args: ['device', 'monitor']
     },
     {
       name: 'Test',
