@@ -1,8 +1,10 @@
 # Release Notes
 
-## 0.5.0 (2017-07-??)
+## 0.5.0 (2017-07-17)
 
-* Dynamic Tasks Provider (custom tasks per project environment)
+* Dynamic Tasks (issue [#24](https://github.com/platformio/platformio-vscode-ide/issues/24))
+* Custom tasks per project environments from `platformio.ini` (issue [#16](https://github.com/platformio/platformio-vscode-ide/issues/16))
+* Fixed issue with Windows accounts that contain spaces (issue [#27](https://github.com/platformio/platformio-vscode-ide/issues/27))
 
 ## 0.4.0 (2017-07-05)
 
