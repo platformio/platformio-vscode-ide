@@ -31,8 +31,8 @@ export function runCommand(cmd, args, callback, options = {}) {
       onExit(-1);
     }
     );
-  } catch (error) {
-    errorLines.push(error.toString());
+  } catch (err) {
+    errorLines.push(err.toString());
     onExit(-1);
   }
 

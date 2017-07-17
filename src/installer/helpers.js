@@ -38,9 +38,9 @@ export async function download(source, target, retries = 3) {
       if (fileExistsAndSizeMatches(target, contentLength)) {
         return target;
       }
-    } catch (error) {
-      lastError = error;
-      console.error(error);
+    } catch (err) {
+      lastError = err;
+      console.error(err);
     }
     retries--;
   }

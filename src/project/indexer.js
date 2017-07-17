@@ -6,36 +6,35 @@
  * the root directory of this source tree.
  */
 
-import { AUTO_REBUILD_DELAY } from '../constants';
-import { getPythonExecutable } from '../installer/helpers';
 import { isPIOProject, runCommand, runPIOCommand } from '../utils';
 
+import { AUTO_REBUILD_DELAY } from '../constants';
+import { getPythonExecutable } from '../installer/helpers';
 import path from 'path';
 import vscode from 'vscode';
 
 
 export default class ProjectIndexer {
 
-  constructor(projectPath) {
-    this.projectPath = projectPath;
+  constructor(projectDir) {
+    this.projectDir = projectDir;
 
     this.subscriptions = [];
     this.libDirSubscriptions = new Map();
 
-    this.interval = null;
-    this.lastRebuildRequestedAt = null;
-
-    this.isActive = false;
+    this._isActive = false;
+    this._rebuildTimeout = null;
+    this._updateLibDirWatchersTimeout = null;
   }
 
   async activate() {
-    this.isActive = true;
+    this._isActive = true;
     this.subscriptions = [];
     await this.setup();
   }
 
   deactivate() {
-    this.isActive = false;
+    this._isActive = false;
     for (const subscription of this.subscriptions) {
       subscription.dispose();
     }
@@ -50,9 +49,9 @@ export default class ProjectIndexer {
     const config = vscode.workspace.getConfiguration('platformio-ide');
     const autoRebuildAutocompleteIndex = config.get('autoRebuildAutocompleteIndex');
 
-    if (this.isActive && !autoRebuildAutocompleteIndex) {
+    if (this._isActive && !autoRebuildAutocompleteIndex) {
       this.deactivate();
-    } else if (!this.isActive && autoRebuildAutocompleteIndex) {
+    } else if (!this._isActive && autoRebuildAutocompleteIndex) {
       await this.activate();
     }
   }
@@ -66,7 +65,7 @@ export default class ProjectIndexer {
   addProjectConfigWatcher() {
     try {
       const watcher = vscode.workspace.createFileSystemWatcher(
-        path.join(this.projectPath, 'platformio.ini')
+        path.join(this.projectDir, 'platformio.ini')
       );
       this.subscriptions.push(watcher);
 
@@ -75,15 +74,22 @@ export default class ProjectIndexer {
       }));
       this.subscriptions.push(watcher.onDidChange(() => {
         this.requestIndexRebuild();
-        this.updateLibDirsWatchers();
+        this.requestUpdateLibDirWatchers();
       }));
       this.subscriptions.push(watcher.onDidDelete(() => {
         this.updateLibDirsWatchers();
       }));
 
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      console.error(err);
     }
+  }
+
+  requestUpdateLibDirWatchers() {
+    if (this._updateLibDirWatchersTimeout) {
+      clearTimeout(this._updateLibDirWatchersTimeout);
+    }
+    this._updateLibDirWatchersTimeout = setTimeout(this.updateLibDirsWatchers.bind(this), AUTO_REBUILD_DELAY);
   }
 
   async updateLibDirsWatchers() {
@@ -111,8 +117,8 @@ export default class ProjectIndexer {
 
       this.subscriptions.push(watcher);
       this.subscriptions.push(subscription);
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      console.error(err);
     }
   }
 
@@ -127,27 +133,16 @@ export default class ProjectIndexer {
   }
 
   requestIndexRebuild() {
-    this.lastRebuildRequestedAt = new Date();
-    if (this.interval === null) {
-      this.interval = setInterval(this.maybeRebuild.bind(this), AUTO_REBUILD_DELAY);
+    if (this._rebuildTimeout) {
+      clearTimeout(this._rebuildTimeout);
     }
-  }
-
-  async maybeRebuild() {
-    const now = new Date();
-    if (now.getTime() - this.lastRebuildRequestedAt.getTime() > AUTO_REBUILD_DELAY) {
-      if (this.interval !== null) {
-        clearInterval(this.interval);
-      }
-      this.interval = null;
-
-      if (this.isActive) {
-        await this.doRebuild();
-      }
-    }
+    this._rebuildTimeout = setTimeout(this.doRebuild.bind(this), AUTO_REBUILD_DELAY);
   }
 
   doRebuild({ verbose = false } = {}) {
+    if (!this._isActive) {
+      return;
+    }
     return vscode.window.withProgress({
       location: vscode.ProgressLocation.Window,
       title: 'PlatformIO C/C++ Index Rebuild',
@@ -156,7 +151,7 @@ export default class ProjectIndexer {
         message: 'Verifying if the current directory is a PlatformIO project',
       });
       try {
-        if (!await isPIOProject(this.projectPath)) {
+        if (!await isPIOProject(this.projectDir)) {
           return;
         }
 
@@ -164,7 +159,7 @@ export default class ProjectIndexer {
           message: 'Performing index rebuild',
         });
         await new Promise((resolve, reject) => {
-          runPIOCommand(['init', '--ide', 'vscode', '--project-dir', this.projectPath], (code, stdout, stderr) => {
+          runPIOCommand(['init', '--ide', 'vscode', '--project-dir', this.projectDir], (code, stdout, stderr) => {
             if (code === 0) {
               resolve();
             } else {
@@ -176,15 +171,15 @@ export default class ProjectIndexer {
         if (verbose) {
           vscode.window.showInformationMessage('PlatformIO: C/C++ Project Index (for Autocomplete, Linter) has been successfully rebuilt.');
         }
-      } catch (error) {
-        console.error(error);
-        vscode.window.showErrorMessage(`PlatformIO: C/C++ Project Index failed: ${error.toString()}`);
+      } catch (err) {
+        console.error(err);
+        vscode.window.showErrorMessage(`PlatformIO: C/C++ Project Index failed: ${err.toString()}`);
       }
     });
   }
 
   async fetchWatchDirs() {
-    if (!await isPIOProject(this.projectPath)) {
+    if (!await isPIOProject(this.projectDir)) {
       return [];
     }
     const pythonExecutable = await getPythonExecutable();
@@ -209,7 +204,7 @@ export default class ProjectIndexer {
         },
         {
           spawnOptions: {
-            cwd: this.projectPath,
+            cwd: this.projectDir,
           },
         }
       );

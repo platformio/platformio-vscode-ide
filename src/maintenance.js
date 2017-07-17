@@ -17,7 +17,7 @@ export function updateOSEnviron() {
   // Fix for platformio-atom-ide/issues/112
   process.env.LC_ALL = 'en_US.UTF-8';
   process.env.PLATFORMIO_CALLER = 'vscode';
-  process.env.PLATFORMIO_DISABLE_PROGRESSBAR = 'true';
+  // process.env.PLATFORMIO_DISABLE_PROGRESSBAR = 'true';
   process.env.PLATFORMIO_IDE = utils.getIDEVersion();
 
   // Fix for https://github.com/atom/atom/issues/11302

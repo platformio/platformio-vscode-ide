@@ -67,9 +67,9 @@ export default async function initCommand() {
           });
         });
       }
-    } catch (error) {
-      console.error(error);
-      vscode.window.showErrorMessage(error);
+    } catch (err) {
+      console.error(err);
+      vscode.window.showErrorMessage(err);
     }
   });
 }
