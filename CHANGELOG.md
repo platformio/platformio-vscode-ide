@@ -4,6 +4,7 @@
 
 * Dynamic Tasks (issue [#24](https://github.com/platformio/platformio-vscode-ide/issues/24))
 * Custom tasks per project environments from `platformio.ini` (issue [#16](https://github.com/platformio/platformio-vscode-ide/issues/16))
+* Removed "No task is currently running" warning
 * Fixed issue with Windows accounts that contain spaces (issue [#27](https://github.com/platformio/platformio-vscode-ide/issues/27))
 
 ## 0.4.0 (2017-07-05)
