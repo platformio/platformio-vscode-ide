@@ -92,6 +92,16 @@
         "command": "platformio-ide.libraryManager",
         "title": "Library Manager",
         "category": "PlatformIO"
+      },
+      {
+        "command": "platformio-ide.updateCore",
+        "title": "Update installed platforms, packages and libraries",
+        "category": "PlatformIO"
+      },
+      {
+        "command": "platformio-ide.upgradeCore",
+        "title": "Upgrade PlatformIO Core to the latest version",
+        "category": "PlatformIO"
       }
     ],
     "keybindings": [

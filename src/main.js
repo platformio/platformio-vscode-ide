@@ -134,6 +134,14 @@ class PlatformIOVSCodeExtension {
       'platformio-ide.newTerminal',
       () => this.pioTerm.new().show()
     ));
+    this._context.subscriptions.push(vscode.commands.registerCommand(
+      'platformio-ide.updateCore',
+      () => this.pioTerm.sendText('pio update')
+    ));
+    this._context.subscriptions.push(vscode.commands.registerCommand(
+      'platformio-ide.upgradeCore',
+      () => this.pioTerm.sendText('pio upgrade')
+    ));
   }
 
   async terminateMonitorTask() {
