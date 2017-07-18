@@ -1,5 +1,13 @@
 # Release Notes
 
+## 0.5.1 (2017-07-18)
+
+* Add new Tasks
+  - Rebuild C/C++ Project Index
+  - Update installed platforms, packages and libraries
+  - Upgrade PlatformIO Core
+* Use `pio device monitor` command instead of `pio run -t monitor` for "Monitor" task
+
 ## 0.5.0 (2017-07-17)
 
 **Requires VSCode 1.13.0 or above**
