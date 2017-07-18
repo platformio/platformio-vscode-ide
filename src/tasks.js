@@ -40,12 +40,12 @@ export default class PIOTasksProvider {
       args: ['run', '--target', 'program']
     },
     {
-      name: 'Monitor',
-      args: ['run', '--target', 'monitor']
-    },
-    {
       name: 'Upload SPIFFS image',
       args: ['run', '--target', 'uploadfs']
+    },
+    {
+      name: 'Monitor',
+      args: ['device', 'monitor']
     },
     {
       name: 'Test',
@@ -174,14 +174,14 @@ export default class PIOTasksProvider {
       });
     }
 
-    // base targets
+    // base tasks
     PIOTasksProvider.baseTasks.forEach(task => {
       if (projectData.some(data => this.taskCompatibleWithPlatform(task, data.platform))) {
         result.push(new TaskCreator(task.name, task.args.slice(0)).create());
       }
     });
 
-    // project environment targets
+    // project environment tasks
     if (projectData.length > 1) {
       projectData.forEach(data => {
         PIOTasksProvider.baseTasks.forEach(task => {
@@ -191,6 +191,12 @@ export default class PIOTasksProvider {
         });
       });
     }
+
+    // PIO Core tasks
+    result.push(new TaskCreator('Rebuild C/C++ Project Index', ['init', '--ide', 'vscode']).create());
+    result.push(new TaskCreator('Update installed platforms, packages and libraries', ['update']).create());
+    result.push(new TaskCreator('Upgrade PlatformIO Core', ['upgrade']).create());
+
     return result;
   }
 }
