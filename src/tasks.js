@@ -250,6 +250,9 @@ class TaskCreator {
       new vscode.ProcessExecution(IS_WINDOWS ? 'platformio.exe' : 'platformio', this._args, { env: process.env }),
       '$platformio'
     );
+    task.presentationOptions = {
+      panel: vscode.TaskPanelKind.Dedicated
+    };
     if (this.isBuild()) {
       task.group = vscode.TaskGroup.Build;
     } else if (this.isClean()) {

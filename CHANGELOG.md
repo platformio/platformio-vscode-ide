@@ -1,5 +1,9 @@
 # Release Notes
 
+## 0.5.2 (2017-??-??)
+
+* Use dedicated terminal panel per unique PIO Task
+
 ## 0.5.1 (2017-07-18)
 
 * Add new Tasks
