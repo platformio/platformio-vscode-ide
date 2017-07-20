@@ -146,7 +146,7 @@ export default class ProjectIndexer {
     }
     return vscode.window.withProgress({
       location: vscode.ProgressLocation.Window,
-      title: 'PlatformIO C/C++ Index Rebuild',
+      title: 'PlatformIO: IntelliSense Index Rebuild',
     }, async (progress) => {
       progress.report({
         message: 'Verifying if the current directory is a PlatformIO project',
@@ -169,11 +169,11 @@ export default class ProjectIndexer {
           });
         });
         if (verbose) {
-          vscode.window.showInformationMessage('PlatformIO: C/C++ Project Index (for IntelliSense) has been successfully rebuilt.');
+          vscode.window.showInformationMessage('PlatformIO: IntelliSense Index has been successfully rebuilt.');
         }
       } catch (err) {
         console.error(err);
-        vscode.window.showErrorMessage(`PlatformIO: C/C++ Project Index failed: ${err.toString()}`);
+        vscode.window.showErrorMessage(`PlatformIO: IntelliSense Index failed: ${err.toString()}`);
       }
       this._inProgress = false;
     });

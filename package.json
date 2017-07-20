@@ -89,7 +89,7 @@
       },
       {
         "command": "platformio-ide.rebuildProjectIndex",
-        "title": "Rebuild C/C++ Project Index",
+        "title": "Rebuild IntelliSense Index",
         "category": "PlatformIO"
       },
       {
