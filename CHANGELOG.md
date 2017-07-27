@@ -1,8 +1,9 @@
 # Release Notes
 
-## 0.5.2 (2017-??-??)
+## 0.5.2 (2017-07-27)
 
 * Use dedicated terminal panel per unique PIO Task
+* Avoid concurrent "IntelliSense Index Rebuild" processes
 
 ## 0.5.1 (2017-07-18)
 
