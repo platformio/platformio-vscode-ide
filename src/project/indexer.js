@@ -23,6 +23,7 @@ export default class ProjectIndexer {
     this.libDirSubscriptions = new Map();
 
     this._isActive = false;
+    this._inProgress = false;
     this._rebuildTimeout = null;
     this._updateLibDirWatchersTimeout = null;
   }
@@ -140,12 +141,12 @@ export default class ProjectIndexer {
   }
 
   doRebuild({ verbose = false } = {}) {
-    if (!this._isActive) {
+    if (!this._isActive || this._inProgress) {
       return;
     }
     return vscode.window.withProgress({
       location: vscode.ProgressLocation.Window,
-      title: 'PlatformIO C/C++ Index Rebuild',
+      title: 'PlatformIO: IntelliSense Index Rebuild',
     }, async (progress) => {
       progress.report({
         message: 'Verifying if the current directory is a PlatformIO project',
@@ -154,10 +155,10 @@ export default class ProjectIndexer {
         if (!await isPIOProject(this.projectDir)) {
           return;
         }
-
         progress.report({
-          message: 'Performing index rebuild',
+          message: '',
         });
+        this._inProgress = true;
         await new Promise((resolve, reject) => {
           runPIOCommand(['init', '--ide', 'vscode', '--project-dir', this.projectDir], (code, stdout, stderr) => {
             if (code === 0) {
@@ -167,14 +168,14 @@ export default class ProjectIndexer {
             }
           });
         });
-
         if (verbose) {
-          vscode.window.showInformationMessage('PlatformIO: C/C++ Project Index (for Autocomplete, Linter) has been successfully rebuilt.');
+          vscode.window.showInformationMessage('PlatformIO: IntelliSense Index has been successfully rebuilt.');
         }
       } catch (err) {
         console.error(err);
-        vscode.window.showErrorMessage(`PlatformIO: C/C++ Project Index failed: ${err.toString()}`);
+        vscode.window.showErrorMessage(`PlatformIO: IntelliSense Index failed: ${err.toString()}`);
       }
+      this._inProgress = false;
     });
   }
 

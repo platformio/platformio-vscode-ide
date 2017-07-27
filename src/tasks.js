@@ -193,7 +193,7 @@ export default class PIOTasksProvider {
     }
 
     // PIO Core tasks
-    result.push(new TaskCreator('Rebuild C/C++ Project Index', ['init', '--ide', 'vscode']).create());
+    result.push(new TaskCreator('Rebuild IntelliSense Index', ['init', '--ide', 'vscode']).create());
     result.push(new TaskCreator('Update installed platforms, packages and libraries', ['update']).create());
     result.push(new TaskCreator('Upgrade PlatformIO Core', ['upgrade']).create());
 
@@ -250,6 +250,9 @@ class TaskCreator {
       new vscode.ProcessExecution(IS_WINDOWS ? 'platformio.exe' : 'platformio', this._args, { env: process.env }),
       '$platformio'
     );
+    task.presentationOptions = {
+      panel: vscode.TaskPanelKind.Dedicated
+    };
     if (this.isBuild()) {
       task.group = vscode.TaskGroup.Build;
     } else if (this.isClean()) {
