@@ -1,5 +1,9 @@
 # Release Notes
 
+## 0.5.3 (2017-08-05)
+
+* Ignore broken a node-tar(3.1.9) package which blocks PIO Core installer
+
 ## 0.5.2 (2017-07-27)
 
 * Use dedicated terminal panel per unique PIO Task
