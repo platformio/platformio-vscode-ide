@@ -63,6 +63,11 @@
   "contributes": {
     "commands": [
       {
+        "command": "platformio-ide.showHome",
+        "title": "Home",
+        "category": "PlatformIO"
+      },
+      {
         "command": "platformio-ide.build",
         "title": "Build",
         "category": "PlatformIO"
@@ -95,11 +100,6 @@
       {
         "command": "platformio-ide.newTerminal",
         "title": "New Terminal",
-        "category": "PlatformIO"
-      },
-      {
-        "command": "platformio-ide.libraryManager",
-        "title": "Library Manager",
         "category": "PlatformIO"
       },
       {
@@ -171,6 +171,11 @@
       "type": "object",
       "title": "PlatformIO IDE configuration",
       "properties": {
+        "platformio-ide.showHomeOnStartup": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show PIO Home on startup"
+        },
         "platformio-ide.useBuiltinPIOCore": {
           "type": "boolean",
           "default": true,
@@ -229,6 +234,7 @@
     "request": "^2.81.0",
     "semver": "^5.3.0",
     "tar": "3.1.8",
+    "tcp-port-used": "^0.1.2",
     "tmp": "^0.0.31"
   },
   "extensionDependencies": [
