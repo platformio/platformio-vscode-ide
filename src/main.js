@@ -208,6 +208,7 @@ class PlatformIOVSCodeExtension {
 
   deactivate() {
     this.pioTerm.dispose();
+    HomeContentProvider.shutdownServer();
   }
 }
 

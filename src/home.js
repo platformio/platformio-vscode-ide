@@ -6,6 +6,7 @@
  * the root directory of this source tree.
  */
 
+import request from 'request';
 import spawn from 'cross-spawn';
 import tcpPortUsed from 'tcp-port-used';
 
@@ -16,7 +17,7 @@ export class HomeContentProvider {
   static HTTP_PORT = 8008;
 
   async provideTextDocumentContent(uri) {
-    await this.ensureServerStarted();
+    await HomeContentProvider.ensureServerStarted();
     return `
       <html>
       <body style="margin: 0; padding: 0; height: 100%; overflow: hidden; background-color: #fff">
@@ -26,7 +27,7 @@ export class HomeContentProvider {
     `;
   }
 
-  isServerStarted() {
+  static isServerStarted() {
     return new Promise(resolve => {
       tcpPortUsed.check(HomeContentProvider.HTTP_PORT, HomeContentProvider.HTTP_HOST)
         .then(inUse => {
@@ -37,8 +38,8 @@ export class HomeContentProvider {
     });
   }
 
-  async ensureServerStarted() {
-    if (await this.isServerStarted()) {
+  static async ensureServerStarted() {
+    if (await HomeContentProvider.isServerStarted()) {
       return;
     }
     return new Promise(resolve => {
@@ -50,6 +51,10 @@ export class HomeContentProvider {
           return resolve(false);
         });
     });
+  }
+
+  static shutdownServer() {
+    request.get(`http://${ HomeContentProvider.HTTP_HOST }:${ HomeContentProvider.HTTP_PORT}?__shutdown__=1`);
   }
 
 }
