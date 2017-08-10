@@ -6,6 +6,7 @@
  * the root directory of this source tree.
  */
 
+import { HomeContentProvider } from './home';
 import InstallationManager from './installer/manager';
 import PIOTasksProvider from './tasks';
 import PIOTerminal from './terminal';
@@ -18,9 +19,11 @@ import vscode from 'vscode';
 class PlatformIOVSCodeExtension {
 
   constructor() {
+    this.config = vscode.workspace.getConfiguration('platformio-ide');
+    this.pioTerm = new PIOTerminal();
+
     this._context = null;
     this._isMonitorRun = false;
-    this.pioTerm = new PIOTerminal();
   }
 
   async activate(context) {
@@ -30,6 +33,10 @@ class PlatformIOVSCodeExtension {
     this.registerCommands();
 
     await this.startInstaller();
+
+    if (this.config.get('showHomeOnStartup')) {
+      vscode.commands.executeCommand('platformio-ide.showHome');
+    }
 
     if (!vscode.workspace.rootPath) {
       return;
@@ -86,6 +93,13 @@ class PlatformIOVSCodeExtension {
   }
 
   registerCommands() {
+    // PIO Home
+    this._context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider('platformio-home', new HomeContentProvider()));
+    this._context.subscriptions.push(vscode.commands.registerCommand(
+      'platformio-ide.showHome',
+      () => vscode.commands.executeCommand('vscode.previewHtml', vscode.Uri.parse('platformio-home://'), vscode.ViewColumn.One, 'PIO Home')
+    ));
+
     this._context.subscriptions.push(vscode.commands.registerCommand(
       'platformio-ide.initProject',
       initCommand
@@ -103,8 +117,7 @@ class PlatformIOVSCodeExtension {
         await this.terminateMonitorTask();
 
         let task = 'PlatformIO: Upload';
-        const config = vscode.workspace.getConfiguration('platformio-ide');
-        if(config.get('forceUploadAndMonitor')) {
+        if (this.config.get('forceUploadAndMonitor')) {
           task = 'PlatformIO: Upload and Monitor';
           this._isMonitorRun = true;
         }
@@ -150,7 +163,7 @@ class PlatformIOVSCodeExtension {
     }
     try {
       await vscode.commands.executeCommand('workbench.action.tasks.terminate');
-    } catch(err) {
+    } catch (err) {
       console.error(err);
     }
     this._isMonitorRun = false;
@@ -163,12 +176,11 @@ class PlatformIOVSCodeExtension {
 
   initStatusBar() {
     const items = [
+      ['$(home)', 'PlatformIO: Home', 'platformio-ide.showHome'],
       ['$(check)', 'PlatformIO: Build', 'platformio-ide.build'],
       ['$(arrow-right)', 'PlatformIO: Upload', 'platformio-ide.upload'],
       ['$(trashcan)', 'PlatformIO: Clean', 'platformio-ide.clean'],
-      ['$(checklist)', 'PlatformIO: Run a Task', 'workbench.action.tasks.runTask'],
       ['$(file-code)', 'PlatformIO: Initialize or update project', 'platformio-ide.initProject'],
-      ['$(code)', 'PlatformIO: Library Manager', 'platformio-ide.libraryManager'],
       ['$(plug)', 'PlatformIO: Serial Monitor', 'platformio-ide.serialMonitor'],
       ['$(terminal)', 'PlatformIO: New Terminal', 'platformio-ide.newTerminal']
     ];
@@ -196,6 +208,7 @@ class PlatformIOVSCodeExtension {
 
   deactivate() {
     this.pioTerm.dispose();
+    HomeContentProvider.shutdownServer();
   }
 }
 

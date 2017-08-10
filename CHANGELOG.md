@@ -1,8 +1,12 @@
 # Release Notes
 
+## 0.6.0 (2017-08-10)
+
+* Integrate new PIO Home 2.0
+
 ## 0.5.3 (2017-08-05)
 
-* Ignore broken a node-tar(3.1.9) package which blocks PIO Core installer
+* Ignore broken `node-tar` (3.1.9) package which blocks PIO Core installer
 
 ## 0.5.2 (2017-07-27)
 
