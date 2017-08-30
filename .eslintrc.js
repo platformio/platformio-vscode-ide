@@ -5,11 +5,23 @@ module.exports = {
     'node': true,
     'jasmine': true,
   },
-  'extends': ['eslint:recommended'],
+  'plugins': [
+    'import'
+  ],
+  'extends': [
+    'eslint:recommended',
+    'plugin:import/errors',
+    'plugin:import/warnings'
+  ],
   'parser': 'babel-eslint',
   'parserOptions': {
     'ecmaVersion': 6,
     'sourceType': 'module'
+  },
+  'settings': {
+    'import/core-modules': [
+      'vscode'
+    ]
   },
   'rules': {
     'comma-dangle': [

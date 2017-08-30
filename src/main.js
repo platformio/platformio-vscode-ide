@@ -6,13 +6,15 @@
  * the root directory of this source tree.
  */
 
+import * as pioNodeHelpers from 'platformio-node-helpers';
+
 import { HomeContentProvider } from './home';
 import InstallationManager from './installer/manager';
 import PIOTasksProvider from './tasks';
 import PIOTerminal from './terminal';
 import ProjectIndexer from './project/indexer';
+import { getIDEVersion } from './utils';
 import initCommand from './commands/init';
-import { updateOSEnviron } from './maintenance';
 import vscode from 'vscode';
 
 
@@ -29,7 +31,15 @@ class PlatformIOVSCodeExtension {
   async activate(context) {
     this._context = context;
 
-    updateOSEnviron();
+    pioNodeHelpers.misc.patchOSEnviron({
+      caller: 'vscode',
+      useBuiltinPIOCore: this.config.get('useBuiltinPIOCore'),
+      extraPath: this.config.get('customPATH'),
+      extraVars: {
+        PLATFORMIO_IDE: getIDEVersion()
+      }
+    });
+
     this.registerCommands();
 
     await this.startInstaller();

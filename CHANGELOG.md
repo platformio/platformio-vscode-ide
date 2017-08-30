@@ -1,5 +1,7 @@
 # Release Notes
 
+## 0.7.0 (2017-??-??)
+
 ## 0.6.0 (2017-08-10)
 
 * Integrate new PIO Home 2.0

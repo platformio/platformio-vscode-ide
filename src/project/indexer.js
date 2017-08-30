@@ -6,10 +6,10 @@
  * the root directory of this source tree.
  */
 
-import { isPIOProject, runCommand, runPIOCommand } from '../utils';
+import * as pioNodeHelpers from 'platformio-node-helpers';
 
 import { AUTO_REBUILD_DELAY } from '../constants';
-import { getPythonExecutable } from '../installer/helpers';
+import { isPIOProject } from '../utils';
 import path from 'path';
 import vscode from 'vscode';
 
@@ -160,7 +160,7 @@ export default class ProjectIndexer {
         });
         this._inProgress = true;
         await new Promise((resolve, reject) => {
-          runPIOCommand(['init', '--ide', 'vscode', '--project-dir', this.projectDir], (code, stdout, stderr) => {
+          pioNodeHelpers.core.runPIOCommand(['init', '--ide', 'vscode', '--project-dir', this.projectDir], (code, stdout, stderr) => {
             if (code === 0) {
               resolve();
             } else {
@@ -183,7 +183,7 @@ export default class ProjectIndexer {
     if (!await isPIOProject(this.projectDir)) {
       return [];
     }
-    const pythonExecutable = await getPythonExecutable();
+    const pythonExecutable = await pioNodeHelpers.misc.getPythonExecutable(vscode.workspace.getConfiguration('platformio-ide').get('useBuiltinPIOCore'));
     const script = [
       'from os.path import join; from platformio import VERSION,util;',
       'print ":".join([',
@@ -193,7 +193,7 @@ export default class ProjectIndexer {
       ']) if VERSION[0] == 3 else util.get_lib_dir()',
     ].map(s => s.trim()).join(' ');
     return new Promise((resolve, reject) => {
-      runCommand(
+      pioNodeHelpers.misc.runCommand(
         pythonExecutable,
         ['-c', script],
         (code, stdout, stderr) => {

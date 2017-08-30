@@ -6,29 +6,32 @@
  * the root directory of this source tree.
  */
 
-import PlatformIOCoreStage from './stages/platformio-core';
-import VscodeGlobalStateStorage from './vscode-global-state-storage';
-import VscodePythonInstallConfirm from './python-install-confirm';
+import * as pioNodeHelpers from 'platformio-node-helpers';
+
+import { PIO_CORE_MIN_VERSION } from '../constants';
+import PythonPrompt from './python-prompt';
+import StateStorage from './state-storage';
 import vscode from 'vscode';
 
 
 export default class InstallationManager {
 
-  LOCK_TIMEOUT =1 * 60 * 1000; // 1 minute
+  LOCK_TIMEOUT = 1 * 60 * 1000; // 1 minute
   LOCK_KEY = 'platformio-ide:installer-lock';
   STORAGE_STATE_KEY = 'platformio-ide:installer-state';
 
   constructor(globalState) {
     this.globalState = globalState;
-    this.stateStorage = new VscodeGlobalStateStorage(globalState, this.STORAGE_STATE_KEY);
+    this.stateStorage = new StateStorage(globalState, this.STORAGE_STATE_KEY);
 
     const config = vscode.workspace.getConfiguration('platformio-ide');
     this.stages = [
-      new PlatformIOCoreStage(this.onDidStatusChange.bind(this), this.stateStorage, {
+      new pioNodeHelpers.installer.PlatformIOCoreStage(this.stateStorage, this.onDidStatusChange.bind(this), {
+        pioCoreMinVersion: PIO_CORE_MIN_VERSION,
         useBuiltinPIOCore: config.get('useBuiltinPIOCore'),
         setUseBuiltinPIOCore: (value) => config.update('platformio-ide.useBuiltinPIOCore', value),
         useDevelopmentPIOCore: config.get('useDevelopmentPIOCore') || true, // @FIXME: remove "|| true" when released
-        installConfirm: new VscodePythonInstallConfirm()
+        pythonPrompt: new PythonPrompt()
       }),
     ];
   }

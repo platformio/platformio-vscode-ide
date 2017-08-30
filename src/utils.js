@@ -6,55 +6,10 @@
  * the root directory of this source tree.
  */
 
-import * as constants from './constants';
-
 import fs from 'fs-plus';
 import path from 'path';
-import spawn from 'cross-spawn';
 import vscode from 'vscode';
 
-
-export function runCommand(cmd, args, callback, options = {}) {
-  console.info('runCommand', cmd, args, options);
-  let completed = false;
-  const outputLines = [];
-  const errorLines = [];
-
-  try {
-    const child = spawn(cmd, args, options.spawnOptions);
-
-    child.stdout.on('data', (line) => outputLines.push(line));
-    child.stderr.on('data', (line) => errorLines.push(line));
-    child.on('close', onExit);
-    child.on('error', (err) => {
-      errorLines.push(err.toString());
-      onExit(-1);
-    }
-    );
-  } catch (err) {
-    errorLines.push(err.toString());
-    onExit(-1);
-  }
-
-  function onExit(code) {
-    if (completed) {
-      return;
-    }
-    completed = true;
-    const stdout = outputLines.map(x => x.toString()).join('');
-    const stderr = errorLines.map(x => x.toString()).join('');
-    callback(code, stdout, stderr);
-  }
-}
-
-export function runPIOCommand(args, callback, options = {}) {
-  runCommand(
-    'platformio',
-    [...constants.DEFAULT_PIO_ARGS, ...args],
-    callback,
-    options
-  );
-}
 
 export function getIDEManifest() {
   return vscode.extensions.getExtension('platformio.platformio-ide').packageJSON;
@@ -62,24 +17,6 @@ export function getIDEManifest() {
 
 export function getIDEVersion() {
   return getIDEManifest().version;
-}
-
-export function getCoreVersion() {
-  return new Promise((resolve, reject) => {
-    runCommand(
-      'platformio',
-      ['--version'],
-      (code, stdout, stderr) => {
-        if (code === 0) {
-          return resolve(stdout.trim().match(/[\d+\.]+.*$/)[0]);
-        }
-        return reject(stderr);
-      },
-      {
-        cacheValid: '10s'
-      }
-    );
-  });
 }
 
 /* Custom */
