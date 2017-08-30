@@ -2,6 +2,8 @@
 
 ## 0.7.0 (2017-??-??)
 
+* Migrate to "platformio-node-helpers", a common interface for Node.JS based PlatformIO IDE extensions
+
 ## 0.6.0 (2017-08-10)
 
 * Integrate new PIO Home 2.0
