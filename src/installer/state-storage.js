@@ -6,7 +6,7 @@
  * the root directory of this source tree.
  */
 
-export default class VscodeGlobalStateStorage {
+export default class StateStorage {
 
   constructor(globalState, stateKey) {
     this._globalState = globalState;

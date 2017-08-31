@@ -8,7 +8,7 @@
       "request": "launch",
       "runtimeExecutable": "${execPath}",
       "args": ["--extensionDevelopmentPath=${workspaceRoot}"],
-      "preLaunchTask": "npm: run build",
+      "preLaunchTask": "npm: build",
       "stopOnEntry": false
     },
     {
@@ -17,7 +17,7 @@
       "request": "launch",
       "runtimeExecutable": "${execPath}",
       "args": ["--extensionDevelopmentPath=${workspaceRoot}", "--extensionTestsPath=${workspaceRoot}/test"],
-      "preLaunchTask": "npm: run build",
+      "preLaunchTask": "npm: build",
       "stopOnEntry": false
     }
   ]

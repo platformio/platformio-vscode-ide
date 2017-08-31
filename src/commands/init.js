@@ -6,7 +6,8 @@
  * the root directory of this source tree.
  */
 
-import { runPIOCommand } from '../utils';
+import * as pioNodeHelpers from 'platformio-node-helpers';
+
 import vscode from 'vscode';
 
 
@@ -27,7 +28,7 @@ export default async function initCommand() {
 
     try {
       const data = JSON.parse(await new Promise((resolve, reject) => {
-        runPIOCommand(['boards', '--json-output'], (code, stdout, stderr) => {
+        pioNodeHelpers.core.runPIOCommand(['boards', '--json-output'], (code, stdout, stderr) => {
           if (code !== 0) {
             reject(stderr);
           } else {
@@ -58,7 +59,7 @@ export default async function initCommand() {
         });
 
         await new Promise((resolve, reject) => {
-          runPIOCommand(['init', '--ide', 'vscode', '--board', selectedBoard.boardId, '--project-dir', vscode.workspace.rootPath], (code, stdout, stderr) => {
+          pioNodeHelpers.core.runPIOCommand(['init', '--ide', 'vscode', '--board', selectedBoard.boardId, '--project-dir', vscode.workspace.rootPath], (code, stdout, stderr) => {
             if (code !== 0) {
               reject(stderr);
             } else {
