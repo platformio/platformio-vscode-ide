@@ -44,7 +44,7 @@ class PlatformIOVSCodeExtension {
 
     await this.startInstaller();
 
-    if (this.config.get('showHomeOnStartup')) {
+    if (pioNodeHelpers.home.showAtStartup('vscode')) {
       vscode.commands.executeCommand('platformio-ide.showHome');
     }
 
