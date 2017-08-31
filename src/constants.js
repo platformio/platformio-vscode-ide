@@ -8,4 +8,4 @@
 
 export const AUTO_REBUILD_DELAY = 3000;
 export const IS_WINDOWS = process.platform.startsWith('win');
-export const PIO_CORE_MIN_VERSION = '3.5.0-a.5';
+export const PIO_CORE_MIN_VERSION = '3.5.0-a.6';
