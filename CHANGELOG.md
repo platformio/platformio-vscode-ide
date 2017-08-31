@@ -8,6 +8,7 @@
   - Project Examples
   - Open Project
 * Migrate to "platformio-node-helpers", a common interface for Node.JS based PlatformIO IDE extensions
+* Revert back "Run a task" button on the PIO Toolbar
 
 ## 0.6.0 (2017-08-10)
 
