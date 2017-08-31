@@ -2,6 +2,11 @@
 
 ## 0.7.0 (2017-??-??)
 
+* New in PIO Home:
+  - New Project
+  - Import Arduino IDE Project
+  - Project Examples
+  - Open Project
 * Migrate to "platformio-node-helpers", a common interface for Node.JS based PlatformIO IDE extensions
 
 ## 0.6.0 (2017-08-10)
