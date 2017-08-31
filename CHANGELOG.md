@@ -1,12 +1,12 @@
 # Release Notes
 
-## 0.7.0 (2017-??-??)
+## 0.7.0 (2017-09-01)
 
 * New in PIO Home:
   - New Project
   - Import Arduino IDE Project
-  - Project Examples
   - Open Project
+  - Project Examples
 * Migrate to "platformio-node-helpers", a common interface for Node.JS based PlatformIO IDE extensions
 * Revert back "Run a task" button on the PIO Toolbar
 
