@@ -1,5 +1,9 @@
 # Release Notes
 
+## 0.7.1 (2017-09-01)
+
+* Fixed installer issue "Reference Error: atom is not defined" (issue [#38](https://github.com/platformio/platformio-vscode-ide/issues/38))
+
 ## 0.7.0 (2017-09-01)
 
 * New in PIO Home:
