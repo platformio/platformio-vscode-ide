@@ -8,12 +8,13 @@
 
 import * as pioNodeHelpers from 'platformio-node-helpers';
 
+import { getIDEVersion, isPIOProject } from './utils';
+
 import { HomeContentProvider } from './home';
 import InstallationManager from './installer/manager';
 import PIOTasksProvider from './tasks';
 import PIOTerminal from './terminal';
 import ProjectIndexer from './project/indexer';
-import { getIDEVersion } from './utils';
 import initCommand from './commands/init';
 import vscode from 'vscode';
 
@@ -48,7 +49,8 @@ class PlatformIOVSCodeExtension {
       vscode.commands.executeCommand('platformio-ide.showHome');
     }
 
-    if (!vscode.workspace.rootPath) {
+    if (!vscode.workspace.rootPath || !isPIOProject(vscode.workspace.rootPath)) {
+      this.initStatusBar(['PlatformIO: Home']);
       return;
     }
 
@@ -184,7 +186,7 @@ class PlatformIOVSCodeExtension {
     this._context.subscriptions.push(new PIOTasksProvider(vscode.workspace.rootPath));
   }
 
-  initStatusBar() {
+  initStatusBar(filterItems) {
     const items = [
       ['$(home)', 'PlatformIO: Home', 'platformio-ide.showHome'],
       ['$(check)', 'PlatformIO: Build', 'platformio-ide.build'],
@@ -194,7 +196,7 @@ class PlatformIOVSCodeExtension {
       ['$(plug)', 'PlatformIO: Serial Monitor', 'platformio-ide.serialMonitor'],
       ['$(terminal)', 'PlatformIO: New Terminal', 'platformio-ide.newTerminal']
     ];
-    items.reverse().forEach((item, index) => {
+    items.filter(item => !filterItems || filterItems.includes(item[1])).reverse().forEach((item, index) => {
       const [text, tooltip, command] = item;
       const sbItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 10 + index);
       sbItem.text = text;
