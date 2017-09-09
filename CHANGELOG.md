@@ -1,5 +1,10 @@
 # Release Notes
 
+## 0.7.3 (2017-09-09)
+
+* Catch errors when checking PIO Core version (broken PIO Core installation)
+* Override LC_ALL only for Darwin platform
+
 ## 0.7.2 (2017-09-01)
 
 * Show PIO Home icon on bottom Toolbar even when PIO Project is not opened
