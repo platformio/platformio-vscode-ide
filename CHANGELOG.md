@@ -1,5 +1,10 @@
 # Release Notes
 
+## 0.7.4 (2017-11-03)
+
+* Improved support for non-ASCII locales
+* Fixed issue with the missing toolchain includes in `includePath` of IntelliSense
+
 ## 0.7.3 (2017-09-09)
 
 * Catch errors when checking PIO Core version (broken PIO Core installation)
