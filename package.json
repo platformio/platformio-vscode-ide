@@ -212,7 +212,7 @@
   "devDependencies": {
     "@types/node": "^8.0.4",
     "babel-cli": "^6.24.1",
-    "babel-eslint": "^7.2.3",
+    "babel-eslint": "^8.0.1",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-preset-env": "^1.6.0",
     "esformatter": "^0.10.0",
