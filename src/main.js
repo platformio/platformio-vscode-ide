@@ -41,6 +41,7 @@ class PlatformIOVSCodeExtension {
       }
     });
 
+    this.pioTerm.updateEnvConfiguration();
     this.registerCommands();
 
     await this.startInstaller();

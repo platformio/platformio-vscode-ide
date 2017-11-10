@@ -8,7 +8,6 @@
 
 import * as constants from './constants';
 
-import path from 'path';
 import vscode from 'vscode';
 
 
@@ -19,40 +18,13 @@ export default class PIOTerminal {
   }
 
   new() {
-    const commands = [];
-    if (constants.IS_WINDOWS) {
-      let tmpPaths = [];
-      let pathIsSplit = false;
-      for (const p of process.env.PATH.split(path.delimiter)) {
-        if (!p) {
-          continue;
-        }
-        // Workaround for https://support.microsoft.com/en-us/help/830473/command-prompt-cmd.-exe-command-line-string-limitation
-        if ((p.length + tmpPaths.join(path.delimiter).length) > 8000) {
-          if (pathIsSplit) {
-            tmpPaths.unshift('%PATH%');
-          }
-          commands.push('set PATH=' + tmpPaths.join(path.delimiter));
-          tmpPaths = [];
-          pathIsSplit = true;
-        }
-        tmpPaths.push(p);
+    return vscode.window.createTerminal({
+      name: 'PlatformIO',
+      shellPath: constants.IS_WINDOWS ? 'cmd.exe' : null,
+      env: {
+        PATH: process.env.PATH
       }
-      // leftover PATHs
-      if (pathIsSplit) {
-        tmpPaths.unshift('%PATH%');
-      }
-      commands.push('set PATH=' + tmpPaths.join(path.delimiter));
-    } else if (process.env.SHELL && process.env.SHELL.includes('fish')) {
-      commands.push('set -gx PATH ' + process.env.PATH.replace(/:/g, ' '));
-    } else {
-      commands.push('export PATH=' + process.env.PATH);
-    }
-    commands.push('pio --help');
-
-    this._instance = vscode.window.createTerminal('PlatformIO', constants.IS_WINDOWS ? 'cmd.exe' : null);
-    commands.forEach(cmd => this._instance.sendText(cmd));
-    return this._instance;
+    });
   }
 
   sendText(text) {
@@ -68,5 +40,18 @@ export default class PIOTerminal {
       this._instance.dispose();
     }
     this._instance = null;
+  }
+
+  updateEnvConfiguration() {
+    const config = vscode.workspace.getConfiguration();
+    const sysType = constants.IS_WINDOWS ? 'windows' : constants.IS_OSX ? 'osx' : 'linux';
+    const section = `terminal.integrated.env.${sysType}`;
+    const current = config.get(section);
+    if (current && current.PATH === process.env.PATH) {
+      return;
+    }
+    config.update(section, {
+      PATH: process.env.PATH
+    }, vscode.ConfigurationTarget.Workspace);
   }
 }

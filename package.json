@@ -45,7 +45,7 @@
   "publisher": "platformio",
   "license": "Apache-2.0",
   "engines": {
-    "vscode": "^1.13.0"
+    "vscode": "^1.18.0"
   },
   "bugs": {
     "url": "https://github.com/platformio/platformio-vscode-ide/issues"
