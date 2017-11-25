@@ -1,5 +1,12 @@
 # Release Notes
 
+## 0.8.0 (2017-11-26)
+
+**Requires VSCode 1.18.0 or above**
+
+* Updated PIO Terminal with new VSCode API
+* Increased timeout for PIO Home Server
+
 ## 0.7.4 (2017-11-03)
 
 * Improved support for non-ASCII locales
