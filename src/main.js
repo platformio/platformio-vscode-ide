@@ -41,7 +41,9 @@ class PlatformIOVSCodeExtension {
       }
     });
 
-    this.pioTerm.updateEnvConfiguration();
+    if (this.config.get('updateTerminalPathConfiguration')) {
+      this.pioTerm.updateEnvConfiguration();
+    }
     this.registerCommands();
 
     await this.startInstaller();

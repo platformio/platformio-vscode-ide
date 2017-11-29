@@ -1,6 +1,6 @@
 {
   "name": "platformio-ide",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "preview": true,
   "displayName": "PlatformIO IDE",
   "description": "Official PlatformIO IDE for IoT, Arduino, ARM mbed, Espressif (ESP8266/ESP32), STM32, PIC32, nRF51/nRF52, FPGA, CMSIS, SPL, AVR, Samsung ARTIK, libOpenCM3",
@@ -197,6 +197,11 @@
           "type": "boolean",
           "default": false,
           "description": "Force 'Upload and Monitor' task for `platformio-ide.upload` command"
+        },
+        "platformio-ide.updateTerminalPathConfiguration": {
+          "type": "boolean",
+          "default": true,
+          "description": "Update Terminal configuration with patched PATH environment"
         }
       }
     }
