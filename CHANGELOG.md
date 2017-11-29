@@ -1,6 +1,6 @@
 # Release Notes
 
-## 0.8.1 (2017-??-??)
+## 0.8.1 (2017-11-29)
 
 * New configuration option: "Update Terminal configuration with patched PATH environment", default is `true`
 * Fixed "Expression preceding parentheses of apparent call must have (pointer-to-) function type" for IntelliSense (issue [#54](https://github.com/platformio/platformio-vscode-ide/issues/54))
