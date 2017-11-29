@@ -197,6 +197,11 @@
           "type": "boolean",
           "default": false,
           "description": "Force 'Upload and Monitor' task for `platformio-ide.upload` command"
+        },
+        "platformio-ide.updateTerminalPathConfiguration": {
+          "type": "boolean",
+          "default": true,
+          "description": "Update Terminal configuration with patched PATH environment"
         }
       }
     }
