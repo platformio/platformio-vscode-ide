@@ -1,5 +1,9 @@
 # Release Notes
 
+## 0.8.2 (2017-12-02)
+
+* Fixed issue with broken PIO Home and user's Python <2.7.9 (Windows). Automatically install compatible Python
+
 ## 0.8.1 (2017-11-29)
 
 * New configuration option: "Update Terminal configuration with patched PATH environment", default is `true`
