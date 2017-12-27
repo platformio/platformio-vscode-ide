@@ -29,7 +29,7 @@ export default class PIOTerminal {
 
   sendText(text) {
     if (!this._instance) {
-      this.new();
+      this._instance = this.new();
     }
     this._instance.sendText(text);
     this._instance.show();
