@@ -87,11 +87,6 @@
         "category": "PlatformIO"
       },
       {
-        "command": "platformio-ide.initProject",
-        "title": "Initialize or Update Project",
-        "category": "PlatformIO"
-      },
-      {
         "command": "platformio-ide.rebuildProjectIndex",
         "title": "Rebuild IntelliSense Index",
         "category": "PlatformIO"
@@ -113,10 +108,6 @@
       }
     ],
     "keybindings": [
-      {
-        "command": "platformio-ide.initProject",
-        "key": "ctrl+alt+i"
-      },
       {
         "command": "platformio-ide.build",
         "key": "ctrl+alt+b"
