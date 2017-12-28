@@ -1,5 +1,11 @@
 # Release Notes
 
+## 0.9.0 (2017-12-28)
+
+* Upgraded to PIO Core 3.5.0
+* Pre-install PIO Home in pair with PIO Core (resolve issue with "timeout")
+* Fixed issue with PIO Core update/upgrade commands (issue [#62](https://github.com/platformio/platformio-vscode-ide/issues/62))
+
 ## 0.8.2 (2017-12-02)
 
 * Fixed issue with broken PIO Home and user's Python <2.7.9 (Windows). Automatically install compatible Python

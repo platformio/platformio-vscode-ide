@@ -15,7 +15,6 @@ import InstallationManager from './installer/manager';
 import PIOTasksProvider from './tasks';
 import PIOTerminal from './terminal';
 import ProjectIndexer from './project/indexer';
-import initCommand from './commands/init';
 import vscode from 'vscode';
 
 
@@ -116,10 +115,6 @@ class PlatformIOVSCodeExtension {
     ));
 
     this._context.subscriptions.push(vscode.commands.registerCommand(
-      'platformio-ide.initProject',
-      initCommand
-    ));
-    this._context.subscriptions.push(vscode.commands.registerCommand(
       'platformio-ide.build',
       async () => {
         await this.terminateMonitorTask();
@@ -153,10 +148,6 @@ class PlatformIOVSCodeExtension {
         this._isMonitorRun = true;
         vscode.commands.executeCommand('workbench.action.tasks.runTask', 'PlatformIO: Monitor');
       }
-    ));
-    this._context.subscriptions.push(vscode.commands.registerCommand(
-      'platformio-ide.libraryManager',
-      () => this.pioTerm.sendText('pio lib')
     ));
     this._context.subscriptions.push(vscode.commands.registerCommand(
       'platformio-ide.newTerminal',

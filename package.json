@@ -1,6 +1,6 @@
 {
   "name": "platformio-ide",
-  "version": "0.8.2",
+  "version": "0.9.0",
   "preview": true,
   "displayName": "PlatformIO IDE",
   "description": "Official PlatformIO IDE for IoT, Arduino, ARM mbed, Espressif (ESP8266/ESP32), STM32, PIC32, nRF51/nRF52, FPGA, CMSIS, SPL, AVR, Samsung ARTIK, libOpenCM3",
@@ -87,11 +87,6 @@
         "category": "PlatformIO"
       },
       {
-        "command": "platformio-ide.initProject",
-        "title": "Initialize or Update Project",
-        "category": "PlatformIO"
-      },
-      {
         "command": "platformio-ide.rebuildProjectIndex",
         "title": "Rebuild IntelliSense Index",
         "category": "PlatformIO"
@@ -113,10 +108,6 @@
       }
     ],
     "keybindings": [
-      {
-        "command": "platformio-ide.initProject",
-        "key": "ctrl+alt+i"
-      },
       {
         "command": "platformio-ide.build",
         "key": "ctrl+alt+b"
@@ -177,7 +168,7 @@
         },
         "platformio-ide.useDevelopmentPIOCore": {
           "type": "boolean",
-          "default": false,
+          "default": true,
           "description": "Use development version of PlatformIO Core"
         },
         "platformio-ide.autoRebuildAutocompleteIndex": {
@@ -229,7 +220,7 @@
   "dependencies": {
     "fs-plus": "^3.0.0",
     "ini": "^1.3.4",
-    "platformio-node-helpers": "^0.2.8"
+    "platformio-node-helpers": "^0.3.0"
   },
   "extensionDependencies": [
     "ms-vscode.cpptools",
