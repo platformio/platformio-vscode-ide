@@ -2,6 +2,7 @@
 
 ## 0.8.3 (20??-??-??)
 
+* Upgraded to PIO Core 3.5.0
 * Pre-install PIO Home in pair with PIO Core (resolve issue with "timeout")
 * Fixed issue with PIO Core update/upgrade commands (issue [#62](https://github.com/platformio/platformio-vscode-ide/issues/62))
 

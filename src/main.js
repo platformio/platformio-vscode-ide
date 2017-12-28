@@ -15,7 +15,6 @@ import InstallationManager from './installer/manager';
 import PIOTasksProvider from './tasks';
 import PIOTerminal from './terminal';
 import ProjectIndexer from './project/indexer';
-import initCommand from './commands/init';
 import vscode from 'vscode';
 
 
