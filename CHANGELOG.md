@@ -1,6 +1,6 @@
 # Release Notes
 
-## 0.8.3 (20??-??-??)
+## 0.9.0 (2017-12-28)
 
 * Upgraded to PIO Core 3.5.0
 * Pre-install PIO Home in pair with PIO Core (resolve issue with "timeout")
