@@ -1,5 +1,9 @@
 # Release Notes
 
+## 0.9.1 (2018-01-11)
+
+* Fixed issue with installer (pip, virtualenv) when non-ASCII chars are used in TMPDIR environment variable
+
 ## 0.9.0 (2017-12-28)
 
 * Upgraded to PIO Core 3.5.0
