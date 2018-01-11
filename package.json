@@ -77,8 +77,18 @@
         "category": "PlatformIO"
       },
       {
+        "command": "platformio-ide.remote",
+        "title": "Remote",
+        "category": "PlatformIO"
+      },
+      {
         "command": "platformio-ide.clean",
         "title": "Clean",
+        "category": "PlatformIO"
+      },
+      {
+        "command": "platformio-ide.test",
+        "title": "Test",
         "category": "PlatformIO"
       },
       {

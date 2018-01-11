@@ -50,7 +50,11 @@ export default class PIOTasksProvider {
     {
       name: 'Test',
       args: ['test']
-    }
+    },
+    {
+      name: 'Remote',
+      args: ['remote', 'run', '--target', 'upload']
+    },
   ];
 
   constructor(projectDir) {
