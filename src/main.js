@@ -135,6 +135,20 @@ class PlatformIOVSCodeExtension {
       }
     ));
     this._context.subscriptions.push(vscode.commands.registerCommand(
+      'platformio-ide.remote',
+      async () => {
+        await this.terminateMonitorTask();
+        vscode.commands.executeCommand('workbench.action.tasks.runTask', 'PlatformIO: Remote');
+      }
+    ));
+    this._context.subscriptions.push(vscode.commands.registerCommand(
+      'platformio-ide.test',
+      async () => {
+        await this.terminateMonitorTask();
+        vscode.commands.executeCommand('workbench.action.tasks.runTask', 'PlatformIO: Test');
+      }
+    ));
+    this._context.subscriptions.push(vscode.commands.registerCommand(
       'platformio-ide.clean',
       async () => {
         await this.terminateMonitorTask();
@@ -185,7 +199,9 @@ class PlatformIOVSCodeExtension {
       ['$(home)', 'PlatformIO: Home', 'platformio-ide.showHome'],
       ['$(check)', 'PlatformIO: Build', 'platformio-ide.build'],
       ['$(arrow-right)', 'PlatformIO: Upload', 'platformio-ide.upload'],
+      ['$(cloud-upload)', 'PlatformIO: Upload to remote device', 'platformio-ide.remote'],
       ['$(trashcan)', 'PlatformIO: Clean', 'platformio-ide.clean'],
+      ['$(beaker)', 'PlatformIO: Test', 'platformio-ide.test'],
       ['$(checklist)', 'PlatformIO: Run a Task', 'workbench.action.tasks.runTask'],
       ['$(plug)', 'PlatformIO: Serial Monitor', 'platformio-ide.serialMonitor'],
       ['$(terminal)', 'PlatformIO: New Terminal', 'platformio-ide.newTerminal']

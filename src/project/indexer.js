@@ -16,6 +16,8 @@ import vscode from 'vscode';
 
 export default class ProjectIndexer {
 
+  static PythonExecutable = null;
+
   constructor(projectDir) {
     this.projectDir = projectDir;
 
@@ -31,7 +33,8 @@ export default class ProjectIndexer {
   async activate() {
     this._isActive = true;
     this.subscriptions = [];
-    await this.setup();
+    await this.addProjectConfigWatcher();
+    await this.updateLibDirsWatchers();
   }
 
   deactivate() {
@@ -57,12 +60,6 @@ export default class ProjectIndexer {
     }
   }
 
-  async setup() {
-    await this.addProjectConfigWatcher();
-    await this.updateLibDirsWatchers();
-    this.requestIndexRebuild(); // FIXME: don't do this when user disables the corresponding setting
-  }
-
   addProjectConfigWatcher() {
     try {
       const watcher = vscode.workspace.createFileSystemWatcher(
@@ -80,6 +77,12 @@ export default class ProjectIndexer {
       this.subscriptions.push(watcher.onDidDelete(() => {
         this.updateLibDirsWatchers();
       }));
+
+      // Current project has been initialized just now or it was just opened.
+      // Either way we have to make sure that indexes are up to date.
+      if (vscode.workspace.getConfiguration('platformio-ide').get('autoRebuildAutocompleteIndex')) {
+        this.requestIndexRebuild();
+      }
 
     } catch (err) {
       console.error(err);
@@ -152,7 +155,7 @@ export default class ProjectIndexer {
         message: 'Verifying if the current directory is a PlatformIO project',
       });
       try {
-        if (!await isPIOProject(this.projectDir)) {
+        if (!isPIOProject(this.projectDir)) {
           return;
         }
         progress.report({
@@ -180,22 +183,18 @@ export default class ProjectIndexer {
   }
 
   async fetchWatchDirs() {
-    if (!await isPIOProject(this.projectDir)) {
-      return [];
+    if (!ProjectIndexer.PythonExecutable) {
+      ProjectIndexer.PythonExecutable = await pioNodeHelpers.misc.getPythonExecutable(vscode.workspace.getConfiguration('platformio-ide').get('useBuiltinPIOCore'));
     }
-    const pythonExecutable = await pioNodeHelpers.misc.getPythonExecutable(vscode.workspace.getConfiguration('platformio-ide').get('useBuiltinPIOCore'));
-    const script = [
-      'from os.path import join; from platformio import VERSION,util;',
-      'print ":".join([',
-      '    join(util.get_home_dir(), "lib"),',
-      '    util.get_projectlib_dir(),',
-      '    util.get_projectlibdeps_dir()',
-      ']) if VERSION[0] == 3 else util.get_lib_dir()',
-    ].map(s => s.trim()).join(' ');
+    const scriptLines = [
+      'from os.path import join',
+      'from platformio import util',
+      'print(":".join([join(util.get_home_dir(), "lib"), util.get_projectlib_dir(), util.get_projectlibdeps_dir()]))'
+    ];
     return new Promise((resolve, reject) => {
       pioNodeHelpers.misc.runCommand(
-        pythonExecutable,
-        ['-c', script],
+        ProjectIndexer.PythonExecutable,
+        ['-c', scriptLines.join(';')],
         (code, stdout, stderr) => {
           if (code === 0) {
             resolve(stdout.toString().trim().split(':'));
