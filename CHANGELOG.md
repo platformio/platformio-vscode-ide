@@ -1,5 +1,11 @@
 # Release Notes
 
+## 0.10.0 (2018-01-11)
+
+* Added PIO Remote & PIO Unit Testing buttons and commands
+* Better explanation for "WindowsError: [Error 5]"
+* Minor improvements for Project Indexer
+
 ## 0.9.1 (2018-01-11)
 
 * Depend on PIO Core 3.5.1-dev
