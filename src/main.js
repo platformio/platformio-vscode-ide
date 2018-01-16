@@ -40,9 +40,6 @@ class PlatformIOVSCodeExtension {
       }
     });
 
-    if (this.config.get('updateTerminalPathConfiguration')) {
-      this.pioTerm.updateEnvConfiguration();
-    }
     this.registerCommands();
 
     await this.startInstaller();
@@ -54,6 +51,10 @@ class PlatformIOVSCodeExtension {
     if (!vscode.workspace.rootPath || !isPIOProject(vscode.workspace.rootPath)) {
       this.initStatusBar(['PlatformIO: Home']);
       return;
+    }
+
+    if (this.config.get('updateTerminalPathConfiguration')) {
+      this.pioTerm.updateEnvConfiguration();
     }
 
     this.initTasksProvider();
