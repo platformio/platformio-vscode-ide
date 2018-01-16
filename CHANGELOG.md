@@ -5,6 +5,7 @@
 * Changed minimum requirements for Python to 2.7.5+
 * Handle correctly conda's virtual environment
 * Don't update Terminal configuration with patched PATH environment for non-PlatformIO projects (issue [#64](https://github.com/platformio/platformio-vscode-ide/issues/64))
+* Ignore Python interpreter from Cygwin environment (issue [#43](https://github.com/platformio/platformio-vscode-ide/issues/43))
 
 ## 0.10.0 (2018-01-11)
 
