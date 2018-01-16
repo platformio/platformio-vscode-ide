@@ -30,6 +30,11 @@ class PlatformIOVSCodeExtension {
 
   async activate(context) {
     this._context = context;
+    const hasPIOProject = this.workspaceHasPIOProject();
+
+    if (this.config.get('activateOnlyOnPlatformIOProject') && !hasPIOProject) {
+      return;
+    }
 
     pioNodeHelpers.misc.patchOSEnviron({
       caller: 'vscode',
@@ -48,7 +53,7 @@ class PlatformIOVSCodeExtension {
       vscode.commands.executeCommand('platformio-ide.showHome');
     }
 
-    if (!vscode.workspace.rootPath || !isPIOProject(vscode.workspace.rootPath)) {
+    if (!hasPIOProject) {
       this.initStatusBar(['PlatformIO: Home']);
       return;
     }
@@ -60,6 +65,10 @@ class PlatformIOVSCodeExtension {
     this.initTasksProvider();
     this.initStatusBar();
     this.initProjectIndexer();
+  }
+
+  workspaceHasPIOProject() {
+    return vscode.workspace.rootPath && isPIOProject(vscode.workspace.rootPath);
   }
 
   startInstaller() {

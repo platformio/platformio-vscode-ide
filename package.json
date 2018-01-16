@@ -203,6 +203,11 @@
           "type": "boolean",
           "default": true,
           "description": "Update Terminal configuration with patched PATH environment"
+        },
+        "platformio-ide.activateOnlyOnPlatformIOProject": {
+          "type": "boolean",
+          "default": false,
+          "description": "Activate extension only when PlatformIO-based project (with `platformio.ini`) is opened in workspace"
         }
       }
     }

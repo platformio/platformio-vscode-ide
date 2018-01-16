@@ -1,7 +1,8 @@
 # Release Notes
 
-## 0.10.1 (2018-01-16)
+## 0.11.0 (2018-01-16)
 
+* Added new option `activateOnlyOnPlatformIOProject` (activate extension only when PlatformIO-based project (with `platformio.ini`) is opened in workspace) (issue [#66](https://github.com/platformio/platformio-vscode-ide/issues/66))
 * Changed minimum requirements for Python to 2.7.5+
 * Handle correctly conda's virtual environment
 * Don't update Terminal configuration with patched PATH environment for non-PlatformIO projects (issue [#64](https://github.com/platformio/platformio-vscode-ide/issues/64))
