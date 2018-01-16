@@ -1,5 +1,10 @@
 # Release Notes
 
+## 0.10.1 (2018-01-16)
+
+* Changed minimum requirements for Python to 2.7.5+
+* Handle correctly conda's virtual environment
+
 ## 0.10.0 (2018-01-11)
 
 * Added PIO Remote & PIO Unit Testing buttons and commands
