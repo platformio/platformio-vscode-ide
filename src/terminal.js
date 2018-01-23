@@ -22,7 +22,8 @@ export default class PIOTerminal {
       name: 'PlatformIO',
       shellPath: constants.IS_WINDOWS ? 'cmd.exe' : null,
       env: {
-        PATH: process.env.PATH
+        PATH: process.env.PATH,
+        PLATFORMIO_CALLER: 'vscode'
       }
     });
   }
@@ -51,7 +52,8 @@ export default class PIOTerminal {
       return;
     }
     config.update(section, {
-      PATH: process.env.PATH
+      PATH: process.env.PATH,
+      PLATFORMIO_CALLER: 'vscode'
     }, vscode.ConfigurationTarget.Workspace);
   }
 }

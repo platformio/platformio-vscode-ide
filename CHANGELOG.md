@@ -1,5 +1,6 @@
 # Release Notes
 
+* Improved support for PIO Core 3.5.1
 * Fixed PIO Core installer when UserName contains a space
 
 ## 0.11.0 (2018-01-16)
@@ -18,12 +19,12 @@
 
 ## 0.9.1 (2018-01-11)
 
-* Depend on PIO Core 3.5.1-dev
+* Improved support for PIO Core 3.5.1-dev
 * Fixed issue with installer (pip, virtualenv) when non-ASCII chars are used in TMPDIR environment variable
 
 ## 0.9.0 (2017-12-28)
 
-* Depend on PIO Core 3.5.0
+* Improved support for PIO Core 3.5.0
 * Pre-install PIO Home in pair with PIO Core (resolve issue with "timeout")
 * Fixed issue with PIO Core update/upgrade commands (issue [#62](https://github.com/platformio/platformio-vscode-ide/issues/62))
 
