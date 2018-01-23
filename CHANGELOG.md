@@ -1,6 +1,7 @@
 # Release Notes
 
 * Improved support for PIO Core 3.5.1
+* Use a custom HOME environment variable for Windows
 * Fixed PIO Core installer when UserName contains a space
 
 ## 0.11.0 (2018-01-16)
