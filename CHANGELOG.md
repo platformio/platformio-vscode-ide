@@ -1,5 +1,11 @@
 # Release Notes
 
+## 0.11.1 (2018-01-23)
+
+* Improved support for PIO Core 3.5.1
+* Use a custom HOME environment variable for Windows
+* Fixed PIO Core installer when UserName contains a space
+
 ## 0.11.0 (2018-01-16)
 
 * Added new option `activateOnlyOnPlatformIOProject` (activate extension only when PlatformIO-based project (with `platformio.ini`) is opened in workspace) (issue [#66](https://github.com/platformio/platformio-vscode-ide/issues/66))
@@ -16,12 +22,12 @@
 
 ## 0.9.1 (2018-01-11)
 
-* Depend on PIO Core 3.5.1-dev
+* Improved support for PIO Core 3.5.1-dev
 * Fixed issue with installer (pip, virtualenv) when non-ASCII chars are used in TMPDIR environment variable
 
 ## 0.9.0 (2017-12-28)
 
-* Depend on PIO Core 3.5.0
+* Improved support for PIO Core 3.5.0
 * Pre-install PIO Home in pair with PIO Core (resolve issue with "timeout")
 * Fixed issue with PIO Core update/upgrade commands (issue [#62](https://github.com/platformio/platformio-vscode-ide/issues/62))
 

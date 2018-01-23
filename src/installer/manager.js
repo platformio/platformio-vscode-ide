@@ -30,7 +30,7 @@ export default class InstallationManager {
         pioCoreMinVersion: PIO_CORE_MIN_VERSION,
         useBuiltinPIOCore: config.get('useBuiltinPIOCore'),
         setUseBuiltinPIOCore: (value) => config.update('platformio-ide.useBuiltinPIOCore', value),
-        useDevelopmentPIOCore: config.get('useDevelopmentPIOCore') || true,  // @FIXME: fix after PIO Core 3.5.1 release
+        useDevelopmentPIOCore: config.get('useDevelopmentPIOCore'),
         pythonPrompt: new PythonPrompt()
       }),
     ];
