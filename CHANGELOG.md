@@ -1,5 +1,7 @@
 # Release Notes
 
+* Fixed PIO Core installer when UserName contains a space
+
 ## 0.11.0 (2018-01-16)
 
 * Added new option `activateOnlyOnPlatformIOProject` (activate extension only when PlatformIO-based project (with `platformio.ini`) is opened in workspace) (issue [#66](https://github.com/platformio/platformio-vscode-ide/issues/66))
