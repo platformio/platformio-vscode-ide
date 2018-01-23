@@ -1,6 +1,6 @@
 {
   "name": "platformio-ide",
-  "version": "0.11.0",
+  "version": "0.11.1",
   "preview": true,
   "displayName": "PlatformIO IDE",
   "description": "Official PlatformIO IDE for IoT, Arduino, ARM mbed, Espressif (ESP8266/ESP32), STM32, PIC32, nRF51/nRF52, FPGA, CMSIS, SPL, AVR, Samsung ARTIK, libOpenCM3",
