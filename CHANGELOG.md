@@ -1,5 +1,10 @@
 # Release Notes
 
+## 0.12.0 (2018-01-30)
+
+* Added a new "Pre-Debug" task and run it before debugging session
+* Significantly improved startup time for [PIO Unified Debugger](http://docs.platformio.org/page/plus/debugging.html)
+
 ## 0.11.1 (2018-01-23)
 
 * Improved support for PIO Core 3.5.1

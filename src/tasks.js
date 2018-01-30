@@ -55,6 +55,10 @@ export default class PIOTasksProvider {
       name: 'Remote',
       args: ['remote', 'run', '--target', 'upload']
     },
+    {
+      name: 'Pre-Debug',
+      args: ['debug']
+    },
   ];
 
   constructor(projectDir) {

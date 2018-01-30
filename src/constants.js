@@ -11,4 +11,4 @@ export const IS_OSX = process.platform == 'darwin';
 export const IS_LINUX = !IS_WINDOWS && !IS_OSX;
 
 export const AUTO_REBUILD_DELAY = 3000;
-export const PIO_CORE_MIN_VERSION = '3.5.1';
+export const PIO_CORE_MIN_VERSION = '3.5.2-a.7';
