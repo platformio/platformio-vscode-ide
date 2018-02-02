@@ -50,8 +50,7 @@ export default class ProjectIndexer {
   }
 
   async toggle() {
-    const config = vscode.workspace.getConfiguration('platformio-ide');
-    const autoRebuildAutocompleteIndex = config.get('autoRebuildAutocompleteIndex');
+    const autoRebuildAutocompleteIndex = vscode.workspace.getConfiguration('platformio-ide').get('autoRebuildAutocompleteIndex');
 
     if (this._isActive && !autoRebuildAutocompleteIndex) {
       this.deactivate();

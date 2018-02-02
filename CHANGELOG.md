@@ -1,5 +1,9 @@
 # Release Notes
 
+## 0.13.0 (2018-02-??)
+
+* New configuration option: "Default action for 'Build' button on PIO Toolbar", default value is `release`. Possible values are `release` or `pre-debug`
+
 ## 0.12.0 (2018-01-30)
 
 * Added a new "Pre-Debug" task and run it before debugging session
@@ -42,7 +46,7 @@
 
 ## 0.8.1 (2017-11-29)
 
-* New configuration option: "Update Terminal configuration with patched PATH environment", default is `true`
+* New configuration option: "Update Terminal configuration with patched PATH environment", default value is `true`
 * Fixed "Expression preceding parentheses of apparent call must have (pointer-to-) function type" for IntelliSense (issue [#54](https://github.com/platformio/platformio-vscode-ide/issues/54))
 
 ## 0.8.0 (2017-11-26)
