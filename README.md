@@ -15,7 +15,7 @@ Cross-platform build system and unified debugger. Remote unit testing and firmwa
 
 * Cross-platform code builder without external dependencies to a system software:
 
-    - 400+ embedded boards
+    - 450+ embedded boards
     - 20+ development platforms
     - 10+ frameworks
 

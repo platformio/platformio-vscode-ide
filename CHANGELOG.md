@@ -1,6 +1,6 @@
 # Release Notes
 
-## 0.13.0 (2018-02-??)
+## 0.12.1 (2018-02-05)
 
 * New configuration option: "Default action for 'Build' button on PIO Toolbar", default value is `release`. Possible values are `release` or `pre-debug`.
   To eliminate a full project rebuilding before debugging, please change this value to `pre-debug`
