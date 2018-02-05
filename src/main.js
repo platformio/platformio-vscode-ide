@@ -21,7 +21,6 @@ import vscode from 'vscode';
 class PlatformIOVSCodeExtension {
 
   constructor() {
-    this.config = vscode.workspace.getConfiguration('platformio-ide');
     this.pioTerm = new PIOTerminal();
 
     this._context = null;
@@ -32,14 +31,14 @@ class PlatformIOVSCodeExtension {
     this._context = context;
     const hasPIOProject = this.workspaceHasPIOProject();
 
-    if (this.config.get('activateOnlyOnPlatformIOProject') && !hasPIOProject) {
+    if (this.getConfig().get('activateOnlyOnPlatformIOProject') && !hasPIOProject) {
       return;
     }
 
     pioNodeHelpers.misc.patchOSEnviron({
       caller: 'vscode',
-      useBuiltinPIOCore: this.config.get('useBuiltinPIOCore'),
-      extraPath: this.config.get('customPATH'),
+      useBuiltinPIOCore: this.getConfig().get('useBuiltinPIOCore'),
+      extraPath: this.getConfig().get('customPATH'),
       extraVars: {
         PLATFORMIO_IDE: getIDEVersion()
       }
@@ -58,13 +57,17 @@ class PlatformIOVSCodeExtension {
       return;
     }
 
-    if (this.config.get('updateTerminalPathConfiguration')) {
+    if (this.getConfig().get('updateTerminalPathConfiguration')) {
       this.pioTerm.updateEnvConfiguration();
     }
 
     this.initTasksProvider();
     this.initStatusBar();
     this.initProjectIndexer();
+  }
+
+  getConfig() {
+    return vscode.workspace.getConfiguration('platformio-ide');
   }
 
   workspaceHasPIOProject() {
@@ -127,8 +130,9 @@ class PlatformIOVSCodeExtension {
     this._context.subscriptions.push(vscode.commands.registerCommand(
       'platformio-ide.build',
       async () => {
-        await this.terminateMonitorTask();
-        vscode.commands.executeCommand('workbench.action.tasks.runTask', 'PlatformIO: Build');
+        vscode.commands.executeCommand(
+          'workbench.action.tasks.runTask',
+          `PlatformIO: ${ this.getConfig().get('defaultToolbarBuildAction') === 'pre-debug' ? 'Pre-Debug' :  'Build'}`);
       }
     ));
     this._context.subscriptions.push(vscode.commands.registerCommand(
@@ -137,7 +141,7 @@ class PlatformIOVSCodeExtension {
         await this.terminateMonitorTask();
 
         let task = 'PlatformIO: Upload';
-        if (this.config.get('forceUploadAndMonitor')) {
+        if (this.getConfig().get('forceUploadAndMonitor')) {
           task = 'PlatformIO: Upload and Monitor';
           this._isMonitorRun = true;
         }
@@ -147,7 +151,6 @@ class PlatformIOVSCodeExtension {
     this._context.subscriptions.push(vscode.commands.registerCommand(
       'platformio-ide.remote',
       async () => {
-        await this.terminateMonitorTask();
         vscode.commands.executeCommand('workbench.action.tasks.runTask', 'PlatformIO: Remote');
       }
     ));
@@ -161,7 +164,6 @@ class PlatformIOVSCodeExtension {
     this._context.subscriptions.push(vscode.commands.registerCommand(
       'platformio-ide.clean',
       async () => {
-        await this.terminateMonitorTask();
         vscode.commands.executeCommand('workbench.action.tasks.runTask', 'PlatformIO: Clean');
       }
     ));
@@ -212,7 +214,7 @@ class PlatformIOVSCodeExtension {
       ['$(cloud-upload)', 'PlatformIO: Upload to remote device', 'platformio-ide.remote'],
       ['$(trashcan)', 'PlatformIO: Clean', 'platformio-ide.clean'],
       ['$(beaker)', 'PlatformIO: Test', 'platformio-ide.test'],
-      ['$(checklist)', 'PlatformIO: Run a Task', 'workbench.action.tasks.runTask'],
+      ['$(checklist)', 'PlatformIO: Run Task...', 'workbench.action.tasks.runTask'],
       ['$(plug)', 'PlatformIO: Serial Monitor', 'platformio-ide.serialMonitor'],
       ['$(terminal)', 'PlatformIO: New Terminal', 'platformio-ide.newTerminal']
     ];
