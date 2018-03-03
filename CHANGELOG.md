@@ -1,6 +1,6 @@
 # Release Notes
 
-## 0.13.0 (2018-03-??)
+## 0.13.0 (2018-03-03)
 
 * Multi-themes (Dark & Light) for PIO Home
 * Fixed GitHub's "TLSV1_ALERT_PROTOCOL_VERSION" issue with PIO Core installer (issue [#88](https://github.com/platformio/platformio-vscode-ide/issues/88))
