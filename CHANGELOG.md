@@ -1,8 +1,13 @@
 # Release Notes
 
+## 0.13.0 (2018-03-03)
+
+* Multi-themes (Dark & Light) for PIO Home
+* Fixed GitHub's "TLSV1_ALERT_PROTOCOL_VERSION" issue with PIO Core installer (issue [#88](https://github.com/platformio/platformio-vscode-ide/issues/88))
+
 ## 0.12.1 (2018-02-05)
 
-* New configuration option: "Default action for 'Build' button on PIO Toolbar", default value is `release`. Possible values are `release` or `pre-debug`.
+* New configuration option `defaultToolbarBuildAction` (default action for 'Build' button on PIO Toolbar), default value is `release`. Possible values are `release` or `pre-debug`.
   To eliminate a full project rebuilding before debugging, please change this value to `pre-debug`
 
 ## 0.12.0 (2018-01-30)

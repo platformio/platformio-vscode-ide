@@ -25,10 +25,17 @@ export class HomeContentProvider {
         }
       }
     });
+    const start = `/${ uri.authority }`;
+    const workbench = vscode.workspace.getConfiguration('workbench') || {};
+    const theme = (workbench.colorTheme || '').toLowerCase().includes('light') ? 'light' : 'dark';
     return `
       <html>
-      <body style="margin: 0; padding: 0; height: 100%; overflow: hidden; background-color: #fff">
-        <iframe src="http://${ params.host }:${ params.port}?start=/${ uri.authority }" width="100%" height="100%" frameborder="0" style="border: 0; left: 0; right: 0; bottom: 0; top: 0; position:absolute;" />
+      <body style="margin: 0; padding: 0; height: 100%; overflow: hidden; background-color: ${ theme === 'light'? '#FFF' : '#1E1E1E' }">
+        <iframe src="${ pioNodeHelpers.home.getFrontendUri(params.host, params.port, { start, theme}) }"
+          width="100%"
+          height="100%"
+          frameborder="0"
+          style="border: 0; left: 0; right: 0; bottom: 0; top: 0; position:absolute;" />
       </body>
       </html>
     `;
