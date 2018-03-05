@@ -1,8 +1,12 @@
 # Release Notes
 
+## 0.13.1 (2018-03-05)
+
+* Fixed "Cannot read property 'theme' of undefined" when opening [PIO Home](http://docs.platformio.org/page/home/index.html)
+
 ## 0.13.0 (2018-03-03)
 
-* Multi-themes (Dark & Light) for PIO Home
+* Multiple themes (Dark & Light) for [PIO Home](http://docs.platformio.org/page/home/index.html)
 * Fixed GitHub's "TLSV1_ALERT_PROTOCOL_VERSION" issue with PIO Core installer (issue [#88](https://github.com/platformio/platformio-vscode-ide/issues/88))
 
 ## 0.12.1 (2018-02-05)
