@@ -1,5 +1,9 @@
 # Release Notes
 
+## 0.13.1 (2018-03-05)
+
+* Fixed "Cannot read property 'theme' of undefined" when opening [PIO Home](http://docs.platformio.org/page/home/index.html)
+
 ## 0.13.0 (2018-03-03)
 
 * Multiple themes (Dark & Light) for [PIO Home](http://docs.platformio.org/page/home/index.html)
