@@ -47,10 +47,7 @@ class PlatformIOVSCodeExtension {
     this.registerCommands();
 
     await this.startInstaller();
-
-    if (pioNodeHelpers.home.showAtStartup('vscode')) {
-      vscode.commands.executeCommand('platformio-ide.showHome');
-    }
+    await this.startPIOHome();
 
     if (!hasPIOProject) {
       this.initStatusBar(['PlatformIO: Home']);
@@ -80,7 +77,7 @@ class PlatformIOVSCodeExtension {
       title: 'PlatformIO',
     }, async (progress) => {
       progress.report({
-        message: 'Verifying PlatformIO Core installation...',
+        message: 'Checking PlatformIO Core installation...',
       });
 
       const im = new InstallationManager(this._context.globalState);
@@ -117,6 +114,19 @@ class PlatformIOVSCodeExtension {
       im.destroy();
       return Promise.reject(null);
     });
+  }
+
+  async startPIOHome() {
+    if (!pioNodeHelpers.home.showAtStartup('vscode')) {
+      return;
+    }
+    // Hot-loading of PIO Home Server
+    try {
+      await pioNodeHelpers.home.ensureServerStarted();
+    } catch (err) {
+      console.error(err);
+    }
+    vscode.commands.executeCommand('platformio-ide.showHome');
   }
 
   registerCommands() {
