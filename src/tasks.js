@@ -15,10 +15,10 @@ import vscode from 'vscode';
 
 export default class PIOTasksProvider {
 
-  static AUTO_REFRESH_DELAY = 1000;  // 1 sec
+  static AUTO_REFRESH_DELAY = 1000; // 1 sec
   static ENV_NAME_PREFIX = 'env:';
   static title = 'PlatformIO';
-  static baseTasks = [
+  static baseTasks =[
     {
       name: 'Build',
       args: ['run']
@@ -252,10 +252,15 @@ class TaskCreator {
 
   create() {
     const task = new vscode.Task(
-      { type: PIOTasksProvider.title, args: this._args },
+      {
+        type: PIOTasksProvider.title,
+        args: this._args
+      },
       this.name,
       PIOTasksProvider.title,
-      new vscode.ProcessExecution(IS_WINDOWS ? 'platformio.exe' : 'platformio', this._args, { env: process.env }),
+      new vscode.ProcessExecution(IS_WINDOWS ? 'platformio.exe' : 'platformio', this._args, {
+        env: process.env
+      }),
       '$platformio'
     );
     task.presentationOptions = {

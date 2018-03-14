@@ -1,6 +1,6 @@
 # PlatformIO IDE for VSCode
 
-[![Marketplace Version](https://vsmarketplacebadge.apphb.com/version-short/platformio.platformio-ide.svg)](https://marketplace.visualstudio.com/items?itemName=platformio.platformio-ide) [![Installs](https://vsmarketplacebadge.apphb.com/installs-short/platformio.platformio-ide.svg)](https://marketplace.visualstudio.com/items?itemName=platformio.platformio-ide) [![Rating](https://vsmarketplacebadge.apphb.com/rating-short/platformio.platformio-ide.svg)](https://marketplace.visualstudio.com/items?itemName=platformio.platformio-ide)
+[![Marketplace Version](https://vsmarketplacebadge.apphb.com/version-short/platformio.platformio-ide.svg)](https://marketplace.visualstudio.com/items?itemName=platformio.platformio-ide) [![Installs](https://vsmarketplacebadge.apphb.com/installs-short/platformio.platformio-ide.svg)](https://marketplace.visualstudio.com/items?itemName=platformio.platformio-ide)
 
 **The next generation integrated development environment for IoT**
 

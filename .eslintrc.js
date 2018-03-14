@@ -38,7 +38,9 @@ module.exports = {
     ],
     'no-console': [
       'error',
-      { 'allow': ['warn', 'error', 'info'] },
+      {
+        'allow': ['warn', 'error', 'info']
+      },
     ],
     'prefer-const': 'error',
     'quotes': [
@@ -61,6 +63,8 @@ module.exports = {
     'no-useless-escape': [
       'off'
     ],
-    'no-empty': [2, { 'allowEmptyCatch': true }]
+    'no-empty': [2, {
+      'allowEmptyCatch': true
+    }]
   },
 };

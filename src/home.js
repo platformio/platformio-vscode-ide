@@ -8,6 +8,7 @@
 
 import * as pioNodeHelpers from 'platformio-node-helpers';
 
+import { extension } from './main';
 import vscode from 'vscode';
 
 
@@ -30,8 +31,12 @@ export class HomeContentProvider {
     const theme = (workbench.colorTheme || '').toLowerCase().includes('light') ? 'light' : 'dark';
     return `
       <html>
-      <body style="margin: 0; padding: 0; height: 100%; overflow: hidden; background-color: ${ theme === 'light'? '#FFF' : '#1E1E1E' }">
-        <iframe src="${ pioNodeHelpers.home.getFrontendUri(params.host, params.port, { start, theme}) }"
+      <body style="margin: 0; padding: 0; height: 100%; overflow: hidden; background-color: ${theme === 'light' ? '#FFF' : '#1E1E1E' }">
+        <iframe src="${ pioNodeHelpers.home.getFrontendUri(params.host, params.port, {
+        start,
+        theme,
+        workspace: extension.loadEnterpriseSettings().defaultPIOHomeWorkspace
+      }) }"
           width="100%"
           height="100%"
           frameborder="0"
