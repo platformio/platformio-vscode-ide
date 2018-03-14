@@ -69,7 +69,11 @@ class PlatformIOVSCodeExtension {
   }
 
   loadEnterpriseSettings() {
-    const ext = vscode.extensions.all.find(item => item.id.startsWith('platformio.') && item.id !== 'platformio.platformio-ide');
+    const ext = vscode.extensions.all.find(item =>
+      item.id.startsWith('platformio.')
+      && item.id !== 'platformio.platformio-ide'
+      && item.isActive
+    );
     if (!ext || !ext.exports || !ext.exports.hasOwnProperty('settings')) {
       return {};
     }
