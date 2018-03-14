@@ -1,5 +1,10 @@
 # Release Notes
 
+## 0.14.0 (2018-03-14)
+
+* Intial support for PIO Enterprise
+* Speed up the loading of PIO Home [PIO Home](http://docs.platformio.org/page/home/index.html)
+
 ## 0.13.2 (2018-03-08)
 
 * Fixed endless loop with installing PIO Core when `platformio-ide.useDevelopmentPIOCore` is set to `false` (issue [#86](https://github.com/platformio/platformio-vscode-ide/issues/86))

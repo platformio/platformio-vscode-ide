@@ -48,12 +48,9 @@ class PlatformIOVSCodeExtension {
 
     await this.startInstaller();
 
-    if (pioNodeHelpers.home.showAtStartup('vscode')) {
-      vscode.commands.executeCommand('platformio-ide.showHome');
-    }
-
     if (!hasPIOProject) {
-      this.initStatusBar(['PlatformIO: Home']);
+      await this.startPIOHome();
+      this.initStatusBar({ filterCommands: ['platformio-ide.showHome'] });
       return;
     }
 
@@ -62,12 +59,21 @@ class PlatformIOVSCodeExtension {
     }
 
     this.initTasksProvider();
-    this.initStatusBar();
+    this.initStatusBar({ ignoreCommands: this.loadEnterpriseSettings().ignoreToolbarCommands });
     this.initProjectIndexer();
+    await this.startPIOHome();
   }
 
   getConfig() {
     return vscode.workspace.getConfiguration('platformio-ide');
+  }
+
+  loadEnterpriseSettings() {
+    const ext = vscode.extensions.all.find(item => item.id.startsWith('platformio.') && item.id !== 'platformio.platformio-ide');
+    if (!ext || !ext.exports || !ext.exports.hasOwnProperty('settings')) {
+      return {};
+    }
+    return ext.exports.settings;
   }
 
   workspaceHasPIOProject() {
@@ -80,7 +86,7 @@ class PlatformIOVSCodeExtension {
       title: 'PlatformIO',
     }, async (progress) => {
       progress.report({
-        message: 'Verifying PlatformIO Core installation...',
+        message: 'Checking PlatformIO Core installation...',
       });
 
       const im = new InstallationManager(this._context.globalState);
@@ -119,6 +125,19 @@ class PlatformIOVSCodeExtension {
     });
   }
 
+  async startPIOHome() {
+    if (!pioNodeHelpers.home.showAtStartup('vscode')) {
+      return;
+    }
+    // Hot-loading of PIO Home Server
+    try {
+      await pioNodeHelpers.home.ensureServerStarted();
+    } catch (err) {
+      console.error(err);
+    }
+    vscode.commands.executeCommand('platformio-ide.showHome');
+  }
+
   registerCommands() {
     // PIO Home
     this._context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider('platformio-home', new HomeContentProvider()));
@@ -132,7 +151,7 @@ class PlatformIOVSCodeExtension {
       async () => {
         vscode.commands.executeCommand(
           'workbench.action.tasks.runTask',
-          `PlatformIO: ${ this.getConfig().get('defaultToolbarBuildAction') === 'pre-debug' ? 'Pre-Debug' :  'Build'}`);
+          `PlatformIO: ${this.getConfig().get('defaultToolbarBuildAction') === 'pre-debug' ? 'Pre-Debug' : 'Build'}`);
       }
     ));
     this._context.subscriptions.push(vscode.commands.registerCommand(
@@ -206,8 +225,8 @@ class PlatformIOVSCodeExtension {
     this._context.subscriptions.push(new PIOTasksProvider(vscode.workspace.rootPath));
   }
 
-  initStatusBar(filterItems) {
-    const items = [
+  initStatusBar({ filterCommands, ignoreCommands }) {
+    [
       ['$(home)', 'PlatformIO: Home', 'platformio-ide.showHome'],
       ['$(check)', 'PlatformIO: Build', 'platformio-ide.build'],
       ['$(arrow-right)', 'PlatformIO: Upload', 'platformio-ide.upload'],
@@ -217,16 +236,18 @@ class PlatformIOVSCodeExtension {
       ['$(checklist)', 'PlatformIO: Run Task...', 'workbench.action.tasks.runTask'],
       ['$(plug)', 'PlatformIO: Serial Monitor', 'platformio-ide.serialMonitor'],
       ['$(terminal)', 'PlatformIO: New Terminal', 'platformio-ide.newTerminal']
-    ];
-    items.filter(item => !filterItems || filterItems.includes(item[1])).reverse().forEach((item, index) => {
-      const [text, tooltip, command] = item;
-      const sbItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 10 + index);
-      sbItem.text = text;
-      sbItem.tooltip = tooltip;
-      sbItem.command = command;
-      sbItem.show();
-      this._context.subscriptions.push(sbItem);
-    });
+    ]
+      .filter(item => (!filterCommands || filterCommands.includes(item[2])) && (!ignoreCommands || !ignoreCommands.includes(item[2])) )
+      .reverse()
+      .forEach((item, index) => {
+        const [text, tooltip, command] = item;
+        const sbItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 10 + index);
+        sbItem.text = text;
+        sbItem.tooltip = tooltip;
+        sbItem.command = command;
+        sbItem.show();
+        this._context.subscriptions.push(sbItem);
+      });
   }
 
   initProjectIndexer() {
@@ -236,7 +257,9 @@ class PlatformIOVSCodeExtension {
     indexer.toggle();
     this._context.subscriptions.push(vscode.commands.registerCommand(
       'platformio-ide.rebuildProjectIndex',
-      () => indexer.doRebuild({ verbose: true })
+      () => indexer.doRebuild({
+        verbose: true
+      })
     ));
   }
 
@@ -246,12 +269,13 @@ class PlatformIOVSCodeExtension {
   }
 }
 
-const pio = new PlatformIOVSCodeExtension();
+export const extension = new PlatformIOVSCodeExtension();
 
 export function activate(context) {
-  pio.activate(context);
+  extension.activate(context);
+  return extension;
 }
 
 export function deactivate() {
-  pio.deactivate();
+  extension.deactivate();
 }
