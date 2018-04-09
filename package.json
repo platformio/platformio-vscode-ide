@@ -230,7 +230,7 @@
     "vscode:package": "babel src --out-dir lib && vsce package"
   },
   "devDependencies": {
-    "@types/node": "^6.0.101",
+    "@types/node": "^7",
     "babel-cli": "^6.24.1",
     "babel-eslint": "^8.0.1",
     "babel-plugin-transform-class-properties": "^6.24.1",

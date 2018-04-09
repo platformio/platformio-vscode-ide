@@ -1,5 +1,9 @@
 # Release Notes
 
+## 0.14.1 (2018-04-09)
+
+* Temporary workaround for urgent VSCode bug in v1.22 with a broken task runner for Windows OS (issue [#97](https://github.com/platformio/platformio-vscode-ide/issues/97))
+
 ## 0.14.0 (2018-03-14)
 
 * Intial support for PIO Enterprise
