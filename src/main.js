@@ -25,6 +25,7 @@ class PlatformIOVSCodeExtension {
 
     this._context = null;
     this._isMonitorRun = false;
+    this._enterpriseSettings = undefined;
   }
 
   async activate(context) {
@@ -59,7 +60,7 @@ class PlatformIOVSCodeExtension {
     }
 
     this.initTasksProvider();
-    this.initStatusBar({ ignoreCommands: this.loadEnterpriseSettings().ignoreToolbarCommands });
+    this.initStatusBar({ ignoreCommands: this.getEnterpriseSetting('ignoreToolbarCommands') });
     this.initProjectIndexer();
     await this.startPIOHome();
   }
@@ -75,9 +76,19 @@ class PlatformIOVSCodeExtension {
       && item.isActive
     );
     if (!ext || !ext.exports || !ext.exports.hasOwnProperty('settings')) {
-      return {};
+      return;
     }
     return ext.exports.settings;
+  }
+
+  getEnterpriseSetting(id, defaultValue=undefined) {
+    if (!this._enterpriseSettings) {
+      this._enterpriseSettings = this.loadEnterpriseSettings();
+    }
+    if (!this._enterpriseSettings || !this._enterpriseSettings.hasOwnProperty(id)) {
+      return defaultValue;
+    }
+    return this._enterpriseSettings[id];
   }
 
   workspaceHasPIOProject() {

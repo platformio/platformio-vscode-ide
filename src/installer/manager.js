@@ -11,6 +11,7 @@ import * as pioNodeHelpers from 'platformio-node-helpers';
 import { PIO_CORE_MIN_VERSION } from '../constants';
 import PythonPrompt from './python-prompt';
 import StateStorage from './state-storage';
+import { extension } from '../main';
 import vscode from 'vscode';
 
 
@@ -31,7 +32,14 @@ export default class InstallationManager {
         useBuiltinPIOCore: config.get('useBuiltinPIOCore'),
         setUseBuiltinPIOCore: (value) => config.update('platformio-ide.useBuiltinPIOCore', value),
         useDevelopmentPIOCore: config.get('useDevelopmentPIOCore'),
-        pythonPrompt: new PythonPrompt()
+        pythonPrompt: new PythonPrompt(),
+        autorunPIOCmds: [
+          {
+            args: ['home', '--host', '__do_not_start__'],
+            when: 'post-install',
+            suppressError: true
+          }
+        ].concat(extension.getEnterpriseSetting('autorunPIOCoreCmds', []))
       }),
     ];
   }
