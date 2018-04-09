@@ -251,6 +251,16 @@ class TaskCreator {
   }
 
   create() {
+    let pioCmd = 'platformio';
+    if (IS_WINDOWS) {
+      pioCmd = 'platformio.exe';
+      process.env.PATH.split(path.delimiter).forEach(item => {
+        if (fs.isFileSync(path.join(item, pioCmd))) {
+          pioCmd = path.join(item, pioCmd);
+          return;
+        }
+      });
+    }
     const task = new vscode.Task(
       {
         type: PIOTasksProvider.title,
@@ -258,7 +268,7 @@ class TaskCreator {
       },
       this.name,
       PIOTasksProvider.title,
-      new vscode.ProcessExecution(IS_WINDOWS ? 'platformio.exe' : 'platformio', this._args, {
+      new vscode.ProcessExecution(pioCmd, this._args, {
         env: process.env
       }),
       '$platformio'

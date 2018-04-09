@@ -11,6 +11,7 @@ import * as pioNodeHelpers from 'platformio-node-helpers';
 import { PIO_CORE_MIN_VERSION } from '../constants';
 import PythonPrompt from './python-prompt';
 import StateStorage from './state-storage';
+import { extension } from '../main';
 import vscode from 'vscode';
 
 
@@ -25,14 +26,35 @@ export default class InstallationManager {
     this.stateStorage = new StateStorage(globalState, this.STORAGE_STATE_KEY);
 
     const config = vscode.workspace.getConfiguration('platformio-ide');
+    const defaultParams = {
+      pioCoreMinVersion: PIO_CORE_MIN_VERSION,
+      useBuiltinPIOCore: config.get('useBuiltinPIOCore'),
+      setUseBuiltinPIOCore: (value) => config.update('platformio-ide.useBuiltinPIOCore', value),
+      useDevelopmentPIOCore: config.get('useDevelopmentPIOCore'),
+      pythonPrompt: new PythonPrompt()
+    };
     this.stages = [
-      new pioNodeHelpers.installer.PlatformIOCoreStage(this.stateStorage, this.onDidStatusChange.bind(this), {
-        pioCoreMinVersion: PIO_CORE_MIN_VERSION,
-        useBuiltinPIOCore: config.get('useBuiltinPIOCore'),
-        setUseBuiltinPIOCore: (value) => config.update('platformio-ide.useBuiltinPIOCore', value),
-        useDevelopmentPIOCore: config.get('useDevelopmentPIOCore'),
-        pythonPrompt: new PythonPrompt()
-      }),
+      new pioNodeHelpers.installer.PlatformIOCoreStage(
+        this.stateStorage,
+        this.onDidStatusChange.bind(this),
+        new Proxy(defaultParams, {
+          get: (obj, prop) => {
+            if (prop in obj) {
+              return obj[prop];
+            }
+            // wait a while when enterprise settings will be loaded
+            else if (prop === 'autorunPIOCmds') {
+              return [
+                {
+                  args: ['home', '--host', '__do_not_start__'],
+                  when: 'post-install',
+                  suppressError: true
+                }
+              ].concat(extension.getEnterpriseSetting('autorunPIOCoreCmds', []));
+            }
+            return undefined;
+          }
+        })),
     ];
   }
 
@@ -75,7 +97,7 @@ export default class InstallationManager {
   }
 
   async install() {
-    await  Promise.all(this.stages.map(stage => stage.install()));
+    await Promise.all(this.stages.map(stage => stage.install()));
 
     const result = await vscode.window.showInformationMessage(
       'PlatformIO IDE has been successfully installed! Please reload window',

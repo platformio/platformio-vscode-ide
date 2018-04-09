@@ -35,7 +35,7 @@ export class HomeContentProvider {
         <iframe src="${ pioNodeHelpers.home.getFrontendUri(params.host, params.port, {
         start,
         theme,
-        workspace: extension.loadEnterpriseSettings().defaultPIOHomeWorkspace
+        workspace: extension.getEnterpriseSetting('defaultPIOHomeWorkspace')
       }) }"
           width="100%"
           height="100%"
