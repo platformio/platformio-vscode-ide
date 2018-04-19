@@ -45,9 +45,8 @@ class PlatformIOVSCodeExtension {
       }
     });
 
-    this.registerCommands();
-
     await this.startInstaller();
+    this.registerCommands();
 
     if (!hasPIOProject) {
       await this.startPIOHome();
@@ -155,10 +154,18 @@ class PlatformIOVSCodeExtension {
 
   registerCommands() {
     // PIO Home
-    this._context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider('platformio-home', new HomeContentProvider()));
+    this._context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider(
+      'platformio-home',
+      new HomeContentProvider())
+    );
     this._context.subscriptions.push(vscode.commands.registerCommand(
       'platformio-ide.showHome',
-      () => vscode.commands.executeCommand('vscode.previewHtml', vscode.Uri.parse('platformio-home://'), vscode.ViewColumn.One, 'PIO Home')
+      () => vscode.commands.executeCommand(
+        'vscode.previewHtml',
+        vscode.Uri.parse('platformio-home://'),
+        vscode.ViewColumn.One,
+        this.getEnterpriseSetting('pioHomeTitle', 'PIO Home')
+      )
     ));
 
     this._context.subscriptions.push(vscode.commands.registerCommand(
