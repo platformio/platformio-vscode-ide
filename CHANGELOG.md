@@ -1,6 +1,6 @@
 # Release Notes
 
-## 0.14.2 (2018-04-??)
+## 0.14.2 (2018-04-28)
 
 * Fixed "PIP: Could not find a version that satisfies the requirement" (issue [#102](https://github.com/platformio/platformio-vscode-ide/issues/102))
 
