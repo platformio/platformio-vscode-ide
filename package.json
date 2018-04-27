@@ -1,50 +1,28 @@
 {
   "name": "platformio-ide",
-  "version": "0.14.1",
+  "version": "0.14.2",
   "publisher": "platformio",
   "engines": {
     "vscode": "^1.18.0"
   },
   "license": "Apache-2.0",
   "displayName": "PlatformIO IDE",
-  "description": "Official PlatformIO IDE for IoT, Arduino, ARM mbed, Espressif (ESP8266/ESP32), STM32, PIC32, nRF51/nRF52, FPGA, CMSIS, SPL, AVR, Samsung ARTIK, libOpenCM3",
+  "description": "Development environment for IoT, Arduino, ARM mbed, Espressif (ESP8266/ESP32), STM32, PIC32, nRF51/nRF52, FPGA, CMSIS, SPL, AVR, Samsung ARTIK, libOpenCM3",
   "categories": [
-    "Languages",
     "Debuggers",
+    "Languages",
     "Other"
   ],
   "keywords": [
-    "PlatformIO",
     "IoT",
-    "arduino",
-    "mbed",
-    "debug",
-    "serial",
-    "unittest",
     "embedded",
-    "flash",
     "firmware",
-    "CMSIS",
-    "ESP-IDF",
-    "SPL",
-    "STM32Cube",
-    "avr",
-    "arm",
-    "espressif",
-    "esp8266",
-    "esp32",
-    "stm32",
-    "pic32",
-    "nRF51",
-    "nRF52",
-    "fpga",
-    "verilog",
-    "hardware",
-    "monitor"
+    "debug",
+    "arduino"
   ],
   "preview": true,
   "main": "./lib/main",
-  "icon": "images/icon.png",
+  "icon": "resources/platformio-logo.png",
   "homepage": "http://platformio.org",
   "author": {
     "name": "PlatformIO.Org"
@@ -244,7 +222,7 @@
   "dependencies": {
     "fs-plus": "^3.0.0",
     "ini": "^1.3.4",
-    "platformio-node-helpers": "^0.5.1"
+    "platformio-node-helpers": "^0.5.2"
   },
   "extensionDependencies": [
     "ms-vscode.cpptools",

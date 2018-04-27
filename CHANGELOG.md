@@ -1,5 +1,9 @@
 # Release Notes
 
+## 0.14.2 (2018-04-28)
+
+* Fixed "PIP: Could not find a version that satisfies the requirement" (issue [#102](https://github.com/platformio/platformio-vscode-ide/issues/102))
+
 ## 0.14.1 (2018-04-09)
 
 * Temporary workaround for urgent VSCode bug in v1.22 with a broken task runner for Windows OS (issue [#97](https://github.com/platformio/platformio-vscode-ide/issues/97))

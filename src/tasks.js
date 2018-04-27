@@ -67,7 +67,6 @@ export default class PIOTasksProvider {
 
     this._refreshTimeout = null;
 
-    this.removeStaticTasks();
     this.requestRefresh();
   }
 
@@ -76,28 +75,6 @@ export default class PIOTasksProvider {
       subscription.dispose();
     }
     this.subscriptions = [];
-  }
-
-  async removeStaticTasks() {
-    const manifestPath = path.join(this.projectDir, '.vscode', 'tasks.json');
-    if (!fs.isFileSync(manifestPath)) {
-      return;
-    }
-    const content = await new Promise(resolve => {
-      fs.readFile(
-        manifestPath,
-        'utf-8',
-        (err, data) => resolve(err ? '' : data)
-      );
-    });
-    if (!content.includes('PlatformIO: Upload SPIFFS image')) {
-      return;
-    }
-    try {
-      fs.unlink(manifestPath);
-    } catch (err) {
-      console.error(err);
-    }
   }
 
   requestRefresh() {
@@ -251,16 +228,6 @@ class TaskCreator {
   }
 
   create() {
-    let pioCmd = 'platformio';
-    if (IS_WINDOWS) {
-      pioCmd = 'platformio.exe';
-      process.env.PATH.split(path.delimiter).forEach(item => {
-        if (fs.isFileSync(path.join(item, pioCmd))) {
-          pioCmd = path.join(item, pioCmd);
-          return;
-        }
-      });
-    }
     const task = new vscode.Task(
       {
         type: PIOTasksProvider.title,
@@ -268,7 +235,7 @@ class TaskCreator {
       },
       this.name,
       PIOTasksProvider.title,
-      new vscode.ProcessExecution(pioCmd, this._args, {
+      new vscode.ProcessExecution(IS_WINDOWS ? 'platformio.exe' : 'platformio', this._args, {
         env: process.env
       }),
       '$platformio'
