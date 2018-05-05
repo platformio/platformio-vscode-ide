@@ -12,13 +12,52 @@ import { extension } from './main';
 import vscode from 'vscode';
 
 
-export class HomeContentProvider {
+export default class PIOHome {
 
-  static shutdownServer() {
-    pioNodeHelpers.home.shutdownServer();
+  constructor() {
+    this._currentPanel = null;
   }
 
-  async provideTextDocumentContent(uri) {
+  toggle() {
+    if (this._currentPanel) {
+      this._currentPanel.reveal(vscode.ViewColumn.One);
+    } else {
+      this._currentPanel = this.newPanel();
+    }
+  }
+
+  async newPanel() {
+    const panel = vscode.window.createWebviewPanel(
+      'pioHome',
+      extension.getEnterpriseSetting('pioHomeTitle', 'PIO Home'),
+      vscode.ViewColumn.One,
+      {
+        enableScripts: true,
+        retainContextWhenHidden: true
+      }
+    );
+    panel.onDidDispose(this.onPanelDisposed.bind(this));
+    panel.webview.html = this.getLoadingContent();
+    this.getWebviewContent().then(html => panel.webview.html = html );
+    return panel;
+  }
+
+  getTheme() {
+    const workbench = vscode.workspace.getConfiguration('workbench') || {};
+    return (workbench.colorTheme || '').toLowerCase().includes('light') ? 'light' : 'dark';
+  }
+
+  getLoadingContent() {
+    const theme = this.getTheme();
+    return `<!DOCTYPE html>
+    <html lang="en">
+    <body style="background-color: ${theme === 'light' ? '#FFF' : '#1E1E1E' }">
+      Loading...
+    </body>
+    </html>`;
+  }
+
+  async getWebviewContent() {
     const params = await pioNodeHelpers.home.ensureServerStarted({
       onIDECommand: (command, params) => {
         if (command === 'open_project') {
@@ -26,11 +65,10 @@ export class HomeContentProvider {
         }
       }
     });
-    const start = `/${ uri.authority }`;
-    const workbench = vscode.workspace.getConfiguration('workbench') || {};
-    const theme = (workbench.colorTheme || '').toLowerCase().includes('light') ? 'light' : 'dark';
-    return `
-      <html>
+    const start = '/';
+    const theme = this.getTheme();
+    return `<!DOCTYPE html>
+      <html lang="en">
       <body style="margin: 0; padding: 0; height: 100%; overflow: hidden; background-color: ${theme === 'light' ? '#FFF' : '#1E1E1E' }">
         <iframe src="${ pioNodeHelpers.home.getFrontendUri(params.host, params.port, {
         start,
@@ -44,6 +82,18 @@ export class HomeContentProvider {
       </body>
       </html>
     `;
+  }
+
+  onPanelDisposed() {
+    this._currentPanel = null;
+  }
+
+  shutdownServer() {
+    pioNodeHelpers.home.shutdownServer();
+  }
+
+  dispose() {
+    this.shutdownServer();
   }
 
 }

@@ -2,3 +2,5 @@
 /lib/
 *.vsix
 yarn.lock
+*.dict
+.vscode/settings.json
