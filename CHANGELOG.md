@@ -1,6 +1,6 @@
 # Release Notes
 
-## 0.15.0 (2018-05-??)
+## 0.15.0 (2018-05-08)
 
 **Requires VSCode 1.23.0 or above**
 
