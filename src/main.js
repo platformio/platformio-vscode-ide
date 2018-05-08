@@ -7,11 +7,12 @@
  */
 
 import * as pioNodeHelpers from 'platformio-node-helpers';
+import * as piodebug from 'platformio-vscode-debug';
 
 import { getIDEVersion, isPIOProject } from './utils';
 
-import { HomeContentProvider } from './home';
 import InstallationManager from './installer/manager';
+import PIOHome from './home';
 import PIOTasksProvider from './tasks';
 import PIOTerminal from './terminal';
 import ProjectIndexer from './project/indexer';
@@ -21,20 +22,27 @@ import vscode from 'vscode';
 class PlatformIOVSCodeExtension {
 
   constructor() {
-    this.pioTerm = new PIOTerminal();
+    this.context = null;
+    this.pioTerm = null;
+    this.pioHome = null;
 
-    this._context = null;
     this._isMonitorRun = false;
     this._enterpriseSettings = undefined;
   }
 
   async activate(context) {
-    this._context = context;
+    this.context = context;
     const hasPIOProject = this.workspaceHasPIOProject();
 
     if (this.getConfig().get('activateOnlyOnPlatformIOProject') && !hasPIOProject) {
       return;
     }
+
+    this.pioTerm = new PIOTerminal();
+    this.pioHome = new PIOHome();
+
+    this.context.subscriptions.push(this.pioTerm);
+    this.context.subscriptions.push(this.pioHome);
 
     pioNodeHelpers.misc.patchOSEnviron({
       caller: 'vscode',
@@ -58,6 +66,7 @@ class PlatformIOVSCodeExtension {
       this.pioTerm.updateEnvConfiguration();
     }
 
+    this.initDebug();
     this.initTasksProvider();
     this.initStatusBar({ ignoreCommands: this.getEnterpriseSetting('ignoreToolbarCommands') });
     this.initProjectIndexer();
@@ -80,7 +89,7 @@ class PlatformIOVSCodeExtension {
     return ext.exports.settings;
   }
 
-  getEnterpriseSetting(id, defaultValue=undefined) {
+  getEnterpriseSetting(id, defaultValue = undefined) {
     if (!this._enterpriseSettings) {
       this._enterpriseSettings = this.loadEnterpriseSettings();
     }
@@ -103,7 +112,7 @@ class PlatformIOVSCodeExtension {
         message: 'Checking PlatformIO Core installation...',
       });
 
-      const im = new InstallationManager(this._context.globalState);
+      const im = new InstallationManager(this.context.globalState);
       if (im.locked()) {
         vscode.window.showInformationMessage(
           'PlatformIO IDE installation has been suspended, because PlatformIO '
@@ -114,11 +123,11 @@ class PlatformIOVSCodeExtension {
         progress.report({
           message: 'Installing PlatformIO IDE...',
         });
-        const outputChannel = vscode.window.createOutputChannel('PlatformIO Instalation');
+        const outputChannel = vscode.window.createOutputChannel('PlatformIO Installation');
         outputChannel.show();
 
         outputChannel.appendLine('Installing PlatformIO Core...');
-        outputChannel.appendLine('Please don\'t close this window and don\'t '
+        outputChannel.appendLine('Please do not close this window and do not '
           + 'open other folders until this process is completed.');
 
         try {
@@ -153,30 +162,18 @@ class PlatformIOVSCodeExtension {
   }
 
   registerCommands() {
-    // PIO Home
-    this._context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider(
-      'platformio-home',
-      new HomeContentProvider())
-    );
-    this._context.subscriptions.push(vscode.commands.registerCommand(
+    this.context.subscriptions.push(vscode.commands.registerCommand(
       'platformio-ide.showHome',
+      () => this.pioHome.toggle()
+    ));
+    this.context.subscriptions.push(vscode.commands.registerCommand(
+      'platformio-ide.build',
       () => vscode.commands.executeCommand(
-        'vscode.previewHtml',
-        vscode.Uri.parse('platformio-home://'),
-        vscode.ViewColumn.One,
-        this.getEnterpriseSetting('pioHomeTitle', 'PIO Home')
+        'workbench.action.tasks.runTask',
+        `PlatformIO: ${this.getConfig().get('defaultToolbarBuildAction') === 'pre-debug' ? 'Pre-Debug' : 'Build'}`
       )
     ));
-
-    this._context.subscriptions.push(vscode.commands.registerCommand(
-      'platformio-ide.build',
-      async () => {
-        vscode.commands.executeCommand(
-          'workbench.action.tasks.runTask',
-          `PlatformIO: ${this.getConfig().get('defaultToolbarBuildAction') === 'pre-debug' ? 'Pre-Debug' : 'Build'}`);
-      }
-    ));
-    this._context.subscriptions.push(vscode.commands.registerCommand(
+    this.context.subscriptions.push(vscode.commands.registerCommand(
       'platformio-ide.upload',
       async () => {
         await this.terminateMonitorTask();
@@ -189,26 +186,22 @@ class PlatformIOVSCodeExtension {
         vscode.commands.executeCommand('workbench.action.tasks.runTask', task);
       }
     ));
-    this._context.subscriptions.push(vscode.commands.registerCommand(
+    this.context.subscriptions.push(vscode.commands.registerCommand(
       'platformio-ide.remote',
-      async () => {
-        vscode.commands.executeCommand('workbench.action.tasks.runTask', 'PlatformIO: Remote');
-      }
+      () => vscode.commands.executeCommand('workbench.action.tasks.runTask', 'PlatformIO: Remote')
     ));
-    this._context.subscriptions.push(vscode.commands.registerCommand(
+    this.context.subscriptions.push(vscode.commands.registerCommand(
       'platformio-ide.test',
       async () => {
         await this.terminateMonitorTask();
         vscode.commands.executeCommand('workbench.action.tasks.runTask', 'PlatformIO: Test');
       }
     ));
-    this._context.subscriptions.push(vscode.commands.registerCommand(
+    this.context.subscriptions.push(vscode.commands.registerCommand(
       'platformio-ide.clean',
-      async () => {
-        vscode.commands.executeCommand('workbench.action.tasks.runTask', 'PlatformIO: Clean');
-      }
+      () => vscode.commands.executeCommand('workbench.action.tasks.runTask', 'PlatformIO: Clean')
     ));
-    this._context.subscriptions.push(vscode.commands.registerCommand(
+    this.context.subscriptions.push(vscode.commands.registerCommand(
       'platformio-ide.serialMonitor',
       async () => {
         await this.terminateMonitorTask();
@@ -216,15 +209,15 @@ class PlatformIOVSCodeExtension {
         vscode.commands.executeCommand('workbench.action.tasks.runTask', 'PlatformIO: Monitor');
       }
     ));
-    this._context.subscriptions.push(vscode.commands.registerCommand(
+    this.context.subscriptions.push(vscode.commands.registerCommand(
       'platformio-ide.newTerminal',
       () => this.pioTerm.new().show()
     ));
-    this._context.subscriptions.push(vscode.commands.registerCommand(
+    this.context.subscriptions.push(vscode.commands.registerCommand(
       'platformio-ide.updateCore',
       () => this.pioTerm.sendText('pio update')
     ));
-    this._context.subscriptions.push(vscode.commands.registerCommand(
+    this.context.subscriptions.push(vscode.commands.registerCommand(
       'platformio-ide.upgradeCore',
       () => this.pioTerm.sendText('pio upgrade')
     ));
@@ -243,8 +236,12 @@ class PlatformIOVSCodeExtension {
     return new Promise(resolve => setTimeout(() => resolve(), 500));
   }
 
+  initDebug() {
+    piodebug.activate(this.context);
+  }
+
   initTasksProvider() {
-    this._context.subscriptions.push(new PIOTasksProvider(vscode.workspace.rootPath));
+    this.context.subscriptions.push(new PIOTasksProvider(vscode.workspace.rootPath));
   }
 
   initStatusBar({ filterCommands, ignoreCommands }) {
@@ -259,7 +256,7 @@ class PlatformIOVSCodeExtension {
       ['$(plug)', 'PlatformIO: Serial Monitor', 'platformio-ide.serialMonitor'],
       ['$(terminal)', 'PlatformIO: New Terminal', 'platformio-ide.newTerminal']
     ]
-      .filter(item => (!filterCommands || filterCommands.includes(item[2])) && (!ignoreCommands || !ignoreCommands.includes(item[2])) )
+      .filter(item => (!filterCommands || filterCommands.includes(item[2])) && (!ignoreCommands || !ignoreCommands.includes(item[2])))
       .reverse()
       .forEach((item, index) => {
         const [text, tooltip, command] = item;
@@ -268,26 +265,24 @@ class PlatformIOVSCodeExtension {
         sbItem.tooltip = tooltip;
         sbItem.command = command;
         sbItem.show();
-        this._context.subscriptions.push(sbItem);
+        this.context.subscriptions.push(sbItem);
       });
   }
 
   initProjectIndexer() {
     const indexer = new ProjectIndexer(vscode.workspace.rootPath);
-    this._context.subscriptions.push(indexer);
-    this._context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(() => indexer.toggle()));
-    indexer.toggle();
-    this._context.subscriptions.push(vscode.commands.registerCommand(
+    this.context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(() => indexer.toggle()));
+    this.context.subscriptions.push(vscode.commands.registerCommand(
       'platformio-ide.rebuildProjectIndex',
       () => indexer.doRebuild({
         verbose: true
       })
     ));
+    this.context.subscriptions.push(indexer);
+    indexer.toggle();
   }
 
   deactivate() {
-    this.pioTerm.dispose();
-    HomeContentProvider.shutdownServer();
   }
 }
 
@@ -300,4 +295,5 @@ export function activate(context) {
 
 export function deactivate() {
   extension.deactivate();
+  piodebug.deactivate();
 }

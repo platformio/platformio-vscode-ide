@@ -1,5 +1,20 @@
 # Release Notes
 
+## 0.15.0 (2018-05-08)
+
+**Requires VSCode 1.23.0 or above**
+
+* New UI for [PIO Unified Debugger](http://docs.platformio.org/page/plus/debugging.html):
+  - Conditional Breakpoints
+  - Expressions and Watchpoints
+  - Generic Registers
+  - Peripheral Registers
+  - Memory Viewer
+  - Disassembly
+  - Multi-thread support
+  - A hot restart of an active debugging session
+* Retain PIO Home state when switching between tabs (issue [#32](https://github.com/platformio/platformio-vscode-ide/issues/32))
+
 ## 0.14.2 (2018-04-28)
 
 * Fixed "PIP: Could not find a version that satisfies the requirement" (issue [#102](https://github.com/platformio/platformio-vscode-ide/issues/102))
@@ -10,7 +25,7 @@
 
 ## 0.14.0 (2018-03-14)
 
-* Intial support for PIO Enterprise
+* Initial support for PIO Enterprise
 * Speed up the loading of PIO Home [PIO Home](http://docs.platformio.org/page/home/index.html)
 
 ## 0.13.2 (2018-03-08)
