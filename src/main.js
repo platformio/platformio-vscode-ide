@@ -7,6 +7,7 @@
  */
 
 import * as pioNodeHelpers from 'platformio-node-helpers';
+import * as piodebug from 'platformio-vscode-debug';
 
 import { getIDEVersion, isPIOProject } from './utils';
 
@@ -65,6 +66,7 @@ class PlatformIOVSCodeExtension {
       this.pioTerm.updateEnvConfiguration();
     }
 
+    this.initDebug();
     this.initTasksProvider();
     this.initStatusBar({ ignoreCommands: this.getEnterpriseSetting('ignoreToolbarCommands') });
     this.initProjectIndexer();
@@ -234,6 +236,10 @@ class PlatformIOVSCodeExtension {
     return new Promise(resolve => setTimeout(() => resolve(), 500));
   }
 
+  initDebug() {
+    piodebug.activate(this.context);
+  }
+
   initTasksProvider() {
     this.context.subscriptions.push(new PIOTasksProvider(vscode.workspace.rootPath));
   }
@@ -289,4 +295,5 @@ export function activate(context) {
 
 export function deactivate() {
   extension.deactivate();
+  piodebug.deactivate();
 }

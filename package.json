@@ -18,7 +18,7 @@
     "embedded",
     "firmware",
     "debug",
-    "arduino"
+    "microcontroller"
   ],
   "preview": true,
   "main": "./lib/main",
@@ -38,6 +38,58 @@
     "*"
   ],
   "contributes": {
+    "languages": [
+      {
+        "id": "platformio-debug.disassembly",
+        "aliases": [
+          "Disassembly"
+        ],
+        "extensions": [
+          ".dbgasm"
+        ]
+      },
+      {
+        "id": "platformio-debug.memoryview",
+        "aliases": [
+          "Memory"
+        ],
+        "extensions": [
+          ".dbgmem"
+        ]
+      },
+      {
+        "id": "platformio-debug.asm",
+        "aliases": [
+          "Assembly",
+          "asm"
+        ],
+        "extensions": [
+          ".asm",
+          ".nasm",
+          ".yasm",
+          ".inc",
+          ".s"
+        ],
+        "configuration": "./syntaxes/assembly-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "platformio-debug.disassembly",
+        "scopeName": "source.platformio-debug-disassembly",
+        "path": "./syntaxes/platformio-debug-disassembly.json"
+      },
+      {
+        "language": "platformio-debug.memoryview",
+        "scopeName": "source.platformio-debug-memoryview",
+        "path": "./syntaxes/platformio-debug-memoryview.json"
+      },
+      {
+        "language": "platformio-debug.asm",
+        "scopeName": "source.platformio-debug-asm",
+        "path": "./syntaxes/assembly.tmLanguage"
+      }
+    ],
     "commands": [
       {
         "command": "platformio-ide.showHome",
@@ -93,8 +145,277 @@
         "command": "platformio-ide.upgradeCore",
         "title": "Upgrade PlatformIO Core to the latest version",
         "category": "PlatformIO"
+      },
+      {
+        "category": "PlatformIO Debug",
+        "command": "platformio-debug.peripherals.updateNode",
+        "title": "Update Value"
+      },
+      {
+        "category": "PlatformIO Debug",
+        "command": "platformio-debug.peripherals.selectedNode",
+        "title": "Selected"
+      },
+      {
+        "category": "PlatformIO Debug",
+        "command": "platformio-debug.registers.selectedNode",
+        "title": "Selected"
+      },
+      {
+        "category": "PlatformIO Debug",
+        "command": "platformio-debug.peripherals.copyValue",
+        "title": "Copy Value"
+      },
+      {
+        "category": "PlatformIO Debug",
+        "command": "platformio-debug.registers.copyValue",
+        "title": "Copy Value"
+      },
+      {
+        "category": "PlatformIO Debug",
+        "command": "platformio-debug.peripherals.setFormat",
+        "title": "Set Value Format"
+      },
+      {
+        "category": "PlatformIO Debug",
+        "command": "platformio-debug.registers.setFormat",
+        "title": "Set Value Format"
+      },
+      {
+        "category": "PlatformIO Debug",
+        "command": "platformio-debug.examineMemory",
+        "title": " View Memory",
+        "icon": {
+          "light": "resources/icons/add.svg",
+          "dark": "resources/icons/add-inverse.svg"
+        }
+      },
+      {
+        "category": "PlatformIO Debug",
+        "command": "platformio-debug.memory.clearHistory",
+        "title": "Clear Memory View History",
+        "icon": {
+          "light": "resources/icons/closeall.svg",
+          "dark": "resources/icons/closeall-inverse.svg"
+        }
+      },
+      {
+        "category": "PlatformIO Debug",
+        "command": "platformio-debug.memory.deleteHistoryItem",
+        "title": "Delete"
+      },
+      {
+        "category": "PlatformIO Debug",
+        "command": "platformio-debug.viewDisassembly",
+        "title": "View Disassembly (Function)"
+      },
+      {
+        "category": "PlatformIO Debug",
+        "command": "platformio-debug.setForceDisassembly",
+        "title": "Set Force Disassembly"
       }
     ],
+    "debuggers": [
+      {
+        "enableBreakpointsFor": {
+          "languageIds": [
+            "c",
+            "cpp",
+            "asm",
+            "arm",
+            "platformio-debug.disassembly"
+          ]
+        },
+        "configurationAttributes": {
+          "launch": {
+            "properties": {
+              "executable": {
+                "description": "Path of firmware or program",
+                "type": "string"
+              },
+              "toolchainBinDir": {
+                "description": "Path of toolchain binary directory",
+                "type": "string"
+              },
+              "svdPath": {
+                "default": null,
+                "description": "Path to an SVD file describing the peripherals of the microcontroller",
+                "type": "string"
+              },
+              "showDevDebugOutput": {
+                "default": false,
+                "description": "Prints all GDB responses to the console",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "executable",
+              "toolchainBinDir"
+            ]
+          }
+        },
+        "initialConfigurations": [
+          {
+            "name": "PlatformIO Debugger",
+            "request": "launch",
+            "type": "platformio-debug",
+            "toolchainBinDir": "/usr/local/bin"
+          }
+        ],
+        "configurationSnippets": [
+          {
+            "body": {
+              "name": "${6:PlatformIO Debugger}",
+              "request": "launch",
+              "type": "platformio-debug",
+              "executable": ".pioenvs/myenv/firmware.elf",
+              "toolchainBinDir": "/usr/local/bin"
+            },
+            "description": "PlatformIO Debugger",
+            "label": "PlatformIO Debugger"
+          }
+        ],
+        "label": "PlatformIO Debugger",
+        "program": "./node_modules/platformio-vscode-debug/lib/adapter.js",
+        "runtime": "node",
+        "type": "platformio-debug"
+      }
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "platformio-debug.peripherals.updateNode",
+          "when": "false"
+        },
+        {
+          "command": "platformio-debug.peripherals.selectedNode",
+          "when": "false"
+        },
+        {
+          "command": "platformio-debug.peripherals.copyValue",
+          "when": "false"
+        },
+        {
+          "command": "platformio-debug.peripherals.setFormat",
+          "when": "false"
+        },
+        {
+          "command": "platformio-debug.registers.copyValue",
+          "when": "false"
+        },
+        {
+          "command": "platformio-debug.registers.selectedNode",
+          "when": "false"
+        },
+        {
+          "command": "platformio-debug.registers.setFormat",
+          "when": "false"
+        },
+        {
+          "command": "platformio-debug.memory.deleteHistoryItem",
+          "when": "false"
+        },
+        {
+          "command": "platformio-debug.examineMemory",
+          "when": "debugType == platformio-debug"
+        },
+        {
+          "command": "platformio-debug.memory.clearHistory",
+          "when": "debugType == platformio-debug"
+        },
+        {
+          "command": "platformio-debug.viewDisassembly",
+          "when": "debugType == platformio-debug"
+        },
+        {
+          "command": "platformio-debug.setForceDisassembly",
+          "when": "debugType == platformio-debug"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "platformio-debug.peripherals.updateNode",
+          "when": "view == platformio-debug.peripherals && viewItem == field"
+        },
+        {
+          "command": "platformio-debug.peripherals.updateNode",
+          "when": "view == platformio-debug.peripherals && viewItem == registerRW"
+        },
+        {
+          "command": "platformio-debug.peripherals.updateNode",
+          "when": "view == platformio-debug.peripherals && viewItem == registerWO"
+        },
+        {
+          "command": "platformio-debug.peripherals.copyValue",
+          "when": "view == platformio-debug.peripherals && viewItem == field"
+        },
+        {
+          "command": "platformio-debug.peripherals.copyValue",
+          "when": "view == platformio-debug.peripherals && viewItem == registerRW"
+        },
+        {
+          "command": "platformio-debug.peripherals.copyValue",
+          "when": "view == platformio-debug.peripherals && viewItem == registerRO"
+        },
+        {
+          "command": "platformio-debug.registers.copyValue",
+          "when": "view == platformio-debug.registers && viewItem == register"
+        },
+        {
+          "command": "platformio-debug.registers.copyValue",
+          "when": "view == platformio-debug.registers && viewItem == field"
+        },
+        {
+          "command": "platformio-debug.peripherals.setFormat",
+          "when": "view == platformio-debug.peripherals"
+        },
+        {
+          "command": "platformio-debug.registers.setFormat",
+          "when": "view == platformio-debug.registers"
+        },
+        {
+          "command": "platformio-debug.memory.deleteHistoryItem",
+          "when": "view == platformio-debug.memory",
+          "group": "inline"
+        }
+      ],
+      "view/title": [
+        {
+          "command": "platformio-debug.examineMemory",
+          "when": "view == platformio-debug.memory",
+          "group": "navigation"
+        },
+        {
+          "command": "platformio-debug.memory.clearHistory",
+          "when": "view == platformio-debug.memory",
+          "group": "navigation"
+        }
+      ]
+    },
+    "views": {
+      "debug": [
+        {
+          "id": "platformio-debug.peripherals",
+          "name": "Peripherals",
+          "when": "debugType == platformio-debug && peripheralsEnabled"
+        },
+        {
+          "id": "platformio-debug.registers",
+          "name": "Registers",
+          "when": "debugType == platformio-debug"
+        },
+        {
+          "id": "platformio-debug.memory",
+          "name": "Memory",
+          "when": "debugType == platformio-debug"
+        },
+        {
+          "id": "platformio-debug.disassembly",
+          "name": "Disassembly",
+          "when": "debugType == platformio-debug"
+        }
+      ]
+    },
     "keybindings": [
       {
         "command": "platformio-ide.build",
@@ -222,10 +543,10 @@
   "dependencies": {
     "fs-plus": "^3.0.0",
     "ini": "^1.3.4",
-    "platformio-node-helpers": "^0.5.2"
+    "platformio-node-helpers": "^0.5.2",
+    "platformio-vscode-debug": "^1.0.0"
   },
   "extensionDependencies": [
-    "ms-vscode.cpptools",
-    "webfreak.debug"
+    "ms-vscode.cpptools"
   ]
 }

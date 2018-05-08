@@ -1,0 +1,30 @@
+{
+    "name": "PlatformIO Debugger Disassembly",
+    "scopeName": "source.platformio-debug-disassembly",
+    "patterns": [
+        {
+            "comment": "Address, bytes and opcode",
+            "name": "meta.instruction",
+            "match": "^(0x[A-Za-z0-9]{8}):\\s([a-zA-Z0-9]{2}\\s)+\\s+([\\w\\.]+)",
+            "captures": {
+                "1": { "name": "constant.numeric" },
+                "3": { "name": "keyword.opcode" }
+            }
+        },
+        {
+            "comment": "Numeric constant",
+            "name": "constant.numeric",
+            "match": "(0x[0-9A-F]+)|(#[0-9]+)"
+        },
+        {
+            "comment": "Register",
+            "name": "variable.language",
+            "match": "\b((r[0-9])|(r1[0-5])|(sp)|(lr)|(pc)|(xpsr)|(msp)|(psp)|(primask)|(basepri)|(s[0-9])|(s[1-2][0-9])|(s3[0-1]))\b"
+        },
+        {
+            "comment": "End of line comment",
+            "name": "comment.line.semicolon",
+            "match": ";.*$"
+        }
+    ]
+}
