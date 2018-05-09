@@ -1,5 +1,9 @@
 # Release Notes
 
+## 0.15.1 (2018-05-??)
+
+* Move PlatformIO Toolbar to the beginning of the bottom status bar
+
 ## 0.15.0 (2018-05-08)
 
 **Requires VSCode 1.23.0 or above**
