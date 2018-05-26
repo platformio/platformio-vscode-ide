@@ -22,9 +22,9 @@ import vscode from 'vscode';
 class PlatformIOVSCodeExtension {
 
   constructor() {
-    this.context = null;
-    this.pioTerm = null;
-    this.pioHome = null;
+    this.context = undefined;
+    this.pioTerm = undefined;
+    this.pioHome = undefined;
 
     this._isMonitorRun = false;
     this._enterpriseSettings = undefined;
@@ -144,7 +144,7 @@ class PlatformIOVSCodeExtension {
         }
       }
       im.destroy();
-      return Promise.reject(null);
+      return Promise.reject(undefined);
     });
   }
 

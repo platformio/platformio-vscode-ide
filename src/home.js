@@ -15,7 +15,7 @@ import vscode from 'vscode';
 export default class PIOHome {
 
   constructor() {
-    this._currentPanel = null;
+    this._currentPanel = undefined;
   }
 
   toggle() {
@@ -85,7 +85,7 @@ export default class PIOHome {
   }
 
   onPanelDisposed() {
-    this._currentPanel = null;
+    this._currentPanel = undefined;
   }
 
   shutdownServer() {

@@ -65,7 +65,7 @@ export default class PIOTasksProvider {
     this.projectDir = projectDir;
     this.subscriptions = [];
 
-    this._refreshTimeout = null;
+    this._refreshTimeout = undefined;
 
     this.requestRefresh();
   }
@@ -132,7 +132,7 @@ export default class PIOTasksProvider {
 
   async getTasks() {
     const result = [];
-    let projectConf = null;
+    let projectConf = undefined;
     try {
       const content = await new Promise((resolve, reject) => {
         fs.readFile(

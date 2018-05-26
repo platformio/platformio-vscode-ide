@@ -28,7 +28,7 @@ export default class StateStorage {
     if (data && data.hasOwnProperty(key)) {
       return data[key];
     }
-    return null;
+    return undefined;
   }
 
   setValue(key, value) {
