@@ -22,9 +22,9 @@ import vscode from 'vscode';
 class PlatformIOVSCodeExtension {
 
   constructor() {
-    this.context = null;
-    this.pioTerm = null;
-    this.pioHome = null;
+    this.context = undefined;
+    this.pioTerm = undefined;
+    this.pioHome = undefined;
 
     this._isMonitorRun = false;
     this._enterpriseSettings = undefined;
@@ -144,7 +144,7 @@ class PlatformIOVSCodeExtension {
         }
       }
       im.destroy();
-      return Promise.reject(null);
+      return Promise.reject(undefined);
     });
   }
 
@@ -260,7 +260,7 @@ class PlatformIOVSCodeExtension {
       .reverse()
       .forEach((item, index) => {
         const [text, tooltip, command] = item;
-        const sbItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 10 + index);
+        const sbItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 1000 + index);
         sbItem.text = text;
         sbItem.tooltip = tooltip;
         sbItem.command = command;

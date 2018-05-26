@@ -14,13 +14,13 @@ import vscode from 'vscode';
 export default class PIOTerminal {
 
   constructor() {
-    this._instance = null;
+    this._instance = undefined;
   }
 
   new() {
     return vscode.window.createTerminal({
       name: 'PlatformIO',
-      shellPath: constants.IS_WINDOWS ? 'cmd.exe' : null,
+      shellPath: constants.IS_WINDOWS ? 'cmd.exe' : undefined,
       env: {
         PATH: process.env.PATH,
         PLATFORMIO_CALLER: 'vscode'
@@ -40,7 +40,7 @@ export default class PIOTerminal {
     if (this._instance) {
       this._instance.dispose();
     }
-    this._instance = null;
+    this._instance = undefined;
   }
 
   updateEnvConfiguration() {

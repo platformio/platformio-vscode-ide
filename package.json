@@ -1,6 +1,6 @@
 {
   "name": "platformio-ide",
-  "version": "0.15.0",
+  "version": "0.15.1",
   "publisher": "platformio",
   "engines": {
     "vscode": "^1.23.0"
@@ -23,7 +23,7 @@
   "preview": true,
   "main": "./lib/main",
   "icon": "resources/platformio-logo.png",
-  "homepage": "http://platformio.org",
+  "homepage": "https://platformio.org",
   "author": {
     "name": "PlatformIO.Org"
   },

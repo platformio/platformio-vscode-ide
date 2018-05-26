@@ -16,7 +16,7 @@ import vscode from 'vscode';
 
 export default class ProjectIndexer {
 
-  static PythonExecutable = null;
+  static PythonExecutable = undefined;
 
   constructor(projectDir) {
     this.projectDir = projectDir;
@@ -26,8 +26,8 @@ export default class ProjectIndexer {
 
     this._isActive = false;
     this._inProgress = false;
-    this._rebuildTimeout = null;
-    this._updateLibDirWatchersTimeout = null;
+    this._rebuildTimeout = undefined;
+    this._updateLibDirWatchersTimeout = undefined;
   }
 
   async activate() {

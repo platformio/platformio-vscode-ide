@@ -1,5 +1,10 @@
 # Release Notes
 
+## 0.15.1 (2018-05-26)
+
+* Moved PlatformIO Toolbar to the beginning of the bottom status bar
+* Fixed issue when trying to open an opened PIO Home again
+
 ## 0.15.0 (2018-05-08)
 
 **Requires VSCode 1.23.0 or above**
