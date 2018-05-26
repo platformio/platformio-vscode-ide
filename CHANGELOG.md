@@ -2,7 +2,8 @@
 
 ## 0.15.1 (2018-05-??)
 
-* Move PlatformIO Toolbar to the beginning of the bottom status bar
+* Moved PlatformIO Toolbar to the beginning of the bottom status bar
+* Fixed issue when trying to open an opened PIO Home again
 
 ## 0.15.0 (2018-05-08)
 
