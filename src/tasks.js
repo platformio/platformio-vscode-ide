@@ -231,7 +231,7 @@ class TaskCreator {
     const task = new vscode.Task(
       {
         type: PIOTasksProvider.title,
-        args: this._args
+        task: this.name
       },
       this.name,
       PIOTasksProvider.title,
