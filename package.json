@@ -438,12 +438,12 @@
       {
         "type": "PlatformIO",
         "required": [
-          "args"
+          "task"
         ],
         "properties": {
-          "args": {
-            "type": "array",
-            "description": "Arguments for PlatformIO Core"
+          "task": {
+            "type": "string",
+            "description": "Task name"
           }
         }
       }
