@@ -1,6 +1,6 @@
 # Release Notes
 
-## 0.15.2 (2018-05-??)
+## 0.15.2 (2018-05-30)
 
 * Reverted back an order of PlatformIO Toolbar (issue [#114](https://github.com/platformio/platformio-vscode-ide/issues/114))
 * Fixed issue with customization of built-in PlatformIO tasks (issue [#89](https://github.com/platformio/platformio-vscode-ide/issues/89))
