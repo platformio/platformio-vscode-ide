@@ -260,7 +260,7 @@ class PlatformIOVSCodeExtension {
       .reverse()
       .forEach((item, index) => {
         const [text, tooltip, command] = item;
-        const sbItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 1000 + index);
+        const sbItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 10 + index);
         sbItem.text = text;
         sbItem.tooltip = tooltip;
         sbItem.command = command;
