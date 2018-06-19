@@ -1,5 +1,9 @@
 # Release Notes
 
+## 0.15.3 (2018-??-??)
+
+* "Report a problem" action/button when error occurs
+
 ## 0.15.2 (2018-05-30)
 
 * Reverted back an order of PlatformIO Toolbar (issue [#114](https://github.com/platformio/platformio-vscode-ide/issues/114))

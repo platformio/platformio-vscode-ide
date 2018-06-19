@@ -9,7 +9,7 @@
 import * as pioNodeHelpers from 'platformio-node-helpers';
 import * as piodebug from 'platformio-vscode-debug';
 
-import { getIDEVersion, isPIOProject } from './utils';
+import { getIDEVersion, isPIOProject, notifyError } from './utils';
 
 import InstallationManager from './installer/manager';
 import PIOHome from './home';
@@ -134,11 +134,17 @@ class PlatformIOVSCodeExtension {
           im.lock();
           await im.install();
           outputChannel.appendLine('PlatformIO IDE installed successfully.');
+          const action = 'Reload Now';
+          const selected = await vscode.window.showInformationMessage(
+            'PlatformIO IDE has been successfully installed! Please reload window',
+            action
+          );
+          if (selected === action) {
+            vscode.commands.executeCommand('workbench.action.reloadWindow');
+          }
         } catch (err) {
-          vscode.window.showErrorMessage(err.toString(), {
-            modal: true,
-          });
           outputChannel.appendLine('Failed to install PlatformIO IDE.');
+          notifyError(`Installation Manager: ${err.toString()}`, err);
         } finally {
           im.unlock();
         }
@@ -156,7 +162,7 @@ class PlatformIOVSCodeExtension {
     try {
       await pioNodeHelpers.home.ensureServerStarted();
     } catch (err) {
-      console.error(err);
+      notifyError(`PIO Home Server: ${err.toString()}`, err);
     }
     vscode.commands.executeCommand('platformio-ide.showHome');
   }

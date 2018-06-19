@@ -9,6 +9,7 @@
 import { IS_WINDOWS } from './constants';
 import fs from 'fs-plus';
 import ini from 'ini';
+import { notifyError } from './utils';
 import path from 'path';
 import vscode from 'vscode';
 
@@ -116,7 +117,7 @@ export default class PIOTasksProvider {
       }));
 
     } catch (err) {
-      console.error(err);
+      notifyError(`Tasks FileSystemWatcher: ${err.toString()}`, err);
     }
   }
 

@@ -90,23 +90,14 @@ export default class InstallationManager {
         }
       } catch (err) {
         result = false;
-        console.error(err);
+        console.warn(err);
       }
     }
     return result;
   }
 
-  async install() {
-    await Promise.all(this.stages.map(stage => stage.install()));
-
-    const result = await vscode.window.showInformationMessage(
-      'PlatformIO IDE has been successfully installed! Please reload window',
-      'Reload Now'
-    );
-
-    if (result === 'Reload Now') {
-      vscode.commands.executeCommand('workbench.action.reloadWindow');
-    }
+  install() {
+    return Promise.all(this.stages.map(stage => stage.install()));
   }
 
   destroy() {
