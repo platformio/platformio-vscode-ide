@@ -9,6 +9,7 @@
 import * as pioNodeHelpers from 'platformio-node-helpers';
 
 import { extension } from './main';
+import { notifyError } from './utils';
 import vscode from 'vscode';
 
 
@@ -19,16 +20,16 @@ export default class PIOHome {
     this._disposables = [];
   }
 
-  toggle() {
+  async toggle() {
     const column = vscode.window.activeTextEditor ? vscode.window.activeTextEditor.viewColumn : undefined;
     if (this._currentPanel) {
       this._currentPanel.reveal(column);
     } else {
-      this._currentPanel = this.newPanel();
+      this._currentPanel = await this.newPanel();
     }
   }
 
-  newPanel() {
+  async newPanel() {
     const panel = vscode.window.createWebviewPanel(
       'pioHome',
       extension.getEnterpriseSetting('pioHomeTitle', 'PIO Home'),
@@ -40,7 +41,11 @@ export default class PIOHome {
     );
     panel.onDidDispose(this.onPanelDisposed.bind(this), null, this._disposables);
     panel.webview.html = this.getLoadingContent();
-    this.getWebviewContent().then(html => panel.webview.html = html);
+    try {
+      panel.webview.html = await this.getWebviewContent();
+    } catch (err) {
+      notifyError(`PIO Home Server: ${err.toString()}`, err);
+    }
     return panel;
   }
 
