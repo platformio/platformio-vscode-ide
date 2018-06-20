@@ -1,6 +1,6 @@
 # Release Notes
 
-## 0.16.1 (2018-06-??)
+## 0.16.1 (2018-06-21)
 
 * Fixed an issue with infinite PIO Core installation
 
