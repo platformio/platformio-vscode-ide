@@ -4,6 +4,7 @@
 
 **Requires VSCode 1.24 or above**
 
+* [Custom Tasks](http://docs.platformio.org/en/latest/ide/vscode.html#custom-tasks) (issue [#89](https://github.com/platformio/platformio-vscode-ide/issues/89))
 * Automatically close Serial Port Monitor before uploading/testing (issue [#49](https://github.com/platformio/platformio-vscode-ide/issues/49))
 * Added new configuration option `autoCloseSerialMonitor`, which is set to `true` by default
 * Added "Report a problem" action/button when error occurs
