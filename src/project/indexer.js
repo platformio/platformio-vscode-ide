@@ -85,7 +85,7 @@ export default class ProjectIndexer {
       }
 
     } catch (err) {
-      notifyError(`Project FileSystemWatcher: ${err.toString()}`, err);
+      notifyError('Project FileSystemWatcher', err);
     }
   }
 
@@ -122,7 +122,7 @@ export default class ProjectIndexer {
       this.subscriptions.push(watcher);
       this.subscriptions.push(subscription);
     } catch (err) {
-      notifyError(`Project FileSystemWatcher: ${err.toString()}`, err);
+      notifyError('Project FileSystemWatcher', err);
     }
   }
 
@@ -175,7 +175,7 @@ export default class ProjectIndexer {
           vscode.window.showInformationMessage('PlatformIO: IntelliSense Index has been successfully rebuilt.');
         }
       } catch (err) {
-        notifyError(`IntelliSense Index: ${err.toString()}`, err);
+        notifyError('IntelliSense Index Rebuild', err);
       }
       this._inProgress = false;
     });

@@ -44,7 +44,7 @@ export default class PIOHome {
     try {
       panel.webview.html = await this.getWebviewContent();
     } catch (err) {
-      notifyError(`PIO Home Server: ${err.toString()}`, err);
+      notifyError('Start PIO Home Server', err);
     }
     return panel;
   }

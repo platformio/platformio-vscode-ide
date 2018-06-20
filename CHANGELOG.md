@@ -1,5 +1,9 @@
 # Release Notes
 
+## 0.16.1 (2018-06-21)
+
+* Fixed an issue with infinite PIO Core installation
+
 ## 0.16.0 (2018-06-20)
 
 **Requires VSCode 1.24 or above**

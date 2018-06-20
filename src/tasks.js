@@ -154,7 +154,7 @@ export default class PIOTasksProvider {
       }));
 
     } catch (err) {
-      notifyError(`Tasks FileSystemWatcher: ${err.toString()}`, err);
+      notifyError('Tasks FileSystemWatcher', err);
     }
   }
 
