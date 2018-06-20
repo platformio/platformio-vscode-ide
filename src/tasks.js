@@ -9,6 +9,7 @@
 import { IS_WINDOWS } from './constants';
 import fs from 'fs-plus';
 import ini from 'ini';
+import { notifyError } from './utils';
 import path from 'path';
 import vscode from 'vscode';
 
@@ -68,6 +69,7 @@ export default class PIOTasksProvider {
     this._refreshTimeout = undefined;
 
     this.requestRefresh();
+    this.controlDeviceMonitorTasks();
   }
 
   dispose() {
@@ -75,6 +77,42 @@ export default class PIOTasksProvider {
       subscription.dispose();
     }
     this.subscriptions = [];
+  }
+
+  controlDeviceMonitorTasks() {
+    let restoreAfterTask = undefined;
+    let restoreTasks = [];
+
+    vscode.tasks.onDidStartTaskProcess((event) => {
+      if (!vscode.workspace.getConfiguration('platformio-ide').get('autoCloseSerialMonitor')) {
+        return;
+      }
+      if (!['upload', 'test'].some(arg => event.execution.task.execution.args.includes(arg))) {
+        return;
+      }
+      vscode.tasks.taskExecutions.forEach((e) => {
+        if (event.execution.task === e.task) {
+          return;
+        }
+        if (['device', 'monitor'].every(arg => e.task.execution.args.includes(arg))) {
+          restoreTasks.push(e.task);
+        }
+        if (e.task.execution.args.includes('monitor')) {
+          e.terminate();
+        }
+      });
+      restoreAfterTask = event.execution.task;
+    });
+
+    vscode.tasks.onDidEndTaskProcess((event) => {
+      if (event.execution.task !== restoreAfterTask) {
+        return;
+      }
+      restoreTasks.forEach(task => {
+        vscode.tasks.executeTask(task);
+      });
+      restoreTasks = [];
+    });
   }
 
   requestRefresh() {
@@ -86,7 +124,7 @@ export default class PIOTasksProvider {
 
   refresh() {
     this.dispose();
-    const provider = vscode.workspace.registerTaskProvider(PIOTasksProvider.title, {
+    const provider = vscode.tasks.registerTaskProvider(PIOTasksProvider.title, {
       provideTasks: () => {
         return this.getTasks();
       },
@@ -116,7 +154,7 @@ export default class PIOTasksProvider {
       }));
 
     } catch (err) {
-      console.error(err);
+      notifyError(`Tasks FileSystemWatcher: ${err.toString()}`, err);
     }
   }
 

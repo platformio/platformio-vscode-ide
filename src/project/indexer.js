@@ -8,8 +8,9 @@
 
 import * as pioNodeHelpers from 'platformio-node-helpers';
 
+import { isPIOProject, notifyError } from '../utils';
+
 import { AUTO_REBUILD_DELAY } from '../constants';
-import { isPIOProject } from '../utils';
 import path from 'path';
 import vscode from 'vscode';
 
@@ -84,7 +85,7 @@ export default class ProjectIndexer {
       }
 
     } catch (err) {
-      console.error(err);
+      notifyError(`Project FileSystemWatcher: ${err.toString()}`, err);
     }
   }
 
@@ -121,7 +122,7 @@ export default class ProjectIndexer {
       this.subscriptions.push(watcher);
       this.subscriptions.push(subscription);
     } catch (err) {
-      console.error(err);
+      notifyError(`Project FileSystemWatcher: ${err.toString()}`, err);
     }
   }
 
@@ -174,8 +175,7 @@ export default class ProjectIndexer {
           vscode.window.showInformationMessage('PlatformIO: IntelliSense Index has been successfully rebuilt.');
         }
       } catch (err) {
-        console.error(err);
-        vscode.window.showErrorMessage(`PlatformIO: IntelliSense Index failed: ${err.toString()}`);
+        notifyError(`IntelliSense Index: ${err.toString()}`, err);
       }
       this._inProgress = false;
     });

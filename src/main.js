@@ -9,7 +9,7 @@
 import * as pioNodeHelpers from 'platformio-node-helpers';
 import * as piodebug from 'platformio-vscode-debug';
 
-import { getIDEVersion, isPIOProject } from './utils';
+import { getIDEVersion, isPIOProject, notifyError } from './utils';
 
 import InstallationManager from './installer/manager';
 import PIOHome from './home';
@@ -26,7 +26,6 @@ class PlatformIOVSCodeExtension {
     this.pioTerm = undefined;
     this.pioHome = undefined;
 
-    this._isMonitorRun = false;
     this._enterpriseSettings = undefined;
   }
 
@@ -134,11 +133,17 @@ class PlatformIOVSCodeExtension {
           im.lock();
           await im.install();
           outputChannel.appendLine('PlatformIO IDE installed successfully.');
+          const action = 'Reload Now';
+          const selected = await vscode.window.showInformationMessage(
+            'PlatformIO IDE has been successfully installed! Please reload window',
+            action
+          );
+          if (selected === action) {
+            vscode.commands.executeCommand('workbench.action.reloadWindow');
+          }
         } catch (err) {
-          vscode.window.showErrorMessage(err.toString(), {
-            modal: true,
-          });
           outputChannel.appendLine('Failed to install PlatformIO IDE.');
+          notifyError(`Installation Manager: ${err.toString()}`, err);
         } finally {
           im.unlock();
         }
@@ -156,7 +161,7 @@ class PlatformIOVSCodeExtension {
     try {
       await pioNodeHelpers.home.ensureServerStarted();
     } catch (err) {
-      console.error(err);
+      notifyError(`PIO Home Server: ${err.toString()}`, err);
     }
     vscode.commands.executeCommand('platformio-ide.showHome');
   }
@@ -175,13 +180,10 @@ class PlatformIOVSCodeExtension {
     ));
     this.context.subscriptions.push(vscode.commands.registerCommand(
       'platformio-ide.upload',
-      async () => {
-        await this.terminateMonitorTask();
-
+      () => {
         let task = 'PlatformIO: Upload';
         if (this.getConfig().get('forceUploadAndMonitor')) {
           task = 'PlatformIO: Upload and Monitor';
-          this._isMonitorRun = true;
         }
         vscode.commands.executeCommand('workbench.action.tasks.runTask', task);
       }
@@ -192,10 +194,7 @@ class PlatformIOVSCodeExtension {
     ));
     this.context.subscriptions.push(vscode.commands.registerCommand(
       'platformio-ide.test',
-      async () => {
-        await this.terminateMonitorTask();
-        vscode.commands.executeCommand('workbench.action.tasks.runTask', 'PlatformIO: Test');
-      }
+      () => vscode.commands.executeCommand('workbench.action.tasks.runTask', 'PlatformIO: Test')
     ));
     this.context.subscriptions.push(vscode.commands.registerCommand(
       'platformio-ide.clean',
@@ -203,11 +202,7 @@ class PlatformIOVSCodeExtension {
     ));
     this.context.subscriptions.push(vscode.commands.registerCommand(
       'platformio-ide.serialMonitor',
-      async () => {
-        await this.terminateMonitorTask();
-        this._isMonitorRun = true;
-        vscode.commands.executeCommand('workbench.action.tasks.runTask', 'PlatformIO: Monitor');
-      }
+      () => vscode.commands.executeCommand('workbench.action.tasks.runTask', 'PlatformIO: Monitor')
     ));
     this.context.subscriptions.push(vscode.commands.registerCommand(
       'platformio-ide.newTerminal',
@@ -221,19 +216,6 @@ class PlatformIOVSCodeExtension {
       'platformio-ide.upgradeCore',
       () => this.pioTerm.sendText('pio upgrade')
     ));
-  }
-
-  async terminateMonitorTask() {
-    if (!this._isMonitorRun) {
-      return;
-    }
-    try {
-      await vscode.commands.executeCommand('workbench.action.tasks.terminate');
-    } catch (err) {
-      console.error(err);
-    }
-    this._isMonitorRun = false;
-    return new Promise(resolve => setTimeout(() => resolve(), 500));
   }
 
   initDebug() {

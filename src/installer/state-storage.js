@@ -18,7 +18,6 @@ export default class StateStorage {
       const value = this._globalState.get(this._stateKey);
       return value || {};
     } catch (err) {
-      console.error(err);
       return {};
     }
   }
