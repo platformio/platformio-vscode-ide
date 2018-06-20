@@ -7,6 +7,7 @@
  */
 
 import fs from 'fs-plus';
+import os from 'os';
 import path from 'path';
 import qs from 'querystringify';
 import vscode from 'vscode';
@@ -20,11 +21,14 @@ export async function notifyError(title, err) {
     const ghbody = `# Description of problem
 Leave a comment...
 
+BEFORE SUBMITTING, PLEASE SEARCH FOR DUPLICATES IN
+- https://github.com/platformio/platformio-vscode-ide/issues
+
 # Configuration
 
 VSCode: ${vscode.version}
 PIO IDE: v${getIDEVersion()}
-System: ${process.platform}_${process.arch}
+System: ${os.type()}, ${os.release()}, ${os.arch()}
 
 # Exception
 \`\`\`
