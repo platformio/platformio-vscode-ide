@@ -143,7 +143,7 @@ class PlatformIOVSCodeExtension {
           }
         } catch (err) {
           outputChannel.appendLine('Failed to install PlatformIO IDE.');
-          notifyError(`Installation Manager: ${err.toString()}`, err);
+          notifyError('Installation Manager', err);
         } finally {
           im.unlock();
         }
@@ -161,7 +161,7 @@ class PlatformIOVSCodeExtension {
     try {
       await pioNodeHelpers.home.ensureServerStarted();
     } catch (err) {
-      notifyError(`PIO Home Server: ${err.toString()}`, err);
+      notifyError('Start PIO Home Server', err);
     }
     vscode.commands.executeCommand('platformio-ide.showHome');
   }
