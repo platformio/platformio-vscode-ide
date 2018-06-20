@@ -1,13 +1,13 @@
 {
   "name": "platformio-ide",
-  "version": "0.15.2",
+  "version": "0.16.0",
   "publisher": "platformio",
   "engines": {
     "vscode": "^1.24.0"
   },
   "license": "Apache-2.0",
   "displayName": "PlatformIO IDE",
-  "description": "Development environment for IoT, Arduino, ARM mbed, Espressif (ESP8266/ESP32), STM32, PIC32, nRF51/nRF52, FPGA, CMSIS, SPL, AVR, Samsung ARTIK, libOpenCM3",
+  "description": "Development environment for IoT, Arduino, ARM mbed, Espressif (ESP8266/ESP32), RISC-V, STM32, PIC32, nRF51/nRF52, FPGA, CMSIS, SPL, AVR, Samsung ARTIK, libOpenCM3",
   "categories": [
     "Programming Languages",
     "Debuggers",
