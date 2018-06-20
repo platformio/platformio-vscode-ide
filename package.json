@@ -3,7 +3,7 @@
   "version": "0.15.2",
   "publisher": "platformio",
   "engines": {
-    "vscode": "^1.23.0"
+    "vscode": "^1.24.0"
   },
   "license": "Apache-2.0",
   "displayName": "PlatformIO IDE",
@@ -516,6 +516,11 @@
           ],
           "default": "release",
           "description": "Default action for 'Build' button on PIO Toolbar"
+        },
+        "platformio-ide.autoCloseSerialMonitor": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically close Serial Port Monitor before uploading/testing"
         }
       }
     }
