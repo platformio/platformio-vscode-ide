@@ -1,8 +1,9 @@
 # Release Notes
 
-## 0.15.3 (2018-??-??)
+## 0.16.0 (2018-??-??)
 
-* "Report a problem" action/button when error occurs
+* Added "Report a problem" action/button when error occurs
+* Improved PIO Core installer using `pip` as Python module
 
 ## 0.15.2 (2018-05-30)
 
