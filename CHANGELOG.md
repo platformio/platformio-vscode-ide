@@ -1,6 +1,6 @@
 # Release Notes
 
-## 0.16.2 (2018-06-??)
+## 0.16.2 (2018-06-26)
 
 * Handle PIO Home server errors
 * Install `virtualenv` to the global scope if possible
