@@ -53,6 +53,11 @@ class PlatformIOVSCodeExtension {
     });
 
     await this.startInstaller();
+
+    if (typeof this.getEnterpriseSetting('onPIOCoreReady') === 'function') {
+      await this.getEnterpriseSetting('onPIOCoreReady')();
+    }
+
     this.registerCommands();
 
     if (!hasPIOProject) {
