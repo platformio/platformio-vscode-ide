@@ -161,7 +161,7 @@ class PlatformIOVSCodeExtension {
     try {
       await pioNodeHelpers.home.ensureServerStarted();
     } catch (err) {
-      notifyError('Start PIO Home Server', err);
+      return notifyError('Start PIO Home Server', err);
     }
     vscode.commands.executeCommand('platformio-ide.showHome');
   }
