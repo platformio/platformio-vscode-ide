@@ -1,5 +1,11 @@
 # Release Notes
 
+## 0.16.2 (2018-06-26)
+
+* Handle PIO Home server errors
+* Install `virtualenv` to the global scope if possible
+* Skip Python interpreter from MinGW
+
 ## 0.16.1 (2018-06-21)
 
 * Fixed an issue with infinite PIO Core installation

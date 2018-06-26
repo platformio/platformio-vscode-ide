@@ -53,6 +53,11 @@ class PlatformIOVSCodeExtension {
     });
 
     await this.startInstaller();
+
+    if (typeof this.getEnterpriseSetting('onPIOCoreReady') === 'function') {
+      await this.getEnterpriseSetting('onPIOCoreReady')();
+    }
+
     this.registerCommands();
 
     if (!hasPIOProject) {
@@ -161,7 +166,7 @@ class PlatformIOVSCodeExtension {
     try {
       await pioNodeHelpers.home.ensureServerStarted();
     } catch (err) {
-      notifyError('Start PIO Home Server', err);
+      return notifyError('Start PIO Home Server', err);
     }
     vscode.commands.executeCommand('platformio-ide.showHome');
   }
