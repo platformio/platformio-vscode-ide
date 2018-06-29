@@ -1,5 +1,12 @@
 # Release Notes
 
+## 0.17.0 (2018-06-29)
+
+* Improvements for [PIO Unified Debugger](http://docs.platformio.org/page/plus/debugging.html):
+  - Set breakpoint while the target is running
+  - Show peripheral register description via tooltip (mouse over with delay)
+  - Improved debugging for multi thread applications (Espressif ESP32, RTOS-based projects)
+
 ## 0.16.2 (2018-06-26)
 
 * Handle PIO Home server errors
