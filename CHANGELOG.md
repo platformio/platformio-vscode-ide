@@ -1,6 +1,6 @@
 # Release Notes
 
-## 0.17.0 (2018-06-??)
+## 0.17.0 (2018-06-29)
 
 * Improvements for [PIO Unified Debugger](http://docs.platformio.org/page/plus/debugging.html):
   - Set breakpoint while the target is running
