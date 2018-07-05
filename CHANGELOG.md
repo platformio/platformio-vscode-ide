@@ -1,6 +1,6 @@
 # Release Notes
 
-## 0.17.1 (2018-07-??)
+## 0.17.1 (2018-07-05)
 
 * Improvements for [PIO Unified Debugger](http://docs.platformio.org/page/plus/debugging.html):
   - Do not fetch registers data when Peripherals or Registers views are collapsed
