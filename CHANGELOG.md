@@ -5,6 +5,7 @@
 * Improvements for [PIO Unified Debugger](http://docs.platformio.org/page/plus/debugging.html):
   - Do not fetch registers data when Peripherals or Registers views are collapsed
   - Fixed issue with incorrect breakpoint hit in multi-thread environment (RTOS)
+* Instruction how to manually create [PIO Core Virtual Environment](http://docs.platformio.org/en/latest/installation.html#virtual-environment)
 
 ## 0.17.0 (2018-06-29)
 
