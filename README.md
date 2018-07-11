@@ -1,7 +1,5 @@
 # PlatformIO IDE for VSCode
 
-[![Marketplace Version](https://vsmarketplacebadge.apphb.com/version-short/platformio.platformio-ide.svg)](https://marketplace.visualstudio.com/items?itemName=platformio.platformio-ide) [![Installs](https://vsmarketplacebadge.apphb.com/installs-short/platformio.platformio-ide.svg)](https://marketplace.visualstudio.com/items?itemName=platformio.platformio-ide)
-
 **The next generation integrated development environment for IoT**
 
 [PlatformIO](http://platformio.org) is an open source ecosystem for IoT development.
@@ -15,12 +13,12 @@ Cross-platform build system and unified debugger. Remote unit testing and firmwa
 
 * Cross-platform code builder without external dependencies to a system software:
 
-    - 450+ embedded boards
-    - 20+ development platforms
-    - 10+ frameworks
+    - 500+ embedded boards
+    - 25+ development platforms
+    - 15+ frameworks
 
-* [PIO Remote™](http://docs.platformio.org/page/plus/pio-remote.html)
 * [PIO Unified Debugger](http://docs.platformio.org/page/plus/debugging.html)
+* [PIO Remote™](http://docs.platformio.org/page/plus/pio-remote.html)
 * [Unit Testing](http://docs.platformio.org/page/plus/unit-testing.html)
 * C/C++ Intelligent Code Completion
 * C/C++ Smart Code Linter for rapid professional development
