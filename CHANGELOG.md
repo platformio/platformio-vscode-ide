@@ -3,6 +3,7 @@
 ## 0.17.2 (2018-07-??)
 
 - Do not force PIO IDE Terminal to `cmd.exe` on Windows (issue [#76](https://github.com/platformio/platformio-vscode-ide/issues/76))
+- [PIO Unified Debugger](http://docs.platformio.org/page/plus/debugging.html): Fixed infinite loading of Peripheral Registers
 
 ## 0.17.1 (2018-07-05)
 
