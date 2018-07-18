@@ -1,5 +1,9 @@
 # Release Notes
 
+## 0.17.3 (2018-07-??)
+
+* Fixed "TypeError: Cannot read property 'title' of undefined" (issue [#170](https://github.com/platformio/platformio-vscode-ide/issues/170))
+
 ## 0.17.2 (2018-07-11)
 
 - Do not force PIO IDE Terminal to `cmd.exe` on Windows (issue [#76](https://github.com/platformio/platformio-vscode-ide/issues/76))

@@ -25,7 +25,7 @@ export default class PythonPrompt {
       { title: 'Abort PlatformIO IDE Installation', isCloseAffordance: true }
     );
 
-    switch (selectedItem.title) {
+    switch (selectedItem ? selectedItem.title : undefined) {
       case 'Install Python 2.7':
         vscode.commands.executeCommand('vscode.open', vscode.Uri.parse('http://docs.platformio.org/page/faq.html#install-python-interpreter'));
         return { status: this.STATUS_TRY_AGAIN };
