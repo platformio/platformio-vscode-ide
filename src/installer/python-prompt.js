@@ -19,9 +19,9 @@ export default class PythonPrompt {
   async prompt() {
     const selectedItem = await vscode.window.showInformationMessage(
       'PlatformIO: Can not find Python 2.7 Interpreter',
-      { title: 'Install Python 2.7', isCloseAffordance: true },
-      { title: 'I have Python 2.7', isCloseAffordance: true },
-      { title: 'Try again', isCloseAffordance: true },
+      { title: 'Install Python 2.7', isCloseAffordance: false },
+      { title: 'I have Python 2.7', isCloseAffordance: false },
+      { title: 'Try again', isCloseAffordance: false },
       { title: 'Abort PlatformIO IDE Installation', isCloseAffordance: true }
     );
 
