@@ -16,8 +16,8 @@ import PIOHome from './home';
 import PIOTasksProvider from './tasks';
 import PIOTerminal from './terminal';
 import ProjectIndexer from './project/indexer';
+import { maybeRateExtension } from './misc';
 import vscode from 'vscode';
-
 
 class PlatformIOVSCodeExtension {
 
@@ -75,6 +75,7 @@ class PlatformIOVSCodeExtension {
     this.initStatusBar({ ignoreCommands: this.getEnterpriseSetting('ignoreToolbarCommands') });
     this.initProjectIndexer();
     await this.startPIOHome();
+    maybeRateExtension(this.context.globalState);
   }
 
   getConfig() {

@@ -19,13 +19,13 @@ export default class PythonPrompt {
   async prompt() {
     const selectedItem = await vscode.window.showInformationMessage(
       'PlatformIO: Can not find Python 2.7 Interpreter',
-      { title: 'Install Python 2.7', isCloseAffordance: true },
-      { title: 'I have Python 2.7', isCloseAffordance: true },
-      { title: 'Try again', isCloseAffordance: true },
+      { title: 'Install Python 2.7', isCloseAffordance: false },
+      { title: 'I have Python 2.7', isCloseAffordance: false },
+      { title: 'Try again', isCloseAffordance: false },
       { title: 'Abort PlatformIO IDE Installation', isCloseAffordance: true }
     );
 
-    switch (selectedItem.title) {
+    switch (selectedItem ? selectedItem.title : undefined) {
       case 'Install Python 2.7':
         vscode.commands.executeCommand('vscode.open', vscode.Uri.parse('http://docs.platformio.org/page/faq.html#install-python-interpreter'));
         return { status: this.STATUS_TRY_AGAIN };
