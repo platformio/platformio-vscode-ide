@@ -2,6 +2,7 @@
 
 ## 0.17.3 (2018-07-??)
 
+* Fixed "PIP: Command "python setup.py egg_info" failed" (issue [#179](https://github.com/platformio/platformio-vscode-ide/issues/179))
 * Fixed "TypeError: Cannot read property 'title' of undefined" (issue [#170](https://github.com/platformio/platformio-vscode-ide/issues/170))
 
 ## 0.17.2 (2018-07-11)
