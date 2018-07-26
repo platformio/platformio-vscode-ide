@@ -6,10 +6,11 @@
  * the root directory of this source tree.
  */
 
+import * as pioNodeHelpers from 'platformio-node-helpers';
+
 import fs from 'fs-plus';
 import os from 'os';
 import path from 'path';
-import qs from 'querystringify';
 import vscode from 'vscode';
 
 
@@ -35,11 +36,7 @@ System: ${os.type()}, ${os.release()}, ${os.arch()}
 ${description}
 \`\`\`
 `;
-    vscode.commands.executeCommand(
-      'vscode.open',
-      vscode.Uri.parse(`https://github.com/platformio/platformio-vscode-ide/issues/new?${qs.stringify(
-        { title: encodeURIComponent(title), body: encodeURIComponent(ghbody) })}`)
-    );
+    vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(pioNodeHelpers.misc.getErrorReportUrl(title, ghbody)));
   }
   console.error(err);
 }
