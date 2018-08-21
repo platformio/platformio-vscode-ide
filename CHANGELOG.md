@@ -1,6 +1,14 @@
 # Release Notes
 
-## 0.17.4 (2018-07-??)
+## 0.17.5 (2018-08-21)
+
+* Improvements for [PIO Unified Debugger](http://docs.platformio.org/page/plus/debugging.html):
+  - Update peripheral register values on group expansion or double click
+  - Better support for the complex watching expressions
+  - Fixed issue when registers are not updated after loading
+  - Fixed setting new value for variable in "Global" scope
+
+## 0.17.4 (2018-07-26)
 
 * Improved PlatformIO Core installer
 

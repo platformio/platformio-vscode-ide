@@ -10,6 +10,7 @@ import * as pioNodeHelpers from 'platformio-node-helpers';
 
 import { extension } from './main';
 import { notifyError } from './utils';
+import path from 'path';
 import vscode from 'vscode';
 
 
@@ -39,6 +40,7 @@ export default class PIOHome {
         retainContextWhenHidden: true
       }
     );
+    panel.iconPath = vscode.Uri.file(path.join(extension.context.extensionPath, 'resources', 'platformio-mini-logo.png'));
     panel.onDidDispose(this.onPanelDisposed.bind(this), null, this._disposables);
     panel.webview.html = this.getLoadingContent();
     try {
