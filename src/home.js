@@ -17,8 +17,8 @@ import vscode from 'vscode';
 export default class PIOHome {
 
   constructor() {
+    this.subscriptions = [];
     this._currentPanel = undefined;
-    this._disposables = [];
   }
 
   async toggle() {
@@ -41,7 +41,7 @@ export default class PIOHome {
       }
     );
     panel.iconPath = vscode.Uri.file(path.join(extension.context.extensionPath, 'resources', 'platformio-mini-logo.png'));
-    panel.onDidDispose(this.onPanelDisposed.bind(this), null, this._disposables);
+    panel.onDidDispose(this.onPanelDisposed.bind(this), null, this.subscriptions);
     panel.webview.html = this.getLoadingContent();
     try {
       panel.webview.html = await this.getWebviewContent();
@@ -70,7 +70,11 @@ export default class PIOHome {
     const params = await pioNodeHelpers.home.ensureServerStarted({
       onIDECommand: (command, params) => {
         if (command === 'open_project') {
-          vscode.commands.executeCommand('vscode.openFolder', vscode.Uri.file(params));
+          if (vscode.workspace.workspaceFolders) {
+            vscode.workspace.updateWorkspaceFolders(vscode.workspace.workspaceFolders.length, null, { uri: vscode.Uri.file(params)});
+          } else {
+            vscode.commands.executeCommand('vscode.openFolder', vscode.Uri.file(params));
+          }
         }
       }
     });
@@ -106,12 +110,7 @@ export default class PIOHome {
       this._currentPanel.dispose();
       this._currentPanel = undefined;
     }
-    while (this._disposables.length) {
-      const x = this._disposables.pop();
-      if (x) {
-        x.dispose();
-      }
-    }
+    pioNodeHelpers.misc.disposeSubscriptions(this.subscriptions);
     this.shutdownServer();
   }
 
