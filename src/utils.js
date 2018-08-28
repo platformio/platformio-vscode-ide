@@ -8,9 +8,7 @@
 
 import * as pioNodeHelpers from 'platformio-node-helpers';
 
-import fs from 'fs-plus';
 import os from 'os';
-import path from 'path';
 import vscode from 'vscode';
 
 
@@ -49,8 +47,35 @@ export function getIDEVersion() {
   return getIDEManifest().version;
 }
 
-/* Custom */
+export function getPIOProjectDirs() {
+  return (vscode.workspace.workspaceFolders || [])
+    .map(folder => folder.uri.fsPath)
+    .filter(dir => pioNodeHelpers.misc.isPIOProject(dir));
+}
 
-export function isPIOProject(dir) {
-  return fs.isFileSync(path.join(dir, 'platformio.ini'));
+let _lastActiveProjectDir = undefined;
+
+export function getActivePIOProjectDir() {
+  const pioProjectDirs = getPIOProjectDirs();
+  if (pioProjectDirs.length < 1) {
+    _lastActiveProjectDir = undefined;
+    return _lastActiveProjectDir;
+  }
+  if (!_lastActiveProjectDir || !vscode.workspace.workspaceFolders.find(folder => folder.uri.fsPath === _lastActiveProjectDir)) {
+    _lastActiveProjectDir = pioProjectDirs[0];
+  }
+  const editor = vscode.window.activeTextEditor;
+  if (!editor) {
+    return _lastActiveProjectDir;
+  }
+  const resource = editor.document.uri;
+  if (resource.scheme !== 'file') {
+    return _lastActiveProjectDir;
+  }
+  const folder = vscode.workspace.getWorkspaceFolder(resource);
+  if (!folder || !pioNodeHelpers.misc.isPIOProject(folder.uri.fsPath)) { // outside workspace
+    return _lastActiveProjectDir;
+  }
+  _lastActiveProjectDir = folder.uri.fsPath;
+  return _lastActiveProjectDir;
 }
