@@ -147,7 +147,7 @@
       },
       {
         "command": "platformio-ide.updateCore",
-        "title": "Update installed platforms, packages and global libraries",
+        "title": "Update PlatformIO Core packages",
         "category": "PlatformIO"
       },
       {
