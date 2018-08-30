@@ -1,5 +1,9 @@
 # Release Notes
 
+## 1.0.1 (2018-??-??)
+
+* Improved support for Arduino files with `*.ino` extension
+
 ## 1.0.0 (2018-08-30)
 
 * [Multi-root Workspaces](https://code.visualstudio.com/docs/editor/multi-root-workspaces), work on several related projects at one time (issue [#50](https://github.com/platformio/platformio-vscode-ide/issues/50))

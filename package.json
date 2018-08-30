@@ -16,9 +16,9 @@
   "keywords": [
     "IoT",
     "embedded",
-    "firmware",
-    "debug",
-    "microcontroller"
+    "c",
+    "c++",
+    "arduino"
   ],
   "main": "./lib/main",
   "icon": "resources/platformio-logo.png",
@@ -70,6 +70,15 @@
           ".s"
         ],
         "configuration": "./syntaxes/assembly-configuration.json"
+      },
+      {
+        "id": "cpp",
+        "extensions": [
+          ".ino"
+        ],
+        "aliases": [
+          "Arduino"
+        ]
       }
     ],
     "grammars": [
@@ -87,6 +96,11 @@
         "language": "platformio-debug.asm",
         "scopeName": "source.platformio-debug-asm",
         "path": "./syntaxes/assembly.tmLanguage"
+      },
+      {
+        "language": "cpp",
+        "path": "./syntaxes/arduino.tmLanguage",
+        "scopeName": "source.cpp.arduino"
       }
     ],
     "commands": [
