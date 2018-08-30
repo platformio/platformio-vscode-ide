@@ -7,7 +7,7 @@
   },
   "license": "Apache-2.0",
   "displayName": "PlatformIO IDE",
-  "description": "Development environment for IoT, Arduino, ARM mbed, Espressif (ESP8266/ESP32), RISC-V, STM32, PIC32, nRF51/nRF52, FPGA, CMSIS, SPL, AVR, Samsung ARTIK, libOpenCM3",
+  "description": "Development environment for IoT, Arduino, ARM mbed, Espressif (ESP8266/ESP32), RISC-V, STM32, PIC32, nRF51/nRF52, MSP430, MCS-51 (8051), FPGA, FreeRTOS, ESP-IDF, CMSIS, SPL, AVR, Samsung ARTIK, libOpenCM3",
   "categories": [
     "Programming Languages",
     "Debuggers",

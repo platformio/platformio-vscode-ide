@@ -70,12 +70,12 @@ class PlatformIOVSCodeExtension {
       });
       await this.startInstaller();
       this.initDebug();
+      if (typeof this.getEnterpriseSetting('onPIOCoreReady') === 'function') {
+        await this.getEnterpriseSetting('onPIOCoreReady')();
+      }
     }
 
     vscode.commands.executeCommand('setContext', 'pioCoreReady', true);
-    if (typeof this.getEnterpriseSetting('onPIOCoreReady') === 'function') {
-      await this.getEnterpriseSetting('onPIOCoreReady')();
-    }
 
     this.registerGlobalCommands();
     this.initTasks();
