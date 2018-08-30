@@ -1,5 +1,17 @@
 # Release Notes
 
+## 1.0.0 (2018-08-30)
+
+* [Multi-root Workspaces](https://code.visualstudio.com/docs/editor/multi-root-workspaces), work on several related projects at one time (issue [#50](https://github.com/platformio/platformio-vscode-ide/issues/50))
+* **PlatformIO Activity Bar**:
+  - "Quick Access" to PIO Home and maintenance commands
+  - "Project Tasks", refactored Project Task Manager with a support for multiple environments in `platformio.ini`
+* Added "verbose" build and upload project tasks
+* Added "Update PlatformIO Core packages" command
+* Added new configuration option `platformio-ide.disableToolbar` which allows to disabling of PlatformIO Toolbar in a bottom status bar
+* Refactored IntelliSense Indexer
+* Fixed issue with task runner when French locale is used (issue [#107](https://github.com/platformio/platformio-vscode-ide/issues/107))
+
 ## 0.17.5 (2018-08-21)
 
 * Improvements for [PIO Unified Debugger](http://docs.platformio.org/page/plus/debugging.html):

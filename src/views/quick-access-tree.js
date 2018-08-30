@@ -34,7 +34,7 @@ export default class QuickAccessTreeProvider {
       new QuickItem('Updates', undefined, vscode.TreeItemCollapsibleState.Expanded, [
         new QuickItem('Update global libraries', 'platformio-ide.updateGlobalLibs'),
         new QuickItem('Update platforms & packages', 'platformio-ide.updatePlatforms'),
-        new QuickItem('Update PIO Core packages, platforms, and global libraries', 'platformio-ide.updateCore'),
+        new QuickItem('Update PlatformIO Core packages', 'platformio-ide.updateCore'),
         new QuickItem('Upgrade PlatformIO Core', 'platformio-ide.upgradeCore')
       ])
     ];
