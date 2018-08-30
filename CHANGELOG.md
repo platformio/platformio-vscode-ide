@@ -3,6 +3,7 @@
 ## 1.0.1 (2018-??-??)
 
 * Improved support for Arduino files with `*.ino` extension
+* Do not shutdown PIO Home server when folder is added to workspace
 
 ## 1.0.0 (2018-08-30)
 

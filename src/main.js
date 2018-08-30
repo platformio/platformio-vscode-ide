@@ -36,10 +36,16 @@ class PlatformIOVSCodeExtension {
 
   activate(context) {
     this.context = context;
+    this.pioHome = new PIOHome();
+    this.pioTerm = new PIOTerminal();
+
     this.context.subscriptions.push(
+      this.pioHome,
+      this.pioTerm,
       vscode.workspace.onDidChangeWorkspaceFolders(this.reinit.bind(this)),
       vscode.workspace.onDidChangeConfiguration(() => this.reinit(true))
     );
+
     this.reinit();
   }
 
@@ -52,10 +58,6 @@ class PlatformIOVSCodeExtension {
     if (this._inited || (!hasPIOProject && this.getConfig().get('activateOnlyOnPlatformIOProject'))) {
       return;
     }
-
-    this.pioHome = new PIOHome();
-    this.pioTerm = new PIOTerminal();
-    this.subscriptions.push(this.pioHome, this.pioTerm);
 
     if (!this._initedBefore) {
       pioNodeHelpers.misc.patchOSEnviron({
