@@ -470,7 +470,7 @@
         "properties": {
           "task": {
             "type": "string",
-            "description": "Task name"
+            "description": "PlatformIO Task ID"
           }
         }
       }
@@ -481,7 +481,7 @@
         "owner": "cpp",
         "fileLocation": [
           "relative",
-          "${workspaceRoot}"
+          "${workspaceFolder}"
         ],
         "pattern": {
           "regexp": "^([^:\\n]+):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
@@ -510,7 +510,7 @@
         "platformio-ide.autoRebuildAutocompleteIndex": {
           "type": "boolean",
           "default": true,
-          "description": "Automatically rebuild C/C++ Project Index when platformio.ini is changed or when new libraries are installed."
+          "description": "Automatically rebuild Project IntelliSense Index when platformio.ini is changed or when new libraries are installed."
         },
         "platformio-ide.customPATH": {
           "type": [
@@ -548,6 +548,11 @@
           "type": "boolean",
           "default": true,
           "description": "Automatically close Serial Port Monitor before uploading/testing"
+        },
+        "platformio-ide.disableToolbar": {
+          "type": "boolean",
+          "default": false,
+          "description": "Disable PlatformIO Toolbar"
         }
       }
     }

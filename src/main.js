@@ -37,21 +37,19 @@ class PlatformIOVSCodeExtension {
   activate(context) {
     this.context = context;
     this.context.subscriptions.push(
-      vscode.workspace.onDidChangeWorkspaceFolders(this.init.bind(this))
+      vscode.workspace.onDidChangeWorkspaceFolders(this.reinit.bind(this)),
+      vscode.workspace.onDidChangeConfiguration(() => this.reinit(true))
     );
-    this.init();
+    this.reinit();
   }
 
-  async init() {
+  async reinit(force) {
     const hasPIOProject = !!utils.getActivePIOProjectDir();
-    if (!hasPIOProject) {
+    if (!hasPIOProject || force) {
       this.deactivate();
       this._inited = false;
-      if (this.getConfig().get('activateOnlyOnPlatformIOProject')) {
-        return;
-      }
     }
-    if (this._inited) {
+    if (this._inited || (!hasPIOProject && this.getConfig().get('activateOnlyOnPlatformIOProject'))) {
       return;
     }
 
@@ -78,7 +76,6 @@ class PlatformIOVSCodeExtension {
     vscode.commands.executeCommand('setContext', 'pioCoreReady', true);
 
     this.registerGlobalCommands();
-    this.initTasks();
 
     this.subscriptions.push(
       vscode.window.registerTreeDataProvider('platformio-activitybar.quickAccess',
@@ -87,15 +84,17 @@ class PlatformIOVSCodeExtension {
 
     if (!hasPIOProject) {
       await this.startPIOHome();
-      this.initStatusBar({ filterCommands: ['platformio-ide.showHome'] });
+      this.initToolbar({ filterCommands: ['platformio-ide.showHome'] });
       return;
     }
+
+    this.initTasks();
 
     if (this.getConfig().get('updateTerminalPathConfiguration')) {
       this.pioTerm.updateEnvConfiguration();
     }
 
-    this.initStatusBar({ ignoreCommands: this.getEnterpriseSetting('ignoreToolbarCommands') });
+    this.initToolbar({ ignoreCommands: this.getEnterpriseSetting('ignoreToolbarCommands') });
     this.initProjectIndexer();
     await this.startPIOHome();
     maybeRateExtension(this.context.globalState);
@@ -287,7 +286,10 @@ class PlatformIOVSCodeExtension {
     piodebug.activate(this.context);
   }
 
-  initStatusBar({ filterCommands, ignoreCommands }) {
+  initToolbar({ filterCommands, ignoreCommands }) {
+    if (this.getConfig().get('disableToolbar')) {
+      return;
+    }
     [
       ['$(home)', 'PlatformIO: Home', 'platformio-ide.showHome'],
       ['$(check)', 'PlatformIO: Build', 'platformio-ide.build'],
