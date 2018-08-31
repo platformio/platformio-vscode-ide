@@ -150,6 +150,11 @@
         "category": "PlatformIO"
       },
       {
+        "command": "platformio-ide.startDebugging",
+        "title": "Start Debugging",
+        "category": "PlatformIO"
+      },
+      {
         "command": "platformio-ide.updateGlobalLibs",
         "title": "Update global libraries",
         "category": "PlatformIO"

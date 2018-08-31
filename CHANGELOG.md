@@ -2,6 +2,9 @@
 
 ## 1.1.0 (2018-??-??)
 
+* New "Debug" group to "Quick Access" view
+  - "Start Debugging", will start debug session, activate debug console and focus "Debug" View
+  - "Toggle Debug Console", an optional button to show active debug console
 * Improved support for Arduino files with `*.ino` extension
 * Focus "Explorer" view when adding new project folder to workspace
 * Do not shutdown PIO Home server when folder is added to workspace
