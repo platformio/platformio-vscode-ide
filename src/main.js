@@ -312,6 +312,7 @@ class PlatformIOVSCodeExtension {
       ['$(cloud-upload)', 'PlatformIO: Upload to remote device', 'platformio-ide.remote'],
       ['$(trashcan)', 'PlatformIO: Clean', 'platformio-ide.clean'],
       ['$(beaker)', 'PlatformIO: Test', 'platformio-ide.test'],
+      ['$(checklist)', 'PlatformIO: Run Task...', 'workbench.action.tasks.runTask'],
       ['$(plug)', 'PlatformIO: Serial Monitor', 'platformio-ide.serialMonitor'],
       ['$(terminal)', 'PlatformIO: New Terminal', 'platformio-ide.newTerminal']
     ]
