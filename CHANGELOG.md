@@ -1,6 +1,6 @@
 # Release Notes
 
-## 1.1.0 (2018-??-??)
+## 1.1.0 (2018-08-31)
 
 * New "Debug" group to "Quick Access" view
   - "Start Debugging", will start debug session, activate debug console and focus "Debug" View

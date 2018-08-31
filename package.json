@@ -1,6 +1,6 @@
 {
   "name": "platformio-ide",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "publisher": "platformio",
   "engines": {
     "vscode": "^1.24.0"
@@ -15,9 +15,9 @@
   ],
   "keywords": [
     "IoT",
-    "embedded",
     "c",
     "c++",
+    "embedded",
     "arduino"
   ],
   "main": "./lib/main",
