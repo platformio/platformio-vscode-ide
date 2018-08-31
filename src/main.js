@@ -330,6 +330,7 @@ class PlatformIOVSCodeExtension {
 
   initProjectIndexer() {
     const observer = new pioNodeHelpers.project.ProjectObserver({
+      ide: 'vscode',
       createFileSystemWatcher: vscode.workspace.createFileSystemWatcher,
       createDirSystemWatcher: (dir) => vscode.workspace.createFileSystemWatcher(path.join(dir, '*')),
       withProgress: (task) => vscode.window.withProgress({
