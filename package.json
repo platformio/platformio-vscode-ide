@@ -1,6 +1,6 @@
 {
   "name": "platformio-ide",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "publisher": "platformio",
   "engines": {
     "vscode": "^1.24.0"
@@ -15,10 +15,10 @@
   ],
   "keywords": [
     "IoT",
+    "c",
+    "c++",
     "embedded",
-    "firmware",
-    "debug",
-    "microcontroller"
+    "arduino"
   ],
   "main": "./lib/main",
   "icon": "resources/platformio-logo.png",
@@ -70,6 +70,15 @@
           ".s"
         ],
         "configuration": "./syntaxes/assembly-configuration.json"
+      },
+      {
+        "id": "cpp",
+        "extensions": [
+          ".ino"
+        ],
+        "aliases": [
+          "Arduino"
+        ]
       }
     ],
     "grammars": [
@@ -87,6 +96,11 @@
         "language": "platformio-debug.asm",
         "scopeName": "source.platformio-debug-asm",
         "path": "./syntaxes/assembly.tmLanguage"
+      },
+      {
+        "language": "cpp",
+        "path": "./syntaxes/arduino.tmLanguage",
+        "scopeName": "source.cpp.arduino"
       }
     ],
     "commands": [
@@ -133,6 +147,11 @@
       {
         "command": "platformio-ide.newTerminal",
         "title": "New Terminal",
+        "category": "PlatformIO"
+      },
+      {
+        "command": "platformio-ide.startDebugging",
+        "title": "Start Debugging",
         "category": "PlatformIO"
       },
       {

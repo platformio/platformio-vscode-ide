@@ -75,6 +75,7 @@ export default class PIOHome {
           } else {
             vscode.commands.executeCommand('vscode.openFolder', vscode.Uri.file(params));
           }
+          vscode.commands.executeCommand('workbench.view.explorer');
         }
       }
     });

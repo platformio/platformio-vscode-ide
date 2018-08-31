@@ -1,5 +1,14 @@
 # Release Notes
 
+## 1.1.0 (2018-08-31)
+
+* New "Debug" group to "Quick Access" view
+  - "Start Debugging", will start debug session, activate debug console and focus "Debug" View
+  - "Toggle Debug Console", an optional button to show active debug console
+* Improved support for Arduino files with `*.ino` extension
+* Focus "Explorer" view when adding new project folder to workspace
+* Do not shutdown PIO Home server when folder is added to workspace
+
 ## 1.0.0 (2018-08-30)
 
 * [Multi-root Workspaces](https://code.visualstudio.com/docs/editor/multi-root-workspaces), work on several related projects at one time (issue [#50](https://github.com/platformio/platformio-vscode-ide/issues/50))

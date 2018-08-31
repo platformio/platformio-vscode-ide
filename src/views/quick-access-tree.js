@@ -31,6 +31,10 @@ export default class QuickAccessTreeProvider {
       new QuickItem('PIO Home', 'platformio-ide.showHome'),
       new QuickItem('New Terminal', 'platformio-ide.newTerminal'),
       new QuickItem('Clone Git Project', 'git.clone'),
+      new QuickItem('Debug', undefined, vscode.TreeItemCollapsibleState.Expanded, [
+        new QuickItem('Start Debugging', 'platformio-ide.startDebugging'),
+        new QuickItem('Toggle Debug Console', 'workbench.debug.action.toggleRepl')
+      ]),
       new QuickItem('Updates', undefined, vscode.TreeItemCollapsibleState.Expanded, [
         new QuickItem('Update global libraries', 'platformio-ide.updateGlobalLibs'),
         new QuickItem('Update platforms & packages', 'platformio-ide.updatePlatforms'),

@@ -1,0 +1,67 @@
+<!--
+language grammars reference document: https://manual.macromates.com/en/language_grammars
+Arduino Language reference document: https://www.arduino.cc/en/Reference/HomePage
+-->
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+	<dict>
+		<key>scopeName</key>
+		<string>source.cpp.arduino</string>
+		<key>uuid</key>
+		<string>65E5AFAE-4AE7-4DAE-837B-1B99810E464D</string>
+		<key>fileTypes</key>
+		<array>
+			<string>ino</string>
+		</array>
+		<key>foldingStartMarker</key>
+		<string>/\*\*|\{\s*$</string>
+		<key>foldingStopMarker</key>
+		<string>\*\*/|^\s*\}</string>
+		<key>name</key>
+		<string>Arduino</string>
+		<key>patterns</key>
+		<array>
+			<dict>
+				<key>match</key>
+				<string>\b(HIGH|LOW|INPUT|OUTPUT|INPUT_PULLUP|LED_BUILTIN|DEC|BIN|HEX|OCT|BYTE|PI|HALF_PI|TWO_PI|LSBFIRST|MSBFIRST|CHANGE|FALLING|RISING|DEFAULT|EXTERNAL|INTERNAL|INTERNAL1V1|INTERNAL2V56|null)\b</string>
+				<key>name</key>
+				<string>storage.type.cpp.arduino</string>
+			</dict>
+			<dict>
+				<key>match</key>
+				<string>\b(boolean|byte|word|string|String|array)\b</string>
+				<key>name</key>
+				<string>storage.cpp.arduino</string>
+			</dict>
+			<dict>
+				<key>match</key>
+				<string>\b(abs|acos|asin|atan|atan2|ceil|constrain|cos|degrees|exp|floor|log|map|max|min|radians|random|randomSeed|round|sin|sq|sqrt|tan|bitRead|bitWrite|bitSet|bitClear|bit|highByte|lowByte|analogReference|analogRead|analogWrite|analogReadResolution|analogWriteResolution|attachInterrupt|detachInterrupt|delay|delayMicroseconds|digitalWrite|digitalRead|interrupts|millis|micros|noInterrupts|noTone|pinMode|pulseIn|shiftIn|shiftOut|tone|begin|end|read|print|println|available|flush)\b</string>
+				<key>name</key>
+				<string>support.function.cpp.arduino</string>
+			</dict>
+			<dict>
+				<key>match</key>
+				<string>\b\s*(setup|loop)\b</string>
+				<key>name</key>
+				<string>keyword.control.cpp.arduino</string>
+			</dict>
+			<dict>
+				<key>match</key>
+				<string>\b(Serial\d?|Stream|Keyboard|Mouse)\b</string>
+				<key>name</key>
+				<string>support.class.cpp.arduino</string>
+			</dict>
+			<dict>
+				<key>match</key>
+				<string>\b(private|protected|public)</string>
+				<key>name</key>
+				<string>storage.modifier.cpp.arduino</string>
+			</dict>
+			<dict>
+				<key>include</key>
+				<string>source.cpp</string>
+			</dict>
+		</array>
+	</dict>
+</plist>
