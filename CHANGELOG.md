@@ -1,5 +1,9 @@
 # Release Notes
 
+## 1.1.1 (2018-??-??)
+
+* Show "Project Tasks" before "Quick Access" in PlatformIO Activity Bar
+
 ## 1.1.0 (2018-08-31)
 
 * New "Debug" group to "Quick Access" view

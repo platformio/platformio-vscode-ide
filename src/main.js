@@ -79,6 +79,11 @@ class PlatformIOVSCodeExtension {
 
     this.registerGlobalCommands();
 
+    // workaround: init empty Tasks view to keep it above QuickAccess
+    this.taskSubscriptions.push(
+      vscode.window.registerTreeDataProvider('platformio-activitybar.tasks',
+      new TasksTreeProvider([]))
+    );
     this.subscriptions.push(
       vscode.window.registerTreeDataProvider('platformio-activitybar.quickAccess',
       new QuickAccessTreeProvider())
