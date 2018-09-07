@@ -1,5 +1,14 @@
 # Release Notes
 
+## 1.1.1 (2018-09-07)
+
+* Show "Project Tasks" before "Quick Access" in PlatformIO Activity Bar
+* Reverted back "PlatformIO: Run Task..." button to PlatformIO Toolbar
+* Improved performance of Project IntelliSense Indexer
+* Fixed PlatformIO Core "ImportError: cannot import name _remove_dead_weakref" (issue [#142](https://github.com/platformio/platformio-vscode-ide/issues/142))
+* Fixed PIO Home "[Errno 48] Address already in use" (issue [#313](https://github.com/platformio/platformio-vscode-ide/issues/313))
+* Fixed issue when extension does not start after adding new project folder to workspace (issue [#319](https://github.com/platformio/platformio-vscode-ide/issues/319))
+
 ## 1.1.0 (2018-08-31)
 
 * New "Debug" group to "Quick Access" view

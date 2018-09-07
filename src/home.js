@@ -40,8 +40,8 @@ export default class PIOHome {
         retainContextWhenHidden: true
       }
     );
+    this.subscriptions.push(panel.onDidDispose(this.onPanelDisposed.bind(this)));
     panel.iconPath = vscode.Uri.file(path.join(extension.context.extensionPath, 'resources', 'platformio-mini-logo.png'));
-    panel.onDidDispose(this.onPanelDisposed.bind(this), null, this.subscriptions);
     panel.webview.html = this.getLoadingContent();
     try {
       panel.webview.html = await this.getWebviewContent();
@@ -102,17 +102,13 @@ export default class PIOHome {
     this._currentPanel = undefined;
   }
 
-  shutdownServer() {
-    pioNodeHelpers.home.shutdownServer();
-  }
-
   dispose() {
     if (this._currentPanel) {
       this._currentPanel.dispose();
       this._currentPanel = undefined;
     }
     pioNodeHelpers.misc.disposeSubscriptions(this.subscriptions);
-    this.shutdownServer();
+    pioNodeHelpers.home.shutdownServer();
   }
 
 }
