@@ -29,54 +29,40 @@ class PlatformIOVSCodeExtension {
     this.subscriptions = [];
     this.taskSubscriptions = [];
 
-    this._inited = false;
-    this._initedBefore = false;
     this._enterpriseSettings = undefined;
   }
 
-  activate(context) {
+  async activate(context) {
     this.context = context;
     this.pioHome = new PIOHome();
     this.pioTerm = new PIOTerminal();
 
     this.context.subscriptions.push(
       this.pioHome,
-      this.pioTerm,
-      vscode.workspace.onDidChangeWorkspaceFolders(this.reinit.bind(this)),
-      vscode.workspace.onDidChangeConfiguration(() => this.reinit(true))
+      this.pioTerm
     );
 
-    this.reinit();
-  }
-
-  async reinit(force) {
     const hasPIOProject = !!utils.getActivePIOProjectDir();
-    if (!hasPIOProject || force) {
-      this.deactivate();
-      this._inited = false;
-    }
-    if (this._inited || (!hasPIOProject && this.getConfig().get('activateOnlyOnPlatformIOProject'))) {
+    if (!hasPIOProject && this.getConfig().get('activateOnlyOnPlatformIOProject')) {
       return;
     }
 
-    if (!this._initedBefore) {
-      pioNodeHelpers.misc.patchOSEnviron({
-        caller: 'vscode',
-        useBuiltinPIOCore: this.getConfig().get('useBuiltinPIOCore'),
-        extraPath: this.getConfig().get('customPATH'),
-        extraVars: {
-          PLATFORMIO_IDE: utils.getIDEVersion()
-        }
-      });
-      await this.startInstaller();
-      this.initDebug();
-      if (typeof this.getEnterpriseSetting('onPIOCoreReady') === 'function') {
-        await this.getEnterpriseSetting('onPIOCoreReady')();
+    pioNodeHelpers.misc.patchOSEnviron({
+      caller: 'vscode',
+      useBuiltinPIOCore: this.getConfig().get('useBuiltinPIOCore'),
+      extraPath: this.getConfig().get('customPATH'),
+      extraVars: {
+        PLATFORMIO_IDE: utils.getIDEVersion()
       }
-    }
-
+    });
+    await this.startInstaller();
     vscode.commands.executeCommand('setContext', 'pioCoreReady', true);
 
+    if (typeof this.getEnterpriseSetting('onPIOCoreReady') === 'function') {
+      await this.getEnterpriseSetting('onPIOCoreReady')();
+    }
+
+    this.initDebug();
     this.registerGlobalCommands();
 
     // workaround: init empty Tasks view to keep it above QuickAccess
@@ -105,9 +91,6 @@ class PlatformIOVSCodeExtension {
     this.initProjectIndexer();
     await this.startPIOHome();
     maybeRateExtension(this.context.globalState);
-
-    this._inited = true;
-    this._initedBefore = true;
   }
 
   getConfig() {
@@ -188,14 +171,15 @@ class PlatformIOVSCodeExtension {
   }
 
   async startPIOHome() {
-    if (!pioNodeHelpers.home.showAtStartup('vscode')) {
-      return;
-    }
     // Hot-loading of PIO Home Server
     try {
       await pioNodeHelpers.home.ensureServerStarted();
     } catch (err) {
-      return utils.notifyError('Start PIO Home Server', err);
+      console.warn(err);
+      // return utils.notifyError('Start PIO Home Server', err);
+    }
+    if (!pioNodeHelpers.home.showAtStartup('vscode')) {
+      return;
     }
     vscode.commands.executeCommand('platformio-ide.showHome');
   }
@@ -360,14 +344,18 @@ class PlatformIOVSCodeExtension {
     doUpdate();
   }
 
+  disposeLocalSubscriptions() {
+    vscode.commands.executeCommand('setContext', 'pioCoreReady', false);
+    pioNodeHelpers.misc.disposeSubscriptions(this.subscriptions);
+  }
+
   disposeTaskSubscriptions() {
     pioNodeHelpers.misc.disposeSubscriptions(this.taskSubscriptions);
   }
 
   deactivate() {
     this.disposeTaskSubscriptions();
-    pioNodeHelpers.misc.disposeSubscriptions(this.subscriptions);
-    vscode.commands.executeCommand('setContext', 'pioCoreReady', false);
+    this.disposeLocalSubscriptions();
   }
 }
 
