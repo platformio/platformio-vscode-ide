@@ -1,6 +1,6 @@
 # Release Notes
 
-## 1.1.1 (2018-??-??)
+## 1.1.1 (2018-09-07)
 
 * Show "Project Tasks" before "Quick Access" in PlatformIO Activity Bar
 * Reverted back "PlatformIO: Run Task..." button to PlatformIO Toolbar
