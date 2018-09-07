@@ -4,6 +4,8 @@
 
 * Show "Project Tasks" before "Quick Access" in PlatformIO Activity Bar
 * Reverted back "PlatformIO: Run Task..." button to PlatformIO Toolbar
+* Fixed PlatformIO Core "ImportError: cannot import name _remove_dead_weakref" (issue [#142](https://github.com/platformio/platformio-vscode-ide/issues/142))
+* Fixed PIO Home "[Errno 48] Address already in use" (issue [#313](https://github.com/platformio/platformio-vscode-ide/issues/313))
 
 ## 1.1.0 (2018-08-31)
 

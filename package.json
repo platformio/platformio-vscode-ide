@@ -1,6 +1,6 @@
 {
   "name": "platformio-ide",
-  "version": "1.1.1-beta.1",
+  "version": "1.1.1-beta.3",
   "publisher": "platformio",
   "engines": {
     "vscode": "^1.24.0"
@@ -587,7 +587,7 @@
   "devDependencies": {
     "@types/node": "^8",
     "babel-cli": "^6.24.1",
-    "babel-eslint": "^8.0.1",
+    "babel-eslint": "^9.0.0",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-preset-env": "^1.6.0",
     "esformatter": "^0.10.0",
@@ -598,7 +598,7 @@
   },
   "dependencies": {
     "fs-plus": "^3.0.0",
-    "platformio-node-helpers": "^3.1.0",
+    "platformio-node-helpers": "^3.1.1",
     "platformio-vscode-debug": "^1.2.0"
   },
   "extensionDependencies": [
