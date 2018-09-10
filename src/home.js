@@ -16,21 +16,29 @@ import vscode from 'vscode';
 
 export default class PIOHome {
 
+  static defaultStartUrl = '/';
+
   constructor() {
     this.subscriptions = [];
     this._currentPanel = undefined;
+    this._lastStartUrl = PIOHome.defaultStartUrl;
   }
 
-  async toggle() {
+  async toggle(startUrl=PIOHome.defaultStartUrl) {
     const column = vscode.window.activeTextEditor ? vscode.window.activeTextEditor.viewColumn : undefined;
     if (this._currentPanel) {
-      this._currentPanel.reveal(column);
+      if (this._lastStartUrl !== startUrl) {
+        await this.updatePanel(startUrl);
+      } else {
+        this._currentPanel.reveal(column);
+      }
     } else {
-      this._currentPanel = await this.newPanel();
+      this._currentPanel = await this.newPanel(startUrl);
     }
+    this._lastStartUrl = startUrl;
   }
 
-  async newPanel() {
+  async newPanel(startUrl) {
     const panel = vscode.window.createWebviewPanel(
       'pioHome',
       extension.getEnterpriseSetting('pioHomeTitle', 'PIO Home'),
@@ -44,11 +52,19 @@ export default class PIOHome {
     panel.iconPath = vscode.Uri.file(path.join(extension.context.extensionPath, 'resources', 'platformio-mini-logo.png'));
     panel.webview.html = this.getLoadingContent();
     try {
-      panel.webview.html = await this.getWebviewContent();
+      panel.webview.html = await this.getWebviewContent(startUrl);
     } catch (err) {
       notifyError('Start PIO Home Server', err);
     }
     return panel;
+  }
+
+  async updatePanel(startUrl) {
+    try {
+      this._currentPanel.webview.html = await this.getWebviewContent(startUrl);
+    } catch (err) {
+      notifyError('Update PIO Home Content', err);
+    }
   }
 
   getTheme() {
@@ -61,12 +77,12 @@ export default class PIOHome {
     return `<!DOCTYPE html>
     <html lang="en">
     <body style="background-color: ${theme === 'light' ? '#FFF' : '#1E1E1E'}">
-      Loading...
+      <div style="padding: 15px;">Loading...</div>
     </body>
     </html>`;
   }
 
-  async getWebviewContent() {
+  async getWebviewContent(startUrl) {
     const params = await pioNodeHelpers.home.ensureServerStarted({
       onIDECommand: (command, params) => {
         if (command === 'open_project') {
@@ -79,13 +95,12 @@ export default class PIOHome {
         }
       }
     });
-    const start = '/';
     const theme = this.getTheme();
     return `<!DOCTYPE html>
       <html lang="en">
       <body style="margin: 0; padding: 0; height: 100%; overflow: hidden; background-color: ${theme === 'light' ? '#FFF' : '#1E1E1E'}">
         <iframe src="${ pioNodeHelpers.home.getFrontendUri(params.host, params.port, {
-        start,
+        start: startUrl,
         theme,
         workspace: extension.getEnterpriseSetting('defaultPIOHomeWorkspace')
       })}"

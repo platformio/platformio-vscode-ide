@@ -188,7 +188,7 @@ class PlatformIOVSCodeExtension {
     this.subscriptions.push(
       vscode.commands.registerCommand(
         'platformio-ide.showHome',
-        () => this.pioHome.toggle()
+        (startUrl) => this.pioHome.toggle(startUrl)
       ),
       vscode.commands.registerCommand(
         'platformio-ide.newTerminal',

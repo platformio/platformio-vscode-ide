@@ -1,5 +1,9 @@
 # Release Notes
 
+## 1.2.0 (2018-09-??)
+
+* Added "table of contents" of PIO Home to "PlatformIO View > Quick Access" (left sidebar)
+
 ## 1.1.1 (2018-09-07)
 
 * Show "Project Tasks" before "Quick Access" in PlatformIO Activity Bar
