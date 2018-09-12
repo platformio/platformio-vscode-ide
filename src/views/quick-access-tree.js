@@ -9,12 +9,13 @@
 import * as vscode from 'vscode';
 
 class QuickItem extends vscode.TreeItem {
-  constructor(label, command, collapsibleState, children) {
+  constructor(label, command, args, collapsibleState, children) {
     super(label, collapsibleState);
     if (command) {
       this.command = {
         title: label,
-        command
+        command,
+        arguments: args
       };
     }
     this.customChildren = children;
@@ -28,16 +29,23 @@ export default class QuickAccessTreeProvider {
       return element.customChildren;
     }
     return [
-      new QuickItem('PIO Home', 'platformio-ide.showHome'),
-      new QuickItem('New Terminal', 'platformio-ide.newTerminal'),
       new QuickItem('Clone Git Project', 'git.clone'),
-      new QuickItem('Debug', undefined, vscode.TreeItemCollapsibleState.Expanded, [
+      new QuickItem('New Terminal', 'platformio-ide.newTerminal'),
+      new QuickItem('PIO Home', undefined, undefined, vscode.TreeItemCollapsibleState.Expanded, [
+        new QuickItem('Open', 'platformio-ide.showHome'),
+        new QuickItem('PIO Account', 'platformio-ide.showHome', ['/account']),
+        new QuickItem('Libraries', 'platformio-ide.showHome', ['/libraries']),
+        new QuickItem('Boards', 'platformio-ide.showHome', ['/boards']),
+        new QuickItem('Platforms', 'platformio-ide.showHome', ['/platforms']),
+        new QuickItem('Devices', 'platformio-ide.showHome', ['/device']),
+      ]),
+      new QuickItem('Debug', undefined, undefined, vscode.TreeItemCollapsibleState.Expanded, [
         new QuickItem('Start Debugging', 'platformio-ide.startDebugging'),
         new QuickItem('Toggle Debug Console', 'workbench.debug.action.toggleRepl')
       ]),
-      new QuickItem('Updates', undefined, vscode.TreeItemCollapsibleState.Expanded, [
-        new QuickItem('Update global libraries', 'platformio-ide.updateGlobalLibs'),
-        new QuickItem('Update platforms & packages', 'platformio-ide.updatePlatforms'),
+      new QuickItem('Updates', undefined, undefined, vscode.TreeItemCollapsibleState.Expanded, [
+        new QuickItem('Library updates', 'platformio-ide.showHome', ['/libraries/updates']),
+        new QuickItem('Platform updates', 'platformio-ide.showHome', ['/platforms/updates']),
         new QuickItem('Update PlatformIO Core packages', 'platformio-ide.updateCore'),
         new QuickItem('Upgrade PlatformIO Core', 'platformio-ide.upgradeCore')
       ])
