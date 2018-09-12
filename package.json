@@ -70,15 +70,6 @@
           ".s"
         ],
         "configuration": "./syntaxes/assembly-configuration.json"
-      },
-      {
-        "id": "cpp",
-        "extensions": [
-          ".ino"
-        ],
-        "aliases": [
-          "Arduino"
-        ]
       }
     ],
     "grammars": [
@@ -96,11 +87,6 @@
         "language": "platformio-debug.asm",
         "scopeName": "source.platformio-debug-asm",
         "path": "./syntaxes/assembly.tmLanguage"
-      },
-      {
-        "language": "cpp",
-        "path": "./syntaxes/arduino.tmLanguage",
-        "scopeName": "source.cpp.arduino"
       }
     ],
     "commands": [

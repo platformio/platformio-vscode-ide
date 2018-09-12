@@ -3,6 +3,7 @@
 ## 1.2.0 (2018-09-??)
 
 * Added "table of contents" of PIO Home to "PlatformIO View > Quick Access" (left sidebar)
+* Fixed issue when CPP files were detected as Arduino
 
 ## 1.1.1 (2018-09-07)
 
