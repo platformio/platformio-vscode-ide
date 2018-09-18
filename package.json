@@ -1,6 +1,6 @@
 {
   "name": "platformio-ide",
-  "version": "1.2.0",
+  "version": "1.3.0-beta.1",
   "publisher": "platformio",
   "engines": {
     "vscode": "^1.24.0"
@@ -553,6 +553,12 @@
           "type": "boolean",
           "default": true,
           "description": "Automatically close Serial Port Monitor before uploading/testing"
+        },
+        "platformio-ide.reopenSerialMonitorDelay": {
+          "type": "integer",
+          "default": 0,
+          "minimum": 0,
+          "description": "Time in milliseconds after which reopen Serial Port Monitor"
         },
         "platformio-ide.disableToolbar": {
           "type": "boolean",

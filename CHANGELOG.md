@@ -1,5 +1,9 @@
 # Release Notes
 
+## 1.3.0 (2018-09-??)
+
+* Configure time in milliseconds after which reopen Serial Port Monitor using new option `platformio-ide.reopenSerialMonitorDelay`
+
 ## 1.2.0 (2018-09-12)
 
 * Added "table of contents" of PIO Home to "PlatformIO View > Quick Access" (left sidebar)
