@@ -212,8 +212,8 @@ class PlatformIOVSCodeExtension {
       ),
       vscode.commands.registerCommand(
         'platformio-ide.updateCore',
-        () => this.pioTerm.sendText('platformio update --core-packages')
-      ),
+        () => this.pioTerm.sendText('platformio update')
+      ),    
       vscode.commands.registerCommand(
         'platformio-ide.upgradeCore',
         () => this.pioTerm.sendText('platformio upgrade')

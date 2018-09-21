@@ -183,10 +183,13 @@ export default class TaskManager {
       if (event.execution.task !== restoreAfterTask) {
         return;
       }
-      restoreTasks.forEach(task => {
-        vscode.tasks.executeTask(task);
-      });
-      restoreTasks = [];
+      setTimeout(() => {
+        restoreTasks.forEach(task => {
+          vscode.tasks.executeTask(task);
+        });
+        restoreTasks = [];
+      }, parseInt(vscode.workspace.getConfiguration('platformio-ide').get('reopenSerialMonitorDelay')));
+
     }));
   }
 }

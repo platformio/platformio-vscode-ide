@@ -1,5 +1,13 @@
 # Release Notes
 
+## 1.3.0 (2018-09-21)
+
+* Configure time in milliseconds after which reopen Serial Port Monitor using new option `platformio-ide.reopenSerialMonitorDelay`
+* Added "Update All" (platforms, packages, libraries) quick access command to "PlatformIO Activity" (left sidebar) (issue [#335](https://github.com/platformio/platformio-vscode-ide/issues/335))
+* Improvements for [PIO Unified Debugger](http://docs.platformio.org/page/plus/debugging.html):
+  - Fixed issue when using [BlackMagic Probe](http://docs.platformio.org/en/latest/plus/debug-tools/blackmagic.html) in pair with Atmel SAMD20/SAMD21 based boards
+  - Improved running to [debug_init_break](http://docs.platformio.org/en/latest/projectconf/section_env_debug.html#debug-init-break) on startup 
+
 ## 1.2.0 (2018-09-12)
 
 * Added "table of contents" of PIO Home to "PlatformIO View > Quick Access" (left sidebar)
