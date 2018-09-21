@@ -29,8 +29,6 @@ export default class QuickAccessTreeProvider {
       return element.customChildren;
     }
     return [
-      new QuickItem('Clone Git Project', 'git.clone'),
-      new QuickItem('New Terminal', 'platformio-ide.newTerminal'),
       new QuickItem('PIO Home', undefined, undefined, vscode.TreeItemCollapsibleState.Expanded, [
         new QuickItem('Open', 'platformio-ide.showHome'),
         new QuickItem('PIO Account', 'platformio-ide.showHome', ['/account']),
@@ -46,9 +44,13 @@ export default class QuickAccessTreeProvider {
       new QuickItem('Updates', undefined, undefined, vscode.TreeItemCollapsibleState.Expanded, [
         new QuickItem('Library updates', 'platformio-ide.showHome', ['/libraries/updates']),
         new QuickItem('Platform updates', 'platformio-ide.showHome', ['/platforms/updates']),
-        new QuickItem('Update PlatformIO Core packages', 'platformio-ide.updateCore'),
+        new QuickItem('Update All', 'platformio-ide.updateCore')
+      ]),
+      new QuickItem('Miscellaneous', undefined, undefined, vscode.TreeItemCollapsibleState.Expanded, [
+        new QuickItem('Clone Git Project', 'git.clone'),
+        new QuickItem('New Terminal', 'platformio-ide.newTerminal'),
         new QuickItem('Upgrade PlatformIO Core', 'platformio-ide.upgradeCore')
-      ])
+      ]),      
     ];
   }
 
