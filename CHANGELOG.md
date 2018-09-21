@@ -1,6 +1,6 @@
 # Release Notes
 
-## 1.3.0 (2018-09-??)
+## 1.3.0 (2018-09-21)
 
 * Configure time in milliseconds after which reopen Serial Port Monitor using new option `platformio-ide.reopenSerialMonitorDelay`
 * Added "Update All" (platforms, packages, libraries) quick access command to "PlatformIO Activity" (left sidebar) (issue [#335](https://github.com/platformio/platformio-vscode-ide/issues/335))
