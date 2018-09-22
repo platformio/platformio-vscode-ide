@@ -1,5 +1,10 @@
 # Release Notes
 
+## 1.3.1 (2018-??-??)
+
+* Improvements for [PIO Unified Debugger](http://docs.platformio.org/page/plus/debugging.html):
+  - Fixed an issue with empty call stack when initial breakpoint is disabled using [debug_init_break](http://docs.platformio.org/en/latest/projectconf/section_env_debug.html#debug-init-break)
+
 ## 1.3.0 (2018-09-21)
 
 * Configure time in milliseconds after which reopen Serial Port Monitor using new option `platformio-ide.reopenSerialMonitorDelay`
