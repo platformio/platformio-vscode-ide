@@ -419,7 +419,7 @@
     "views": {
       "platformio": [
         {
-          "id": "platformio-activitybar.tasks",
+          "id": "platformio-activitybar.projectTasks",
           "name": "Project Tasks",
           "when": "pioCoreReady"
         },
@@ -590,7 +590,7 @@
   },
   "dependencies": {
     "fs-plus": "^3.0.0",
-    "platformio-node-helpers": "^3.1.2",
+    "platformio-node-helpers": "^3.2.0",
     "platformio-vscode-debug": "^1.2.2"
   },
   "extensionDependencies": [

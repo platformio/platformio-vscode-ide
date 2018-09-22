@@ -2,6 +2,7 @@
 
 ## 1.3.1 (2018-??-??)
 
+* Added "Update All (libraries, platforms, and packages)" and "Upgrade PlatformIO Core" tasks to global VSCode Task Manager (issue [#335]
 * Improvements for [PIO Unified Debugger](http://docs.platformio.org/page/plus/debugging.html):
   - Fixed an issue with empty call stack when initial breakpoint is disabled using [debug_init_break](http://docs.platformio.org/en/latest/projectconf/section_env_debug.html#debug-init-break)
 

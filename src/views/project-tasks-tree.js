@@ -12,7 +12,7 @@ import TaskManager from '../tasks';
 import { extension } from '../main';
 import path from 'path';
 
-export default class TasksTreeProvider {
+export default class ProjectTasksTreeProvider {
 
   constructor(tasks) {
     this.tasks = tasks;
