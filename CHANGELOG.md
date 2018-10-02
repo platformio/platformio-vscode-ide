@@ -1,6 +1,6 @@
 # Release Notes
 
-## 1.3.1 (2018-??-??)
+## 1.3.1 (2018-10-02)
 
 * Added "Update All (libraries, platforms, and packages)" and "Upgrade PlatformIO Core" tasks to global VSCode Task Manager (issue [#335]
 * Improvements for [PIO Unified Debugger](http://docs.platformio.org/page/plus/debugging.html):
