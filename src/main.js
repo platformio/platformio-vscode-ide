@@ -15,7 +15,7 @@ import PIOHome from './home';
 import PIOTerminal from './terminal';
 import QuickAccessTreeProvider from './views/quick-access-tree';
 import TaskManager from './tasks';
-import TasksTreeProvider from './views/tasks-tree';
+import ProjectTasksTreeProvider from './views/project-tasks-tree';
 import { maybeRateExtension } from './misc';
 import path from 'path';
 import vscode from 'vscode';
@@ -65,10 +65,10 @@ class PlatformIOVSCodeExtension {
     this.initDebug();
     this.registerGlobalCommands();
 
-    // workaround: init empty Tasks view to keep it above QuickAccess
+    // workaround: init empty Project Tasks view to keep it above QuickAccess
     this.taskSubscriptions.push(
-      vscode.window.registerTreeDataProvider('platformio-activitybar.tasks',
-      new TasksTreeProvider([]))
+      vscode.window.registerTreeDataProvider('platformio-activitybar.projectTasks',
+      new ProjectTasksTreeProvider([]))
     );
     this.subscriptions.push(
       vscode.window.registerTreeDataProvider('platformio-activitybar.quickAccess',
@@ -270,11 +270,11 @@ class PlatformIOVSCodeExtension {
 
   initTasks() {
     const manager = new TaskManager();
-    this.subscriptions.push(manager, manager.onDidTasksUpdated(tasks => {
+    this.subscriptions.push(manager, manager.onDidProjectTasksUpdated(tasks => {
       this.disposeTaskSubscriptions();
       this.taskSubscriptions.push(
-        vscode.window.registerTreeDataProvider('platformio-activitybar.tasks',
-        new TasksTreeProvider(tasks))
+        vscode.window.registerTreeDataProvider('platformio-activitybar.projectTasks',
+        new ProjectTasksTreeProvider(tasks))
       );
     }));
     manager.registerProvider();

@@ -22,11 +22,11 @@ export default class TaskManager {
   constructor() {
     this.subscriptions = [];
     this.internalSubscriptions = [];
-    this.onDidTasksUpdatedCallbacks = [];
+    this.onDidProjectTasksUpdatedCallbacks = [];
 
     this._projectDir = undefined;
     this._refreshTimeout = undefined;
-    this._tasks = undefined;
+    this._projecTasks = undefined;
 
     this.subscriptions.push(vscode.window.onDidChangeActiveTextEditor(
       () => this.checkActiveProjectDir())
@@ -37,12 +37,23 @@ export default class TaskManager {
   }
 
   async getTasks() {
-    if (this._tasks) {
-      return this._tasks;
+    return [...(await this.getProjectTasks()), ...this.getServiceTasks()];
+  }
+
+  async getProjectTasks() {
+    if (this._projecTasks) {
+      return this._projecTasks;
     }
     const pt = new pioNodeHelpers.project.ProjectTasks(this._projectDir, 'vscode');
-    this._tasks = await pt.getTasks();
-    return this._tasks;
+    this._projecTasks = await pt.getTasks();
+    return this._projecTasks;
+  }
+
+  getServiceTasks() {
+    return [
+      new pioNodeHelpers.project.TaskItem('Update All (libraries, platforms, and packages)', undefined, ['update']),
+      new pioNodeHelpers.project.TaskItem('Upgrade PlatformIO Core', undefined, ['upgrade'])
+    ];
   }
 
   toVSCodeTask(projectTask) {
@@ -91,14 +102,14 @@ export default class TaskManager {
     this.requestRefresh();
   }
 
-  onDidTasksUpdated(callback) {
-    this.onDidTasksUpdatedCallbacks.push(callback);
-    return new vscode.Disposable(() => pioNodeHelpers.misc.arrayRemove(this.onDidTasksUpdatedCallbacks, callback));
+  onDidProjectTasksUpdated(callback) {
+    this.onDidProjectTasksUpdatedCallbacks.push(callback);
+    return new vscode.Disposable(() => pioNodeHelpers.misc.arrayRemove(this.onDidProjectTasksUpdatedCallbacks, callback));
   }
 
   disposeInternal() {
     pioNodeHelpers.misc.disposeSubscriptions(this.internalSubscriptions);
-    this._tasks = undefined;
+    this._projecTasks = undefined;
   }
 
   dispose() {
@@ -128,8 +139,8 @@ export default class TaskManager {
       this.addProjectConfigWatcher(this._projectDir);
       this.controlDeviceMonitorTasks();
     }
-    const tasks = await this.getTasks();
-    this.onDidTasksUpdatedCallbacks.forEach(cb => cb(tasks));
+    const projectTasks = await this.getProjectTasks();
+    this.onDidProjectTasksUpdatedCallbacks.forEach(cb => cb(projectTasks));
   }
 
   addProjectConfigWatcher(projectDir) {
