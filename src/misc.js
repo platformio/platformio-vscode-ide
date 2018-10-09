@@ -7,6 +7,7 @@
  */
 
 import vscode from 'vscode';
+import { CONFLICTED_EXTENSION_IDS } from './constants';
 
 
 export async function maybeRateExtension(globalState) {
@@ -39,7 +40,7 @@ export async function maybeRateExtension(globalState) {
 
   switch (selectedItem ? selectedItem.title : undefined) {
     case 'Rate PlatformIO IDE Extension':
-      vscode.commands.executeCommand('vscode.open', vscode.Uri.parse('https://marketplace.visualstudio.com/items?itemName=platformio.platformio-ide#review-details'));
+      vscode.commands.executeCommand('vscode.open', vscode.Uri.parse('http://bit.ly/pio-vscode-rate'));
       state.done = true;
       break;
     case 'No, Thanks':
@@ -49,4 +50,29 @@ export async function maybeRateExtension(globalState) {
       state.callCounter = 0;
   }
   globalState.update(momentoKey, state);
+}
+
+export async function warnAboutConflictedExtensions() {
+  const conflicted = vscode.extensions.all
+    .filter(ext => ext.isActive && CONFLICTED_EXTENSION_IDS.includes(ext.id))
+    .map(ext => ext.packageJSON.displayName || ext.id);
+  if (conflicted.length === 0) {
+    return;
+  }
+  const selectedItem = await vscode.window.showWarningMessage(
+    `Conflicted extensions with IntelliSense service were detected (${conflicted.join(', ')}). ` +
+    'Code-completion, linting and navigation will not work properly. ' +
+    'Please disable or uninstall them.',
+    { title: 'Show extensions', isCloseAffordance: false },
+    { title: 'More details', isCloseAffordance: false },
+    { title: 'Remind me later', isCloseAffordance: true }
+  );  
+  switch (selectedItem ? selectedItem.title : undefined) {
+    case 'More details':
+      vscode.commands.executeCommand('vscode.open', vscode.Uri.parse('http://bit.ly/pio-vscode-conflicted-extensions'));
+      break;
+    case 'Show extensions':
+      vscode.commands.executeCommand('workbench.extensions.action.showEnabledExtensions');
+      break;
+  }  
 }

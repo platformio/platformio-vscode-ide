@@ -1,5 +1,9 @@
 # Release Notes
 
+## 1.4.0 (2018-10-??)
+
+* Notify about conflicted extensions with IntelliSense (issue [#118](https://github.com/platformio/platformio-vscode-ide/issues/118))
+
 ## 1.3.1 (2018-10-02)
 
 * Added "Update All (libraries, platforms, and packages)" and "Upgrade PlatformIO Core" tasks to global VSCode Task Manager (issue [#335](https://github.com/platformio/platformio-vscode-ide/issues/335))
