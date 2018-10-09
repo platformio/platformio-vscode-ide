@@ -235,8 +235,7 @@
           "languageIds": [
             "c",
             "cpp",
-            "asm",
-            "arm",
+            "platformio-debug.asm",
             "platformio-debug.disassembly"
           ]
         },
