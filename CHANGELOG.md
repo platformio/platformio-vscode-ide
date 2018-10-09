@@ -1,8 +1,16 @@
 # Release Notes
 
+## 1.4.0 (2018-10-09)
+
+* [PIO Unified Debugger](http://docs.platformio.org/page/plus/debugging.html):
+  - Full support for Assembly based projects (issue [#113](https://github.com/platformio/platformio-vscode-ide/issues/113))
+  - Allowed to set breakpoints in UI for Assembly language
+  - Added RISC-V and MIPS mnemonics to Assembly grammar
+* Notify about conflicted extensions with IntelliSense (issue [#118](https://github.com/platformio/platformio-vscode-ide/issues/118))
+
 ## 1.3.1 (2018-10-02)
 
-* Added "Update All (libraries, platforms, and packages)" and "Upgrade PlatformIO Core" tasks to global VSCode Task Manager (issue [#335]
+* Added "Update All (libraries, platforms, and packages)" and "Upgrade PlatformIO Core" tasks to global VSCode Task Manager (issue [#335](https://github.com/platformio/platformio-vscode-ide/issues/335))
 * Improvements for [PIO Unified Debugger](http://docs.platformio.org/page/plus/debugging.html):
   - Fixed an issue with empty call stack when initial breakpoint is disabled using [debug_init_break](http://docs.platformio.org/en/latest/projectconf/section_env_debug.html#debug-init-break)
 

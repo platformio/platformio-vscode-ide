@@ -8,6 +8,7 @@
 
 import * as pioNodeHelpers from 'platformio-node-helpers';
 import * as piodebug from 'platformio-vscode-debug';
+import * as misc from './misc';
 import * as utils from './utils';
 
 import InstallationManager from './installer/manager';
@@ -16,7 +17,6 @@ import PIOTerminal from './terminal';
 import QuickAccessTreeProvider from './views/quick-access-tree';
 import TaskManager from './tasks';
 import ProjectTasksTreeProvider from './views/project-tasks-tree';
-import { maybeRateExtension } from './misc';
 import path from 'path';
 import vscode from 'vscode';
 
@@ -90,7 +90,8 @@ class PlatformIOVSCodeExtension {
     this.initToolbar({ ignoreCommands: this.getEnterpriseSetting('ignoreToolbarCommands') });
     this.initProjectIndexer();
     await this.startPIOHome();
-    maybeRateExtension(this.context.globalState);
+    misc.maybeRateExtension(this.context.globalState);
+    misc.warnAboutConflictedExtensions();
   }
 
   getConfig() {
