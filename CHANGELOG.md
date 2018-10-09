@@ -1,6 +1,6 @@
 # Release Notes
 
-## 1.4.0 (2018-10-??)
+## 1.4.0 (2018-10-09)
 
 * [PIO Unified Debugger](http://docs.platformio.org/page/plus/debugging.html):
   - Full support for Assembly based projects (issue [#113](https://github.com/platformio/platformio-vscode-ide/issues/113))
