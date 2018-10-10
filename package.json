@@ -1,6 +1,6 @@
 {
   "name": "platformio-ide",
-  "version": "1.4.0",
+  "version": "1.4.1-beta.1",
   "publisher": "platformio",
   "engines": {
     "vscode": "^1.24.0"
@@ -590,7 +590,7 @@
   "dependencies": {
     "fs-plus": "^3.0.0",
     "platformio-node-helpers": "^3.2.0",
-    "platformio-vscode-debug": "^1.2.2"
+    "platformio-vscode-debug": "^1.2.3"
   },
   "extensionDependencies": [
     "ms-vscode.cpptools"
