@@ -590,7 +590,7 @@
   "dependencies": {
     "fs-plus": "^3.0.0",
     "platformio-node-helpers": "^3.2.0",
-    "platformio-vscode-debug": "^1.2.3"
+    "platformio-vscode-debug": "^1.2.4"
   },
   "extensionDependencies": [
     "ms-vscode.cpptools"
