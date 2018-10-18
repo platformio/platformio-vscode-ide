@@ -1,5 +1,10 @@
 # Release Notes
 
+## 1.4.1 (2018-10-19)
+
+* [PIO Unified Debugger](http://docs.platformio.org/page/plus/debugging.html):
+    * Improved UI/UX for "MEMORY" viewer
+
 ## 1.4.0 (2018-10-09)
 
 * [PIO Unified Debugger](http://docs.platformio.org/page/plus/debugging.html):
