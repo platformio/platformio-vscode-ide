@@ -4,6 +4,7 @@
 
 * [PIO Unified Debugger](http://docs.platformio.org/page/plus/debugging.html):
     * Shutdown gracefully debugging server on "Stop" command
+* Fixed "ImportError: DLL load failed"
 
 ## 1.4.1 (2018-10-19)
 
