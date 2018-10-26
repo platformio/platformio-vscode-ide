@@ -1,6 +1,6 @@
 # Release Notes
 
-## 1.4.2 (2018-10-??)
+## 1.4.2 (2018-10-26)
 
 * [PIO Unified Debugger](http://docs.platformio.org/page/plus/debugging.html):
     * Shutdown gracefully debugging server on "Stop" command
