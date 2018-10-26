@@ -1,6 +1,6 @@
 # Release Notes
 
-## 1.4.3 (2018-10-??)
+## 1.4.4 (2018-10-27)
 
 * Improved PlatformIO Core Installer
 
