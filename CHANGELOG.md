@@ -1,6 +1,6 @@
 # Release Notes
 
-## 1.4.3 (2018-10-??)
+## 1.4.3 (2018-10-26)
 
 * Handle "Error: Could not create PIO Core Virtual Environment" and propose user to file an issue (issue [#154](https://github.com/platformio/platformio-vscode-ide/issues/154))
 
