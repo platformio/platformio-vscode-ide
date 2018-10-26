@@ -589,7 +589,7 @@
   },
   "dependencies": {
     "fs-plus": "^3.0.0",
-    "platformio-node-helpers": "^3.3.0",
+    "platformio-node-helpers": "^3.3.2",
     "platformio-vscode-debug": "^1.2.5"
   },
   "extensionDependencies": [
