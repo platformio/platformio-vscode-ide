@@ -6,6 +6,7 @@
  * the root directory of this source tree.
  */
 
+import * as Sentry from '@sentry/node';
 import * as pioNodeHelpers from 'platformio-node-helpers';
 
 import os from 'os';
@@ -13,6 +14,7 @@ import vscode from 'vscode';
 
 
 export async function notifyError(title, err) {
+  this.notifySentry(err);
   const description = err.stack || err.toString();
   const action = 'Report a problem';
   const selected = await vscode.window.showErrorMessage(description, action);
@@ -37,6 +39,19 @@ ${description}
     vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(pioNodeHelpers.misc.getErrorReportUrl(title, ghbody)));
   }
   console.error(err);
+}
+
+export function notifySentry(err) {
+  Sentry.init({
+    dsn: 'https://a7427d8e4f2446ddac3a3faea476e6e8@sentry.io/1309812',
+    release: getIDEVersion(),
+    serverName: `${os.type()}, ${os.release()}, ${os.arch()}`
+
+  });
+  Sentry.configureScope((scope) => {
+    scope.setTag('vscode', vscode.version);
+  });  
+  Sentry.captureException(err);
 }
 
 export function getIDEManifest() {
