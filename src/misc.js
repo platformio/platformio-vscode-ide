@@ -6,8 +6,8 @@
  * the root directory of this source tree.
  */
 
-import vscode from 'vscode';
 import { CONFLICTED_EXTENSION_IDS } from './constants';
+import vscode from 'vscode';
 
 
 export async function maybeRateExtension(globalState) {

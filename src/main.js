@@ -6,17 +6,17 @@
  * the root directory of this source tree.
  */
 
+import * as misc from './misc';
 import * as pioNodeHelpers from 'platformio-node-helpers';
 import * as piodebug from 'platformio-vscode-debug';
-import * as misc from './misc';
 import * as utils from './utils';
 
 import InstallationManager from './installer/manager';
 import PIOHome from './home';
 import PIOTerminal from './terminal';
+import ProjectTasksTreeProvider from './views/project-tasks-tree';
 import QuickAccessTreeProvider from './views/quick-access-tree';
 import TaskManager from './tasks';
-import ProjectTasksTreeProvider from './views/project-tasks-tree';
 import path from 'path';
 import vscode from 'vscode';
 
@@ -41,7 +41,7 @@ class PlatformIOVSCodeExtension {
       this.pioHome,
       this.pioTerm
     );
-
+  
     const hasPIOProject = !!utils.getActivePIOProjectDir();
     if (!hasPIOProject && this.getConfig().get('activateOnlyOnPlatformIOProject')) {
       return;
