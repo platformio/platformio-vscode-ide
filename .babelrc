@@ -7,10 +7,9 @@
       "env",
       {
         "targets": {
-          "node": "7.4"
+          "node": "8"
         }
       }
     ]
-  ],
-  "sourceMap": "inline"
+  ]
 }

@@ -20,7 +20,7 @@
     "embedded",
     "arduino"
   ],
-  "main": "./lib/main",
+  "main": "./dist/extension",
   "icon": "resources/platformio-logo.png",
   "homepage": "https://platformio.org",
   "author": {
@@ -570,22 +570,23 @@
   "scripts": {
     "lint": "eslint .eslintrc.js src",
     "format": "esformatter -i .eslintrc.js 'src/**.js' && eslint --fix .eslintrc.js src",
-    "build": "babel src --out-dir lib && echo 'Done!'",
-    "postinstall": "node ./node_modules/vscode/bin/install",
-    "test": "node ./node_modules/vscode/bin/test",
-    "vscode:package": "babel src --out-dir lib && vsce package"
+    "build": "webpack --env build",
+    "vscode:package": "webpack --env build && vsce package"
   },
   "devDependencies": {
     "@types/node": "^8",
-    "babel-cli": "^6.24.1",
-    "babel-eslint": "^10.0.0",
+    "@babel/core": "^7.1.6",
+    "babel-loader": "^8.0.4",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-preset-env": "^1.6.0",
     "esformatter": "^0.10.0",
     "eslint": "^5.1.0",
+    "eslint-import-resolver-webpack": "^0.10.1",
     "eslint-plugin-import": "^2.7.0",
     "vsce": "^1.27.0",
-    "vscode": "^1.1.1"
+    "vscode": "^1.1.1",
+    "webpack": "^4.25.1",
+    "webpack-cli": "^3.1.2"
   },
   "dependencies": {
     "fs-plus": "^3.0.0",

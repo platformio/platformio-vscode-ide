@@ -2,6 +2,7 @@
 
 ## 1.4.5 (2018-11-??)
 
+* Reduced startup-time using extension bundling
 * Added support for upcoming native WebSockets for PlatformIO Home
 * Updated PlatformIO Core installer's `virtualenv` to 16.1.0
 
