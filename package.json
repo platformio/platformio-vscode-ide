@@ -574,8 +574,8 @@
     "vscode:package": "webpack --env build && vsce package"
   },
   "devDependencies": {
-    "@types/node": "^8",
     "@babel/core": "^7.1.6",
+    "@types/node": "^8",
     "babel-loader": "^8.0.4",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-preset-env": "^1.6.0",
@@ -590,7 +590,7 @@
   },
   "dependencies": {
     "fs-plus": "^3.0.0",
-    "platformio-node-helpers": "^3.4.0",
+    "platformio-node-helpers": "^3.5.1",
     "platformio-vscode-debug": "^1.2.5"
   },
   "extensionDependencies": [

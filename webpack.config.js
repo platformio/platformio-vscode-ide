@@ -19,8 +19,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'extension.js',
-    libraryTarget: 'commonjs2',
-    devtoolModuleFilenameTemplate: "../[resource-path]",
+    libraryTarget: 'commonjs2'
   },
   devtool: 'source-map',
   target: 'node',
