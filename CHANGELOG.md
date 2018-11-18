@@ -1,6 +1,6 @@
 # Release Notes
 
-## 1.4.5 (2018-11-??)
+## 1.4.5 (2018-11-18)
 
 * Reduced startup-time using extension bundling
 * Added support for upcoming native WebSockets for PlatformIO Home
