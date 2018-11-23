@@ -3,6 +3,9 @@
 ## 1.4.6 (2018-11-??)
 
 * Warn about using .INO files that leads to the spurious problems with C/C++ IntelliSense service (issue [#400](https://github.com/platformio/platformio-vscode-ide/issues/400))
+* Use actual Python path when creating a virtual environment
+* Shutdown all PIO Home servers when can't start a new one
+* Better explanation about PIP issue on Windows
 
 ## 1.4.5 (2018-11-18)
 
