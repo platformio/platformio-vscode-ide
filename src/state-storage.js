@@ -8,7 +8,7 @@
 
 export default class StateStorage {
 
-  constructor(globalState, stateKey) {
+  constructor(globalState, stateKey='miscStates') {
     this._globalState = globalState;
     this._stateKey = stateKey;
   }

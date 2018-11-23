@@ -10,7 +10,7 @@ import * as pioNodeHelpers from 'platformio-node-helpers';
 
 import { PIO_CORE_MIN_VERSION } from '../constants';
 import PythonPrompt from './python-prompt';
-import StateStorage from './state-storage';
+import StateStorage from '../state-storage';
 import vscode from 'vscode';
 
 

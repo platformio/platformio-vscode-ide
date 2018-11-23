@@ -10,10 +10,10 @@ import { CONFLICTED_EXTENSION_IDS } from './constants';
 import vscode from 'vscode';
 
 
-export async function maybeRateExtension(globalState) {
-  const momentoKey = 'rate-extension-state';
+export async function maybeRateExtension(stateStorage) {
+  const stateKey = 'rate-extension';
   const askAfterSessionNums = 13;
-  let state = globalState.get(momentoKey);
+  let state = stateStorage.getValue(stateKey);
   if (state && state.done) {
     return;
   }
@@ -26,7 +26,7 @@ export async function maybeRateExtension(globalState) {
 
   state.callCounter += 1;
   if (state.callCounter < askAfterSessionNums) {
-    globalState.update(momentoKey, state);
+    stateStorage.setValue(stateKey, state);
     return;
   }
 
@@ -34,7 +34,7 @@ export async function maybeRateExtension(globalState) {
     'If you enjoy using PlatformIO IDE for VSCode, would you mind taking a moment to rate it? ' +
     'It will not take more than one minute. Thanks for your support!',
     { title: 'Rate PlatformIO IDE Extension', isCloseAffordance: false },
-    { title: 'Remind me later', isCloseAffordance: false },
+    { title: 'Remind later', isCloseAffordance: false },
     { title: 'No, Thanks', isCloseAffordance: true }
   );
 
@@ -49,7 +49,7 @@ export async function maybeRateExtension(globalState) {
     default:
       state.callCounter = 0;
   }
-  globalState.update(momentoKey, state);
+  stateStorage.setValue(stateKey, state);
 }
 
 export async function warnAboutConflictedExtensions() {
@@ -62,10 +62,10 @@ export async function warnAboutConflictedExtensions() {
   const selectedItem = await vscode.window.showWarningMessage(
     `Conflicted extensions with IntelliSense service were detected (${conflicted.join(', ')}). ` +
     'Code-completion, linting and navigation will not work properly. ' +
-    'Please disable or uninstall them.',
+    'Please disable or uninstall them (Menu > View > Extensions).',
     { title: 'Show extensions', isCloseAffordance: false },
     { title: 'More details', isCloseAffordance: false },
-    { title: 'Remind me later', isCloseAffordance: true }
+    { title: 'Remind later', isCloseAffordance: true }
   );  
   switch (selectedItem ? selectedItem.title : undefined) {
     case 'More details':
@@ -73,6 +73,36 @@ export async function warnAboutConflictedExtensions() {
       break;
     case 'Show extensions':
       vscode.commands.executeCommand('workbench.extensions.action.showEnabledExtensions');
+      break;
+  }  
+}
+
+export async function warnAboutInoFile(editor, stateStorage) {
+  if (!editor || !editor.document || !editor.document.fileName) {
+    return;
+  }
+  if (!editor.document.fileName.endsWith('.ino')) {
+    return;
+  } 
+  const stateKey = 'ino-warn-disabled';
+  if (stateStorage.getValue(stateKey)) {
+    return;
+  }
+
+  const selectedItem = await vscode.window.showWarningMessage(
+    'C/C++ IntelliSense service does not support .INO files. ' +
+    'It might lead to the spurious problems with code completion, linting, and debugging. ' +
+    'Please convert .INO sketch into the valid .CPP file.',
+    { title: 'Show instruction', isCloseAffordance: false },
+    { title: 'Do not show again', isCloseAffordance: false },
+    { title: 'Remind later', isCloseAffordance: true }
+  );  
+  switch (selectedItem ? selectedItem.title : undefined) {
+    case 'Show instruction':
+      vscode.commands.executeCommand('vscode.open', vscode.Uri.parse('http://bit.ly/ino2cpp'));
+      break;
+    case 'Do not show again':
+        stateStorage.setValue(stateKey, 1);
       break;
   }  
 }
