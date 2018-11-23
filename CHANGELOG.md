@@ -1,5 +1,9 @@
 # Release Notes
 
+## 1.4.6 (2018-11-??)
+
+* Warn about using .INO files that leads to the spurious problems with C/C++ IntelliSense service (issue [#400](https://github.com/platformio/platformio-vscode-ide/issues/400))
+
 ## 1.4.5 (2018-11-18)
 
 * Reduced startup-time using extension bundling

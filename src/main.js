@@ -16,6 +16,7 @@ import PIOHome from './home';
 import PIOTerminal from './terminal';
 import ProjectTasksTreeProvider from './views/project-tasks-tree';
 import QuickAccessTreeProvider from './views/quick-access-tree';
+import StateStorage from './state-storage';
 import TaskManager from './tasks';
 import path from 'path';
 import vscode from 'vscode';
@@ -34,6 +35,7 @@ class PlatformIOVSCodeExtension {
 
   async activate(context) {
     this.context = context;
+    this.stateStorage = new StateStorage(context.globalState);
     this.pioHome = new PIOHome();
     this.pioTerm = new PIOTerminal();
 
@@ -89,9 +91,13 @@ class PlatformIOVSCodeExtension {
 
     this.initToolbar({ ignoreCommands: this.getEnterpriseSetting('ignoreToolbarCommands') });
     this.initProjectIndexer();
-    await this.startPIOHome();
-    misc.maybeRateExtension(this.context.globalState);
+    this.startPIOHome();
+
+    misc.maybeRateExtension(this.stateStorage);
     misc.warnAboutConflictedExtensions();
+    this.subscriptions.push(
+      vscode.window.onDidChangeActiveTextEditor(editor => misc.warnAboutInoFile(editor, this.stateStorage))
+    );    
   }
 
   getConfig() {

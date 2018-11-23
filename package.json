@@ -576,6 +576,7 @@
   "devDependencies": {
     "@babel/core": "^7.1.6",
     "@types/node": "^8",
+    "babel-eslint": "^10.0.1",
     "babel-loader": "^8.0.4",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-preset-env": "^1.6.0",
