@@ -1,6 +1,6 @@
 {
   "name": "platformio-ide",
-  "version": "1.4.6",
+  "version": "1.4.7",
   "publisher": "platformio",
   "engines": {
     "vscode": "^1.24.0"
@@ -570,8 +570,8 @@
   "scripts": {
     "lint": "eslint .eslintrc.js src",
     "format": "esformatter -i .eslintrc.js 'src/**.js' && eslint --fix .eslintrc.js src",
-    "build": "webpack --env build",
-    "vscode:package": "webpack --env build && vsce package"
+    "build": "webpack --mode production",
+    "vscode:package": "webpack --mode production && vsce package"
   },
   "devDependencies": {
     "@babel/core": "^7.1.6",
@@ -579,18 +579,18 @@
     "babel-eslint": "^10.0.1",
     "babel-loader": "^8.0.4",
     "babel-plugin-transform-class-properties": "^6.24.1",
-    "babel-preset-env": "^1.6.0",
+    "babel-preset-env": "^1.7.0",
     "esformatter": "^0.10.0",
-    "eslint": "^5.1.0",
+    "eslint": "^5.9.0",
     "eslint-import-resolver-webpack": "^0.10.1",
-    "eslint-plugin-import": "^2.7.0",
-    "vsce": "^1.27.0",
-    "vscode": "^1.1.1",
-    "webpack": "^4.25.1",
+    "eslint-plugin-import": "^2.14.0",
+    "vsce": "^1.53.2",
+    "vscode": "^1.1.22",
+    "webpack": "^4.26.1",
     "webpack-cli": "^3.1.2"
   },
   "dependencies": {
-    "fs-plus": "^3.0.0",
+    "fs-plus": "^3.0.2",
     "platformio-node-helpers": "^3.5.3",
     "platformio-vscode-debug": "^1.2.5"
   },
