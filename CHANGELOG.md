@@ -1,5 +1,9 @@
 # Release Notes
 
+## 1.4.7 (2018-11-28)
+
+* Security Update related to VSCode's issue with dependency on `event-stream` (issue [#434](https://github.com/platformio/platformio-vscode-ide/issues/434))
+
 ## 1.4.6 (2018-11-23)
 
 * Warn about using .INO files that leads to the spurious problems with C/C++ IntelliSense service (issue [#400](https://github.com/platformio/platformio-vscode-ide/issues/400))
