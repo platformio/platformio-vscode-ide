@@ -2,7 +2,8 @@
 
 ## 1.5.0 (2018-??-??)
 
-* Updated PIO Core to 3.6.2 (minimal supported version)
+* Switched to a stable PlatformIO Core. Do you need development version? Please update VSCode settings to ['platformio-ide.useDevelopmentPIOCore': true](https://docs.platformio.org/en/latest/ide/vscode.html#settings)
+* Updated minimal dependency of PlatformIO Core to >=3.6.2
 
 ## 1.4.7 (2018-11-28)
 

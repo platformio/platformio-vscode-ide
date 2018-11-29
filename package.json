@@ -508,7 +508,7 @@
         },
         "platformio-ide.useDevelopmentPIOCore": {
           "type": "boolean",
-          "default": true,
+          "default": false,
           "description": "Use development version of PlatformIO Core"
         },
         "platformio-ide.autoRebuildAutocompleteIndex": {
