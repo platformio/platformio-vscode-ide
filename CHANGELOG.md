@@ -1,6 +1,6 @@
 # Release Notes
 
-## 1.5.0 (2018-??-??)
+## 1.5.0 (2018-11-29)
 
 * PlatformIO Core Installer:
     * Drop SockJS, switch to native WebSockets
