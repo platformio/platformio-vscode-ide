@@ -1,6 +1,6 @@
 {
   "name": "platformio-ide",
-  "version": "1.4.7",
+  "version": "1.5.0",
   "publisher": "platformio",
   "engines": {
     "vscode": "^1.24.0"
@@ -289,7 +289,7 @@
           }
         ],
         "label": "PlatformIO Debugger",
-        "program": "./node_modules/platformio-vscode-debug/lib/adapter.js",
+        "program": "./node_modules/platformio-vscode-debug/dist/adapter.js",
         "runtime": "node",
         "type": "platformio-debug"
       }
@@ -508,7 +508,7 @@
         },
         "platformio-ide.useDevelopmentPIOCore": {
           "type": "boolean",
-          "default": true,
+          "default": false,
           "description": "Use development version of PlatformIO Core"
         },
         "platformio-ide.autoRebuildAutocompleteIndex": {
@@ -591,8 +591,8 @@
   },
   "dependencies": {
     "fs-plus": "^3.0.2",
-    "platformio-node-helpers": "^3.5.3",
-    "platformio-vscode-debug": "^1.2.5"
+    "platformio-node-helpers": "^4.0.0",
+    "platformio-vscode-debug": "^1.2.6"
   },
   "extensionDependencies": [
     "ms-vscode.cpptools"
