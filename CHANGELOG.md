@@ -2,6 +2,10 @@
 
 ## 1.5.0 (2018-??-??)
 
+* PlatformIO Core Installer:
+    * Drop SockJS, switch to native WebSockets
+    * Catch errors when upgrading PIP (issue [#436](https://github.com/platformio/platformio-vscode-ide/issues/436))
+    * Check for official Python installation on Windows (resolves issue with a static "sys.prefix" and custom Python builds) (issue [#154](https://github.com/platformio/platformio-vscode-ide/issues/154))
 * Switched to a stable PlatformIO Core. Do you need development version? Please update VSCode settings to ['platformio-ide.useDevelopmentPIOCore': true](https://docs.platformio.org/en/latest/ide/vscode.html#settings)
 * Updated minimal dependency of PlatformIO Core to >=3.6.2
 
