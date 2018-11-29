@@ -156,7 +156,8 @@ class PlatformIOVSCodeExtension {
         try {
           im.lock();
           await im.install();
-          outputChannel.appendLine('PlatformIO IDE installed successfully.');
+          outputChannel.appendLine('PlatformIO IDE installed successfully.\n');
+          outputChannel.appendLine('Please restart VSCode.');
           const action = 'Reload Now';
           const selected = await vscode.window.showInformationMessage(
             'PlatformIO IDE has been successfully installed! Please reload window',
