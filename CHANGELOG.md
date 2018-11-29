@@ -1,5 +1,9 @@
 # Release Notes
 
+## 1.5.0 (2018-??-??)
+
+* Updated PIO Core to 3.6.2 (minimal supported version)
+
 ## 1.4.7 (2018-11-28)
 
 * Security Update related to VSCode's issue with dependency on `event-stream` (issue [#434](https://github.com/platformio/platformio-vscode-ide/issues/434))
