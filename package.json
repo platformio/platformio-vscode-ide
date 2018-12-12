@@ -501,6 +501,54 @@
       "type": "object",
       "title": "PlatformIO IDE configuration",
       "properties": {
+        "platformio-ide.activateOnlyOnPlatformIOProject": {
+          "type": "boolean",
+          "default": false,
+          "description": "Activate extension only when PlatformIO-based project (with `platformio.ini`) is opened in workspace"
+        },        
+        "platformio-ide.autoCloseSerialMonitor": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically close Serial Port Monitor before uploading/testing"
+        },        
+        "platformio-ide.autoRebuildAutocompleteIndex": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically rebuild Project IntelliSense Index when platformio.ini is changed or when new libraries are installed."
+        },        
+        "platformio-ide.customPATH": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "default": null,
+          "description": "Custom PATH for `platformio` command. Paste here the result of `echo $PATH` (Unix) / `echo %PATH%` (Windows) command by typing into your system terminal if you prefer to use custom version of PlatformIO Core"
+        },  
+        "platformio-ide.defaultToolbarBuildAction": {
+          "type": "string",
+          "enum": [
+            "release",
+            "pre-debug"
+          ],
+          "default": "release",
+          "description": "Default action for 'Build' button on PIO Toolbar"
+        },  
+        "platformio-ide.disableToolbar": {
+          "type": "boolean",
+          "default": false,
+          "description": "Disable PlatformIO Toolbar"
+        },              
+        "platformio-ide.forceUploadAndMonitor": {
+          "type": "boolean",
+          "default": false,
+          "description": "Force 'Upload and Monitor' task for `platformio-ide.upload` command"
+        },              
+        "platformio-ide.reopenSerialMonitorDelay": {
+          "type": "integer",
+          "default": 0,
+          "minimum": 0,
+          "description": "Time in milliseconds after which reopen Serial Port Monitor"
+        },        
         "platformio-ide.useBuiltinPIOCore": {
           "type": "boolean",
           "default": true,
@@ -511,58 +559,10 @@
           "default": false,
           "description": "Use development version of PlatformIO Core"
         },
-        "platformio-ide.autoRebuildAutocompleteIndex": {
-          "type": "boolean",
-          "default": true,
-          "description": "Automatically rebuild Project IntelliSense Index when platformio.ini is changed or when new libraries are installed."
-        },
-        "platformio-ide.customPATH": {
-          "type": [
-            "string",
-            "null"
-          ],
-          "default": null,
-          "description": "Custom PATH for `platformio` command. Paste here the result of `echo $PATH` (Unix) / `echo %PATH%` (Windows) command by typing into your system terminal if you prefer to use custom version of PlatformIO Core"
-        },
-        "platformio-ide.forceUploadAndMonitor": {
-          "type": "boolean",
-          "default": false,
-          "description": "Force 'Upload and Monitor' task for `platformio-ide.upload` command"
-        },
         "platformio-ide.updateTerminalPathConfiguration": {
           "type": "boolean",
           "default": true,
           "description": "Update Terminal configuration with patched PATH environment"
-        },
-        "platformio-ide.activateOnlyOnPlatformIOProject": {
-          "type": "boolean",
-          "default": false,
-          "description": "Activate extension only when PlatformIO-based project (with `platformio.ini`) is opened in workspace"
-        },
-        "platformio-ide.defaultToolbarBuildAction": {
-          "type": "string",
-          "enum": [
-            "release",
-            "pre-debug"
-          ],
-          "default": "release",
-          "description": "Default action for 'Build' button on PIO Toolbar"
-        },
-        "platformio-ide.autoCloseSerialMonitor": {
-          "type": "boolean",
-          "default": true,
-          "description": "Automatically close Serial Port Monitor before uploading/testing"
-        },
-        "platformio-ide.reopenSerialMonitorDelay": {
-          "type": "integer",
-          "default": 0,
-          "minimum": 0,
-          "description": "Time in milliseconds after which reopen Serial Port Monitor"
-        },
-        "platformio-ide.disableToolbar": {
-          "type": "boolean",
-          "default": false,
-          "description": "Disable PlatformIO Toolbar"
         }
       }
     }
