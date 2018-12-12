@@ -2,8 +2,9 @@
 
 ## 1.5.1 (2018-12-??)
 
-* Fixed spurious project's "Problems" when ARM mbed framework is used (issue [#459](https://github.com/platformio/platformio-vscode-ide/issues/459))
+* Automatically remove previous PlatformIO Core installation when user switches between stable and development versions
 * Updated minimal dependency of PlatformIO Core to >=3.6.3
+* Fixed spurious project's "Problems" when ARM mbed framework is used (issue [#459](https://github.com/platformio/platformio-vscode-ide/issues/459))
 
 ## 1.5.0 (2018-11-29)
 

@@ -18,6 +18,7 @@ import ProjectTasksTreeProvider from './views/project-tasks-tree';
 import QuickAccessTreeProvider from './views/quick-access-tree';
 import StateStorage from './state-storage';
 import TaskManager from './tasks';
+import fs from 'fs-plus';
 import path from 'path';
 import vscode from 'vscode';
 
@@ -57,6 +58,9 @@ class PlatformIOVSCodeExtension {
         PLATFORMIO_IDE: utils.getIDEVersion()
       }
     });
+
+    this.context.subscriptions.push(this.handleUseDevelopmentPIOCoreConfiguration());
+
     await this.startInstaller();
     vscode.commands.executeCommand('setContext', 'pioCoreReady', true);
 
@@ -352,6 +356,28 @@ class PlatformIOVSCodeExtension {
     doUpdate();
   }
 
+  handleUseDevelopmentPIOCoreConfiguration() {
+    return vscode.workspace.onDidChangeConfiguration(e => {
+      if (!e.affectsConfiguration('platformio-ide.useDevelopmentPIOCore') || !this.getConfig().get('useBuiltinPIOCore')) {
+        return;
+      }
+      const envDir = pioNodeHelpers.core.getEnvDir();
+      if (!envDir || !fs.isDirectorySync(envDir)) {
+        return;
+      }
+      pioNodeHelpers.home.shutdownServer();
+      const delayedJob = () => {
+        try {
+          fs.removeSync(envDir);
+        } catch (err) {
+          console.warn(err);
+        }
+        vscode.window.showInformationMessage('Please restart VSCode to apply the changes.');   
+      };
+      setTimeout(delayedJob, 2000);
+    });
+  }
+  
   disposeLocalSubscriptions() {
     vscode.commands.executeCommand('setContext', 'pioCoreReady', false);
     pioNodeHelpers.misc.disposeSubscriptions(this.subscriptions);
