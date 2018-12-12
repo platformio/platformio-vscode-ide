@@ -1,5 +1,10 @@
 # Release Notes
 
+## 1.5.1 (2018-12-??)
+
+* Fixed spurious project's "Problems" when ARM mbed framework is used (issue [#459](https://github.com/platformio/platformio-vscode-ide/issues/459))
+* Updated minimal dependency of PlatformIO Core to >=3.6.3
+
 ## 1.5.0 (2018-11-29)
 
 * PlatformIO Core Installer:
