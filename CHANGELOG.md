@@ -1,5 +1,12 @@
 # Release Notes
 
+## 1.6.0 (2018-12-12)
+
+* [Custom task for "Build" command](https://docs.platformio.org/en/latest/ide/vscode.html#custom-build-task) which is used by PlatformIO Toolbar and Key Bindings (issue [#116](https://github.com/platformio/platformio-vscode-ide/issues/116))
+* Automatically remove previous PlatformIO Core installation when user switches between stable and development versions
+* Updated minimal dependency of PlatformIO Core to >=3.6.3
+* Fixed spurious project's "Problems" when ARM mbed framework is used (issue [#459](https://github.com/platformio/platformio-vscode-ide/issues/459))
+
 ## 1.5.0 (2018-11-29)
 
 * PlatformIO Core Installer:
