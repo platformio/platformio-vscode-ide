@@ -515,7 +515,15 @@
           "type": "boolean",
           "default": true,
           "description": "Automatically rebuild Project IntelliSense Index when platformio.ini is changed or when new libraries are installed."
-        },        
+        },  
+        "platformio-ide.buildTask": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "default": null,
+          "description": "A build task (label) which is used by `Build` button in the bottom Toolbar and key bindings. Default is set to `PlatformIO: Build`."
+        },               
         "platformio-ide.customPATH": {
           "type": [
             "string",
@@ -523,16 +531,7 @@
           ],
           "default": null,
           "description": "Custom PATH for `platformio` command. Paste here the result of `echo $PATH` (Unix) / `echo %PATH%` (Windows) command by typing into your system terminal if you prefer to use custom version of PlatformIO Core"
-        },  
-        "platformio-ide.defaultToolbarBuildAction": {
-          "type": "string",
-          "enum": [
-            "release",
-            "pre-debug"
-          ],
-          "default": "release",
-          "description": "Default action for 'Build' button on PIO Toolbar"
-        },  
+        },           
         "platformio-ide.disableToolbar": {
           "type": "boolean",
           "default": false,
@@ -548,7 +547,7 @@
           "default": 0,
           "minimum": 0,
           "description": "Time in milliseconds after which reopen Serial Port Monitor"
-        },        
+        },                
         "platformio-ide.useBuiltinPIOCore": {
           "type": "boolean",
           "default": true,

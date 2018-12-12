@@ -237,10 +237,13 @@ class PlatformIOVSCodeExtension {
     this.subscriptions.push(
       vscode.commands.registerCommand(
         'platformio-ide.build',
-        () => vscode.commands.executeCommand('workbench.action.tasks.runTask', {
-          type: TaskManager.type,
-          task: this.getConfig().get('defaultToolbarBuildAction') === 'pre-debug' ? 'Pre-Debug' : 'Build'
-        })
+        () =>  {
+          const taskName = this.getConfig().get('buildTask') || {
+            type: TaskManager.type,
+            task: 'Build'
+          };
+          return vscode.commands.executeCommand('workbench.action.tasks.runTask', taskName);
+        }
       ),
       vscode.commands.registerCommand(
         'platformio-ide.upload',
