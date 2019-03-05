@@ -38,7 +38,7 @@ Cross-platform build system and unified debugger. Remote unit testing and firmwa
 
 Please follow to the official documentation [PlatformIO IDE for VSCode](http://docs.platformio.org/page/ide/vscode.html).
 
-[![PlatformIO IDE for VSCode](https://raw.githubusercontent.com/platformio/platformio-docs/develop/_static/ide/vscode/platformio-ide-vscode.png)](http://docs.platformio.org/page/ide/vscode.html)
+[![PlatformIO IDE for VSCode](https://docs.platformio.org/en/latest/_images/platformio-ide-vscode.png)](http://docs.platformio.org/page/ide/vscode.html)
 
 ## License
 
