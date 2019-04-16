@@ -1,5 +1,9 @@
 # Release Notes
 
+## 1.7.0 (2019-04-??)
+
+* Use VSCode's proxy settings by PlatformIO Core (issue [#96](https://github.com/platformio/platformio-vscode-ide/issues/96))
+
 ## 1.6.0 (2018-12-12)
 
 * [Custom task for "Build" command](https://docs.platformio.org/en/latest/ide/vscode.html#custom-build-task) which is used by PlatformIO Toolbar and Key Bindings (issue [#116](https://github.com/platformio/platformio-vscode-ide/issues/116))

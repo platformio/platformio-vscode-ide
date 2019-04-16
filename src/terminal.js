@@ -20,10 +20,7 @@ export default class PIOTerminal {
   new() {
     return vscode.window.createTerminal({
       name: 'PlatformIO',
-      env: {
-        PATH: process.env.PATH,
-        PLATFORMIO_CALLER: 'vscode'
-      }
+      env: process.env
     });
   }
 

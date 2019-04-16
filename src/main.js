@@ -50,14 +50,7 @@ class PlatformIOVSCodeExtension {
       return;
     }
 
-    pioNodeHelpers.misc.patchOSEnviron({
-      caller: 'vscode',
-      useBuiltinPIOCore: this.getConfig().get('useBuiltinPIOCore'),
-      extraPath: this.getConfig().get('customPATH'),
-      extraVars: {
-        PLATFORMIO_IDE: utils.getIDEVersion()
-      }
-    });
+    this.patchOSEnviron();
 
     this.context.subscriptions.push(this.handleUseDevelopmentPIOCoreConfiguration());
 
@@ -128,6 +121,26 @@ class PlatformIOVSCodeExtension {
       return defaultValue;
     }
     return this._enterpriseSettings[id];
+  }
+
+  patchOSEnviron() {
+    const extraVars = {
+      PLATFORMIO_IDE: utils.getIDEVersion()
+    };    
+    // handle HTTP proxy settings
+    const http_proxy = vscode.workspace.getConfiguration('http').get('proxy');
+    if (http_proxy && !process.env.HTTP_PROXY && !process.env.http_proxy) {
+      extraVars['HTTP_PROXY'] = http_proxy;
+    }
+    if (http_proxy && !process.env.HTTPS_PROXY && !process.env.https_proxy) {
+      extraVars['HTTPS_PROXY'] = http_proxy;
+    }    
+    pioNodeHelpers.misc.patchOSEnviron({
+      caller: 'vscode',
+      useBuiltinPIOCore: this.getConfig().get('useBuiltinPIOCore'),
+      extraPath: this.getConfig().get('customPATH'),
+      extraVars
+    });
   }
 
   startInstaller() {
