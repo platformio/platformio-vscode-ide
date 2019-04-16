@@ -1,6 +1,6 @@
 # Release Notes
 
-## 1.7.0 (2019-04-??)
+## 1.7.0 (2019-04-16)
 
 * Use VSCode's proxy settings by PlatformIO Core (issue [#96](https://github.com/platformio/platformio-vscode-ide/issues/96))
 
