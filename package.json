@@ -1,6 +1,6 @@
 {
   "name": "platformio-ide",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "publisher": "platformio",
   "engines": {
     "vscode": "^1.24.0"
@@ -505,17 +505,17 @@
           "type": "boolean",
           "default": false,
           "description": "Activate extension only when PlatformIO-based project (with `platformio.ini`) is opened in workspace"
-        },        
+        },
         "platformio-ide.autoCloseSerialMonitor": {
           "type": "boolean",
           "default": true,
           "description": "Automatically close Serial Port Monitor before uploading/testing"
-        },        
+        },
         "platformio-ide.autoRebuildAutocompleteIndex": {
           "type": "boolean",
           "default": true,
           "description": "Automatically rebuild Project IntelliSense Index when platformio.ini is changed or when new libraries are installed."
-        },  
+        },
         "platformio-ide.buildTask": {
           "type": [
             "string",
@@ -523,7 +523,7 @@
           ],
           "default": null,
           "description": "A build task (label) which is used by `Build` button in the bottom Toolbar and key bindings. Default is set to `PlatformIO: Build`."
-        },               
+        },
         "platformio-ide.customPATH": {
           "type": [
             "string",
@@ -531,23 +531,23 @@
           ],
           "default": null,
           "description": "Custom PATH for `platformio` command. Paste here the result of `echo $PATH` (Unix) / `echo %PATH%` (Windows) command by typing into your system terminal if you prefer to use custom version of PlatformIO Core"
-        },           
+        },
         "platformio-ide.disableToolbar": {
           "type": "boolean",
           "default": false,
           "description": "Disable PlatformIO Toolbar"
-        },              
+        },
         "platformio-ide.forceUploadAndMonitor": {
           "type": "boolean",
           "default": false,
           "description": "Force 'Upload and Monitor' task for `platformio-ide.upload` command"
-        },              
+        },
         "platformio-ide.reopenSerialMonitorDelay": {
           "type": "integer",
           "default": 0,
           "minimum": 0,
           "description": "Time in milliseconds after which reopen Serial Port Monitor"
-        },                
+        },
         "platformio-ide.useBuiltinPIOCore": {
           "type": "boolean",
           "default": true,
@@ -574,7 +574,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.1.6",
-    "@types/node": "^8",
+    "@types/node": "^10",
     "babel-eslint": "^10.0.1",
     "babel-loader": "^8.0.4",
     "babel-plugin-transform-class-properties": "^6.24.1",
