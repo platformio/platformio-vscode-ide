@@ -18,8 +18,8 @@ Cross-platform build system and unified debugger. Remote unit testing and firmwa
     - 15+ frameworks
 
 * [PIO Unified Debugger](http://docs.platformio.org/page/plus/debugging.html)
+* [PIO Unit Testing](http://docs.platformio.org/page/plus/unit-testing.html)
 * [PIO Remote](http://docs.platformio.org/page/plus/pio-remote.html)
-* [Unit Testing](http://docs.platformio.org/page/plus/unit-testing.html)
 * C/C++ Intelligent Code Completion
 * C/C++ Smart Code Linter for rapid professional development
 * Library Manager for the thousands of popular libraries
