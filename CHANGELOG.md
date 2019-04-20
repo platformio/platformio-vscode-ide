@@ -1,5 +1,12 @@
 # Release Notes
 
+## 1.7.1 (2019-04-20)
+
+* PlatformIO Core Installer:
+    * Use ".platformio" directory located in the root of disk if it was created before (Windows)
+    * Use EnvBinDir as CWD for "runCommand" by default
+* Disabled extension recommendations per a workspace (temporary workaround for [Microsoft/vscode/issues/58348](https://github.com/Microsoft/vscode/issues/58348))
+
 ## 1.7.0 (2019-04-16)
 
 * Use VSCode's proxy settings by PlatformIO Core (issue [#96](https://github.com/platformio/platformio-vscode-ide/issues/96))
