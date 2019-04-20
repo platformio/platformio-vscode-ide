@@ -1,6 +1,6 @@
 # Release Notes
 
-## 1.7.1 (2019-04-??)
+## 1.7.1 (2019-04-20)
 
 * PlatformIO Core Installer:
     * Use ".platformio" directory located in the root of disk if it was created before (Windows)
