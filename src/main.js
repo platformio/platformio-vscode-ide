@@ -50,6 +50,11 @@ class PlatformIOVSCodeExtension {
       return;
     }
 
+    // temporary workaround for https://github.com/Microsoft/vscode/issues/58348
+    if (!vscode.workspace.getConfiguration('extensions').has('showRecommendationsOnlyOnDemand')) {
+      vscode.workspace.getConfiguration('extensions').update('showRecommendationsOnlyOnDemand', true);
+    }
+
     this.patchOSEnviron();
 
     this.context.subscriptions.push(this.handleUseDevelopmentPIOCoreConfiguration());
