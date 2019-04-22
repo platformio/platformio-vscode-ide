@@ -12,11 +12,9 @@ Cross-platform build system and unified debugger. Remote unit testing and firmwa
 ## Features
 
 * Cross-platform code builder without external dependencies to a system software:
-
     - 600+ embedded boards
     - 30+ development platforms
     - 15+ frameworks
-
 * [PIO Unified Debugger](http://docs.platformio.org/page/plus/debugging.html)
 * [PIO Unit Testing](http://docs.platformio.org/page/plus/unit-testing.html)
 * [PIO Remote](http://docs.platformio.org/page/plus/pio-remote.html)
