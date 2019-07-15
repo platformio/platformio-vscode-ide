@@ -54,27 +54,29 @@ export async function maybeRateExtension(stateStorage) {
 
 export async function warnAboutConflictedExtensions() {
   const conflicted = vscode.extensions.all
-    .filter(ext => ext.isActive && CONFLICTED_EXTENSION_IDS.includes(ext.id))
-    .map(ext => ext.packageJSON.displayName || ext.id);
+    .filter(ext => ext.isActive && CONFLICTED_EXTENSION_IDS.includes(ext.id));
   if (conflicted.length === 0) {
     return;
   }
   const selectedItem = await vscode.window.showWarningMessage(
-    `Conflicted extensions with IntelliSense service were detected (${conflicted.join(', ')}). ` +
+    `Conflicted extensions with IntelliSense service were detected (${conflicted.map(ext => ext.packageJSON.displayName || ext.id).join(', ')}). ` +
     'Code-completion, linting and navigation will not work properly. ' +
     'Please disable or uninstall them (Menu > View > Extensions).',
-    { title: 'Show extensions', isCloseAffordance: false },
     { title: 'More details', isCloseAffordance: false },
+    { title: 'Uninstall conflicted', isCloseAffordance: false },
     { title: 'Remind later', isCloseAffordance: true }
-  );  
+  );
   switch (selectedItem ? selectedItem.title : undefined) {
     case 'More details':
       vscode.commands.executeCommand('vscode.open', vscode.Uri.parse('http://bit.ly/pio-vscode-conflicted-extensions'));
       break;
-    case 'Show extensions':
-      vscode.commands.executeCommand('workbench.extensions.action.showEnabledExtensions');
+    case 'Uninstall conflicted':
+      conflicted.forEach(ext => {
+        vscode.commands.executeCommand('workbench.extensions.uninstallExtension', ext.id);
+      });
+      vscode.commands.executeCommand('workbench.action.reloadWindow');
       break;
-  }  
+  }
 }
 
 export async function warnAboutInoFile(editor, stateStorage) {
@@ -83,7 +85,7 @@ export async function warnAboutInoFile(editor, stateStorage) {
   }
   if (!editor.document.fileName.endsWith('.ino')) {
     return;
-  } 
+  }
   const stateKey = 'ino-warn-disabled';
   if (stateStorage.getValue(stateKey)) {
     return;
@@ -96,7 +98,7 @@ export async function warnAboutInoFile(editor, stateStorage) {
     { title: 'Show instruction', isCloseAffordance: false },
     { title: 'Do not show again', isCloseAffordance: false },
     { title: 'Remind later', isCloseAffordance: true }
-  );  
+  );
   switch (selectedItem ? selectedItem.title : undefined) {
     case 'Show instruction':
       vscode.commands.executeCommand('vscode.open', vscode.Uri.parse('http://bit.ly/ino2cpp'));
@@ -104,5 +106,5 @@ export async function warnAboutInoFile(editor, stateStorage) {
     case 'Do not show again':
         stateStorage.setValue(stateKey, 1);
       break;
-  }  
+  }
 }
