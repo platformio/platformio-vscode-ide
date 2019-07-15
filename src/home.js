@@ -49,7 +49,7 @@ export default class PIOHome {
       }
     );
     this.subscriptions.push(panel.onDidDispose(this.onPanelDisposed.bind(this)));
-    panel.iconPath = vscode.Uri.file(path.join(extension.context.extensionPath, 'resources', 'platformio-mini-logo.png'));
+    panel.iconPath = vscode.Uri.file(path.join(extension.context.extensionPath, 'resources', 'platformio-mini-logo.svg'));
     panel.webview.html = this.getLoadingContent();
     try {
       panel.webview.html = await this.getWebviewContent(startUrl);

@@ -410,7 +410,7 @@
         {
           "id": "platformio",
           "title": "PlatformIO",
-          "icon": "resources/platformio-activity-icon.png",
+          "icon": "resources/platformio-activity-icon.svg",
           "when": "pioCoreReady"
         }
       ]
