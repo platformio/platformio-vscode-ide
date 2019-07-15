@@ -44,7 +44,7 @@ class PlatformIOVSCodeExtension {
       this.pioHome,
       this.pioTerm
     );
-  
+
     const hasPIOProject = !!utils.getActivePIOProjectDir();
     if (!hasPIOProject && this.getConfig().get('activateOnlyOnPlatformIOProject')) {
       return;
@@ -99,7 +99,7 @@ class PlatformIOVSCodeExtension {
     misc.warnAboutConflictedExtensions();
     this.subscriptions.push(
       vscode.window.onDidChangeActiveTextEditor(editor => misc.warnAboutInoFile(editor, this.stateStorage))
-    );    
+    );
   }
 
   getConfig() {
@@ -131,7 +131,7 @@ class PlatformIOVSCodeExtension {
   patchOSEnviron() {
     const extraVars = {
       PLATFORMIO_IDE: utils.getIDEVersion()
-    };    
+    };
     // handle HTTP proxy settings
     const http_proxy = vscode.workspace.getConfiguration('http').get('proxy');
     if (http_proxy && !process.env.HTTP_PROXY && !process.env.http_proxy) {
@@ -139,7 +139,7 @@ class PlatformIOVSCodeExtension {
     }
     if (http_proxy && !process.env.HTTPS_PROXY && !process.env.https_proxy) {
       extraVars['HTTPS_PROXY'] = http_proxy;
-    }    
+    }
     pioNodeHelpers.misc.patchOSEnviron({
       caller: 'vscode',
       useBuiltinPIOCore: this.getConfig().get('useBuiltinPIOCore'),
@@ -201,7 +201,10 @@ class PlatformIOVSCodeExtension {
   }
 
   async startPIOHome() {
-    // Hot-loading of PIO Home Server
+    if (this.getConfig().get('disableAutostartPIOHomeServer')) {
+      return;
+    }
+    // Auto-start of PIO Home Server
     try {
       await pioNodeHelpers.home.ensureServerStarted();
     } catch (err) {
@@ -243,7 +246,7 @@ class PlatformIOVSCodeExtension {
       vscode.commands.registerCommand(
         'platformio-ide.updateCore',
         () => this.pioTerm.sendText('platformio update')
-      ),    
+      ),
       vscode.commands.registerCommand(
         'platformio-ide.upgradeCore',
         () => this.pioTerm.sendText('platformio upgrade')
@@ -393,12 +396,12 @@ class PlatformIOVSCodeExtension {
         } catch (err) {
           console.warn(err);
         }
-        vscode.window.showInformationMessage('Please restart VSCode to apply the changes.');   
+        vscode.window.showInformationMessage('Please restart VSCode to apply the changes.');
       };
       setTimeout(delayedJob, 2000);
     });
   }
-  
+
   disposeLocalSubscriptions() {
     vscode.commands.executeCommand('setContext', 'pioCoreReady', false);
     pioNodeHelpers.misc.disposeSubscriptions(this.subscriptions);
