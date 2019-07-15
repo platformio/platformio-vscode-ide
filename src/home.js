@@ -87,6 +87,7 @@ export default class PIOHome {
       port: extension.getSetting('pioHomeServerHttpPort'),
       onIDECommand: (command, params) => {
         if (command === 'open_project') {
+          this.dispose();
           if (vscode.workspace.workspaceFolders) {
             vscode.workspace.updateWorkspaceFolders(vscode.workspace.workspaceFolders.length, null, { uri: vscode.Uri.file(params)});
           } else {

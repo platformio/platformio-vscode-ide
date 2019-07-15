@@ -40,7 +40,7 @@ class PlatformIOVSCodeExtension {
     this.pioHome = new PIOHome();
     this.pioTerm = new PIOTerminal();
 
-    this.context.subscriptions.push(
+    this.subscriptions.push(
       this.pioHome,
       this.pioTerm
     );
@@ -57,7 +57,7 @@ class PlatformIOVSCodeExtension {
 
     this.patchOSEnviron();
 
-    this.context.subscriptions.push(this.handleUseDevelopmentPIOCoreConfiguration());
+    this.subscriptions.push(this.handleUseDevelopmentPIOCoreConfiguration());
 
     await this.startInstaller();
     vscode.commands.executeCommand('setContext', 'pioCoreReady', true);
