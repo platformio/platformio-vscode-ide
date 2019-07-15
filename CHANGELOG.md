@@ -2,6 +2,15 @@
 
 ## 1.8.0 (2019-07-??)
 
+* Full support for [PlatformIO Core 4.0](http://docs.platformio.org/en/latest/migration.html)
+* PlatformIO Core Installer:
+    - Added support for Python 3 and its "venv" module
+    - Added [PIO Remote](http://docs.platformio.org/en/latest/plus/pio-remote.html) project tasks
+    - Added "Fuses" related project tasks
+    - Added "Erase" project task for Espressif and Nordic dev/platforms
+    - Implemented ProjectConfig parser following PIO Core 4.0 specification
+    - Support custom port for PIO Home server
+    - Override default `~/.platformio/penv` folder with environment variable `PLATFORMIO_PENV_DIR`
 * Added new setting `platformio-ide.pioHomeServerHttpPort` which sets a default HTTP port for PIO Home server (issue [#832](https://github.com/platformio/platformio-vscode-ide/issues/832))
 * Added new setting `platformio-ide.disableAutostartPIOHomeServer` which disables automatic starting of PIO Home server (issue [#888](https://github.com/platformio/platformio-vscode-ide/issues/888))
 * Replaced *.png icons with *.svg (issue [#755](https://github.com/platformio/platformio-vscode-ide/issues/755))

@@ -589,8 +589,8 @@
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-preset-env": "^1.7.0",
     "esformatter": "^0.10.0",
-    "eslint": "^5.9.0",
-    "eslint-import-resolver-webpack": "^0.10.1",
+    "eslint": "^6.0.1",
+    "eslint-import-resolver-webpack": "^0.11.1",
     "eslint-plugin-import": "^2.14.0",
     "vsce": "^1.53.2",
     "vscode": "^1.1.22",
@@ -599,7 +599,7 @@
   },
   "dependencies": {
     "fs-plus": "^3.0.2",
-    "platformio-node-helpers": "^4.1.0",
+    "platformio-node-helpers": "^5.0.0",
     "platformio-vscode-debug": "^1.2.6"
   },
   "extensionDependencies": [
