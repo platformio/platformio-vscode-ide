@@ -46,7 +46,7 @@ class PlatformIOVSCodeExtension {
     );
 
     const hasPIOProject = !!utils.getActivePIOProjectDir();
-    if (!hasPIOProject && this.getConfig().get('activateOnlyOnPlatformIOProject')) {
+    if (!hasPIOProject && this.getSetting('activateOnlyOnPlatformIOProject')) {
       return;
     }
 
@@ -87,7 +87,7 @@ class PlatformIOVSCodeExtension {
 
     this.initTasks();
 
-    if (this.getConfig().get('updateTerminalPathConfiguration')) {
+    if (this.getSetting('updateTerminalPathConfiguration')) {
       this.pioTerm.updateEnvConfiguration();
     }
 
@@ -102,8 +102,8 @@ class PlatformIOVSCodeExtension {
     );
   }
 
-  getConfig() {
-    return vscode.workspace.getConfiguration('platformio-ide');
+  getSetting(id) {
+    return vscode.workspace.getConfiguration('platformio-ide').get(id);
   }
 
   loadEnterpriseSettings() {
@@ -142,8 +142,8 @@ class PlatformIOVSCodeExtension {
     }
     pioNodeHelpers.misc.patchOSEnviron({
       caller: 'vscode',
-      useBuiltinPIOCore: this.getConfig().get('useBuiltinPIOCore'),
-      extraPath: this.getConfig().get('customPATH'),
+      useBuiltinPIOCore: this.getSetting('useBuiltinPIOCore'),
+      extraPath: this.getSetting('customPATH'),
       extraVars
     });
   }
@@ -201,12 +201,14 @@ class PlatformIOVSCodeExtension {
   }
 
   async startPIOHome() {
-    if (this.getConfig().get('disableAutostartPIOHomeServer')) {
+    if (this.getSetting('disableAutostartPIOHomeServer')) {
       return;
     }
     // Auto-start of PIO Home Server
     try {
-      await pioNodeHelpers.home.ensureServerStarted();
+      await pioNodeHelpers.home.ensureServerStarted({
+        port: this.getSetting('pioHomeServerHttpPort')
+      });
     } catch (err) {
       console.warn(err);
       // return utils.notifyError('Start PIO Home Server', err);
@@ -259,7 +261,7 @@ class PlatformIOVSCodeExtension {
       vscode.commands.registerCommand(
         'platformio-ide.build',
         () =>  {
-          const taskName = this.getConfig().get('buildTask') || {
+          const taskName = this.getSetting('buildTask') || {
             type: TaskManager.type,
             task: 'Build'
           };
@@ -270,7 +272,7 @@ class PlatformIOVSCodeExtension {
         'platformio-ide.upload',
         () => vscode.commands.executeCommand('workbench.action.tasks.runTask', {
           type: TaskManager.type,
-          task: this.getConfig().get('forceUploadAndMonitor') ? 'Upload and Monitor' : 'Upload'
+          task: this.getSetting('forceUploadAndMonitor') ? 'Upload and Monitor' : 'Upload'
         })
       ),
       vscode.commands.registerCommand(
@@ -322,7 +324,7 @@ class PlatformIOVSCodeExtension {
   }
 
   initToolbar({ filterCommands, ignoreCommands }) {
-    if (this.getConfig().get('disableToolbar')) {
+    if (this.getSetting('disableToolbar')) {
       return;
     }
     [
@@ -358,11 +360,11 @@ class PlatformIOVSCodeExtension {
         location: vscode.ProgressLocation.Window,
         title: 'PlatformIO: IntelliSense Index Rebuild'
       }, task),
-      useBuiltinPIOCore: this.getConfig().get('useBuiltinPIOCore')
+      useBuiltinPIOCore: this.getSetting('useBuiltinPIOCore')
     });
 
     const doUpdate = () => {
-      observer.update(this.getConfig().get('autoRebuildAutocompleteIndex') && vscode.workspace.workspaceFolders ? vscode.workspace.workspaceFolders.map(folder => folder.uri.fsPath) : []);
+      observer.update(this.getSetting('autoRebuildAutocompleteIndex') && vscode.workspace.workspaceFolders ? vscode.workspace.workspaceFolders.map(folder => folder.uri.fsPath) : []);
     };
 
     this.subscriptions.push(
@@ -382,7 +384,7 @@ class PlatformIOVSCodeExtension {
 
   handleUseDevelopmentPIOCoreConfiguration() {
     return vscode.workspace.onDidChangeConfiguration(e => {
-      if (!e.affectsConfiguration('platformio-ide.useDevelopmentPIOCore') || !this.getConfig().get('useBuiltinPIOCore')) {
+      if (!e.affectsConfiguration('platformio-ide.useDevelopmentPIOCore') || !this.getSetting('useBuiltinPIOCore')) {
         return;
       }
       const envDir = pioNodeHelpers.core.getEnvDir();

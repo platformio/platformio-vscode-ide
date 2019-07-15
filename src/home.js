@@ -84,6 +84,7 @@ export default class PIOHome {
 
   async getWebviewContent(startUrl) {
     const params = await pioNodeHelpers.home.ensureServerStarted({
+      port: extension.getSetting('pioHomeServerHttpPort'),
       onIDECommand: (command, params) => {
         if (command === 'open_project') {
           if (vscode.workspace.workspaceFolders) {

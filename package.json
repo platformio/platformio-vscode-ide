@@ -567,6 +567,10 @@
           "type": "boolean",
           "default": false,
           "description": "Disable automatic starting of PIO Home server"
+        },
+        "platformio-ide.pioHomeServerHttpPort": {
+          "type": "integer",
+          "description": "PIO Home server HTTP port (default is 0 and instructs finding a free port in range [8010..8100])"
         }
       }
     }

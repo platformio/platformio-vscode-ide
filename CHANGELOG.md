@@ -2,6 +2,7 @@
 
 ## 1.8.0 (2019-07-??)
 
+* Added new setting `platformio-ide.pioHomeServerHttpPort` which sets a default HTTP port for PIO Home server (issue [#832](https://github.com/platformio/platformio-vscode-ide/issues/832))
 * Added new setting `platformio-ide.disableAutostartPIOHomeServer` which disables automatic starting of PIO Home server (issue [#888](https://github.com/platformio/platformio-vscode-ide/issues/888))
 
 ## 1.7.1 (2019-04-20)
