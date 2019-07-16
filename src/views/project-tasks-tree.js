@@ -49,8 +49,8 @@ export default class ProjectTasksTreeProvider {
     }
     const element = new vscode.TreeItem(item.name);
     element.iconPath = {
-      light: path.join(extension.context.extensionPath, 'resources', 'icons', 'task.png'),
-      dark: path.join(extension.context.extensionPath, 'resources', 'icons', 'task-inverse.png')
+      light: path.join(extension.context.extensionPath, 'resources', 'icons', 'task.svg'),
+      dark: path.join(extension.context.extensionPath, 'resources', 'icons', 'task-inverse.svg')
     };
     element.tooltip = item.title;
     element.command = {

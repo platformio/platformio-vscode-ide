@@ -22,6 +22,9 @@ export default class PIOHome {
     this.subscriptions = [];
     this._currentPanel = undefined;
     this._lastStartUrl = PIOHome.defaultStartUrl;
+
+    // close PIO Home when workspaces folders are changed (VSCode reactivates extensiuon)
+    this.subscriptions.push(vscode.workspace.onDidChangeWorkspaceFolders(this.disposePanel.bind(this)));
   }
 
   async toggle(startUrl=PIOHome.defaultStartUrl) {
@@ -49,7 +52,7 @@ export default class PIOHome {
       }
     );
     this.subscriptions.push(panel.onDidDispose(this.onPanelDisposed.bind(this)));
-    panel.iconPath = vscode.Uri.file(path.join(extension.context.extensionPath, 'resources', 'platformio-mini-logo.png'));
+    panel.iconPath = vscode.Uri.file(path.join(extension.context.extensionPath, 'resources', 'platformio-mini-logo.svg'));
     panel.webview.html = this.getLoadingContent();
     try {
       panel.webview.html = await this.getWebviewContent(startUrl);
@@ -84,8 +87,10 @@ export default class PIOHome {
 
   async getWebviewContent(startUrl) {
     const params = await pioNodeHelpers.home.ensureServerStarted({
+      port: extension.getSetting('pioHomeServerHttpPort'),
       onIDECommand: (command, params) => {
         if (command === 'open_project') {
+          this.disposePanel();
           if (vscode.workspace.workspaceFolders) {
             vscode.workspace.updateWorkspaceFolders(vscode.workspace.workspaceFolders.length, null, { uri: vscode.Uri.file(params)});
           } else {
@@ -117,11 +122,16 @@ export default class PIOHome {
     this._currentPanel = undefined;
   }
 
-  dispose() {
-    if (this._currentPanel) {
-      this._currentPanel.dispose();
-      this._currentPanel = undefined;
+  disposePanel() {
+    if (!this._currentPanel) {
+      return;
     }
+    this._currentPanel.dispose();
+    this._currentPanel = undefined;
+  }
+
+  dispose() {
+    this.disposePanel();
     pioNodeHelpers.misc.disposeSubscriptions(this.subscriptions);
     pioNodeHelpers.home.shutdownServer();
   }

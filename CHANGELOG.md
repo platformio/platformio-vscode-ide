@@ -1,5 +1,25 @@
 # Release Notes
 
+## 1.8.0 (2019-07-??)
+
+* Full support for [PlatformIO Core 4.0](http://docs.platformio.org/en/latest/migration.html)
+* PlatformIO Core Installer:
+    - Added support for Python 3 and its "venv" module
+    - Added [PIO Remote](http://docs.platformio.org/en/latest/plus/pio-remote.html) project tasks
+    - Added "Fuses" related project tasks
+    - Added "Erase" project task for Espressif and Nordic dev/platforms
+    - Implemented ProjectConfig parser following PIO Core 4.0 specification
+    - Support custom port for PIO Home server
+    - Override default `~/.platformio/penv` folder with environment variable `PLATFORMIO_PENV_DIR`
+* [PIO Unified Debugger](http://docs.platformio.org/page/plus/debugging.html):
+    - Improved memory reading when large size of data were requested (Memory Viewer, Peripheral Registers)
+    - Fixed an error "Cannot read property 'getTreeNode' of null" when reading "Generic Registers" (issue [#862](https://github.com/platformio/platformio-vscode-ide/issues/862))
+* Added new setting `platformio-ide.pioHomeServerHttpPort` which sets a default HTTP port for PIO Home server (issue [#832](https://github.com/platformio/platformio-vscode-ide/issues/832))
+* Added new setting `platformio-ide.disablePIOHomeStartup` which disables showing PIO Home at startup (issue [#888](https://github.com/platformio/platformio-vscode-ide/issues/888))
+* Replaced *.png icons with *.svg (issue [#755](https://github.com/platformio/platformio-vscode-ide/issues/755))
+* Fixed an issue when PlatformIO Core does not handle disabled "Proxy Strict SSL" (issue [#837](https://github.com/platformio/platformio-vscode-ide/issues/837))
+* Fixed an issue with multiple instances of PIO Home when opening new project (issue [#624](https://github.com/platformio/platformio-vscode-ide/issues/624))
+
 ## 1.7.1 (2019-04-20)
 
 * PlatformIO Core Installer:
@@ -83,7 +103,7 @@
 * Added "Update All" (platforms, packages, libraries) quick access command to "PlatformIO Activity" (left sidebar) (issue [#335](https://github.com/platformio/platformio-vscode-ide/issues/335))
 * Improvements for [PIO Unified Debugger](http://docs.platformio.org/page/plus/debugging.html):
   - Fixed issue when using [BlackMagic Probe](http://docs.platformio.org/en/latest/plus/debug-tools/blackmagic.html) in pair with Atmel SAMD20/SAMD21 based boards
-  - Improved running to [debug_init_break](http://docs.platformio.org/en/latest/projectconf/section_env_debug.html#debug-init-break) on startup 
+  - Improved running to [debug_init_break](http://docs.platformio.org/en/latest/projectconf/section_env_debug.html#debug-init-break) on startup
 
 ## 1.2.0 (2018-09-12)
 

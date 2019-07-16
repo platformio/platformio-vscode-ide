@@ -1,13 +1,13 @@
 {
   "name": "platformio-ide",
-  "version": "1.7.1",
+  "version": "1.8.0",
   "publisher": "platformio",
   "engines": {
     "vscode": "^1.24.0"
   },
   "license": "Apache-2.0",
   "displayName": "PlatformIO IDE",
-  "description": "Development environment for IoT, Arduino, ARM mbed, Espressif (ESP8266/ESP32), RISC-V, STM32, PIC32, nRF51/nRF52, MSP430, MCS-51 (8051), FPGA, FreeRTOS, ESP-IDF, CMSIS, SPL, AVR, Samsung ARTIK, libOpenCM3",
+  "description": "Development environment for IoT, Arduino, ARM mbed, Espressif (ESP8266/ESP32), AVR, RISC-V, STM32, PIC32, nRF51/nRF52, MSP430, MCS-51 (8051), FPGA, FreeRTOS, ESP-IDF, CMSIS, SPL",
   "categories": [
     "Programming Languages",
     "Debuggers",
@@ -18,7 +18,7 @@
     "c",
     "c++",
     "embedded",
-    "arduino"
+    "firmware"
   ],
   "main": "./dist/extension",
   "icon": "resources/platformio-logo.png",
@@ -410,7 +410,7 @@
         {
           "id": "platformio",
           "title": "PlatformIO",
-          "icon": "resources/platformio-activity-icon.png",
+          "icon": "resources/platformio-activity-icon.svg",
           "when": "pioCoreReady"
         }
       ]
@@ -562,6 +562,15 @@
           "type": "boolean",
           "default": true,
           "description": "Update Terminal configuration with patched PATH environment"
+        },
+        "platformio-ide.disablePIOHomeStartup": {
+          "type": "boolean",
+          "default": false,
+          "description": "Disable showing PIO Home at startup"
+        },
+        "platformio-ide.pioHomeServerHttpPort": {
+          "type": "integer",
+          "description": "PIO Home server HTTP port (default is 0 and instructs finding a free port in range [8010..8100])"
         }
       }
     }
@@ -580,8 +589,8 @@
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-preset-env": "^1.7.0",
     "esformatter": "^0.10.0",
-    "eslint": "^5.9.0",
-    "eslint-import-resolver-webpack": "^0.10.1",
+    "eslint": "^6.0.1",
+    "eslint-import-resolver-webpack": "^0.11.1",
     "eslint-plugin-import": "^2.14.0",
     "vsce": "^1.53.2",
     "vscode": "^1.1.22",
@@ -590,8 +599,8 @@
   },
   "dependencies": {
     "fs-plus": "^3.0.2",
-    "platformio-node-helpers": "^4.1.0",
-    "platformio-vscode-debug": "^1.2.6"
+    "platformio-node-helpers": "^5.0.0",
+    "platformio-vscode-debug": "^1.2.7"
   },
   "extensionDependencies": [
     "ms-vscode.cpptools"
