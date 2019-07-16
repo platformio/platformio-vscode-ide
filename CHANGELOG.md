@@ -1,6 +1,6 @@
 # Release Notes
 
-## 1.8.0 (2019-07-??)
+## 1.8.0 (2019-07-16)
 
 * Full support for [PlatformIO Core 4.0](http://docs.platformio.org/en/latest/migration.html)
 * PlatformIO Core Installer:
