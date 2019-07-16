@@ -11,6 +11,9 @@
     - Implemented ProjectConfig parser following PIO Core 4.0 specification
     - Support custom port for PIO Home server
     - Override default `~/.platformio/penv` folder with environment variable `PLATFORMIO_PENV_DIR`
+* [PIO Unified Debugger](http://docs.platformio.org/page/plus/debugging.html):
+    - Improved memory reading when large size of data were requested (Memory Viewer, Peripheral Registers)
+    - Fixed an error "Cannot read property 'getTreeNode' of null" when reading "Generic Registers" (issue [#862](https://github.com/platformio/platformio-vscode-ide/issues/862))
 * Added new setting `platformio-ide.pioHomeServerHttpPort` which sets a default HTTP port for PIO Home server (issue [#832](https://github.com/platformio/platformio-vscode-ide/issues/832))
 * Added new setting `platformio-ide.disablePIOHomeStartup` which disables showing PIO Home at startup (issue [#888](https://github.com/platformio/platformio-vscode-ide/issues/888))
 * Replaced *.png icons with *.svg (issue [#755](https://github.com/platformio/platformio-vscode-ide/issues/755))
