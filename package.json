@@ -563,10 +563,10 @@
           "default": true,
           "description": "Update Terminal configuration with patched PATH environment"
         },
-        "platformio-ide.disableAutostartPIOHomeServer": {
+        "platformio-ide.disablePIOHomeStartup": {
           "type": "boolean",
           "default": false,
-          "description": "Disable automatic starting of PIO Home server"
+          "description": "Disable showing PIO Home at startup"
         },
         "platformio-ide.pioHomeServerHttpPort": {
           "type": "integer",

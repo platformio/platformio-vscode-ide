@@ -201,19 +201,7 @@ class PlatformIOVSCodeExtension {
   }
 
   async startPIOHome() {
-    if (this.getSetting('disableAutostartPIOHomeServer')) {
-      return;
-    }
-    // Auto-start of PIO Home Server
-    try {
-      await pioNodeHelpers.home.ensureServerStarted({
-        port: this.getSetting('pioHomeServerHttpPort')
-      });
-    } catch (err) {
-      console.warn(err);
-      // return utils.notifyError('Start PIO Home Server', err);
-    }
-    if (!pioNodeHelpers.home.showAtStartup('vscode')) {
+    if (this.getSetting('disablePIOHomeStartup') || !pioNodeHelpers.home.showAtStartup('vscode')) {
       return;
     }
     vscode.commands.executeCommand('platformio-ide.showHome');
