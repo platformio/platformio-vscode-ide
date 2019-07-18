@@ -1,5 +1,9 @@
 # Release Notes
 
+## 1.8.1 (2019-??-??)
+
+- Added new command "Open PlatformIO Core CLI"
+
 ## 1.8.0 (2019-07-16)
 
 * Full support for [PlatformIO Core 4.0](http://docs.platformio.org/en/latest/migration.html)

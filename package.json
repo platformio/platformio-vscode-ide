@@ -136,6 +136,11 @@
         "category": "PlatformIO"
       },
       {
+        "command": "platformio-ide.openPIOCoreCLI",
+        "title": "Open PlatformIO Core CLI",
+        "category": "PlatformIO"
+      },
+      {
         "command": "platformio-ide.startDebugging",
         "title": "Start Debugging",
         "category": "PlatformIO"
