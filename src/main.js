@@ -112,20 +112,17 @@ class PlatformIOVSCodeExtension {
       && item.id !== 'platformio.platformio-ide'
       && item.isActive
     );
-    if (!ext || !ext.exports || !ext.exports.hasOwnProperty('settings')) {
-      return;
-    }
-    return ext.exports.settings;
+    return (ext && ext.exports) ? ext.exports.settings : undefined;
   }
 
   getEnterpriseSetting(id, defaultValue = undefined) {
     if (!this._enterpriseSettings) {
       this._enterpriseSettings = this.loadEnterpriseSettings();
     }
-    if (!this._enterpriseSettings || !this._enterpriseSettings.hasOwnProperty(id)) {
-      return defaultValue;
+    if (this._enterpriseSettings && id in this._enterpriseSettings) {
+      return this._enterpriseSettings[id];
     }
-    return this._enterpriseSettings[id];
+    return defaultValue;
   }
 
   patchOSEnviron() {

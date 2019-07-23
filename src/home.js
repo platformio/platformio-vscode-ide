@@ -32,7 +32,7 @@ export default class PIOHome {
     try {
       if (this._currentPanel) {
         if (this._lastStartUrl !== startUrl) {
-          this._currentPanel.webview.html = await this.getWebviewContent(startUrl);;
+          this._currentPanel.webview.html = await this.getWebviewContent(startUrl);
         }
         return this._currentPanel.reveal(column);
       }

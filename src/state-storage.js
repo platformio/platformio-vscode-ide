@@ -23,11 +23,7 @@ export default class StateStorage {
   }
 
   getValue(key) {
-    const data = this._loadState();
-    if (data && data.hasOwnProperty(key)) {
-      return data[key];
-    }
-    return undefined;
+    return (this._loadState() || {})[key];
   }
 
   setValue(key, value) {
