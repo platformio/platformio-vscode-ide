@@ -3,6 +3,7 @@
 ## 1.8.1 (2019-??-??)
 
 - Added new command "Open PlatformIO Core CLI"
+- Fixed an issue with broken Code Disassembly feature of PIO Unified Debugger (issue [#920](https://github.com/platformio/platformio-vscode-ide/issues/920))
 
 ## 1.8.0 (2019-07-16)
 
