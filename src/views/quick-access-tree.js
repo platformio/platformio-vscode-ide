@@ -47,10 +47,11 @@ export default class QuickAccessTreeProvider {
         new QuickItem('Update All', 'platformio-ide.updateCore')
       ]),
       new QuickItem('Miscellaneous', undefined, undefined, vscode.TreeItemCollapsibleState.Expanded, [
+        new QuickItem('PlatformIO Core CLI', 'platformio-ide.openPIOCoreCLI'),
         new QuickItem('Clone Git Project', 'git.clone'),
         new QuickItem('New Terminal', 'platformio-ide.newTerminal'),
         new QuickItem('Upgrade PlatformIO Core', 'platformio-ide.upgradeCore')
-      ]),      
+      ]),
     ];
   }
 

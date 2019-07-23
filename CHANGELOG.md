@@ -1,6 +1,13 @@
 # Release Notes
 
-## 1.8.0 (2019-07-??)
+## 1.8.1 (2019-07-23)
+
+- Added new command "Open PlatformIO Core CLI"
+- Fixed an issue with broken Code Disassembly feature of PIO Unified Debugger (issue [#920](https://github.com/platformio/platformio-vscode-ide/issues/920))
+- Fixed an issue when when non-multi-environment tasks were listed in Project Tasks (issue [#921](https://github.com/platformio/platformio-vscode-ide/issues/921))
+- Fixed "Error: Webview is disposed" when opening PIO Home (issue [#917](https://github.com/platformio/platformio-vscode-ide/issues/917))
+
+## 1.8.0 (2019-07-16)
 
 * Full support for [PlatformIO Core 4.0](http://docs.platformio.org/en/latest/migration.html)
 * PlatformIO Core Installer:

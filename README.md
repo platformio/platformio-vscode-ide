@@ -7,7 +7,7 @@ Cross-platform build system and unified debugger. Remote unit testing and firmwa
 
 **Platforms**: Atmel AVR, Atmel SAM, Espressif 32, Espressif 8266, Freescale Kinetis, Infineon XMC, Intel ARC32, Intel MCS-51 (8051), Kendryte K210, Lattice iCE40, Maxim 32, Microchip PIC32, Nordic nRF51, Nordic nRF52, NXP LPC, RISC-V, Samsung ARTIK, Silicon Labs EFM32, ST STM32, ST STM8, Teensy, TI MSP430, TI Tiva, WIZNet W7500
 
-**Frameworks**: Arduino, ARTIK SDK, CMSIS, Energia, ESP-IDF, ESP8266 RTOS SDK, Freedom E SDK, Kendryte Standalone SDK, Kendryte FreeRTOS SDK, libOpenCM3, mbed, PULP OS, Pumbaa, Simba, SPL, STM32Cube, Tizen RT, WiringPi
+**Frameworks**: Arduino, ARTIK SDK, CMSIS, ESP-IDF, ESP8266 RTOS SDK, Freedom E SDK, Kendryte Standalone SDK, Kendryte FreeRTOS SDK, libOpenCM3, mbed, PULP OS, Pumbaa, Simba, SPL, STM32Cube, Tizen RT, WiringPi
 
 ## Features
 

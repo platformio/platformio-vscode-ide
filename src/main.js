@@ -222,6 +222,10 @@ class PlatformIOVSCodeExtension {
         () => this.pioTerm.new().show()
       ),
       vscode.commands.registerCommand(
+        'platformio-ide.openPIOCoreCLI',
+        () => this.pioTerm.sendText('pio --help')
+      ),
+      vscode.commands.registerCommand(
         'platformio-ide.startDebugging',
         () => {
           vscode.commands.executeCommand('workbench.view.debug');

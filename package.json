@@ -1,6 +1,6 @@
 {
   "name": "platformio-ide",
-  "version": "1.8.0",
+  "version": "1.8.1",
   "publisher": "platformio",
   "engines": {
     "vscode": "^1.24.0"
@@ -133,6 +133,11 @@
       {
         "command": "platformio-ide.newTerminal",
         "title": "New Terminal",
+        "category": "PlatformIO"
+      },
+      {
+        "command": "platformio-ide.openPIOCoreCLI",
+        "title": "Open PlatformIO Core CLI",
         "category": "PlatformIO"
       },
       {
@@ -598,9 +603,9 @@
     "webpack-cli": "^3.1.2"
   },
   "dependencies": {
-    "fs-plus": "^3.0.2",
-    "platformio-node-helpers": "^5.0.0",
-    "platformio-vscode-debug": "^1.2.7"
+    "fs-plus": "^3.1.1",
+    "platformio-node-helpers": "^5.0.2",
+    "platformio-vscode-debug": "^1.2.8"
   },
   "extensionDependencies": [
     "ms-vscode.cpptools"
