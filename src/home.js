@@ -29,16 +29,17 @@ export default class PIOHome {
 
   async toggle(startUrl=PIOHome.defaultStartUrl) {
     const column = vscode.window.activeTextEditor ? vscode.window.activeTextEditor.viewColumn : undefined;
-    if (this._currentPanel) {
-      if (this._lastStartUrl !== startUrl) {
-        await this.updatePanel(startUrl);
-      } else {
-        this._currentPanel.reveal(column);
+    try {
+      if (this._currentPanel) {
+        if (this._lastStartUrl !== startUrl) {
+          this._currentPanel.webview.html = await this.getWebviewContent(startUrl);;
+        }
+        return this._currentPanel.reveal(column);
       }
-    } else {
-      this._currentPanel = await this.newPanel(startUrl);
+    } catch (err) {
+      console.warn(err);
     }
-    this._lastStartUrl = startUrl;
+    this._currentPanel = await this.newPanel(startUrl);
   }
 
   async newPanel(startUrl) {
@@ -62,14 +63,6 @@ export default class PIOHome {
     return panel;
   }
 
-  async updatePanel(startUrl) {
-    try {
-      this._currentPanel.webview.html = await this.getWebviewContent(startUrl);
-    } catch (err) {
-      notifyError('Update PIO Home Content', err);
-    }
-  }
-
   getTheme() {
     const workbench = vscode.workspace.getConfiguration('workbench') || {};
     return (workbench.colorTheme || '').toLowerCase().includes('light') ? 'light' : 'dark';
@@ -86,6 +79,7 @@ export default class PIOHome {
   }
 
   async getWebviewContent(startUrl) {
+    this._lastStartUrl = startUrl;
     const params = await pioNodeHelpers.home.ensureServerStarted({
       port: extension.getSetting('pioHomeServerHttpPort'),
       onIDECommand: (command, params) => {
