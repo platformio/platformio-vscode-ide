@@ -1,5 +1,10 @@
 # Release Notes
 
+## 1.8.2 (2019-08-??)
+
+- Show multi-environment tasks when more than one project `env` is declared
+-
+
 ## 1.8.1 (2019-07-23)
 
 - Added new command "Open PlatformIO Core CLI"
