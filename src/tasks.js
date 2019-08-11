@@ -65,7 +65,7 @@ export default class TaskManager {
       vscode.workspace.getWorkspaceFolder(vscode.Uri.file(this._projectDir)),
       projectTask.title,
       TaskManager.type,
-      new vscode.ProcessExecution(IS_WINDOWS ? 'platformio.exe' : 'platformio', projectTask.args, {
+      new vscode.ShellExecution(IS_WINDOWS ? 'platformio.exe' : 'platformio', projectTask.args, {
         cwd: this._projectDir,
         env: process.env
       }),
