@@ -1,6 +1,6 @@
 # Release Notes
 
-## 1.8.2 (2019-08-??)
+## 1.8.2 (2019-08-11)
 
 - Show multi-environment tasks when more than one project `env` is declared
 - Temporary workaround for the broken Tasks API in the latest VSCode 1.37 (issue [#957](https://github.com/platformio/platformio-vscode-ide/issues/957))
