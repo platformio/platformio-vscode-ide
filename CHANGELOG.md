@@ -1,6 +1,6 @@
 # Release Notes
 
-## 1.8.3 (2019-??-??)
+## 1.8.3 (2019-08-31)
 
  - Fixed an issue with incorrect checking of a valid Python 3 interpreter
 
