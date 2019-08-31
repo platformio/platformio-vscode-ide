@@ -1,5 +1,9 @@
 # Release Notes
 
+## 1.8.3 (2019-??-??)
+
+ - Fixed an issue with incorrect checking of a valid Python 3 interpreter
+
 ## 1.8.2 (2019-08-11)
 
 - Show multi-environment tasks when more than one project `env` is declared
