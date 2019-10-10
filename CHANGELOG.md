@@ -1,5 +1,9 @@
 # Release Notes
 
+## 1.9.0 (2019-10-??)
+
+- Fixed an issue when debugger breakpoints are not activated on new debug session start (issue [#623](https://github.com/platformio/platformio-vscode-ide/issues/623))
+
 ## 1.8.3 (2019-08-31)
 
  - Fixed an issue with incorrect checking of a valid Python 3 interpreter
