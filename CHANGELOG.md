@@ -1,6 +1,6 @@
 # Release Notes
 
-## 1.9.0 (2019-10-??)
+## 1.9.0 (2019-10-11)
 
 - Python 3 has the highest priority over the Python 2
 - Use Python 3.7 as a default installer for Windows
