@@ -2,6 +2,8 @@
 
 ## 1.9.0 (2019-10-??)
 
+- Python 3 has the highest priority over the Python 2
+- Use Python 3.7 as a default installer for Windows
 - Fixed an issue when debugger breakpoints are not activated on new debug session start (issue [#623](https://github.com/platformio/platformio-vscode-ide/issues/623))
 
 ## 1.8.3 (2019-08-31)
