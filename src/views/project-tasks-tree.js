@@ -13,7 +13,6 @@ import { extension } from '../main';
 import path from 'path';
 
 export default class ProjectTasksTreeProvider {
-
   constructor(tasks) {
     this.tasks = tasks;
   }
@@ -31,10 +30,23 @@ export default class ProjectTasksTreeProvider {
         return;
       }
       if (!knownEnvs.includes(coreEnv)) {
-        const item = new vscode.TreeItem(`env:${coreEnv}`, vscode.TreeItemCollapsibleState.Collapsed);
+        const item = new vscode.TreeItem(
+          `env:${coreEnv}`,
+          vscode.TreeItemCollapsibleState.Collapsed
+        );
         item.iconPath = {
-          light: path.join(extension.context.extensionPath, 'resources', 'icons', 'task-env.svg'),
-          dark: path.join(extension.context.extensionPath, 'resources', 'icons', 'task-env-inverse.svg')
+          light: path.join(
+            extension.context.extensionPath,
+            'resources',
+            'icons',
+            'task-env.svg'
+          ),
+          dark: path.join(
+            extension.context.extensionPath,
+            'resources',
+            'icons',
+            'task-env-inverse.svg'
+          )
         };
         items.push(item);
         knownEnvs.push(coreEnv);
@@ -49,19 +61,30 @@ export default class ProjectTasksTreeProvider {
     }
     const element = new vscode.TreeItem(item.name);
     element.iconPath = {
-      light: path.join(extension.context.extensionPath, 'resources', 'icons', 'task.svg'),
-      dark: path.join(extension.context.extensionPath, 'resources', 'icons', 'task-inverse.svg')
+      light: path.join(
+        extension.context.extensionPath,
+        'resources',
+        'icons',
+        'task.svg'
+      ),
+      dark: path.join(
+        extension.context.extensionPath,
+        'resources',
+        'icons',
+        'task-inverse.svg'
+      )
     };
     element.tooltip = item.title;
     element.command = {
       title: item.title,
       command: 'workbench.action.tasks.runTask',
-      arguments: [{
-        type: TaskManager.type,
-        task: item.id
-      }]
+      arguments: [
+        {
+          type: TaskManager.type,
+          task: item.id
+        }
+      ]
     };
     return element;
   }
-
 }

@@ -10,9 +10,7 @@ import * as constants from './constants';
 
 import vscode from 'vscode';
 
-
 export default class PIOTerminal {
-
   constructor() {
     this._instance = undefined;
   }
@@ -41,15 +39,23 @@ export default class PIOTerminal {
 
   updateEnvConfiguration() {
     const config = vscode.workspace.getConfiguration();
-    const sysType = constants.IS_WINDOWS ? 'windows' : constants.IS_OSX ? 'osx' : 'linux';
+    const sysType = constants.IS_WINDOWS
+      ? 'windows'
+      : constants.IS_OSX
+      ? 'osx'
+      : 'linux';
     const section = `terminal.integrated.env.${sysType}`;
     const current = config.get(section);
     if (current && current.PATH === process.env.PATH) {
       return;
     }
-    config.update(section, {
-      PATH: process.env.PATH,
-      PLATFORMIO_CALLER: 'vscode'
-    }, vscode.ConfigurationTarget.Workspace);
+    config.update(
+      section,
+      {
+        PATH: process.env.PATH,
+        PLATFORMIO_CALLER: 'vscode'
+      },
+      vscode.ConfigurationTarget.Workspace
+    );
   }
 }

@@ -7,8 +7,7 @@
  */
 
 export default class StateStorage {
-
-  constructor(globalState, stateKey='miscStates') {
+  constructor(globalState, stateKey = 'miscStates') {
     this._globalState = globalState;
     this._stateKey = stateKey;
   }
@@ -31,5 +30,4 @@ export default class StateStorage {
     data[key] = value;
     this._globalState.update(this._stateKey, data);
   }
-
 }
