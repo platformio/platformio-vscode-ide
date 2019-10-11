@@ -13,9 +13,7 @@ import { notifyError } from './utils';
 import path from 'path';
 import vscode from 'vscode';
 
-
 export default class PIOHome {
-
   static defaultStartUrl = '/';
 
   constructor() {
@@ -24,11 +22,15 @@ export default class PIOHome {
     this._lastStartUrl = PIOHome.defaultStartUrl;
 
     // close PIO Home when workspaces folders are changed (VSCode reactivates extensiuon)
-    this.subscriptions.push(vscode.workspace.onDidChangeWorkspaceFolders(this.disposePanel.bind(this)));
+    this.subscriptions.push(
+      vscode.workspace.onDidChangeWorkspaceFolders(this.disposePanel.bind(this))
+    );
   }
 
-  async toggle(startUrl=PIOHome.defaultStartUrl) {
-    const column = vscode.window.activeTextEditor ? vscode.window.activeTextEditor.viewColumn : undefined;
+  async toggle(startUrl = PIOHome.defaultStartUrl) {
+    const column = vscode.window.activeTextEditor
+      ? vscode.window.activeTextEditor.viewColumn
+      : undefined;
     try {
       if (this._currentPanel) {
         if (this._lastStartUrl !== startUrl) {
@@ -53,7 +55,13 @@ export default class PIOHome {
       }
     );
     this.subscriptions.push(panel.onDidDispose(this.onPanelDisposed.bind(this)));
-    panel.iconPath = vscode.Uri.file(path.join(extension.context.extensionPath, 'resources', 'platformio-mini-logo.svg'));
+    panel.iconPath = vscode.Uri.file(
+      path.join(
+        extension.context.extensionPath,
+        'resources',
+        'platformio-mini-logo.svg'
+      )
+    );
     panel.webview.html = this.getLoadingContent();
     try {
       panel.webview.html = await this.getWebviewContent(startUrl);
@@ -65,7 +73,9 @@ export default class PIOHome {
 
   getTheme() {
     const workbench = vscode.workspace.getConfiguration('workbench') || {};
-    return (workbench.colorTheme || '').toLowerCase().includes('light') ? 'light' : 'dark';
+    return (workbench.colorTheme || '').toLowerCase().includes('light')
+      ? 'light'
+      : 'dark';
   }
 
   getLoadingContent() {
@@ -86,9 +96,16 @@ export default class PIOHome {
         if (command === 'open_project') {
           this.disposePanel();
           if (vscode.workspace.workspaceFolders) {
-            vscode.workspace.updateWorkspaceFolders(vscode.workspace.workspaceFolders.length, null, { uri: vscode.Uri.file(params)});
+            vscode.workspace.updateWorkspaceFolders(
+              vscode.workspace.workspaceFolders.length,
+              null,
+              { uri: vscode.Uri.file(params) }
+            );
           } else {
-            vscode.commands.executeCommand('vscode.openFolder', vscode.Uri.file(params));
+            vscode.commands.executeCommand(
+              'vscode.openFolder',
+              vscode.Uri.file(params)
+            );
           }
           vscode.commands.executeCommand('workbench.view.explorer');
         }
@@ -97,12 +114,14 @@ export default class PIOHome {
     const theme = this.getTheme();
     return `<!DOCTYPE html>
       <html lang="en">
-      <body style="margin: 0; padding: 0; height: 100%; overflow: hidden; background-color: ${theme === 'light' ? '#FFF' : '#1E1E1E'}">
-        <iframe src="${ pioNodeHelpers.home.getFrontendUri(params.host, params.port, {
-        start: startUrl,
-        theme,
-        workspace: extension.getEnterpriseSetting('defaultPIOHomeWorkspace')
-      })}"
+      <body style="margin: 0; padding: 0; height: 100%; overflow: hidden; background-color: ${
+        theme === 'light' ? '#FFF' : '#1E1E1E'
+      }">
+        <iframe src="${pioNodeHelpers.home.getFrontendUri(params.host, params.port, {
+          start: startUrl,
+          theme,
+          workspace: extension.getEnterpriseSetting('defaultPIOHomeWorkspace')
+        })}"
           width="100%"
           height="100%"
           frameborder="0"
@@ -129,5 +148,4 @@ export default class PIOHome {
     pioNodeHelpers.misc.disposeSubscriptions(this.subscriptions);
     pioNodeHelpers.home.shutdownServer();
   }
-
 }

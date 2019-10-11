@@ -13,9 +13,7 @@ import { IS_WINDOWS } from './constants';
 import path from 'path';
 import vscode from 'vscode';
 
-
 export default class TaskManager {
-
   static AUTO_REFRESH_DELAY = 500; // 0.5 sec
   static type = 'PlatformIO';
 
@@ -28,11 +26,11 @@ export default class TaskManager {
     this._refreshTimeout = undefined;
     this._projecTasks = undefined;
 
-    this.subscriptions.push(vscode.window.onDidChangeActiveTextEditor(
-      () => this.checkActiveProjectDir())
+    this.subscriptions.push(
+      vscode.window.onDidChangeActiveTextEditor(() => this.checkActiveProjectDir())
     );
-    this.subscriptions.push(vscode.workspace.onDidChangeWorkspaceFolders(
-      () => this.checkActiveProjectDir())
+    this.subscriptions.push(
+      vscode.workspace.onDidChangeWorkspaceFolders(() => this.checkActiveProjectDir())
     );
   }
 
@@ -51,8 +49,14 @@ export default class TaskManager {
 
   getServiceTasks() {
     return [
-      new pioNodeHelpers.project.TaskItem('Update All (libraries, platforms, and packages)', undefined, ['update']),
-      new pioNodeHelpers.project.TaskItem('Upgrade PlatformIO Core', undefined, ['upgrade'])
+      new pioNodeHelpers.project.TaskItem(
+        'Update All (libraries, platforms, and packages)',
+        undefined,
+        ['update']
+      ),
+      new pioNodeHelpers.project.TaskItem('Upgrade PlatformIO Core', undefined, [
+        'upgrade'
+      ])
     ];
   }
 
@@ -65,10 +69,14 @@ export default class TaskManager {
       vscode.workspace.getWorkspaceFolder(vscode.Uri.file(this._projectDir)),
       projectTask.title,
       TaskManager.type,
-      new vscode.ProcessExecution(IS_WINDOWS ? 'platformio.exe' : 'platformio', projectTask.args, {
-        cwd: this._projectDir,
-        env: process.env
-      }),
+      new vscode.ProcessExecution(
+        IS_WINDOWS ? 'platformio.exe' : 'platformio',
+        projectTask.args,
+        {
+          cwd: this._projectDir,
+          env: process.env
+        }
+      ),
       '$platformio'
     );
     vscodeTask.presentationOptions = {
@@ -104,7 +112,9 @@ export default class TaskManager {
 
   onDidProjectTasksUpdated(callback) {
     this.onDidProjectTasksUpdatedCallbacks.push(callback);
-    return new vscode.Disposable(() => pioNodeHelpers.misc.arrayRemove(this.onDidProjectTasksUpdatedCallbacks, callback));
+    return new vscode.Disposable(() =>
+      pioNodeHelpers.misc.arrayRemove(this.onDidProjectTasksUpdatedCallbacks, callback)
+    );
   }
 
   disposeInternal() {
@@ -121,7 +131,10 @@ export default class TaskManager {
     if (this._refreshTimeout) {
       clearTimeout(this._refreshTimeout);
     }
-    this._refreshTimeout = setTimeout(this.refresh.bind(this), TaskManager.AUTO_REFRESH_DELAY);
+    this._refreshTimeout = setTimeout(
+      this.refresh.bind(this),
+      TaskManager.AUTO_REFRESH_DELAY
+    );
   }
 
   async refresh() {
@@ -150,16 +163,21 @@ export default class TaskManager {
       );
       this.internalSubscriptions.push(watcher);
 
-      this.internalSubscriptions.push(watcher.onDidCreate(() => {
-        this.requestRefresh();
-      }));
-      this.internalSubscriptions.push(watcher.onDidChange(() => {
-        this.requestRefresh();
-      }));
-      this.internalSubscriptions.push(watcher.onDidDelete(() => {
-        this.dispose();
-      }));
-
+      this.internalSubscriptions.push(
+        watcher.onDidCreate(() => {
+          this.requestRefresh();
+        })
+      );
+      this.internalSubscriptions.push(
+        watcher.onDidChange(() => {
+          this.requestRefresh();
+        })
+      );
+      this.internalSubscriptions.push(
+        watcher.onDidDelete(() => {
+          this.dispose();
+        })
+      );
     } catch (err) {
       utils.notifyError('Tasks FileSystemWatcher', err);
     }
@@ -169,38 +187,49 @@ export default class TaskManager {
     let restoreAfterTask = undefined;
     let restoreTasks = [];
 
-    this.internalSubscriptions.push(vscode.tasks.onDidStartTaskProcess((event) => {
-      if (!vscode.workspace.getConfiguration('platformio-ide').get('autoCloseSerialMonitor')) {
-        return;
-      }
-      if (!['upload', 'test'].some(arg => event.execution.task.execution.args.includes(arg))) {
-        return;
-      }
-      vscode.tasks.taskExecutions.forEach((e) => {
-        if (event.execution.task === e.task) {
+    this.internalSubscriptions.push(
+      vscode.tasks.onDidStartTaskProcess(event => {
+        if (
+          !vscode.workspace
+            .getConfiguration('platformio-ide')
+            .get('autoCloseSerialMonitor')
+        ) {
           return;
         }
-        if (['device', 'monitor'].every(arg => e.task.execution.args.includes(arg))) {
-          restoreTasks.push(e.task);
+        if (
+          !['upload', 'test'].some(arg =>
+            event.execution.task.execution.args.includes(arg)
+          )
+        ) {
+          return;
         }
-        if (e.task.execution.args.includes('monitor')) {
-          e.terminate();
-        }
-      });
-      restoreAfterTask = event.execution.task;
-    }));
-
-    this.internalSubscriptions.push(vscode.tasks.onDidEndTaskProcess((event) => {
-      if (event.execution.task !== restoreAfterTask) {
-        return;
-      }
-      setTimeout(() => {
-        restoreTasks.forEach(task => {
-          vscode.tasks.executeTask(task);
+        vscode.tasks.taskExecutions.forEach(e => {
+          if (event.execution.task === e.task) {
+            return;
+          }
+          if (['device', 'monitor'].every(arg => e.task.execution.args.includes(arg))) {
+            restoreTasks.push(e.task);
+          }
+          if (e.task.execution.args.includes('monitor')) {
+            e.terminate();
+          }
         });
-        restoreTasks = [];
-      }, parseInt(vscode.workspace.getConfiguration('platformio-ide').get('reopenSerialMonitorDelay')));
+        restoreAfterTask = event.execution.task;
+      })
+    );
 
-    }));
+    this.internalSubscriptions.push(
+      vscode.tasks.onDidEndTaskProcess(event => {
+        if (event.execution.task !== restoreAfterTask) {
+          return;
+        }
+        setTimeout(() => {
+          restoreTasks.forEach(task => {
+            vscode.tasks.executeTask(task);
+          });
+          restoreTasks = [];
+        }, parseInt(vscode.workspace.getConfiguration('platformio-ide').get('reopenSerialMonitorDelay')));
+      })
+    );
   }
 }

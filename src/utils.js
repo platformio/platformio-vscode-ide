@@ -11,9 +11,8 @@ import * as pioNodeHelpers from 'platformio-node-helpers';
 import os from 'os';
 import vscode from 'vscode';
 
-
 export async function notifyError(title, err) {
-  const description = err.stack || err.toString(); 
+  const description = err.stack || err.toString();
 
   const action = 'Report a problem';
   const selected = await vscode.window.showErrorMessage(description, action);
@@ -35,7 +34,10 @@ System: ${os.type()}, ${os.release()}, ${os.arch()}
 ${description}
 \`\`\`
 `;
-    vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(pioNodeHelpers.misc.getErrorReportUrl(title, ghbody)));
+    vscode.commands.executeCommand(
+      'vscode.open',
+      vscode.Uri.parse(pioNodeHelpers.misc.getErrorReportUrl(title, ghbody))
+    );
   }
   console.error(err);
 }
@@ -62,7 +64,12 @@ export function getActivePIOProjectDir() {
     _lastActiveProjectDir = undefined;
     return _lastActiveProjectDir;
   }
-  if (!_lastActiveProjectDir || !vscode.workspace.workspaceFolders.find(folder => folder.uri.fsPath === _lastActiveProjectDir)) {
+  if (
+    !_lastActiveProjectDir ||
+    !vscode.workspace.workspaceFolders.find(
+      folder => folder.uri.fsPath === _lastActiveProjectDir
+    )
+  ) {
     _lastActiveProjectDir = pioProjectDirs[0];
   }
   const editor = vscode.window.activeTextEditor;
@@ -74,7 +81,8 @@ export function getActivePIOProjectDir() {
     return _lastActiveProjectDir;
   }
   const folder = vscode.workspace.getWorkspaceFolder(resource);
-  if (!folder || !pioNodeHelpers.misc.isPIOProject(folder.uri.fsPath)) { // outside workspace
+  if (!folder || !pioNodeHelpers.misc.isPIOProject(folder.uri.fsPath)) {
+    // outside workspace
     return _lastActiveProjectDir;
   }
   _lastActiveProjectDir = folder.uri.fsPath;

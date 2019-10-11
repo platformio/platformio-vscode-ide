@@ -13,9 +13,7 @@ import PythonPrompt from './python-prompt';
 import StateStorage from '../state-storage';
 import vscode from 'vscode';
 
-
 export default class InstallationManager {
-
   LOCK_TIMEOUT = 1 * 60 * 1000; // 1 minute
   LOCK_KEY = 'platformio-ide:installer-lock';
   STORAGE_STATE_KEY = 'platformio-ide:installer-state';
@@ -32,7 +30,8 @@ export default class InstallationManager {
         {
           pioCoreMinVersion: PIO_CORE_MIN_VERSION,
           useBuiltinPIOCore: config.get('useBuiltinPIOCore'),
-          setUseBuiltinPIOCore: (value) => config.update('platformio-ide.useBuiltinPIOCore', value),
+          setUseBuiltinPIOCore: value =>
+            config.update('platformio-ide.useBuiltinPIOCore', value),
           useDevelopmentPIOCore: config.get('useDevelopmentPIOCore'),
           pythonPrompt: new PythonPrompt()
         }
@@ -60,7 +59,7 @@ export default class InstallationManager {
     if (!lockTime) {
       return false;
     }
-    return (new Date().getTime() - parseInt(lockTime)) <= this.LOCK_TIMEOUT;
+    return new Date().getTime() - parseInt(lockTime) <= this.LOCK_TIMEOUT;
   }
 
   async check() {
@@ -85,5 +84,4 @@ export default class InstallationManager {
   destroy() {
     return this.stages.map(stage => stage.destroy());
   }
-
 }
