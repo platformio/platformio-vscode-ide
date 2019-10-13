@@ -565,7 +565,7 @@
         },
         "platformio-ide.updateTerminalPathConfiguration": {
           "type": "boolean",
-          "default": true,
+          "default": false,
           "description": "Update Terminal configuration with patched PATH environment"
         },
         "platformio-ide.disablePIOHomeStartup": {
