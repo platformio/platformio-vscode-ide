@@ -7,18 +7,18 @@
   },
   "license": "Apache-2.0",
   "displayName": "PlatformIO IDE",
-  "description": "Development environment for IoT, Arduino, ARM mbed, Espressif (ESP8266/ESP32), AVR, RISC-V, STM32, PIC32, nRF51/nRF52, MSP430, MCS-51 (8051), FPGA, FreeRTOS, ESP-IDF, CMSIS, SPL",
+  "description": "Development environment for Embedded, IoT, Arduino, ARM mbed, Espressif (ESP8266/ESP32), AVR, RISC-V, STM32, PIC32, nRF51/nRF52, MSP430, MCS-51 (8051), FPGA, FreeRTOS, ESP-IDF, CMSIS, SPL",
   "categories": [
     "Programming Languages",
     "Debuggers",
     "Other"
   ],
   "keywords": [
-    "IoT",
+    "embedded",
+    "debug",
     "c",
     "c++",
-    "embedded",
-    "firmware"
+    "microcontroller"
   ],
   "main": "./dist/extension",
   "icon": "resources/platformio-logo.png",
@@ -605,7 +605,7 @@
   "dependencies": {
     "fs-plus": "^3.1.1",
     "platformio-node-helpers": "^5.1.0",
-    "platformio-vscode-debug": "^1.2.10"
+    "platformio-vscode-debug": "^1.2.11"
   },
   "extensionDependencies": [
     "ms-vscode.cpptools"
