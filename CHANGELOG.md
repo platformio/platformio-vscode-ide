@@ -2,6 +2,10 @@
 
 # 1.9.1 (2019-10-**)
 
+- Added support for Python 3 from Windows Store (issue [#1162](https://github.com/platformio/platformio-vscode-ide/issues/1162))
+- Better detecting of user home directory on Windows via `%USERPROFILE%` environment variable
+- Fixed an issue "Can not perform a '--user' install" on Linux Manjaro (issue [#1007](https://github.com/platformio/platformio-vscode-ide/issues/1007))
+- Other bug-fixes and improvements for PlatformIO Core installer
 
 ## 1.9.0 (2019-10-11)
 
