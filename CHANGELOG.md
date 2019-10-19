@@ -1,6 +1,6 @@
 # Release Notes
 
-# 1.9.1 (2019-10-**)
+# 1.9.1 (2019-10-20)
 
 - Added support for Python 3 from Windows Store (issue [#1162](https://github.com/platformio/platformio-vscode-ide/issues/1162))
 - Better detecting of user home directory on Windows via `%USERPROFILE%` environment variable
