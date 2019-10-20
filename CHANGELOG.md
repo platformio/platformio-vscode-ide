@@ -1,6 +1,6 @@
 # Release Notes
 
-# 1.9.2 (2019-10-??)
+# 1.9.2 (2019-10-20)
 
 - Fixed an issue with broken PlatformIO Core installation
 
