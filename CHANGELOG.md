@@ -1,5 +1,9 @@
 # Release Notes
 
+# 1.9.2 (2019-10-20)
+
+- Fixed an issue with broken PlatformIO Core installation
+
 # 1.9.1 (2019-10-20)
 
 - Added support for Python 3 from Windows Store (issue [#1162](https://github.com/platformio/platformio-vscode-ide/issues/1162))
