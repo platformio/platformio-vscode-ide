@@ -92,7 +92,7 @@ export default class PIOHome {
     this._lastStartUrl = startUrl;
     const params = await pioNodeHelpers.home.ensureServerStarted({
       port: extension.getSetting('pioHomeServerHttpPort'),
-      onIDECommand: (command, params) => {
+      onIDECommand: async (command, params) => {
         if (command === 'open_project') {
           this.disposePanel();
           if (vscode.workspace.workspaceFolders) {
@@ -108,6 +108,19 @@ export default class PIOHome {
             );
           }
           vscode.commands.executeCommand('workbench.view.explorer');
+        } else if (command === 'open_text_document') {
+          const editor = await vscode.window.showTextDocument(
+            vscode.Uri.file(params.path)
+          );
+          const gotoPosition = new vscode.Position(
+            (params.line || 1) - 1,
+            (params.column || 1) - 1
+          );
+          editor.selection = new vscode.Selection(gotoPosition, gotoPosition);
+          editor.revealRange(
+            new vscode.Range(gotoPosition, gotoPosition),
+            vscode.TextEditorRevealType.InCenter
+          );
         }
       }
     });
