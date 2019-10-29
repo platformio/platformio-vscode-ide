@@ -1,5 +1,10 @@
 # Release Notes
 
+# 1.9.3 (2019-10-29)
+
+- Handle "openTextDocument" in VSCode from upcoming PIO Home 3.0 and Project Inspect
+- Use single PIO Home Server instance per multiple windows/sessions
+
 # 1.9.2 (2019-10-20)
 
 - Fixed an issue with broken PlatformIO Core installation
