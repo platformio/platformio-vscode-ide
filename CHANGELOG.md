@@ -1,6 +1,6 @@
 # Release Notes
 
-# 1.10.0 (2019-11-??)
+# 1.10.0 (2019-11-20)
 
 - Minimal requirements for PlatformIO Core is >=4.1.0
 - Added PIO Check project task
