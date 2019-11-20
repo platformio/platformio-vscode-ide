@@ -37,7 +37,9 @@ export default class QuickAccessTreeProvider {
           new QuickItem('Open', 'platformio-ide.showHome'),
           new QuickItem('PIO Account', 'platformio-ide.showHome', ['/account']),
           new QuickItem('Inspect', 'platformio-ide.showHome', ['/inspect']),
-          new QuickItem('Projects & Configuration', 'platformio-ide.showHome', ['/projects']),
+          new QuickItem('Projects & Configuration', 'platformio-ide.showHome', [
+            '/projects'
+          ]),
           new QuickItem('Libraries', 'platformio-ide.showHome', ['/libraries']),
           new QuickItem('Boards', 'platformio-ide.showHome', ['/boards']),
           new QuickItem('Platforms', 'platformio-ide.showHome', ['/platforms']),
