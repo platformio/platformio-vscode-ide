@@ -4,12 +4,13 @@
 
 - Minimal requirements for PlatformIO Core is >=4.1.0
 - Added PIO Check project task
+- Added "Inspect" and "Projects & Configuration" items to "Activity Bar > PlatformIO > Quick Access > PIO Home"  (issue [#1302](https://github.com/platformio/platformio-vscode-ide/issues/1302))
 - Automatically shutdown PIO Home server after 1-hour inactivity
 - Ignore PIO Home from Proxy using `NO_PROXY` environment variable
 - PlatformIO Core Installer:
     * Updated default Python installer to 3.7.5
     * Check Python's "urllib" SSL module
-    * Skip Python from msys, mingw, emacs installations
+    * Skip Python from msys, mingw, emacs installations (issue [#1353](https://github.com/platformio/platformio-vscode-ide/issues/1353))
 
 # 1.9.3 (2019-10-29)
 
