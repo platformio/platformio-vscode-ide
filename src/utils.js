@@ -13,31 +13,33 @@ import vscode from 'vscode';
 
 export async function notifyError(title, err) {
   const description = err.stack || err.toString();
+  const ghbody = `# Description of problem
+  Leave a comment...
 
-  const action = 'Report a problem';
+  BEFORE SUBMITTING, PLEASE SEARCH FOR DUPLICATES IN
+  - https://github.com/platformio/platformio-vscode-ide/issues
+
+  # Configuration
+
+  VSCode: ${vscode.version}
+  PIO IDE: v${getIDEVersion()}
+  System: ${os.type()}, ${os.release()}, ${os.arch()}
+
+  # Exception
+  \`\`\`
+  ${description}
+  \`\`\`
+  `;
+  const reportUrl = pioNodeHelpers.misc.getErrorReportUrl(title, ghbody);
+
+  let action = 'Report a problem';
+  if (!reportUrl.includes('issues/new')) {
+    action = 'Check available solutions';
+  }
+
   const selected = await vscode.window.showErrorMessage(description, action);
   if (selected === action) {
-    const ghbody = `# Description of problem
-Leave a comment...
-
-BEFORE SUBMITTING, PLEASE SEARCH FOR DUPLICATES IN
-- https://github.com/platformio/platformio-vscode-ide/issues
-
-# Configuration
-
-VSCode: ${vscode.version}
-PIO IDE: v${getIDEVersion()}
-System: ${os.type()}, ${os.release()}, ${os.arch()}
-
-# Exception
-\`\`\`
-${description}
-\`\`\`
-`;
-    vscode.commands.executeCommand(
-      'vscode.open',
-      vscode.Uri.parse(pioNodeHelpers.misc.getErrorReportUrl(title, ghbody))
-    );
+    vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(reportUrl));
   }
   console.error(err);
 }
