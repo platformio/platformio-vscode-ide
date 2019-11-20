@@ -16,7 +16,7 @@ export default class PythonPrompt {
 
   async prompt() {
     const selectedItem = await vscode.window.showInformationMessage(
-      'PlatformIO: Can not find Python 2.7 or 3.5+ Interpreter',
+      'PlatformIO: Can not find working Python 2.7 or 3.5+ Interpreter. Please install the latest Python 3 and restart VSCode',
       { title: 'Install Python', isCloseAffordance: false },
       { title: 'I have Python', isCloseAffordance: false },
       { title: 'Try again', isCloseAffordance: false },
