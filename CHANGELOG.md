@@ -9,6 +9,8 @@
 - PlatformIO Core Installer:
     * Updated default Python installer to 3.7.5
     * Check Python's "urllib" SSL module
+    * Skip Python from msys, mingw, emacs installations
+
 # 1.9.3 (2019-10-29)
 
 - Handle "openTextDocument" in VSCode from upcoming PIO Home 3.0 and Project Inspect
