@@ -509,7 +509,7 @@
         "platformio-ide.activateOnlyOnPlatformIOProject": {
           "type": "boolean",
           "default": false,
-          "description": "Activate extension only when PlatformIO-based project (with `platformio.ini`) is opened in workspace"
+          "description": "Activate the PlatformIO extension only when a PlatformIO-based project (with `platformio.ini`) is open in the workspace"
         },
         "platformio-ide.autoCloseSerialMonitor": {
           "type": "boolean",
@@ -519,7 +519,7 @@
         "platformio-ide.autoRebuildAutocompleteIndex": {
           "type": "boolean",
           "default": true,
-          "description": "Automatically rebuild Project IntelliSense Index when platformio.ini is changed or when new libraries are installed."
+          "description": "Automatically rebuild the project IntelliSense index when platformio.ini is changed or when new libraries are installed."
         },
         "platformio-ide.buildTask": {
           "type": [
@@ -527,7 +527,7 @@
             "null"
           ],
           "default": null,
-          "description": "A build task (label) which is used by `Build` button in the bottom Toolbar and key bindings. Default is set to `PlatformIO: Build`."
+          "description": "The build task (label) used for the `Build` button in the bottom toolbar and for key bindings. The default is `PlatformIO: Build`."
         },
         "platformio-ide.customPATH": {
           "type": [
@@ -535,38 +535,38 @@
             "null"
           ],
           "default": null,
-          "description": "Custom PATH for `platformio` command. Paste here the result of `echo $PATH` (Unix) / `echo %PATH%` (Windows) command by typing into your system terminal if you prefer to use custom version of PlatformIO Core"
+          "description": "Custom PATH for the `platformio` command, if you prefer to use a custom version of PlatformIO Core. Fill in the result of the system terminal command `echo $PATH` (Unix) / `echo %PATH%` (Windows)."
         },
         "platformio-ide.disableToolbar": {
           "type": "boolean",
           "default": false,
-          "description": "Disable PlatformIO Toolbar"
+          "description": "Disable the PlatformIO toolbar"
         },
         "platformio-ide.forceUploadAndMonitor": {
           "type": "boolean",
           "default": false,
-          "description": "Force 'Upload and Monitor' task for `platformio-ide.upload` command"
+          "description": "Force the `platformio-ide.upload` command to use the 'Upload and Monitor' task"
         },
         "platformio-ide.reopenSerialMonitorDelay": {
           "type": "integer",
           "default": 0,
           "minimum": 0,
-          "description": "Time in milliseconds after which reopen Serial Port Monitor"
+          "description": "Time in milliseconds after which the Serial Port Monitor is reopened"
         },
         "platformio-ide.useBuiltinPIOCore": {
           "type": "boolean",
           "default": true,
-          "description": "Use built-in PlatformIO Core"
+          "description": "Use the built-in PlatformIO Core"
         },
         "platformio-ide.useDevelopmentPIOCore": {
           "type": "boolean",
           "default": false,
-          "description": "Use development version of PlatformIO Core"
+          "description": "Use the development version of PlatformIO Core"
         },
         "platformio-ide.updateTerminalPathConfiguration": {
           "type": "boolean",
           "default": false,
-          "description": "Update Terminal configuration with patched PATH environment"
+          "description": "Use the patched PATH environment for the Terminal configuration"
         },
         "platformio-ide.disablePIOHomeStartup": {
           "type": "boolean",
@@ -575,7 +575,7 @@
         },
         "platformio-ide.pioHomeServerHttpPort": {
           "type": "integer",
-          "description": "PIO Home server HTTP port (default is 0 and instructs finding a free port in range [8010..8100])"
+          "description": "PIO Home server HTTP port (the default value 0 automatically assigns a free port in the range [8010..8100])"
         }
       }
     }
