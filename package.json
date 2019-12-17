@@ -509,7 +509,7 @@
         "platformio-ide.activateOnlyOnPlatformIOProject": {
           "type": "boolean",
           "default": false,
-          "description": "Activate the PlatformIO extension only when a PlatformIO-based project (with `platformio.ini`) is open in the workspace"
+          "description": "Activate the PlatformIO extension only when a PlatformIO-based project (with `platformio.ini`) is opened in the workspace"
         },
         "platformio-ide.autoCloseSerialMonitor": {
           "type": "boolean",
