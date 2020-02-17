@@ -581,26 +581,26 @@
     }
   },
   "scripts": {
+    "build": "webpack --mode production",
     "lint": "eslint .eslintrc.js src",
     "format": "prettier --single-quote --print-width 88 --write \"src/**/*.js\"",
-    "build": "webpack --mode production",
     "vscode:package": "webpack --mode production && vsce package"
   },
   "devDependencies": {
-    "@babel/core": "~7.7.2",
-    "@types/node": "~10",
+    "@babel/core": "~7.8.4",
+    "@types/node": "~12",
     "babel-eslint": "~10.0.1",
     "babel-loader": "~8.0.4",
     "babel-plugin-transform-class-properties": "~6.24.1",
     "babel-preset-env": "~1.7.0",
-    "eslint": "~6.6.0",
-    "eslint-import-resolver-webpack": "~0.11.1",
-    "eslint-plugin-import": "~2.18.2",
+    "eslint": "~6.8.0",
+    "eslint-import-resolver-webpack": "~0.12.1",
+    "eslint-plugin-import": "~2.20.1",
     "prettier": "~1.19.1",
-    "vsce": "~1.69.0",
+    "vsce": "~1.73.0",
     "vscode": "~1.1.22",
-    "webpack": "~4.41.2",
-    "webpack-cli": "~3.3.10"
+    "webpack": "~4.41.6",
+    "webpack-cli": "~3.3.11"
   },
   "dependencies": {
     "fs-plus": "~3.1.1",
