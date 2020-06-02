@@ -58,12 +58,10 @@ class PlatformIOVSCodeExtension {
     }
 
     this.patchOSEnviron();
-
+    await this.startInstaller();
     this.subscriptions.push(this.handleUseDevelopmentPIOCoreConfiguration());
 
-    await this.startInstaller();
     vscode.commands.executeCommand('setContext', 'pioCoreReady', true);
-
     if (typeof this.getEnterpriseSetting('onPIOCoreReady') === 'function') {
       await this.getEnterpriseSetting('onPIOCoreReady')();
     }
@@ -152,9 +150,8 @@ class PlatformIOVSCodeExtension {
     if (http_proxy && !process.env.HTTPS_PROXY && !process.env.https_proxy) {
       extraVars['HTTPS_PROXY'] = http_proxy;
     }
-    pioNodeHelpers.misc.patchOSEnviron({
+    pioNodeHelpers.proc.patchOSEnviron({
       caller: 'vscode',
-      useBuiltinPIOCore: this.getSetting('useBuiltinPIOCore'),
       extraPath: this.getSetting('customPATH'),
       extraVars
     });
@@ -189,6 +186,7 @@ class PlatformIOVSCodeExtension {
           outputChannel.show();
 
           outputChannel.appendLine('Installing PlatformIO Core...');
+          outputChannel.appendLine('It may take a few minutes depending on your connection speed');
           outputChannel.appendLine(
             'Please do not close this window and do not ' +
               'open other folders until this process is completed.'
@@ -223,7 +221,7 @@ class PlatformIOVSCodeExtension {
   async startPIOHome() {
     if (
       this.getSetting('disablePIOHomeStartup') ||
-      !pioNodeHelpers.home.showAtStartup('vscode')
+      !(await pioNodeHelpers.home.showAtStartup('vscode'))
     ) {
       return;
     }
@@ -383,7 +381,6 @@ class PlatformIOVSCodeExtension {
           },
           task
         ),
-      useBuiltinPIOCore: this.getSetting('useBuiltinPIOCore')
     });
 
     const doUpdate = () => {

@@ -553,6 +553,11 @@
           "minimum": 0,
           "description": "Time in milliseconds after which the Serial Port Monitor is reopened"
         },
+        "platformio-ide.useBuiltinPython": {
+          "type": "boolean",
+          "default": true,
+          "description": "Use a built-in Python 3 Interpreter if available"
+        },
         "platformio-ide.useBuiltinPIOCore": {
           "type": "boolean",
           "default": true,
@@ -604,7 +609,7 @@
   },
   "dependencies": {
     "fs-plus": "~3.1.1",
-    "platformio-node-helpers": "~6.0.0",
+    "platformio-node-helpers": "~7.0.0-beta.2",
     "platformio-vscode-debug": "~1.2.11"
   },
   "extensionDependencies": [

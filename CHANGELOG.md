@@ -1,5 +1,13 @@
 # Release Notes
 
+## 2.0.0 (2020-??-??)
+
+* PlatformIO Core Installer
+  - Switched to cross-platform and portble [get-platformio.py](https://github.com/platformio/platformio-core-installer) installer script
+  - Use built-in portable Python 3 on Windows (it can be disabled with ``platformio-ide.useBuiltinPython`` setting)
+* Added support for ``extends`` option in ``platformio.ini`` project configuration file (issue [#1371](https://github.com/platformio/platformio-vscode-ide/issues/1371))
+* Reduced startup time (PIO Core verification process)
+
 ## 1.10.0 (2019-11-20)
 
 - Minimal requirements for PlatformIO Core is >=4.1.0

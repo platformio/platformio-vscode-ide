@@ -37,7 +37,10 @@ export async function notifyError(title, err) {
     action = 'Check available solutions';
   }
 
-  const selected = await vscode.window.showErrorMessage(description, action);
+  const selected = await vscode.window.showErrorMessage(
+    description.substring(0, 700) + '...',
+    action
+  );
   if (selected === action) {
     vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(reportUrl));
   }
@@ -55,7 +58,7 @@ export function getIDEVersion() {
 export function getPIOProjectDirs() {
   return (vscode.workspace.workspaceFolders || [])
     .map(folder => folder.uri.fsPath)
-    .filter(dir => pioNodeHelpers.misc.isPIOProject(dir));
+    .filter(dir => pioNodeHelpers.project.ProjectIndexer.isPIOProjectSync(dir));
 }
 
 let _lastActiveProjectDir = undefined;
@@ -83,7 +86,7 @@ export function getActivePIOProjectDir() {
     return _lastActiveProjectDir;
   }
   const folder = vscode.workspace.getWorkspaceFolder(resource);
-  if (!folder || !pioNodeHelpers.misc.isPIOProject(folder.uri.fsPath)) {
+  if (!folder || !pioNodeHelpers.project.ProjectIndexer.isPIOProjectSync(folder.uri.fsPath)) {
     // outside workspace
     return _lastActiveProjectDir;
   }
