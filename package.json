@@ -556,17 +556,17 @@
         "platformio-ide.useBuiltinPIOCore": {
           "type": "boolean",
           "default": true,
-          "description": "Use the built-in PlatformIO Core"
+          "description": "Use a built-in PlatformIO Core"
         },
         "platformio-ide.useDevelopmentPIOCore": {
           "type": "boolean",
           "default": false,
-          "description": "Use the development version of PlatformIO Core"
+          "description": "Use a development version of PlatformIO Core"
         },
         "platformio-ide.updateTerminalPathConfiguration": {
           "type": "boolean",
           "default": false,
-          "description": "Use the patched PATH environment for the Terminal configuration"
+          "description": "Use a patched PATH environment for the Terminal configuration"
         },
         "platformio-ide.disablePIOHomeStartup": {
           "type": "boolean",
@@ -587,19 +587,19 @@
     "vscode:package": "webpack --mode production && vsce package"
   },
   "devDependencies": {
-    "@babel/core": "~7.8.4",
+    "@babel/core": "~7.10.2",
     "@types/node": "~12",
-    "babel-eslint": "~10.0.1",
-    "babel-loader": "~8.0.4",
+    "babel-eslint": "~10.1.0",
+    "babel-loader": "~8.1.0",
     "babel-plugin-transform-class-properties": "~6.24.1",
     "babel-preset-env": "~1.7.0",
-    "eslint": "~6.8.0",
+    "eslint": "~7.1.0",
     "eslint-import-resolver-webpack": "~0.12.1",
-    "eslint-plugin-import": "~2.20.1",
+    "eslint-plugin-import": "~2.20.2",
     "prettier": "~1.19.1",
-    "vsce": "~1.73.0",
-    "vscode": "~1.1.22",
-    "webpack": "~4.41.6",
+    "vsce": "~1.75.0",
+    "vscode": "~1.1.37",
+    "webpack": "~4.43.0",
     "webpack-cli": "~3.3.11"
   },
   "dependencies": {

@@ -1,6 +1,6 @@
 # Release Notes
 
-# 1.10.0 (2019-11-20)
+## 1.10.0 (2019-11-20)
 
 - Minimal requirements for PlatformIO Core is >=4.1.0
 - Added PIO Check project task
@@ -12,16 +12,16 @@
     * Check Python's "urllib" SSL module
     * Skip Python from msys, mingw, emacs installations (issue [#1353](https://github.com/platformio/platformio-vscode-ide/issues/1353))
 
-# 1.9.3 (2019-10-29)
+## 1.9.3 (2019-10-29)
 
 - Handle "openTextDocument" in VSCode from upcoming PIO Home 3.0 and Project Inspect
 - Use single PIO Home Server instance per multiple windows/sessions
 
-# 1.9.2 (2019-10-20)
+## 1.9.2 (2019-10-20)
 
 - Fixed an issue with broken PlatformIO Core installation
 
-# 1.9.1 (2019-10-20)
+## 1.9.1 (2019-10-20)
 
 - Added support for Python 3 from Windows Store (issue [#1162](https://github.com/platformio/platformio-vscode-ide/issues/1162))
 - Better detecting of user home directory on Windows via `%USERPROFILE%` environment variable
