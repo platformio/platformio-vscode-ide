@@ -17,7 +17,7 @@ export async function notifyError(title, err) {
   Leave a comment...
 
   BEFORE SUBMITTING, PLEASE SEARCH FOR DUPLICATES IN
-  - https://github.com/platformio/platformio-vscode-ide/issues
+  - https://github.com/platformio/platformio-vscode-ide/issues?q=is%3Aissue+
 
   # Configuration
 
