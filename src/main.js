@@ -71,6 +71,8 @@ class PlatformIOVSCodeExtension {
       )
     );
 
+    this.registerGlobalCommands();
+
     if (!hasPIOProject) {
       await this.startPIOHome();
       this.initToolbar({ filterCommands: ['platformio-ide.showHome'] });
@@ -81,7 +83,6 @@ class PlatformIOVSCodeExtension {
       this.pioTerm.updateEnvConfiguration();
     }
 
-    this.registerGlobalCommands();
     this.subscriptions.push(new TaskManager());
     this.initDebug();
     this.initToolbar({
