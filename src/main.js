@@ -81,6 +81,7 @@ class PlatformIOVSCodeExtension {
       this.pioTerm.updateEnvConfiguration();
     }
 
+    this.registerGlobalCommands();
     this.subscriptions.push(new TaskManager());
     this.initDebug();
     this.initToolbar({

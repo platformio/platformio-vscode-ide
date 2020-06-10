@@ -4,7 +4,7 @@
 
 * New PlatformIO Task Explorer
   - Instant access to the Project Tasks within the VSCode Explorer
-  - Grouped tasks: Generic, PIO Remote, Advanced, Platform, Custom, etc.
+  - Grouped tasks: Generic, Advanced, PIO Remote, Platform, Custom, etc.
   - Support for PlatformIO dev-platform tasks (Program FPGA bitstream, Burn bootloader, Upload to FS, OTA Update, etc). The list of tasks depends on a particular dev-platform
   - Access to [User Custom Targets](https://docs.platformio.org/en/latest/projectconf/advanced_scripting.html#custom-targets)
 * New PlatformIO Core Installer
