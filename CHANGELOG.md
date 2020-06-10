@@ -2,8 +2,13 @@
 
 ## 2.0.0 (2020-??-??)
 
-* PlatformIO Core Installer
-  - Switched to cross-platform and portable [get-platformio.py](https://github.com/platformio/platformio-core-installer) installer script
+* New PlatformIO Task Explorer
+  - Instant access to the Project Tasks within the VSCode Explorer
+  - Grouped tasks: Generic, PIO Remote, Advanced, Platform, Custom, etc.
+  - Support for PlatformIO dev-platform tasks (Program FPGA bitstream, Burn bootloader, Upload to FS, OTA Update, etc). The list of tasks depends on a particular dev-platform
+  - Access to [User Custom Targets](https://docs.platformio.org/en/latest/projectconf/advanced_scripting.html#custom-targets)
+* New PlatformIO Core Installer
+  - Switched to the cross-platform and portable [get-platformio.py](https://github.com/platformio/platformio-core-installer) installer script
   - Use built-in portable Python 3 on Windows (it can be disabled with ``platformio-ide.useBuiltinPython`` setting)
 * Added support for ``extends`` option in ``platformio.ini`` project configuration file (issue [#1371](https://github.com/platformio/platformio-vscode-ide/issues/1371))
 * Reduced startup time (PIO Core verification process)

@@ -14,10 +14,9 @@ import * as utils from './utils';
 import InstallationManager from './installer/manager';
 import PIOHome from './home';
 import PIOTerminal from './terminal';
-import ProjectTasksTreeProvider from './views/project-tasks-tree';
 import QuickAccessTreeProvider from './views/quick-access-tree';
 import StateStorage from './state-storage';
-import TaskManager from './tasks';
+import TaskManager from './tasks/manager';
 import fs from 'fs-plus';
 import path from 'path';
 import vscode from 'vscode';
@@ -28,7 +27,6 @@ class PlatformIOVSCodeExtension {
     this.pioTerm = undefined;
     this.pioHome = undefined;
     this.subscriptions = [];
-    this.taskSubscriptions = [];
 
     this._enterpriseSettings = undefined;
   }
@@ -66,16 +64,6 @@ class PlatformIOVSCodeExtension {
       await this.getEnterpriseSetting('onPIOCoreReady')();
     }
 
-    this.initDebug();
-    this.registerGlobalCommands();
-
-    // workaround: init empty Project Tasks view to keep it above QuickAccess
-    this.taskSubscriptions.push(
-      vscode.window.registerTreeDataProvider(
-        'platformio-activitybar.projectTasks',
-        new ProjectTasksTreeProvider([])
-      )
-    );
     this.subscriptions.push(
       vscode.window.registerTreeDataProvider(
         'platformio-activitybar.quickAccess',
@@ -89,12 +77,12 @@ class PlatformIOVSCodeExtension {
       return;
     }
 
-    this.initTasks();
-
     if (this.getSetting('updateTerminalPathConfiguration')) {
       this.pioTerm.updateEnvConfiguration();
     }
 
+    this.subscriptions.push(new TaskManager());
+    this.initDebug();
     this.initToolbar({
       ignoreCommands: this.getEnterpriseSetting('ignoreToolbarCommands')
     });
@@ -186,7 +174,9 @@ class PlatformIOVSCodeExtension {
           outputChannel.show();
 
           outputChannel.appendLine('Installing PlatformIO Core...');
-          outputChannel.appendLine('It may take a few minutes depending on your connection speed');
+          outputChannel.appendLine(
+            'It may take a few minutes depending on your connection speed'
+          );
           outputChannel.appendLine(
             'Please do not close this window and do not ' +
               'open other folders until this process is completed.'
@@ -259,71 +249,6 @@ class PlatformIOVSCodeExtension {
     );
   }
 
-  registerTaskBasedCommands() {
-    this.subscriptions.push(
-      vscode.commands.registerCommand('platformio-ide.build', () => {
-        const taskName = this.getSetting('buildTask') || {
-          type: TaskManager.type,
-          task: 'Build'
-        };
-        return vscode.commands.executeCommand(
-          'workbench.action.tasks.runTask',
-          taskName
-        );
-      }),
-      vscode.commands.registerCommand('platformio-ide.upload', () =>
-        vscode.commands.executeCommand('workbench.action.tasks.runTask', {
-          type: TaskManager.type,
-          task: this.getSetting('forceUploadAndMonitor')
-            ? 'Upload and Monitor'
-            : 'Upload'
-        })
-      ),
-      vscode.commands.registerCommand('platformio-ide.remote', () =>
-        vscode.commands.executeCommand('workbench.action.tasks.runTask', {
-          type: TaskManager.type,
-          task: 'Remote'
-        })
-      ),
-      vscode.commands.registerCommand('platformio-ide.test', () =>
-        vscode.commands.executeCommand('workbench.action.tasks.runTask', {
-          type: TaskManager.type,
-          task: 'Test'
-        })
-      ),
-      vscode.commands.registerCommand('platformio-ide.clean', () =>
-        vscode.commands.executeCommand('workbench.action.tasks.runTask', {
-          type: TaskManager.type,
-          task: 'Clean'
-        })
-      ),
-      vscode.commands.registerCommand('platformio-ide.serialMonitor', () =>
-        vscode.commands.executeCommand('workbench.action.tasks.runTask', {
-          type: TaskManager.type,
-          task: 'Monitor'
-        })
-      )
-    );
-  }
-
-  initTasks() {
-    const manager = new TaskManager();
-    this.subscriptions.push(
-      manager,
-      manager.onDidProjectTasksUpdated(tasks => {
-        this.disposeTaskSubscriptions();
-        this.taskSubscriptions.push(
-          vscode.window.registerTreeDataProvider(
-            'platformio-activitybar.projectTasks',
-            new ProjectTasksTreeProvider(tasks)
-          )
-        );
-      })
-    );
-    manager.registerProvider();
-    this.registerTaskBasedCommands();
-  }
-
   initDebug() {
     piodebug.activate(this.context);
   }
@@ -380,7 +305,7 @@ class PlatformIOVSCodeExtension {
             title: 'PlatformIO: IntelliSense Index Rebuild'
           },
           task
-        ),
+        )
     });
 
     const doUpdate = () => {
@@ -436,12 +361,7 @@ class PlatformIOVSCodeExtension {
     pioNodeHelpers.misc.disposeSubscriptions(this.subscriptions);
   }
 
-  disposeTaskSubscriptions() {
-    pioNodeHelpers.misc.disposeSubscriptions(this.taskSubscriptions);
-  }
-
   deactivate() {
-    this.disposeTaskSubscriptions();
     this.disposeLocalSubscriptions();
   }
 }

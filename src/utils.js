@@ -86,7 +86,10 @@ export function getActivePIOProjectDir() {
     return _lastActiveProjectDir;
   }
   const folder = vscode.workspace.getWorkspaceFolder(resource);
-  if (!folder || !pioNodeHelpers.project.ProjectIndexer.isPIOProjectSync(folder.uri.fsPath)) {
+  if (
+    !folder ||
+    !pioNodeHelpers.project.ProjectIndexer.isPIOProjectSync(folder.uri.fsPath)
+  ) {
     // outside workspace
     return _lastActiveProjectDir;
   }

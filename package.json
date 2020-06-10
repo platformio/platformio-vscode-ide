@@ -96,6 +96,12 @@
         "category": "PlatformIO"
       },
       {
+        "command": "platformio-ide.refreshProjectTasks",
+        "title": "Refresh Project Tasks",
+        "category": "PlatformIO",
+        "icon": "$(refresh)"
+      },
+      {
         "command": "platformio-ide.build",
         "title": "Build",
         "category": "PlatformIO"
@@ -286,7 +292,7 @@
               "name": "${6:PlatformIO Debugger}",
               "request": "launch",
               "type": "platformio-debug",
-              "executable": ".pioenvs/myenv/firmware.elf",
+              "executable": ".pio/build/myenv/firmware.elf",
               "toolchainBinDir": "/usr/local/bin"
             },
             "description": "PlatformIO Debugger",
@@ -398,6 +404,11 @@
         }
       ],
       "view/title": [
+				{
+					"command": "platformio-ide.refreshProjectTasks",
+					"when": "pioCoreReady && view == platformio-ide.projectTasks",
+					"group": "navigation"
+				},
         {
           "command": "platformio-debug.examineMemory",
           "when": "debugType == platformio-debug && view == platformio-debug.memory",
@@ -421,12 +432,14 @@
       ]
     },
     "views": {
-      "platformio": [
+      "explorer": [
         {
-          "id": "platformio-activitybar.projectTasks",
-          "name": "Project Tasks",
+          "id": "platformio-ide.projectTasks",
+          "name": "PlatformIO Tasks",
           "when": "pioCoreReady"
-        },
+        }
+      ],
+      "platformio": [
         {
           "id": "platformio-activitybar.quickAccess",
           "name": "Quick Access",
@@ -594,22 +607,22 @@
   "devDependencies": {
     "@babel/core": "~7.10.2",
     "@types/node": "~12",
+    "@types/vscode": "~1.24.0",
     "babel-eslint": "~10.1.0",
     "babel-loader": "~8.1.0",
     "babel-plugin-transform-class-properties": "~6.24.1",
     "babel-preset-env": "~1.7.0",
-    "eslint": "~7.1.0",
+    "eslint": "~7.2.0",
     "eslint-import-resolver-webpack": "~0.12.1",
-    "eslint-plugin-import": "~2.20.2",
+    "eslint-plugin-import": "~2.21.1",
     "prettier": "~1.19.1",
-    "vsce": "~1.75.0",
-    "vscode": "~1.1.37",
+    "vsce": "~1.76.0",
     "webpack": "~4.43.0",
     "webpack-cli": "~3.3.11"
   },
   "dependencies": {
     "fs-plus": "~3.1.1",
-    "platformio-node-helpers": "~7.0.0-beta.2",
+    "platformio-node-helpers": "~7.0.0-beta.3",
     "platformio-vscode-debug": "~1.2.11"
   },
   "extensionDependencies": [
