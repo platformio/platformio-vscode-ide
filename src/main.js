@@ -79,6 +79,8 @@ class PlatformIOVSCodeExtension {
       return;
     }
 
+    vscode.commands.executeCommand('setContext', 'pioProjectReady', true);
+
     if (this.getSetting('updateTerminalPathConfiguration')) {
       this.pioTerm.updateEnvConfiguration();
     }

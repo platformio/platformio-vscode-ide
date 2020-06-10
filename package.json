@@ -436,7 +436,7 @@
         {
           "id": "platformio-ide.projectTasks",
           "name": "PlatformIO Tasks",
-          "when": "pioCoreReady"
+          "when": "pioProjectReady"
         }
       ],
       "platformio": [
@@ -622,7 +622,7 @@
   },
   "dependencies": {
     "fs-plus": "~3.1.1",
-    "platformio-node-helpers": "~7.0.0-beta.3",
+    "platformio-node-helpers": "7.0.0-beta.4",
     "platformio-vscode-debug": "~1.2.11"
   },
   "extensionDependencies": [
