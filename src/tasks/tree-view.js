@@ -23,7 +23,7 @@ export default class ProjectTasksTreeProvider {
     }
     const element = new vscode.TreeItem(item.name);
     element.iconPath = new vscode.ThemeIcon('circle-outline');
-    element.tooltip = item.description || item.title;
+    element.tooltip = item.title;
     element.command = {
       title: item.title,
       command: 'workbench.action.tasks.runTask',
