@@ -47,11 +47,7 @@ export default class ProjectTasksTreeProvider {
   }
 
   getTaskGroups(tasks) {
-    return new Set(
-      tasks
-        .filter(task => task.group)
-        .map(task => task.group)
-    );
+    return new Set(tasks.filter(task => task.group).map(task => task.group));
   }
 
   getRootChildren() {

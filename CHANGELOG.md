@@ -2,6 +2,8 @@
 
 ## 2.0.0 (2020-??-??)
 
+**Requires VSCode 1.42 or above**
+
 * New PlatformIO Task Explorer
   - Instant access to the Project Tasks within the VSCode Explorer
   - Grouped tasks: Generic, Advanced, PIO Remote, Platform, Custom, etc.
