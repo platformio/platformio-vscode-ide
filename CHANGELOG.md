@@ -12,6 +12,7 @@
   - Use built-in portable Python 3 on Windows (it can be disabled with ``platformio-ide.useBuiltinPython`` setting)
 * Added support for ``extends`` option in ``platformio.ini`` project configuration file (issue [#1371](https://github.com/platformio/platformio-vscode-ide/issues/1371))
 * Reduced startup time (PIO Core verification process)
+* Fixed a bug when hotkeys in PIO Home does not work macOS (issue [#606](https://github.com/platformio/platformio-vscode-ide/issues/606))
 
 ## 1.10.0 (2019-11-20)
 
