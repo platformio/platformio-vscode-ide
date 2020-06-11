@@ -1,6 +1,6 @@
 {
   "name": "platformio-ide",
-  "version": "2.0.0-beta.1",
+  "version": "2.0.0-beta.2",
   "publisher": "platformio",
   "engines": {
     "vscode": "^1.24.0"
@@ -436,6 +436,7 @@
         {
           "id": "platformio-ide.projectTasks",
           "name": "PlatformIO Tasks",
+          "icon": "root-folder",
           "when": "pioProjectReady"
         }
       ],
