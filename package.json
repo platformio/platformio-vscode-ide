@@ -582,11 +582,6 @@
           "default": false,
           "description": "Use a development version of PlatformIO Core"
         },
-        "platformio-ide.updateTerminalPathConfiguration": {
-          "type": "boolean",
-          "default": false,
-          "description": "Use a patched PATH environment for the Terminal configuration"
-        },
         "platformio-ide.disablePIOHomeStartup": {
           "type": "boolean",
           "default": false,

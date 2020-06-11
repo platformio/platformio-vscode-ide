@@ -6,11 +6,31 @@
  * the root directory of this source tree.
  */
 
-import * as constants from './constants';
-
 import vscode from 'vscode';
 
 export default class PIOTerminal {
+  static patchGlobalEnv(context) {
+    const envCollection = context.environmentVariableCollection;
+    if (!envCollection) {
+      return;
+    }
+    const names = [
+      'PLATFORMIO_CALLER',
+      'PLATFORMIO_IDE',
+      'PATH',
+      'Path',
+      'HTTP_PROXY',
+      'HTTPS_PROXY',
+      'NO_PROXY',
+      'CURL_CA_BUNDLE'
+    ];
+    for (const name of names) {
+      if (process.env[name]) {
+        envCollection.replace(name, process.env[name]);
+      }
+    }
+  }
+
   constructor() {
     this._instance = undefined;
   }
@@ -35,27 +55,5 @@ export default class PIOTerminal {
       this._instance.dispose();
     }
     this._instance = undefined;
-  }
-
-  updateEnvConfiguration() {
-    const config = vscode.workspace.getConfiguration();
-    const sysType = constants.IS_WINDOWS
-      ? 'windows'
-      : constants.IS_OSX
-      ? 'osx'
-      : 'linux';
-    const section = `terminal.integrated.env.${sysType}`;
-    const current = config.get(section);
-    if (current && current.PATH === process.env.PATH) {
-      return;
-    }
-    config.update(
-      section,
-      {
-        PATH: process.env.PATH,
-        PLATFORMIO_CALLER: 'vscode'
-      },
-      vscode.ConfigurationTarget.Workspace
-    );
   }
 }

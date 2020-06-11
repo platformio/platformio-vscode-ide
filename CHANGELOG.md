@@ -13,6 +13,7 @@
   - Switched to the cross-platform and portable [get-platformio.py](https://github.com/platformio/platformio-core-installer) installer script
   - Use built-in portable Python 3 on Windows (it can be disabled with ``platformio-ide.useBuiltinPython`` setting)
 * Added support for ``extends`` option in ``platformio.ini`` project configuration file (issue [#1371](https://github.com/platformio/platformio-vscode-ide/issues/1371))
+* Contribute PlatformIO Core CLI into VSCode's default Terminal
 * Reduced startup time (PIO Core verification process)
 * Fixed a bug when hotkeys in PIO Home does not work macOS (issue [#606](https://github.com/platformio/platformio-vscode-ide/issues/606))
 

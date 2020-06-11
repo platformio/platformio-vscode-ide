@@ -57,6 +57,7 @@ class PlatformIOVSCodeExtension {
 
     this.patchOSEnviron();
     await this.startInstaller();
+    PIOTerminal.patchGlobalEnv(this.context);
     this.subscriptions.push(this.handleUseDevelopmentPIOCoreConfiguration());
 
     vscode.commands.executeCommand('setContext', 'pioCoreReady', true);
@@ -80,10 +81,6 @@ class PlatformIOVSCodeExtension {
     }
 
     vscode.commands.executeCommand('setContext', 'pioProjectReady', true);
-
-    if (this.getSetting('updateTerminalPathConfiguration')) {
-      this.pioTerm.updateEnvConfiguration();
-    }
 
     this.subscriptions.push(new TaskManager());
     this.initDebug();
