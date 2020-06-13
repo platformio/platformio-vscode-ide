@@ -7,9 +7,9 @@
  */
 
 import * as pioNodeHelpers from 'platformio-node-helpers';
-import * as utils from '../utils';
 
 import ProjectTaskManager from './project';
+import { extension } from '../main';
 import vscode from 'vscode';
 
 export default class TaskManager {
@@ -19,7 +19,7 @@ export default class TaskManager {
 
     this.subscriptions.push(
       vscode.commands.registerCommand('platformio-ide.refreshProjectTasks', () =>
-        this.onDidProjectRefresh()
+        this.onDidProjectTasksRefresh()
       ),
       vscode.window.onDidChangeActiveTextEditor(() => this.checkActiveProjectDir()),
       vscode.workspace.onDidChangeWorkspaceFolders(() => this.checkActiveProjectDir())
@@ -28,7 +28,7 @@ export default class TaskManager {
     this.checkActiveProjectDir();
   }
 
-  onDidProjectRefresh() {
+  onDidProjectTasksRefresh() {
     if (this._ptm) {
       this._ptm.dispose();
       this._ptm = undefined;
@@ -37,7 +37,7 @@ export default class TaskManager {
   }
 
   checkActiveProjectDir() {
-    const projectDir = utils.getActivePIOProjectDir();
+    const projectDir = extension.projectManager.getActivePIOProjectDir();
     if (this._ptm && this._ptm.projectDir === projectDir) {
       return;
     }

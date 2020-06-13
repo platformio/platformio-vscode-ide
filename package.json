@@ -3,7 +3,7 @@
   "version": "2.0.0-beta.2",
   "publisher": "platformio",
   "engines": {
-    "vscode": "^1.42.0"
+    "vscode": "^1.44.0"
   },
   "license": "Apache-2.0",
   "displayName": "PlatformIO IDE",
@@ -169,6 +169,11 @@
       {
         "command": "platformio-ide.upgradeCore",
         "title": "Upgrade PlatformIO Core to the latest version",
+        "category": "PlatformIO"
+      },
+      {
+        "command": "platformio-ide.switchProjectEnv",
+        "title": "Switch Project Environment",
         "category": "PlatformIO"
       },
       {
@@ -603,7 +608,7 @@
   "devDependencies": {
     "@babel/core": "~7.10.2",
     "@types/node": "~12",
-    "@types/vscode": "~1.42.0",
+    "@types/vscode": "~1.44.0",
     "babel-eslint": "~10.1.0",
     "babel-loader": "~8.1.0",
     "babel-plugin-transform-class-properties": "~6.24.1",

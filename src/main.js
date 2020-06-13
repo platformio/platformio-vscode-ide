@@ -14,11 +14,12 @@ import * as utils from './utils';
 import InstallationManager from './installer/manager';
 import PIOHome from './home';
 import PIOTerminal from './terminal';
+import ProjectManager from './project';
 import QuickAccessTreeProvider from './views/quick-access-tree';
+import { STATUS_BAR_PRIORITY_START } from './constants';
 import StateStorage from './state-storage';
 import TaskManager from './tasks/manager';
 import fs from 'fs-plus';
-import path from 'path';
 import vscode from 'vscode';
 
 class PlatformIOVSCodeExtension {
@@ -34,12 +35,13 @@ class PlatformIOVSCodeExtension {
   async activate(context) {
     this.context = context;
     this.stateStorage = new StateStorage(context.globalState);
+    this.projectManager = new ProjectManager();
     this.pioHome = new PIOHome();
     this.pioTerm = new PIOTerminal();
 
-    this.subscriptions.push(this.pioHome, this.pioTerm);
+    this.subscriptions.push(this.projectManager, this.pioHome, this.pioTerm);
 
-    const hasPIOProject = !!utils.getActivePIOProjectDir();
+    const hasPIOProject = !!this.projectManager.getActivePIOProjectDir();
     if (!hasPIOProject && this.getSetting('activateOnlyOnPlatformIOProject')) {
       return;
     }
@@ -87,7 +89,10 @@ class PlatformIOVSCodeExtension {
     this.initToolbar({
       ignoreCommands: this.getEnterpriseSetting('ignoreToolbarCommands')
     });
-    this.initProjectIndexer();
+    this.projectManager.initIndexer({
+      autoRebuild: this.getSetting('autoRebuildAutocompleteIndex')
+    });
+
     this.startPIOHome();
 
     misc.maybeRateExtension(this.stateStorage);
@@ -283,7 +288,7 @@ class PlatformIOVSCodeExtension {
         const [text, tooltip, command] = item;
         const sbItem = vscode.window.createStatusBarItem(
           vscode.StatusBarAlignment.Left,
-          10 + index
+          STATUS_BAR_PRIORITY_START + index + 1
         );
         sbItem.text = text;
         sbItem.tooltip = tooltip;
@@ -291,43 +296,6 @@ class PlatformIOVSCodeExtension {
         sbItem.show();
         this.subscriptions.push(sbItem);
       });
-  }
-
-  initProjectIndexer() {
-    const observer = new pioNodeHelpers.project.ProjectObserver({
-      ide: 'vscode',
-      createFileSystemWatcher: vscode.workspace.createFileSystemWatcher,
-      createDirSystemWatcher: dir =>
-        vscode.workspace.createFileSystemWatcher(path.join(dir, '*')),
-      withProgress: task =>
-        vscode.window.withProgress(
-          {
-            location: vscode.ProgressLocation.Window,
-            title: 'PlatformIO: IntelliSense Index Rebuild'
-          },
-          task
-        )
-    });
-
-    const doUpdate = () => {
-      observer.update(
-        this.getSetting('autoRebuildAutocompleteIndex') &&
-          vscode.workspace.workspaceFolders
-          ? vscode.workspace.workspaceFolders.map(folder => folder.uri.fsPath)
-          : []
-      );
-    };
-
-    this.subscriptions.push(
-      observer,
-      vscode.workspace.onDidChangeWorkspaceFolders(doUpdate.bind(this)),
-      vscode.workspace.onDidChangeConfiguration(doUpdate.bind(this)),
-      vscode.commands.registerCommand('platformio-ide.rebuildProjectIndex', () => {
-        doUpdate(); // re-scan PIO Projects
-        observer.rebuildIndex();
-      })
-    );
-    doUpdate();
   }
 
   handleUseDevelopmentPIOCoreConfiguration() {
