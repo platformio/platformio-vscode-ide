@@ -413,7 +413,7 @@
 					"command": "platformio-ide.refreshProjectTasks",
 					"when": "pioCoreReady && view == platformio-ide.projectTasks",
 					"group": "navigation"
-				},
+        },
         {
           "command": "platformio-debug.examineMemory",
           "when": "debugType == platformio-debug && view == platformio-debug.memory",
