@@ -10,7 +10,7 @@
   - Support for PlatformIO dev-platform tasks (Program FPGA bitstream, Burn bootloader, Upload to FS, OTA Update, etc). The list of tasks depends on a particular dev-platform
   - Access to [User Custom Targets](https://docs.platformio.org/en/latest/projectconf/advanced_scripting.html#custom-targets)
 * New Project Environment Switcher
-  - Switch between project environments declared in [platformio.ini](https://docs.platformio.org/en/latest/projectconf/index.html) project configuration file
+  - Switch between project environments declared in [platformio.ini](https://docs.platformio.org/en/latest/projectconf/index.html) project configuration file (issue [#544](https://github.com/platformio/platformio-vscode-ide/issues/544))
   - Activate IntelliSense service based on the current environment
   - Automatically generate a debugging configuration for the active environment
 * New PlatformIO Core Installer

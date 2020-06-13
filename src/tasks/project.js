@@ -74,7 +74,9 @@ export default class ProjectTaskManager {
     this.addProjectConfigWatcher();
     this.controlDeviceMonitorTasks();
     this.registerTaskBasedCommands();
-    this.registerEnvSwitcher(envs);
+    if (envs.length > 1) {
+      this.registerEnvSwitcher(envs);
+    }
   }
 
   async loadProjectEnvs() {
@@ -261,7 +263,7 @@ export default class ProjectTaskManager {
   updateStatusBarActiveEnv() {
     const lastActiveEnv = extension.projectManager.getActiveProjectEnv(this.projectDir);
     this._statusBarActiveEnv.text = `$(root-folder) ${
-      lastActiveEnv ? `env:${lastActiveEnv}` : 'default'
+      lastActiveEnv ? `env:${lastActiveEnv}` : 'Default'
     }`;
   }
 
