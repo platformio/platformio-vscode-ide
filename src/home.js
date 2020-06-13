@@ -145,7 +145,7 @@ export default class PIOHome {
       <body style="margin: 0; padding: 0; height: 100%; overflow: hidden; background-color: ${
         theme === 'light' ? '#FFF' : '#1E1E1E'
       }">
-        <iframe src="${await pioNodeHelpers.home.getFrontendUri(
+        <iframe src="${pioNodeHelpers.home.getFrontendUri(
           params.host,
           params.port,
           {

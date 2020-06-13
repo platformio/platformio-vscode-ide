@@ -217,7 +217,7 @@ class PlatformIOVSCodeExtension {
   async startPIOHome() {
     if (
       this.getSetting('disablePIOHomeStartup') ||
-      !(await pioNodeHelpers.home.showAtStartup('vscode'))
+      !pioNodeHelpers.home.showAtStartup('vscode')
     ) {
       return;
     }
