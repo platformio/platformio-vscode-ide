@@ -48,9 +48,9 @@ export default class ProjectTaskManager {
       treeDataProvider: new ProjectTasksTreeProvider(
         this._sid,
         tasks,
-        envs.map(item => item.name)
+        envs.map((item) => item.name)
       ),
-      showCollapseAll: true
+      showCollapseAll: true,
     });
     this.subscriptions.push(
       taskViewer,
@@ -63,11 +63,11 @@ export default class ProjectTaskManager {
       // register VSCode Task Provider
       vscode.tasks.registerTaskProvider(ProjectTaskManager.type, {
         provideTasks: async () => {
-          return tasks.map(task => this.toVSCodeTask(task));
+          return tasks.map((task) => this.toVSCodeTask(task));
         },
         resolveTask: () => {
           return undefined;
-        }
+        },
       })
     );
 
@@ -118,7 +118,7 @@ export default class ProjectTaskManager {
     }
     await vscode.window.withProgress(
       {
-        location: { viewId: ProjectTaskManager.TASKS_VIEW_ID }
+        location: { viewId: ProjectTaskManager.TASKS_VIEW_ID },
       },
       async () => {
         await this.fetchEnvTasks(name);
@@ -138,7 +138,7 @@ export default class ProjectTaskManager {
     const vscodeTask = new vscode.Task(
       {
         type: ProjectTaskManager.type,
-        task: projectTask.id
+        task: projectTask.id,
       },
       vscode.workspace.getWorkspaceFolder(vscode.Uri.file(this.projectDir)),
       projectTask.title,
@@ -148,13 +148,13 @@ export default class ProjectTaskManager {
         projectTask.args,
         {
           cwd: this.projectDir,
-          env: process.env
+          env: process.env,
         }
       ),
       '$platformio'
     );
     vscodeTask.presentationOptions = {
-      panel: vscode.TaskPanelKind.Dedicated
+      panel: vscode.TaskPanelKind.Dedicated,
     };
     if (projectTask.isBuild()) {
       vscodeTask.group = vscode.TaskGroup.Build;
@@ -193,7 +193,7 @@ export default class ProjectTaskManager {
     let restoreTasks = [];
 
     this.subscriptions.push(
-      vscode.tasks.onDidStartTaskProcess(event => {
+      vscode.tasks.onDidStartTaskProcess((event) => {
         if (
           !vscode.workspace
             .getConfiguration('platformio-ide')
@@ -202,17 +202,19 @@ export default class ProjectTaskManager {
           return;
         }
         if (
-          !['upload', 'test'].some(arg =>
+          !['upload', 'test'].some((arg) =>
             event.execution.task.execution.args.includes(arg)
           )
         ) {
           return;
         }
-        vscode.tasks.taskExecutions.forEach(e => {
+        vscode.tasks.taskExecutions.forEach((e) => {
           if (event.execution.task === e.task) {
             return;
           }
-          if (['device', 'monitor'].every(arg => e.task.execution.args.includes(arg))) {
+          if (
+            ['device', 'monitor'].every((arg) => e.task.execution.args.includes(arg))
+          ) {
             restoreTasks.push(e.task);
           }
           if (e.task.execution.args.includes('monitor')) {
@@ -222,12 +224,12 @@ export default class ProjectTaskManager {
         restoreAfterTask = event.execution.task;
       }),
 
-      vscode.tasks.onDidEndTaskProcess(event => {
+      vscode.tasks.onDidEndTaskProcess((event) => {
         if (event.execution.task !== restoreAfterTask) {
           return;
         }
         setTimeout(() => {
-          restoreTasks.forEach(task => {
+          restoreTasks.forEach((task) => {
             vscode.tasks.executeTask(task);
           });
           restoreTasks = [];
@@ -239,7 +241,7 @@ export default class ProjectTaskManager {
   registerEnvSwitcher(envs) {
     // reset last selected env if it was removed from config
     const lastActiveEnv = extension.projectManager.getActiveProjectEnv(this.projectDir);
-    if (lastActiveEnv && !envs.some(item => item.name === lastActiveEnv)) {
+    if (lastActiveEnv && !envs.some((item) => item.name === lastActiveEnv)) {
       extension.projectManager.setActiveProjectEnv(this.projectDir, undefined);
     }
 
@@ -272,10 +274,10 @@ export default class ProjectTaskManager {
       {
         label: 'Default',
         description:
-          'All or "default_envs" declared in [platformio] section of "platformio.ini"'
-      }
+          'All or "default_envs" declared in [platformio] section of "platformio.ini"',
+      },
     ];
-    items.push(...envs.map(env => ({ label: `env:${env.name}` })));
+    items.push(...envs.map((env) => ({ label: `env:${env.name}` })));
     const pickedItem = await vscode.window.showQuickPick(items);
     if (!pickedItem) {
       return;
@@ -291,7 +293,7 @@ export default class ProjectTaskManager {
   }
 
   registerTaskBasedCommands() {
-    const maybeEnvTask = name => {
+    const maybeEnvTask = (name) => {
       const lastActiveEnv = extension.projectManager.getActiveProjectEnv(
         this.projectDir
       );
@@ -302,7 +304,7 @@ export default class ProjectTaskManager {
       vscode.commands.registerCommand('platformio-ide.build', () => {
         const taskName = extension.getSetting('buildTask') || {
           type: ProjectTaskManager.type,
-          task: maybeEnvTask('Build')
+          task: maybeEnvTask('Build'),
         };
         return vscode.commands.executeCommand(
           'workbench.action.tasks.runTask',
@@ -316,31 +318,31 @@ export default class ProjectTaskManager {
             extension.getSetting('forceUploadAndMonitor')
               ? 'Upload and Monitor'
               : 'Upload'
-          )
+          ),
         })
       ),
       vscode.commands.registerCommand('platformio-ide.remote', () =>
         vscode.commands.executeCommand('workbench.action.tasks.runTask', {
           type: ProjectTaskManager.type,
-          task: maybeEnvTask('Remote')
+          task: maybeEnvTask('Remote'),
         })
       ),
       vscode.commands.registerCommand('platformio-ide.test', () =>
         vscode.commands.executeCommand('workbench.action.tasks.runTask', {
           type: ProjectTaskManager.type,
-          task: maybeEnvTask('Test')
+          task: maybeEnvTask('Test'),
         })
       ),
       vscode.commands.registerCommand('platformio-ide.clean', () =>
         vscode.commands.executeCommand('workbench.action.tasks.runTask', {
           type: ProjectTaskManager.type,
-          task: maybeEnvTask('Clean')
+          task: maybeEnvTask('Clean'),
         })
       ),
       vscode.commands.registerCommand('platformio-ide.serialMonitor', () =>
         vscode.commands.executeCommand('workbench.action.tasks.runTask', {
           type: ProjectTaskManager.type,
-          task: maybeEnvTask('Monitor')
+          task: maybeEnvTask('Monitor'),
         })
       )
     );

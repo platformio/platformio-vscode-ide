@@ -87,10 +87,10 @@ class PlatformIOVSCodeExtension {
     this.subscriptions.push(new TaskManager());
     this.initDebug();
     this.initToolbar({
-      ignoreCommands: this.getEnterpriseSetting('ignoreToolbarCommands')
+      ignoreCommands: this.getEnterpriseSetting('ignoreToolbarCommands'),
     });
     this.projectManager.initIndexer({
-      autoRebuild: this.getSetting('autoRebuildAutocompleteIndex')
+      autoRebuild: this.getSetting('autoRebuildAutocompleteIndex'),
     });
 
     this.startPIOHome();
@@ -98,7 +98,7 @@ class PlatformIOVSCodeExtension {
     misc.maybeRateExtension(this.stateStorage);
     misc.warnAboutConflictedExtensions();
     this.subscriptions.push(
-      vscode.window.onDidChangeActiveTextEditor(editor =>
+      vscode.window.onDidChangeActiveTextEditor((editor) =>
         misc.warnAboutInoFile(editor, this.stateStorage)
       )
     );
@@ -110,7 +110,7 @@ class PlatformIOVSCodeExtension {
 
   loadEnterpriseSettings() {
     const ext = vscode.extensions.all.find(
-      item =>
+      (item) =>
         item.id.startsWith('platformio.') &&
         item.id !== 'platformio.platformio-ide' &&
         item.isActive
@@ -130,7 +130,7 @@ class PlatformIOVSCodeExtension {
 
   patchOSEnviron() {
     const extraVars = {
-      PLATFORMIO_IDE: utils.getIDEVersion()
+      PLATFORMIO_IDE: utils.getIDEVersion(),
     };
     // handle HTTP proxy settings
     const http_proxy = vscode.workspace.getConfiguration('http').get('proxy');
@@ -147,7 +147,7 @@ class PlatformIOVSCodeExtension {
     pioNodeHelpers.proc.patchOSEnviron({
       caller: 'vscode',
       extraPath: this.getSetting('customPATH'),
-      extraVars
+      extraVars,
     });
   }
 
@@ -155,11 +155,11 @@ class PlatformIOVSCodeExtension {
     return vscode.window.withProgress(
       {
         location: vscode.ProgressLocation.Window,
-        title: 'PlatformIO'
+        title: 'PlatformIO',
       },
-      async progress => {
+      async (progress) => {
         progress.report({
-          message: 'Checking PlatformIO Core installation...'
+          message: 'Checking PlatformIO Core installation...',
         });
 
         const im = new InstallationManager(this.context.globalState);
@@ -172,7 +172,7 @@ class PlatformIOVSCodeExtension {
           return;
         } else {
           progress.report({
-            message: 'Installing PlatformIO IDE...'
+            message: 'Installing PlatformIO IDE...',
           });
           const outputChannel = vscode.window.createOutputChannel(
             'PlatformIO Installation'
@@ -226,7 +226,7 @@ class PlatformIOVSCodeExtension {
 
   registerGlobalCommands() {
     this.subscriptions.push(
-      vscode.commands.registerCommand('platformio-ide.showHome', startUrl =>
+      vscode.commands.registerCommand('platformio-ide.showHome', (startUrl) =>
         this.pioHome.toggle(startUrl)
       ),
       vscode.commands.registerCommand('platformio-ide.newTerminal', () =>
@@ -269,10 +269,10 @@ class PlatformIOVSCodeExtension {
       ['$(arrow-right)', 'PlatformIO: Upload', 'platformio-ide.upload'],
       ['$(trashcan)', 'PlatformIO: Clean', 'platformio-ide.clean'],
       ['$(plug)', 'PlatformIO: Serial Monitor', 'platformio-ide.serialMonitor'],
-      ['$(terminal)', 'PlatformIO: New Terminal', 'platformio-ide.newTerminal']
+      ['$(terminal)', 'PlatformIO: New Terminal', 'platformio-ide.newTerminal'],
     ]
       .filter(
-        item =>
+        (item) =>
           (!filterCommands || filterCommands.includes(item[2])) &&
           (!ignoreCommands || !ignoreCommands.includes(item[2]))
       )
@@ -292,7 +292,7 @@ class PlatformIOVSCodeExtension {
   }
 
   handleUseDevelopmentPIOCoreConfiguration() {
-    return vscode.workspace.onDidChangeConfiguration(e => {
+    return vscode.workspace.onDidChangeConfiguration((e) => {
       if (
         !e.affectsConfiguration('platformio-ide.useDevelopmentPIOCore') ||
         !this.getSetting('useBuiltinPIOCore')

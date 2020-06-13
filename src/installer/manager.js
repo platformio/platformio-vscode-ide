@@ -32,9 +32,9 @@ export default class InstallationManager {
           useBuiltinPython: config.get('useBuiltinPython'),
           useBuiltinPIOCore: config.get('useBuiltinPIOCore'),
           useDevelopmentPIOCore: config.get('useDevelopmentPIOCore'),
-          pythonPrompt: new PythonPrompt()
+          pythonPrompt: new PythonPrompt(),
         }
-      )
+      ),
     ];
   }
 
@@ -77,10 +77,10 @@ export default class InstallationManager {
   }
 
   install() {
-    return Promise.all(this.stages.map(stage => stage.install()));
+    return Promise.all(this.stages.map((stage) => stage.install()));
   }
 
   destroy() {
-    return this.stages.map(stage => stage.destroy());
+    return this.stages.map((stage) => stage.destroy());
   }
 }

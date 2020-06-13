@@ -45,8 +45,8 @@ export default class ProjectManager {
 
   getPIOProjectDirs() {
     return (vscode.workspace.workspaceFolders || [])
-      .map(folder => folder.uri.fsPath)
-      .filter(dir => ProjectManager.isPIOProjectSync(dir));
+      .map((folder) => folder.uri.fsPath)
+      .filter((dir) => ProjectManager.isPIOProjectSync(dir));
   }
 
   getActivePIOProjectDir() {
@@ -58,7 +58,7 @@ export default class ProjectManager {
     if (
       !this._lastActiveProjectDir ||
       !vscode.workspace.workspaceFolders.find(
-        folder => folder.uri.fsPath === this._lastActiveProjectDir
+        (folder) => folder.uri.fsPath === this._lastActiveProjectDir
       )
     ) {
       this._lastActiveProjectDir = pioProjectDirs[0];
@@ -84,22 +84,22 @@ export default class ProjectManager {
     this._indexObsorver = new pioNodeHelpers.project.ProjectObserver({
       ide: 'vscode',
       createFileSystemWatcher: vscode.workspace.createFileSystemWatcher,
-      createDirSystemWatcher: dir =>
+      createDirSystemWatcher: (dir) =>
         vscode.workspace.createFileSystemWatcher(path.join(dir, '*')),
-      withProgress: task =>
+      withProgress: (task) =>
         vscode.window.withProgress(
           {
             location: { viewId: vscode.ProgressLocation.Window },
-            title: 'PlatformIO: IntelliSense Index Rebuild'
+            title: 'PlatformIO: IntelliSense Index Rebuild',
           },
           task
-        )
+        ),
     });
 
     const doUpdate = () => {
       this._indexObsorver.update(
         options.autoRebuild && vscode.workspace.workspaceFolders
-          ? vscode.workspace.workspaceFolders.map(folder => folder.uri.fsPath)
+          ? vscode.workspace.workspaceFolders.map((folder) => folder.uri.fsPath)
           : []
       );
     };

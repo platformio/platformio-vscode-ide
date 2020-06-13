@@ -38,9 +38,9 @@ export default class PythonPrompt {
           pythonExecutable: await vscode.window.showInputBox({
             prompt: 'Please specify a full path to Python executable file',
             placeHolder: 'Full path to python/python.exe',
-            validateInput: value =>
-              !fs.isFileSync(value) ? 'Invalid path to Python Interpreter' : null
-          })
+            validateInput: (value) =>
+              !fs.isFileSync(value) ? 'Invalid path to Python Interpreter' : null,
+          }),
         };
       case 'Abort PlatformIO IDE Installation':
         return { status: this.STATUS_ABORT };

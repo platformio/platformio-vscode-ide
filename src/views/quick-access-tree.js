@@ -15,7 +15,7 @@ class QuickItem extends vscode.TreeItem {
       this.command = {
         title: label,
         command,
-        arguments: args
+        arguments: args,
       };
     }
     this.customChildren = children;
@@ -38,12 +38,12 @@ export default class QuickAccessTreeProvider {
           new QuickItem('PIO Account', 'platformio-ide.showHome', ['/account']),
           new QuickItem('Inspect', 'platformio-ide.showHome', ['/inspect']),
           new QuickItem('Projects & Configuration', 'platformio-ide.showHome', [
-            '/projects'
+            '/projects',
           ]),
           new QuickItem('Libraries', 'platformio-ide.showHome', ['/libraries']),
           new QuickItem('Boards', 'platformio-ide.showHome', ['/boards']),
           new QuickItem('Platforms', 'platformio-ide.showHome', ['/platforms']),
-          new QuickItem('Devices', 'platformio-ide.showHome', ['/device'])
+          new QuickItem('Devices', 'platformio-ide.showHome', ['/device']),
         ]
       ),
       new QuickItem(
@@ -53,7 +53,7 @@ export default class QuickAccessTreeProvider {
         vscode.TreeItemCollapsibleState.Expanded,
         [
           new QuickItem('Start Debugging', 'platformio-ide.startDebugging'),
-          new QuickItem('Toggle Debug Console', 'workbench.debug.action.toggleRepl')
+          new QuickItem('Toggle Debug Console', 'workbench.debug.action.toggleRepl'),
         ]
       ),
       new QuickItem(
@@ -63,12 +63,12 @@ export default class QuickAccessTreeProvider {
         vscode.TreeItemCollapsibleState.Expanded,
         [
           new QuickItem('Library Updates', 'platformio-ide.showHome', [
-            '/libraries/updates'
+            '/libraries/updates',
           ]),
           new QuickItem('Platform Updates', 'platformio-ide.showHome', [
-            '/platforms/updates'
+            '/platforms/updates',
           ]),
-          new QuickItem('Update All', 'platformio-ide.updateCore')
+          new QuickItem('Update All', 'platformio-ide.updateCore'),
         ]
       ),
       new QuickItem(
@@ -80,9 +80,9 @@ export default class QuickAccessTreeProvider {
           new QuickItem('PlatformIO Core CLI', 'platformio-ide.openPIOCoreCLI'),
           new QuickItem('Clone Git Project', 'git.clone'),
           new QuickItem('New Terminal', 'platformio-ide.newTerminal'),
-          new QuickItem('Upgrade PlatformIO Core', 'platformio-ide.upgradeCore')
+          new QuickItem('Upgrade PlatformIO Core', 'platformio-ide.upgradeCore'),
         ]
-      )
+      ),
     ];
   }
 

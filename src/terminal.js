@@ -22,7 +22,7 @@ export default class PIOTerminal {
       'HTTP_PROXY',
       'HTTPS_PROXY',
       'NO_PROXY',
-      'CURL_CA_BUNDLE'
+      'CURL_CA_BUNDLE',
     ];
     for (const name of names) {
       if (process.env[name]) {
@@ -38,7 +38,7 @@ export default class PIOTerminal {
   new() {
     return vscode.window.createTerminal({
       name: 'PlatformIO',
-      env: process.env
+      env: process.env,
     });
   }
 

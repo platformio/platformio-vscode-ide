@@ -30,9 +30,9 @@ export default class ProjectTasksTreeProvider {
       arguments: [
         {
           type: ProjectTaskManager.type,
-          task: item.id
-        }
-      ]
+          task: item.id,
+        },
+      ],
     };
     return element;
   }
@@ -47,11 +47,11 @@ export default class ProjectTasksTreeProvider {
   }
 
   getTaskGroups(tasks) {
-    return new Set(tasks.filter(task => task.group).map(task => task.group));
+    return new Set(tasks.filter((task) => task.group).map((task) => task.group));
   }
 
   getRootChildren() {
-    const result = this.tasks.filter(task => !task.group && !task.coreEnv);
+    const result = this.tasks.filter((task) => !task.group && !task.coreEnv);
     // root groups
     for (const group of this.getTaskGroups(this.tasks)) {
       if (['Platform', 'Custom'].includes(group)) {
@@ -82,15 +82,15 @@ export default class ProjectTasksTreeProvider {
   }
 
   getGroupChildren(group, env = undefined) {
-    return this.tasks.filter(task => task.group === group && task.coreEnv === env);
+    return this.tasks.filter((task) => task.group === group && task.coreEnv === env);
   }
 
   getEnvChildren(env) {
-    const envTasks = this.tasks.filter(task => task.coreEnv == env);
+    const envTasks = this.tasks.filter((task) => task.coreEnv == env);
     if (!envTasks.length) {
       return [new vscode.TreeItem('Loading...')];
     }
-    const result = envTasks.filter(task => !task.group && !task.coreEnv);
+    const result = envTasks.filter((task) => !task.group && !task.coreEnv);
     // root groups
     for (const group of this.getTaskGroups(envTasks)) {
       const element = new vscode.TreeItem(

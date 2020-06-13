@@ -13,5 +13,5 @@ export const PIO_CORE_VERSION_SPEC = '>=4.4.0-a.3';
 export const STATUS_BAR_PRIORITY_START = 10;
 export const CONFLICTED_EXTENSION_IDS = [
   'llvm-vs-code-extensions.vscode-clangd',
-  'vsciot-vscode.vscode-arduino'
+  'vsciot-vscode.vscode-arduino',
 ];
