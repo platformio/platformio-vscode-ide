@@ -18,23 +18,27 @@ export default class ProjectTasksTreeProvider {
   }
 
   getTreeItem(item) {
-    if (item instanceof vscode.TreeItem) {
-      return item;
-    }
-    const element = new vscode.TreeItem(item.name);
-    element.iconPath = new vscode.ThemeIcon('circle-outline');
-    element.tooltip = item.title;
-    element.command = {
-      title: item.title,
+    return item instanceof vscode.TreeItem ? item : this.taskToTreeItem(item);
+  }
+
+  taskToTreeItem(task) {
+    const treeItem = new vscode.TreeItem(task.name);
+    treeItem.iconPath = new vscode.ThemeIcon('circle-outline');
+    treeItem.tooltip = task.title;
+    treeItem.command = {
+      title: task.title,
       command: 'workbench.action.tasks.runTask',
       arguments: [
         {
           type: ProjectTaskManager.type,
-          task: item.id,
+          task: task.id,
         },
       ],
     };
-    return element;
+    if (!task.coreEnv && task.multienv && this.envs.length > 1) {
+      treeItem.label += ' All';
+    }
+    return treeItem;
   }
 
   getChildren(element) {
@@ -57,26 +61,26 @@ export default class ProjectTasksTreeProvider {
       if (['Platform', 'Custom'].includes(group)) {
         continue;
       }
-      const element = new vscode.TreeItem(
+      const treeItem = new vscode.TreeItem(
         group,
         group === 'Generic'
           ? vscode.TreeItemCollapsibleState.Expanded
           : vscode.TreeItemCollapsibleState.Collapsed
       );
-      element.group = group;
-      element.iconPath = vscode.ThemeIcon.Folder;
-      result.push(element);
+      treeItem.group = group;
+      treeItem.iconPath = vscode.ThemeIcon.Folder;
+      result.push(treeItem);
     }
     // envs
     for (const env of this.envs) {
-      const element = new vscode.TreeItem(
+      const treeItem = new vscode.TreeItem(
         `env:${env}`,
         vscode.TreeItemCollapsibleState.Collapsed
       );
-      element.id = `${this.id}-${env}`;
-      element.env = env;
-      element.iconPath = new vscode.ThemeIcon('root-folder');
-      result.push(element);
+      treeItem.id = `${this.id}-${env}`;
+      treeItem.env = env;
+      treeItem.iconPath = new vscode.ThemeIcon('root-folder');
+      result.push(treeItem);
     }
     return result;
   }
