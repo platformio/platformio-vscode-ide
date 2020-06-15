@@ -63,7 +63,7 @@ export default class ProjectTasksTreeProvider {
       }
       const treeItem = new vscode.TreeItem(
         group,
-        group === 'Generic'
+        group === 'General'
           ? vscode.TreeItemCollapsibleState.Expanded
           : vscode.TreeItemCollapsibleState.Collapsed
       );
@@ -99,7 +99,7 @@ export default class ProjectTasksTreeProvider {
     for (const group of this.getTaskGroups(envTasks)) {
       const element = new vscode.TreeItem(
         group,
-        group === 'Generic'
+        group === 'General'
           ? vscode.TreeItemCollapsibleState.Expanded
           : vscode.TreeItemCollapsibleState.Collapsed
       );

@@ -105,7 +105,7 @@ export default class ProjectTaskManager {
 
   async getTasks(envs) {
     const pt = new pioNodeHelpers.project.ProjectTasks(this.projectDir, 'vscode');
-    const result = await pt.getGenericTasks();
+    const result = await pt.getGeneralTasks();
     for (const item of envs) {
       result.push(...(this._envTasks[item.name] || []));
     }
