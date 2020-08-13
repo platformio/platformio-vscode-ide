@@ -507,10 +507,7 @@
       {
         "name": "platformio",
         "owner": "cpp",
-        "fileLocation": [
-          "relative",
-          "${workspaceFolder}"
-        ],
+	"fileLocation": "autoDetect",
         "pattern": {
           "regexp": "^([^:\\n]+):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
           "file": 1,
