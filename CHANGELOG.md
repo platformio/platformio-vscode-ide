@@ -2,6 +2,7 @@
 
 ## 2.0.0 (2020-??-??)
 
+**Requires PlatformIO Core 5.0 or above**
 **Requires VSCode 1.44 or above**
 
 * New PlatformIO Task Explorer
@@ -15,11 +16,11 @@
   - Automatically generate a debugging configuration for the active environment
 * New PlatformIO Core Installer
   - Switched to the cross-platform and portable [get-platformio.py](https://github.com/platformio/platformio-core-installer) installer script
-  - Use built-in portable Python 3 on Windows (it can be disabled with ``platformio-ide.useBuiltinPython`` setting)
+  - Use built-in portable Python 3 on Windows and macOS (it can be disabled with ``platformio-ide.useBuiltinPython`` setting)
 * Added support for ``extends`` option in ``platformio.ini`` project configuration file (issue [#1371](https://github.com/platformio/platformio-vscode-ide/issues/1371))
 * Contribute PlatformIO Core CLI into VSCode's default Terminal
-* Reduced startup time (PIO Core verification process)
-* Fixed a bug when hotkeys in PIO Home did not work on macOS (issue [#606](https://github.com/platformio/platformio-vscode-ide/issues/606))
+* Reduced startup time (PlatformIO Core verification process)
+* Fixed a bug when hotkeys in PlatformIO Home did not work on macOS (issue [#606](https://github.com/platformio/platformio-vscode-ide/issues/606))
 
 ## 1.10.0 (2019-11-20)
 

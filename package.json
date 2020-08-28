@@ -409,10 +409,10 @@
         }
       ],
       "view/title": [
-				{
-					"command": "platformio-ide.refreshProjectTasks",
-					"when": "pioCoreReady && view == platformio-ide.projectTasks",
-					"group": "navigation"
+        {
+          "command": "platformio-ide.refreshProjectTasks",
+          "when": "pioCoreReady && view == platformio-ide.projectTasks",
+          "group": "navigation"
         },
         {
           "command": "platformio-debug.examineMemory",
@@ -606,24 +606,24 @@
     "vscode:package": "webpack --mode production && vsce package"
   },
   "devDependencies": {
-    "@babel/core": "~7.10.2",
+    "@babel/core": "~7.11.4",
     "@types/node": "~12",
     "@types/vscode": "~1.44.0",
     "babel-eslint": "~10.1.0",
     "babel-loader": "~8.1.0",
     "babel-plugin-transform-class-properties": "~6.24.1",
     "babel-preset-env": "~1.7.0",
-    "eslint": "~7.2.0",
-    "eslint-import-resolver-webpack": "~0.12.1",
-    "eslint-plugin-import": "~2.21.2",
-    "prettier": "~2.0.5",
-    "vsce": "~1.76.1",
-    "webpack": "~4.43.0",
-    "webpack-cli": "~3.3.11"
+    "eslint": "~7.7.0",
+    "eslint-import-resolver-webpack": "~0.12.2",
+    "eslint-plugin-import": "~2.22.0",
+    "prettier": "~2.1.1",
+    "vsce": "~1.79.3",
+    "webpack": "~4.44.1",
+    "webpack-cli": "~3.3.12"
   },
   "dependencies": {
     "fs-plus": "~3.1.1",
-    "platformio-node-helpers": "~7.0.1",
+    "platformio-node-helpers": "~7.1.1",
     "platformio-vscode-debug": "~1.2.11"
   },
   "extensionDependencies": [
