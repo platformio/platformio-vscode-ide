@@ -1,6 +1,6 @@
 # Release Notes
 
-## 2.0.1 (2020-09-??)
+## 2.0.1 (2020-09-10)
 
 * Moved "Project Tasks" view back to "PlatformIO" activity (you can now drag it to any location)
 
