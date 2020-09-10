@@ -1,6 +1,6 @@
 # Release Notes
 
-## 2.0.0 (2020-??-??)
+## 2.0.0 (2020-09-10)
 
 **Requires PlatformIO Core 5.0 or above**
 **Requires VSCode 1.44 or above**
