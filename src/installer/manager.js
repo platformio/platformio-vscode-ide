@@ -76,8 +76,17 @@ export default class InstallationManager {
     return result;
   }
 
-  install() {
-    return Promise.all(this.stages.map((stage) => stage.install()));
+  async install(progress) {
+    const stageIncrementTotal = 100 / this.stages.length;
+    for (const stage of this.stages) {
+      await stage.install((message, increment) => {
+        progress.report({
+          message,
+          increment: stageIncrementTotal * (increment / 100),
+        });
+      });
+    }
+    progress.report({ message: 'Finish! Please restart VSCode.', increment: 100 });
   }
 
   destroy() {

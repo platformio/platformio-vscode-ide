@@ -151,8 +151,16 @@ class PlatformIOVSCodeExtension {
     });
   }
 
-  startInstaller() {
-    return vscode.window.withProgress(
+  async startInstaller() {
+    const im = new InstallationManager(this.context.globalState);
+    if (im.locked()) {
+      vscode.window.showInformationMessage(
+        'PlatformIO IDE installation has been suspended, because PlatformIO ' +
+          'IDE Installer is already started in another window.'
+      );
+      return;
+    }
+    const doInstall = await vscode.window.withProgress(
       {
         location: vscode.ProgressLocation.Window,
         title: 'PlatformIO',
@@ -161,55 +169,64 @@ class PlatformIOVSCodeExtension {
         progress.report({
           message: 'Checking PlatformIO Core installation...',
         });
+        try {
+          return !(await im.check());
+        } catch (err) {}
+        return true;
+      }
+    );
 
-        const im = new InstallationManager(this.context.globalState);
-        if (im.locked()) {
-          vscode.window.showInformationMessage(
-            'PlatformIO IDE installation has been suspended, because PlatformIO ' +
-              'IDE Installer is already started in another window.'
-          );
-        } else if (await im.check()) {
-          return;
-        } else {
-          progress.report({
-            message: 'Installing PlatformIO IDE...',
-          });
-          const outputChannel = vscode.window.createOutputChannel(
-            'PlatformIO Installation'
-          );
-          outputChannel.show();
+    if (!doInstall) {
+      return;
+    }
 
-          outputChannel.appendLine('Installing PlatformIO Core...');
-          outputChannel.appendLine(
-            'It may take a few minutes depending on your connection speed'
-          );
-          outputChannel.appendLine(
-            'Please do not close this window and do not ' +
-              'open other folders until this process is completed.'
-          );
+    return await vscode.window.withProgress(
+      {
+        location: vscode.ProgressLocation.Notification,
+        title: 'PlatformIO Installer',
+      },
+      async (progress) => {
+        progress.report({
+          message: 'Installing PlatformIO IDE...',
+        });
+        const outputChannel = vscode.window.createOutputChannel(
+          'PlatformIO Installation'
+        );
+        outputChannel.show();
+        outputChannel.appendLine('Installing PlatformIO IDE...');
+        outputChannel.appendLine(
+          'It may take a few minutes depending on your connection speed'
+        );
+        outputChannel.appendLine(
+          'Please do not close this window and do not ' +
+            'open other folders until this process is completed.'
+        );
+        outputChannel.appendLine(
+          '\nDebugging information is available via VSCode > Help > Toggle Developer Tools > Console.'
+        );
 
-          try {
-            im.lock();
-            await im.install();
-            outputChannel.appendLine('PlatformIO IDE installed successfully.\n');
-            outputChannel.appendLine('Please restart VSCode.');
-            const action = 'Reload Now';
-            const selected = await vscode.window.showInformationMessage(
-              'PlatformIO IDE has been successfully installed! Please reload window',
-              action
-            );
-            if (selected === action) {
-              vscode.commands.executeCommand('workbench.action.reloadWindow');
-            }
-          } catch (err) {
-            outputChannel.appendLine('Failed to install PlatformIO IDE.');
-            utils.notifyError('Installation Manager', err);
-          } finally {
-            im.unlock();
+        try {
+          im.lock();
+          await im.install(progress);
+          outputChannel.appendLine('PlatformIO IDE installed successfully.\n');
+          outputChannel.appendLine('Please restart VSCode.');
+          const action = 'Reload Now';
+          const selected = await vscode.window.showInformationMessage(
+            'PlatformIO IDE has been successfully installed! Please reload window',
+            action
+          );
+          if (selected === action) {
+            vscode.commands.executeCommand('workbench.action.reloadWindow');
           }
+        } catch (err) {
+          outputChannel.appendLine('Failed to install PlatformIO IDE.');
+          utils.notifyError('Installation Manager', err);
+        } finally {
+          im.unlock();
         }
+
         im.destroy();
-        return Promise.reject(undefined);
+        return true;
       }
     );
   }

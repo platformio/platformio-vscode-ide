@@ -14,7 +14,8 @@
   - Switch between project environments declared in [platformio.ini](https://docs.platformio.org/en/latest/projectconf/index.html) project configuration file (issue [#544](https://github.com/platformio/platformio-vscode-ide/issues/544))
   - Activate IntelliSense service based on the current environment
   - Automatically generate a debugging configuration for the active environment
-* New PlatformIO Core Installer
+* New PlatformIO IDE Installer
+  - Added progress information
   - Switched to the cross-platform and portable [get-platformio.py](https://github.com/platformio/platformio-core-installer) installer script
   - Use built-in portable Python 3 on Windows and macOS (it can be disabled with ``platformio-ide.useBuiltinPython`` setting)
 * Added support for ``extends`` option in ``platformio.ini`` project configuration file (issue [#1371](https://github.com/platformio/platformio-vscode-ide/issues/1371))
