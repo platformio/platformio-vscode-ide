@@ -1,8 +1,8 @@
 # PlatformIO IDE for VSCode
 
-**A new generation toolset for embedded C/C++ development**
+[PlatformIO](https://platformio.org) is a professional collaborative platform for embedded development.
 
-[PlatformIO](https://platformio.org) is a new generation ecosystem for embedded development.
+**A place where Developers and Teams have true Freedom! No more vendor lock-in!**
 
 * Open source, maximum permissive Apache 2.0 license
 * Cross-platform IDE and Unified Debugger
@@ -20,9 +20,10 @@
     - 800+ embedded boards
     - 35+ development platforms
     - 20+ frameworks
-* [PIO Unified Debugger](http://docs.platformio.org/page/plus/debugging.html)
-* [PIO Unit Testing](http://docs.platformio.org/page/plus/unit-testing.html)
-* [PIO Remote](http://docs.platformio.org/page/plus/pio-remote.html)
+* [Debugging](http://docs.platformio.org/page/plus/debugging.html)
+* [Unit Testing](http://docs.platformio.org/page/plus/unit-testing.html)
+* [Static Code Analysis](http://docs.platformio.org/page/plus/pio-check.html)
+* [Remote Development](http://docs.platformio.org/page/plus/pio-remote.html)
 * C/C++ Intelligent Code Completion
 * C/C++ Smart Code Linter for rapid professional development
 * Library Manager for the thousands of popular libraries
