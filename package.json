@@ -1,13 +1,13 @@
 {
   "name": "platformio-ide",
-  "version": "1.10.0",
+  "version": "2.0.0",
   "publisher": "platformio",
   "engines": {
-    "vscode": "^1.24.0"
+    "vscode": "^1.44.0"
   },
   "license": "Apache-2.0",
   "displayName": "PlatformIO IDE",
-  "description": "Development environment for Embedded, IoT, Arduino, ARM mbed, Espressif (ESP8266/ESP32), AVR, RISC-V, STM32, PIC32, nRF51/nRF52, MSP430, MCS-51 (8051), FPGA, FreeRTOS, ESP-IDF, CMSIS, SPL",
+  "description": "Professional development environment for Embedded, IoT, Arduino, CMSIS, ESP-IDF, FreeRTOS, libOpenCM3, mbed OS, Pulp OS, SPL, STM32Cube, Zephyr RTOS, ARM, AVR, Espressif (ESP8266/ESP32), FPGA, MCS-51 (8051), MSP430, Nordic (nRF51/nRF52), NXP i.MX RT, PIC32, RISC-V, STMicroelectronics (STM8/STM32), Teensy",
   "categories": [
     "Programming Languages",
     "Debuggers",
@@ -96,6 +96,12 @@
         "category": "PlatformIO"
       },
       {
+        "command": "platformio-ide.refreshProjectTasks",
+        "title": "Refresh Project Tasks",
+        "category": "PlatformIO",
+        "icon": "$(refresh)"
+      },
+      {
         "command": "platformio-ide.build",
         "title": "Build",
         "category": "PlatformIO"
@@ -163,6 +169,11 @@
       {
         "command": "platformio-ide.upgradeCore",
         "title": "Upgrade PlatformIO Core to the latest version",
+        "category": "PlatformIO"
+      },
+      {
+        "command": "platformio-ide.switchProjectEnv",
+        "title": "Switch Project Environment",
         "category": "PlatformIO"
       },
       {
@@ -286,7 +297,7 @@
               "name": "${6:PlatformIO Debugger}",
               "request": "launch",
               "type": "platformio-debug",
-              "executable": ".pioenvs/myenv/firmware.elf",
+              "executable": ".pio/build/myenv/firmware.elf",
               "toolchainBinDir": "/usr/local/bin"
             },
             "description": "PlatformIO Debugger",
@@ -399,6 +410,11 @@
       ],
       "view/title": [
         {
+          "command": "platformio-ide.refreshProjectTasks",
+          "when": "pioCoreReady && view == platformio-ide.projectTasks",
+          "group": "navigation"
+        },
+        {
           "command": "platformio-debug.examineMemory",
           "when": "debugType == platformio-debug && view == platformio-debug.memory",
           "group": "navigation"
@@ -421,12 +437,15 @@
       ]
     },
     "views": {
-      "platformio": [
+      "explorer": [
         {
-          "id": "platformio-activitybar.projectTasks",
-          "name": "Project Tasks",
-          "when": "pioCoreReady"
-        },
+          "id": "platformio-ide.projectTasks",
+          "name": "PlatformIO Tasks",
+          "icon": "root-folder",
+          "when": "pioProjectReady"
+        }
+      ],
+      "platformio": [
         {
           "id": "platformio-activitybar.quickAccess",
           "name": "Quick Access",
@@ -509,7 +528,7 @@
         "platformio-ide.activateOnlyOnPlatformIOProject": {
           "type": "boolean",
           "default": false,
-          "description": "Activate extension only when PlatformIO-based project (with `platformio.ini`) is opened in workspace"
+          "description": "Activate the PlatformIO extension only when a PlatformIO-based project (with `platformio.ini`) is opened in the workspace"
         },
         "platformio-ide.autoCloseSerialMonitor": {
           "type": "boolean",
@@ -519,7 +538,7 @@
         "platformio-ide.autoRebuildAutocompleteIndex": {
           "type": "boolean",
           "default": true,
-          "description": "Automatically rebuild Project IntelliSense Index when platformio.ini is changed or when new libraries are installed."
+          "description": "Automatically rebuild the project IntelliSense index when platformio.ini is changed or when new libraries are installed."
         },
         "platformio-ide.buildTask": {
           "type": [
@@ -527,7 +546,7 @@
             "null"
           ],
           "default": null,
-          "description": "A build task (label) which is used by `Build` button in the bottom Toolbar and key bindings. Default is set to `PlatformIO: Build`."
+          "description": "The build task (label) used for the `Build` button in the bottom toolbar and for key bindings. The default is `PlatformIO: Build`."
         },
         "platformio-ide.customPATH": {
           "type": [
@@ -535,38 +554,38 @@
             "null"
           ],
           "default": null,
-          "description": "Custom PATH for `platformio` command. Paste here the result of `echo $PATH` (Unix) / `echo %PATH%` (Windows) command by typing into your system terminal if you prefer to use custom version of PlatformIO Core"
+          "description": "Custom PATH for the `platformio` command, if you prefer to use a custom version of PlatformIO Core. Fill in the result of the system terminal command `echo $PATH` (Unix) / `echo %PATH%` (Windows)."
         },
         "platformio-ide.disableToolbar": {
           "type": "boolean",
           "default": false,
-          "description": "Disable PlatformIO Toolbar"
+          "description": "Disable the PlatformIO toolbar"
         },
         "platformio-ide.forceUploadAndMonitor": {
           "type": "boolean",
           "default": false,
-          "description": "Force 'Upload and Monitor' task for `platformio-ide.upload` command"
+          "description": "Force the `platformio-ide.upload` command to use the 'Upload and Monitor' task"
         },
         "platformio-ide.reopenSerialMonitorDelay": {
           "type": "integer",
           "default": 0,
           "minimum": 0,
-          "description": "Time in milliseconds after which reopen Serial Port Monitor"
+          "description": "Time in milliseconds after which the Serial Port Monitor is reopened"
+        },
+        "platformio-ide.useBuiltinPython": {
+          "type": "boolean",
+          "default": true,
+          "description": "Use a built-in Python 3 Interpreter if available"
         },
         "platformio-ide.useBuiltinPIOCore": {
           "type": "boolean",
           "default": true,
-          "description": "Use built-in PlatformIO Core"
+          "description": "Use a built-in PlatformIO Core"
         },
         "platformio-ide.useDevelopmentPIOCore": {
           "type": "boolean",
           "default": false,
-          "description": "Use development version of PlatformIO Core"
-        },
-        "platformio-ide.updateTerminalPathConfiguration": {
-          "type": "boolean",
-          "default": false,
-          "description": "Update Terminal configuration with patched PATH environment"
+          "description": "Use a development version of PlatformIO Core"
         },
         "platformio-ide.disablePIOHomeStartup": {
           "type": "boolean",
@@ -575,36 +594,36 @@
         },
         "platformio-ide.pioHomeServerHttpPort": {
           "type": "integer",
-          "description": "PIO Home server HTTP port (default is 0 and instructs finding a free port in range [8010..8100])"
+          "description": "PIO Home server HTTP port (the default value 0 automatically assigns a free port in the range [8010..8100])"
         }
       }
     }
   },
   "scripts": {
+    "build": "webpack --mode production",
     "lint": "eslint .eslintrc.js src",
     "format": "prettier --single-quote --print-width 88 --write \"src/**/*.js\"",
-    "build": "webpack --mode production",
     "vscode:package": "webpack --mode production && vsce package"
   },
   "devDependencies": {
-    "@babel/core": "~7.7.2",
-    "@types/node": "~10",
-    "babel-eslint": "~10.0.1",
-    "babel-loader": "~8.0.4",
+    "@babel/core": "~7.11.6",
+    "@types/node": "~12",
+    "@types/vscode": "~1.44.0",
+    "babel-eslint": "~10.1.0",
+    "babel-loader": "~8.1.0",
     "babel-plugin-transform-class-properties": "~6.24.1",
     "babel-preset-env": "~1.7.0",
-    "eslint": "~6.6.0",
-    "eslint-import-resolver-webpack": "~0.11.1",
-    "eslint-plugin-import": "~2.18.2",
-    "prettier": "~1.19.1",
-    "vsce": "~1.69.0",
-    "vscode": "~1.1.22",
-    "webpack": "~4.41.2",
-    "webpack-cli": "~3.3.10"
+    "eslint": "~7.8.1",
+    "eslint-import-resolver-webpack": "~0.12.2",
+    "eslint-plugin-import": "~2.22.0",
+    "prettier": "~2.1.1",
+    "vsce": "~1.79.5",
+    "webpack": "~4.44.1",
+    "webpack-cli": "~3.3.12"
   },
   "dependencies": {
     "fs-plus": "~3.1.1",
-    "platformio-node-helpers": "~6.0.0",
+    "platformio-node-helpers": "~7.2.0",
     "platformio-vscode-debug": "~1.2.11"
   },
   "extensionDependencies": [

@@ -8,7 +8,7 @@
 
 import * as pioNodeHelpers from 'platformio-node-helpers';
 
-import { PIO_CORE_MIN_VERSION } from '../constants';
+import { PIO_CORE_VERSION_SPEC } from '../constants';
 import PythonPrompt from './python-prompt';
 import StateStorage from '../state-storage';
 import vscode from 'vscode';
@@ -28,14 +28,13 @@ export default class InstallationManager {
         this.stateStorage,
         this.onDidStatusChange.bind(this),
         {
-          pioCoreMinVersion: PIO_CORE_MIN_VERSION,
+          pioCoreVersionSpec: PIO_CORE_VERSION_SPEC,
+          useBuiltinPython: config.get('useBuiltinPython'),
           useBuiltinPIOCore: config.get('useBuiltinPIOCore'),
-          setUseBuiltinPIOCore: value =>
-            config.update('platformio-ide.useBuiltinPIOCore', value),
           useDevelopmentPIOCore: config.get('useDevelopmentPIOCore'),
-          pythonPrompt: new PythonPrompt()
+          pythonPrompt: new PythonPrompt(),
         }
-      )
+      ),
     ];
   }
 
@@ -77,11 +76,20 @@ export default class InstallationManager {
     return result;
   }
 
-  install() {
-    return Promise.all(this.stages.map(stage => stage.install()));
+  async install(progress) {
+    const stageIncrementTotal = 100 / this.stages.length;
+    for (const stage of this.stages) {
+      await stage.install((message, increment) => {
+        progress.report({
+          message,
+          increment: stageIncrementTotal * (increment / 100),
+        });
+      });
+    }
+    progress.report({ message: 'Finish! Please restart VSCode.', increment: 100 });
   }
 
   destroy() {
-    return this.stages.map(stage => stage.destroy());
+    return this.stages.map((stage) => stage.destroy());
   }
 }

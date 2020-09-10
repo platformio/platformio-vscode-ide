@@ -17,7 +17,7 @@ export async function notifyError(title, err) {
   Leave a comment...
 
   BEFORE SUBMITTING, PLEASE SEARCH FOR DUPLICATES IN
-  - https://github.com/platformio/platformio-vscode-ide/issues
+  - https://github.com/platformio/platformio-vscode-ide/issues?q=is%3Aissue+
 
   # Configuration
 
@@ -37,7 +37,10 @@ export async function notifyError(title, err) {
     action = 'Check available solutions';
   }
 
-  const selected = await vscode.window.showErrorMessage(description, action);
+  const selected = await vscode.window.showErrorMessage(
+    description.substring(0, 700) + '...',
+    action
+  );
   if (selected === action) {
     vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(reportUrl));
   }
@@ -50,43 +53,4 @@ export function getIDEManifest() {
 
 export function getIDEVersion() {
   return getIDEManifest().version;
-}
-
-export function getPIOProjectDirs() {
-  return (vscode.workspace.workspaceFolders || [])
-    .map(folder => folder.uri.fsPath)
-    .filter(dir => pioNodeHelpers.misc.isPIOProject(dir));
-}
-
-let _lastActiveProjectDir = undefined;
-
-export function getActivePIOProjectDir() {
-  const pioProjectDirs = getPIOProjectDirs();
-  if (pioProjectDirs.length < 1) {
-    _lastActiveProjectDir = undefined;
-    return _lastActiveProjectDir;
-  }
-  if (
-    !_lastActiveProjectDir ||
-    !vscode.workspace.workspaceFolders.find(
-      folder => folder.uri.fsPath === _lastActiveProjectDir
-    )
-  ) {
-    _lastActiveProjectDir = pioProjectDirs[0];
-  }
-  const editor = vscode.window.activeTextEditor;
-  if (!editor) {
-    return _lastActiveProjectDir;
-  }
-  const resource = editor.document.uri;
-  if (resource.scheme !== 'file') {
-    return _lastActiveProjectDir;
-  }
-  const folder = vscode.workspace.getWorkspaceFolder(resource);
-  if (!folder || !pioNodeHelpers.misc.isPIOProject(folder.uri.fsPath)) {
-    // outside workspace
-    return _lastActiveProjectDir;
-  }
-  _lastActiveProjectDir = folder.uri.fsPath;
-  return _lastActiveProjectDir;
 }

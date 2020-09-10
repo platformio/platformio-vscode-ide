@@ -1,8 +1,8 @@
 # PlatformIO IDE for VSCode
 
-**A new generation toolset for embedded C/C++ development**
+[PlatformIO](https://platformio.org) is a professional collaborative platform for embedded development.
 
-[PlatformIO](https://platformio.org) is a new generation ecosystem for embedded development.
+**A place where Developers and Teams have true Freedom! No more vendor lock-in!**
 
 * Open source, maximum permissive Apache 2.0 license
 * Cross-platform IDE and Unified Debugger
@@ -12,17 +12,18 @@
 
 **Platforms**: Atmel AVR, Atmel SAM, Espressif 32, Espressif 8266, Freescale Kinetis, Infineon XMC, Intel ARC32, Intel MCS-51 (8051), Kendryte K210, Lattice iCE40, Maxim 32, Microchip PIC32, Nordic nRF51, Nordic nRF52, NXP LPC, RISC-V, Samsung ARTIK, Silicon Labs EFM32, ST STM32, ST STM8, Teensy, TI MSP430, TI Tiva, WIZNet W7500
 
-**Frameworks**: Arduino, ARTIK SDK, CMSIS, ESP-IDF, ESP8266 RTOS SDK, Freedom E SDK, Kendryte Standalone SDK, Kendryte FreeRTOS SDK, libOpenCM3, mbed, PULP OS, Pumbaa, Simba, SPL, STM32Cube, Tizen RT, WiringPi
+**Frameworks**: Arduino, ARTIK SDK, CMSIS, ESP-IDF, ESP8266 RTOS SDK, Freedom E SDK, Kendryte Standalone SDK, Kendryte FreeRTOS SDK, libOpenCM3, mbed, PULP OS, Pumbaa, Simba, SPL, STM32Cube, Tizen RT, WiringPi, Zephyr RTOS
 
 ## Features
 
 * Cross-platform code builder without external dependencies to a system software:
-    - 700+ embedded boards
-    - 30+ development platforms
+    - 800+ embedded boards
+    - 35+ development platforms
     - 20+ frameworks
-* [PIO Unified Debugger](http://docs.platformio.org/page/plus/debugging.html)
-* [PIO Unit Testing](http://docs.platformio.org/page/plus/unit-testing.html)
-* [PIO Remote](http://docs.platformio.org/page/plus/pio-remote.html)
+* [Debugging](http://docs.platformio.org/page/plus/debugging.html)
+* [Unit Testing](http://docs.platformio.org/page/plus/unit-testing.html)
+* [Static Code Analysis](http://docs.platformio.org/page/plus/pio-check.html)
+* [Remote Development](http://docs.platformio.org/page/plus/pio-remote.html)
 * C/C++ Intelligent Code Completion
 * C/C++ Smart Code Linter for rapid professional development
 * Library Manager for the thousands of popular libraries

@@ -18,7 +18,7 @@ export async function maybeRateExtension(stateStorage) {
   } else if (!state || !state.callCounter) {
     state = {
       callCounter: 0,
-      done: false
+      done: false,
     };
   }
 
@@ -55,14 +55,14 @@ export async function maybeRateExtension(stateStorage) {
 
 export async function warnAboutConflictedExtensions() {
   const conflicted = vscode.extensions.all.filter(
-    ext => ext.isActive && CONFLICTED_EXTENSION_IDS.includes(ext.id)
+    (ext) => ext.isActive && CONFLICTED_EXTENSION_IDS.includes(ext.id)
   );
   if (conflicted.length === 0) {
     return;
   }
   const selectedItem = await vscode.window.showWarningMessage(
     `Conflicted extensions with IntelliSense service were detected (${conflicted
-      .map(ext => ext.packageJSON.displayName || ext.id)
+      .map((ext) => ext.packageJSON.displayName || ext.id)
       .join(', ')}). ` +
       'Code-completion, linting and navigation will not work properly. ' +
       'Please disable or uninstall them (Menu > View > Extensions).',
@@ -78,7 +78,7 @@ export async function warnAboutConflictedExtensions() {
       );
       break;
     case 'Uninstall conflicted':
-      conflicted.forEach(ext => {
+      conflicted.forEach((ext) => {
         vscode.commands.executeCommand(
           'workbench.extensions.uninstallExtension',
           ext.id

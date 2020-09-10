@@ -8,6 +8,7 @@
 
 import * as pioNodeHelpers from 'platformio-node-helpers';
 
+import { IS_OSX } from './constants';
 import { extension } from './main';
 import { notifyError } from './utils';
 import path from 'path';
@@ -51,7 +52,7 @@ export default class PIOHome {
       vscode.ViewColumn.One,
       {
         enableScripts: true,
-        retainContextWhenHidden: true
+        retainContextWhenHidden: true,
       }
     );
     this.subscriptions.push(panel.onDidDispose(this.onPanelDisposed.bind(this)));
@@ -122,18 +123,32 @@ export default class PIOHome {
             vscode.TextEditorRevealType.InCenter
           );
         }
-      }
+      },
     });
     const theme = this.getTheme();
     return `<!DOCTYPE html>
       <html lang="en">
+      <head>
+        <script>
+          window.addEventListener('message', (e) => {
+            switch (e.data.command) {
+              case 'kbd-event': {
+                if (${IS_OSX}) {
+                  window.dispatchEvent(new KeyboardEvent('keydown', e.data.data));
+                }
+                break;
+              }
+            }
+          }, false);
+        </script>
+      </head>
       <body style="margin: 0; padding: 0; height: 100%; overflow: hidden; background-color: ${
         theme === 'light' ? '#FFF' : '#1E1E1E'
       }">
         <iframe src="${pioNodeHelpers.home.getFrontendUri(params.host, params.port, {
           start: startUrl,
           theme,
-          workspace: extension.getEnterpriseSetting('defaultPIOHomeWorkspace')
+          workspace: extension.getEnterpriseSetting('defaultPIOHomeWorkspace'),
         })}"
           width="100%"
           height="100%"
