@@ -437,15 +437,13 @@
       ]
     },
     "views": {
-      "explorer": [
+      "platformio": [
         {
           "id": "platformio-ide.projectTasks",
           "name": "PlatformIO Tasks",
           "icon": "root-folder",
           "when": "pioProjectReady"
-        }
-      ],
-      "platformio": [
+        },
         {
           "id": "platformio-activitybar.quickAccess",
           "name": "Quick Access",
