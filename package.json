@@ -1,6 +1,6 @@
 {
   "name": "platformio-ide",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "publisher": "platformio",
   "engines": {
     "vscode": "^1.44.0"
@@ -437,15 +437,13 @@
       ]
     },
     "views": {
-      "explorer": [
+      "platformio": [
         {
           "id": "platformio-ide.projectTasks",
           "name": "PlatformIO Tasks",
           "icon": "root-folder",
           "when": "pioProjectReady"
-        }
-      ],
-      "platformio": [
+        },
         {
           "id": "platformio-activitybar.quickAccess",
           "name": "Quick Access",
