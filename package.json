@@ -440,7 +440,7 @@
       "platformio": [
         {
           "id": "platformio-ide.projectTasks",
-          "name": "PlatformIO Tasks",
+          "name": "Project Tasks",
           "icon": "root-folder",
           "when": "pioProjectReady"
         },
