@@ -546,6 +546,11 @@
           "default": null,
           "description": "The build task (label) used for the `Build` button in the bottom toolbar and for key bindings. The default is `PlatformIO: Build`."
         },
+        "platformio-ide.autoPreloadEnvTasks": {
+          "type": "boolean",
+          "default": false,
+          "description": "Automatically preload ALL project environment tasks"
+        },
         "platformio-ide.customPATH": {
           "type": [
             "string",
