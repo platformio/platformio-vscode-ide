@@ -1,5 +1,10 @@
 # Release Notes
 
+## 2.1.0 (2020-09-16)
+
+* Renamed "PIO Remote" group of tasks to "Remote Development"
+* Updated PlatformIO Core installer to [v0.3.5](https://github.com/platformio/platformio-core-installer/releases/tag/v0.3.5)
+
 ## 2.0.1 (2020-09-10)
 
 * Moved "Project Tasks" view back to "PlatformIO" activity (you can now drag it to any location)

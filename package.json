@@ -573,7 +573,7 @@
         "platformio-ide.useBuiltinPython": {
           "type": "boolean",
           "default": true,
-          "description": "Use a built-in Python 3 Interpreter if available"
+          "description": "Use a portable Python 3 Interpreter if available"
         },
         "platformio-ide.useBuiltinPIOCore": {
           "type": "boolean",
@@ -621,7 +621,7 @@
   },
   "dependencies": {
     "fs-plus": "~3.1.1",
-    "platformio-node-helpers": "~7.2.0",
+    "platformio-node-helpers": "~7.2.1",
     "platformio-vscode-debug": "~1.2.11"
   },
   "extensionDependencies": [
