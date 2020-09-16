@@ -1,5 +1,11 @@
 # Release Notes
 
+## 2.1.0 (2020-09-16)
+
+* Added a new setting ``platformio-ide.autoPreloadEnvTasks`` to enable automatic preloading of the project environment tasks (issue [#2004](https://github.com/platformio/platformio-vscode-ide/issues/2004))
+* Renamed "PIO Remote" group of tasks to "Remote Development"
+* Updated PlatformIO Core installer to [v0.3.5](https://github.com/platformio/platformio-core-installer/releases/tag/v0.3.5)
+
 ## 2.0.1 (2020-09-10)
 
 * Moved "Project Tasks" view back to "PlatformIO" activity (you can now drag it to any location)

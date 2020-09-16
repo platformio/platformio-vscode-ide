@@ -71,6 +71,12 @@ export default class ProjectTaskManager {
       })
     );
 
+    if (extension.getSetting('autoPreloadEnvTasks')) {
+      for (const item of envs) {
+        await this.onDidLoadEnvTasks(item.name);
+      }
+    }
+
     this.addProjectConfigWatcher();
     this.controlDeviceMonitorTasks();
     this.registerTaskBasedCommands();

@@ -1,6 +1,6 @@
 {
   "name": "platformio-ide",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "publisher": "platformio",
   "engines": {
     "vscode": "^1.44.0"
@@ -440,7 +440,7 @@
       "platformio": [
         {
           "id": "platformio-ide.projectTasks",
-          "name": "PlatformIO Tasks",
+          "name": "Project Tasks",
           "icon": "root-folder",
           "when": "pioProjectReady"
         },
@@ -546,6 +546,11 @@
           "default": null,
           "description": "The build task (label) used for the `Build` button in the bottom toolbar and for key bindings. The default is `PlatformIO: Build`."
         },
+        "platformio-ide.autoPreloadEnvTasks": {
+          "type": "boolean",
+          "default": false,
+          "description": "Automatically preload ALL project environment tasks"
+        },
         "platformio-ide.customPATH": {
           "type": [
             "string",
@@ -573,7 +578,7 @@
         "platformio-ide.useBuiltinPython": {
           "type": "boolean",
           "default": true,
-          "description": "Use a built-in Python 3 Interpreter if available"
+          "description": "Use a portable Python 3 Interpreter if available"
         },
         "platformio-ide.useBuiltinPIOCore": {
           "type": "boolean",
@@ -621,7 +626,7 @@
   },
   "dependencies": {
     "fs-plus": "~3.1.1",
-    "platformio-node-helpers": "~7.2.0",
+    "platformio-node-helpers": "~7.2.1",
     "platformio-vscode-debug": "~1.2.11"
   },
   "extensionDependencies": [
