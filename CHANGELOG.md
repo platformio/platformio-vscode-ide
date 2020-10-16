@@ -2,6 +2,7 @@
 
 ## 2.1.2 (2020-10-16)
 
+- Do not propagate PlatformIO CLI to a default VSCode's terminal. If you need PlatformIO Core CLI, please open "Left Activity Bar > PlatformIO (icon) > Quick Access > Miscellaneous > PlatformIO Core CLI")
 - Fixed a bug with "Cannot find module 'os-tmpdir'"
 
 ## 2.1.1 (2020-10-16)

@@ -9,33 +9,6 @@
 import vscode from 'vscode';
 
 export default class PIOTerminal {
-  static patchGlobalEnv(context) {
-    const envCollection = context.environmentVariableCollection;
-    if (!envCollection) {
-      return;
-    }
-    const names = [
-      'PLATFORMIO_CALLER',
-      'PLATFORMIO_IDE',
-      'PATH',
-      'Path',
-      'HTTP_PROXY',
-      'HTTPS_PROXY',
-      'NO_PROXY',
-      'CURL_CA_BUNDLE',
-    ];
-    for (const name of names) {
-      if (process.env[name]) {
-        envCollection.replace(
-          name,
-          process.env.PLATFORMIO_PATH && ['PATH', 'Path'].includes(name)
-            ? process.env.PLATFORMIO_PATH
-            : process.env[name]
-        );
-      }
-    }
-  }
-
   constructor() {
     this._instance = undefined;
   }
