@@ -1,5 +1,9 @@
 # Release Notes
 
+## 2.1.2 (2020-10-16)
+
+- Fixed a bug with "Cannot find module 'os-tmpdir'"
+
 ## 2.1.1 (2020-10-16)
 
 - Do not patch the global environment PATH with PlatformIO (issues [#2045](https://github.com/platformio/platformio-vscode-ide/issues/2045), [#2046](https://github.com/platformio/platformio-vscode-ide/issues/2046))
