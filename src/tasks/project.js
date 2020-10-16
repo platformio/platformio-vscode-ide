@@ -141,6 +141,11 @@ export default class ProjectTaskManager {
   }
 
   toVSCodeTask(projectTask) {
+    const envClone = Object.create(process.env);
+    if (process.env.PLATFORMIO_PATH) {
+      envClone.PATH = process.env.PLATFORMIO_PATH;
+      envClone.Path = process.env.PLATFORMIO_PATH;
+    }
     const vscodeTask = new vscode.Task(
       {
         type: ProjectTaskManager.type,
@@ -154,7 +159,7 @@ export default class ProjectTaskManager {
         projectTask.args,
         {
           cwd: this.projectDir,
-          env: process.env,
+          env: envClone,
         }
       ),
       '$platformio'
