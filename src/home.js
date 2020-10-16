@@ -67,7 +67,9 @@ export default class PIOHome {
     try {
       panel.webview.html = await this.getWebviewContent(startUrl);
     } catch (err) {
-      notifyError('Start PIO Home Server', err);
+      if (!err.toString().includes('Webview is disposed')) {
+        notifyError('Start PIO Home Server', err);
+      }
     }
     return panel;
   }

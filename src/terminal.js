@@ -26,7 +26,12 @@ export default class PIOTerminal {
     ];
     for (const name of names) {
       if (process.env[name]) {
-        envCollection.replace(name, process.env[name]);
+        envCollection.replace(
+          name,
+          process.env.PLATFORMIO_PATH && ['PATH', 'Path'].includes(name)
+            ? process.env.PLATFORMIO_PATH
+            : process.env[name]
+        );
       }
     }
   }
@@ -36,9 +41,14 @@ export default class PIOTerminal {
   }
 
   new() {
+    const envClone = Object.create(process.env);
+    if (process.env.PLATFORMIO_PATH) {
+      envClone.PATH = process.env.PLATFORMIO_PATH;
+      envClone.Path = process.env.PLATFORMIO_PATH;
+    }
     return vscode.window.createTerminal({
       name: 'PlatformIO',
-      env: process.env,
+      env: envClone,
     });
   }
 
