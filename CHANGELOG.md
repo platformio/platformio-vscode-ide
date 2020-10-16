@@ -1,6 +1,11 @@
 # Release Notes
 
-## 2.1.1 (2020-10-??)
+## 2.1.2 (2020-10-16)
+
+- Do not propagate PlatformIO CLI to a default VSCode's terminal. If you need PlatformIO Core CLI, please open "Left Activity Bar > PlatformIO (icon) > Quick Access > Miscellaneous > PlatformIO Core CLI")
+- Fixed a bug with "Cannot find module 'os-tmpdir'"
+
+## 2.1.1 (2020-10-16)
 
 - Do not patch the global environment PATH with PlatformIO (issues [#2045](https://github.com/platformio/platformio-vscode-ide/issues/2045), [#2046](https://github.com/platformio/platformio-vscode-ide/issues/2046))
 - Fixed an issue with "Webview is disposed" (issue [#2126](https://github.com/platformio/platformio-vscode-ide/issues/2126))

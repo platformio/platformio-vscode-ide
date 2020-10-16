@@ -1,6 +1,6 @@
 {
   "name": "platformio-ide",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "publisher": "platformio",
   "engines": {
     "vscode": "^1.44.0"
@@ -626,7 +626,7 @@
   },
   "dependencies": {
     "fs-plus": "~3.1.1",
-    "platformio-node-helpers": "~8.0.0",
+    "platformio-node-helpers": "~8.0.1",
     "platformio-vscode-debug": "~1.2.11"
   },
   "extensionDependencies": [
