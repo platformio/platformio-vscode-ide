@@ -1,5 +1,9 @@
 # Release Notes
 
+## 2.1.3 (2020-10-17)
+
+- Fixed a regression bug with debugging solution
+
 ## 2.1.2 (2020-10-16)
 
 - Do not propagate PlatformIO CLI to a default VSCode's terminal. If you need PlatformIO Core CLI, please open "Left Activity Bar > PlatformIO (icon) > Quick Access > Miscellaneous > PlatformIO Core CLI")
