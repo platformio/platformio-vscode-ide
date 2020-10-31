@@ -247,14 +247,6 @@
     ],
     "debuggers": [
       {
-        "enableBreakpointsFor": {
-          "languageIds": [
-            "c",
-            "cpp",
-            "platformio-debug.asm",
-            "platformio-debug.disassembly"
-          ]
-        },
         "configurationAttributes": {
           "launch": {
             "properties": {
@@ -312,38 +304,6 @@
     ],
     "menus": {
       "commandPalette": [
-        {
-          "command": "platformio-debug.peripherals.updateNode",
-          "when": "false"
-        },
-        {
-          "command": "platformio-debug.peripherals.selectedNode",
-          "when": "false"
-        },
-        {
-          "command": "platformio-debug.peripherals.copyValue",
-          "when": "false"
-        },
-        {
-          "command": "platformio-debug.peripherals.setFormat",
-          "when": "false"
-        },
-        {
-          "command": "platformio-debug.registers.copyValue",
-          "when": "false"
-        },
-        {
-          "command": "platformio-debug.registers.selectedNode",
-          "when": "false"
-        },
-        {
-          "command": "platformio-debug.registers.setFormat",
-          "when": "false"
-        },
-        {
-          "command": "platformio-debug.memory.deleteHistoryItem",
-          "when": "false"
-        },
         {
           "command": "platformio-debug.examineMemory",
           "when": "debugType == platformio-debug"
