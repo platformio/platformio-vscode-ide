@@ -18,7 +18,7 @@ export default class InstallationManager {
   LOCK_KEY = 'platformio-ide:installer-lock';
   STORAGE_STATE_KEY = 'platformio-ide:installer-state';
 
-  constructor(globalState) {
+  constructor(globalState, disableAutoUpdates = false) {
     this.globalState = globalState;
     this.stateStorage = new StateStorage(globalState, this.STORAGE_STATE_KEY);
 
@@ -33,6 +33,7 @@ export default class InstallationManager {
           useBuiltinPIOCore: config.get('useBuiltinPIOCore'),
           useDevelopmentPIOCore: config.get('useDevelopmentPIOCore'),
           pythonPrompt: new PythonPrompt(),
+          disableAutoUpdates: disableAutoUpdates,
         }
       ),
     ];

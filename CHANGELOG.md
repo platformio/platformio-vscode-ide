@@ -2,6 +2,7 @@
 
 ## 2.2.0 (2020-??-??)
 
+- Do not start PlatformIO Home in the background when there is no PlatformIO project in a workspace (reduce startup time)
 - Fixed an issue when opening a new PlatformIO Core CLI terminal session does not work after the closing
 
 ## 2.1.3 (2020-10-17)

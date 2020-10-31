@@ -58,7 +58,7 @@ class PlatformIOVSCodeExtension {
     }
 
     this.patchOSEnviron();
-    await this.startInstaller();
+    await this.startInstaller(!hasPIOProject);
     this.subscriptions.push(this.handleUseDevelopmentPIOCoreConfiguration());
 
     vscode.commands.executeCommand('setContext', 'pioCoreReady', true);
@@ -76,7 +76,6 @@ class PlatformIOVSCodeExtension {
     this.registerGlobalCommands();
 
     if (!hasPIOProject) {
-      await this.startPIOHome();
       this.initToolbar({ filterCommands: ['platformio-ide.showHome'] });
       return;
     }
@@ -150,8 +149,8 @@ class PlatformIOVSCodeExtension {
     });
   }
 
-  async startInstaller() {
-    const im = new InstallationManager(this.context.globalState);
+  async startInstaller(disableAutoUpdates) {
+    const im = new InstallationManager(this.context.globalState, disableAutoUpdates);
     if (im.locked()) {
       vscode.window.showInformationMessage(
         'PlatformIO IDE installation has been suspended, because PlatformIO ' +
