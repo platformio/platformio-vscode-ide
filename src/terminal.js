@@ -20,13 +20,13 @@ export default class PIOTerminal {
       envClone.Path = process.env.PLATFORMIO_PATH;
     }
     return vscode.window.createTerminal({
-      name: 'PlatformIO',
+      name: 'PlatformIO CLI',
       env: envClone,
     });
   }
 
   sendText(text) {
-    if (!this._instance) {
+    if (!this._instance || this._instance.exitStatus !== undefined) {
       this._instance = this.new();
     }
     this._instance.sendText(text);

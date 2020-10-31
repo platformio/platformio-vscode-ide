@@ -1,5 +1,9 @@
 # Release Notes
 
+## 2.2.0 (2020-??-??)
+
+- Fixed an issue when opening a new PlatformIO Core CLI terminal session does not work after the closing
+
 ## 2.1.3 (2020-10-17)
 
 - Fixed a regression bug with debugging solution
