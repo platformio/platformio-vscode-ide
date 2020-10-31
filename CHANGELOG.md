@@ -2,6 +2,11 @@
 
 ## 2.2.0 (2020-??-??)
 
+- Refactored "Project Tasks" view
+  * Add button (icon) with a project environment switcher
+  * Group tasks by project environments
+  * Automatically expand selected environment
+  * Preload "Platform" tasks from the selected project environment
 - Do not reopen device monitor automatically if a project build fails (issue [#2197](https://github.com/platformio/platformio-vscode-ide/issues/2197))
 - Do not start PlatformIO Home in the background when there is no PlatformIO project in a workspace (reduce startup time)
 - Fixed an issue when selected project environment is not used for regenerating of C/C++ index (issue [#2196](https://github.com/platformio/platformio-vscode-ide/issues/2196))

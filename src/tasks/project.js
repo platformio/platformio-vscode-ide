@@ -26,7 +26,7 @@ export default class ProjectTaskManager {
     this._sid = Math.random();
     this._refreshTimeout = undefined;
     this._envTasks = {};
-    this._statusBarActiveEnv = undefined;
+    this._sbEnvSwitcher = undefined;
   }
 
   requestRefresh() {
@@ -43,12 +43,13 @@ export default class ProjectTaskManager {
     this.dispose();
 
     const envs = await this.loadProjectEnvs();
-    const tasks = await this.getTasks(envs);
+    const envTasks = await this.getEnvTasks(envs);
+
     const taskViewer = vscode.window.createTreeView(ProjectTaskManager.TASKS_VIEW_ID, {
       treeDataProvider: new ProjectTasksTreeProvider(
         this._sid,
-        tasks,
-        envs.map((item) => item.name)
+        envTasks,
+        extension.projectManager.getSelectedProjectEnv(this.projectDir)
       ),
       showCollapseAll: true,
     });
@@ -56,14 +57,21 @@ export default class ProjectTaskManager {
       taskViewer,
       // pre-fetch expanded env tasks
       taskViewer.onDidExpandElement(async ({ element }) => {
-        if (element.env) {
-          await this.onDidLoadEnvTasks(element.env);
+        if (
+          (element.env || '').includes('env:') &&
+          (await this.onDidLoadEnvTasks(element.env.substring(4)))
+        ) {
+          this.refresh();
         }
       }),
       // register VSCode Task Provider
       vscode.tasks.registerTaskProvider(ProjectTaskManager.type, {
         provideTasks: async () => {
-          return tasks.map((task) => this.toVSCodeTask(task));
+          const result = [];
+          for (const tasks of Object.values(envTasks)) {
+            result.push(...tasks.map((task) => this.toVSCodeTask(task)));
+          }
+          return result;
         },
         resolveTask: () => {
           return undefined;
@@ -71,18 +79,13 @@ export default class ProjectTaskManager {
       })
     );
 
-    if (extension.getSetting('autoPreloadEnvTasks')) {
-      for (const item of envs) {
-        await this.onDidLoadEnvTasks(item.name);
-      }
-    }
-
     this.addProjectConfigWatcher();
     this.controlDeviceMonitorTasks();
     this.registerTaskBasedCommands();
     if (envs.length > 1) {
       this.registerEnvSwitcher(envs);
     }
+    vscode.commands.executeCommand('setContext', 'pioMultiEnvProject', envs.length > 1);
   }
 
   async loadProjectEnvs() {
@@ -109,11 +112,20 @@ export default class ProjectTaskManager {
     return result;
   }
 
-  async getTasks(envs) {
+  async getEnvTasks(envs) {
+    const selectedEnv = extension.projectManager.getSelectedProjectEnv(this.projectDir);
     const pt = new pioNodeHelpers.project.ProjectTasks(this.projectDir, 'vscode');
-    const result = await pt.getGeneralTasks();
+    const result = { Default: await pt.getDefaultTasks() };
     for (const item of envs) {
-      result.push(...(this._envTasks[item.name] || []));
+      if (
+        !this._envTasks[item.name] &&
+        (extension.getSetting('autoPreloadEnvTasks') ||
+          envs.length === 1 ||
+          item.name === selectedEnv)
+      ) {
+        await this.onDidLoadEnvTasks(item.name);
+      }
+      result[`env:${item.name}`] = this._envTasks[item.name] || [];
     }
     return result;
   }
@@ -122,14 +134,11 @@ export default class ProjectTaskManager {
     if (name in this._envTasks) {
       return;
     }
-    await vscode.window.withProgress(
+    return await vscode.window.withProgress(
       {
         location: { viewId: ProjectTaskManager.TASKS_VIEW_ID },
       },
-      async () => {
-        await this.fetchEnvTasks(name);
-        this.requestRefresh();
-      }
+      async () => await this.fetchEnvTasks(name)
     );
   }
 
@@ -251,33 +260,29 @@ export default class ProjectTaskManager {
 
   registerEnvSwitcher(envs) {
     // reset last selected env if it was removed from config
-    const lastActiveEnv = extension.projectManager.getActiveProjectEnv(this.projectDir);
-    if (lastActiveEnv && !envs.some((item) => item.name === lastActiveEnv)) {
-      extension.projectManager.setActiveProjectEnv(this.projectDir, undefined);
+    let selectedEnv = extension.projectManager.getSelectedProjectEnv(this.projectDir);
+    if (selectedEnv && !envs.some((item) => item.name === selectedEnv)) {
+      selectedEnv = undefined;
+      extension.projectManager.setSelectedProjectEnv(this.projectDir, undefined);
     }
 
-    this._statusBarActiveEnv = vscode.window.createStatusBarItem(
+    this._sbEnvSwitcher = vscode.window.createStatusBarItem(
       vscode.StatusBarAlignment.Left,
       STATUS_BAR_PRIORITY_START
     );
-    this._statusBarActiveEnv.tooltip = 'Switch PlatformIO Project Environment';
-    this._statusBarActiveEnv.command = 'platformio-ide.switchProjectEnv';
-    this.updateStatusBarActiveEnv();
-    this._statusBarActiveEnv.show();
+    this._sbEnvSwitcher.tooltip = 'Switch PlatformIO Project Environment';
+    this._sbEnvSwitcher.command = 'platformio-ide.switchProjectEnv';
+    this._sbEnvSwitcher.text = `$(root-folder) ${
+      selectedEnv ? `env:${selectedEnv}` : 'Default'
+    }`;
+    this._sbEnvSwitcher.show();
 
     this.subscriptions.push(
-      this._statusBarActiveEnv,
+      this._sbEnvSwitcher,
       vscode.commands.registerCommand('platformio-ide.switchProjectEnv', () =>
         this.switchProjectEnv(envs)
       )
     );
-  }
-
-  updateStatusBarActiveEnv() {
-    const lastActiveEnv = extension.projectManager.getActiveProjectEnv(this.projectDir);
-    this._statusBarActiveEnv.text = `$(root-folder) ${
-      lastActiveEnv ? `env:${lastActiveEnv}` : 'Default'
-    }`;
   }
 
   async switchProjectEnv(envs) {
@@ -296,19 +301,19 @@ export default class ProjectTaskManager {
     const envName =
       pickedItem.label === 'Default' ? undefined : pickedItem.label.substring(4);
     if (envName) {
-      this._statusBarActiveEnv.text = '$(root-folder) Loading...';
+      this._sbEnvSwitcher.text = '$(root-folder) Loading...';
       await this.onDidLoadEnvTasks(envName);
     }
-    extension.projectManager.setActiveProjectEnv(this.projectDir, envName);
-    this.updateStatusBarActiveEnv();
+    extension.projectManager.setSelectedProjectEnv(this.projectDir, envName);
+    vscode.commands.executeCommand('platformio-ide.refreshProjectTasks');
   }
 
   registerTaskBasedCommands() {
     const maybeEnvTask = (name) => {
-      const lastActiveEnv = extension.projectManager.getActiveProjectEnv(
+      const selectedEnv = extension.projectManager.getSelectedProjectEnv(
         this.projectDir
       );
-      return lastActiveEnv ? `${name} (${lastActiveEnv})` : name;
+      return selectedEnv ? `${name} (${selectedEnv})` : name;
     };
 
     this.subscriptions.push(

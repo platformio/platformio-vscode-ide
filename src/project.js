@@ -16,7 +16,7 @@ export default class ProjectManager {
   constructor() {
     this.subscriptions = [];
     this._lastActiveProjectDir = undefined;
-    this._activeProjectEnv = {};
+    this._selectedProjectEnv = {};
     this._indexObsorver = undefined;
   }
 
@@ -28,15 +28,15 @@ export default class ProjectManager {
     return false;
   }
 
-  getActiveProjectEnv(projectDir) {
-    return this._activeProjectEnv[projectDir];
+  getSelectedProjectEnv(projectDir) {
+    return this._selectedProjectEnv[projectDir];
   }
 
-  setActiveProjectEnv(projectDir, envName) {
-    if (this._activeProjectEnv[projectDir] && !envName) {
-      delete this._activeProjectEnv[projectDir];
+  setSelectedProjectEnv(projectDir, envName) {
+    if (this._selectedProjectEnv[projectDir] && !envName) {
+      delete this._selectedProjectEnv[projectDir];
     }
-    this._activeProjectEnv[projectDir] = envName;
+    this._selectedProjectEnv[projectDir] = envName;
     if (this._indexObsorver) {
       const projectIndexer = this._indexObsorver.getProjectIndexer(projectDir);
       projectIndexer.setActiveEnv(envName);
