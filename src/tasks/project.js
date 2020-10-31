@@ -236,7 +236,7 @@ export default class ProjectTaskManager {
       }),
 
       vscode.tasks.onDidEndTaskProcess((event) => {
-        if (event.execution.task !== restoreAfterTask) {
+        if (event.execution.task !== restoreAfterTask || event.exitCode !== 0) {
           return;
         }
         setTimeout(() => {

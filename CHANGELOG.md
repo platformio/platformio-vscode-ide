@@ -2,6 +2,7 @@
 
 ## 2.2.0 (2020-??-??)
 
+- Do not reopen device monitor automatically if a project build fails (issue [#2197](https://github.com/platformio/platformio-vscode-ide/issues/2197))
 - Do not start PlatformIO Home in the background when there is no PlatformIO project in a workspace (reduce startup time)
 - Fixed an issue when opening a new PlatformIO Core CLI terminal session does not work after the closing
 
