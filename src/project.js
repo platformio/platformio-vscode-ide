@@ -39,7 +39,8 @@ export default class ProjectManager {
     this._activeProjectEnv[projectDir] = envName;
     if (this._indexObsorver) {
       const projectIndexer = this._indexObsorver.getProjectIndexer(projectDir);
-      projectIndexer.rebuild(envName);
+      projectIndexer.setActiveEnv(envName);
+      projectIndexer.rebuild();
     }
   }
 
