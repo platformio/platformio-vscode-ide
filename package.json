@@ -1,6 +1,6 @@
 {
   "name": "platformio-ide",
-  "version": "2.1.3",
+  "version": "2.2.0",
   "publisher": "platformio",
   "engines": {
     "vscode": "^1.44.0"
@@ -96,6 +96,12 @@
         "category": "PlatformIO"
       },
       {
+        "command": "platformio-ide.switchProjectEnv",
+        "title": "Switch Project Environment",
+        "category": "PlatformIO",
+        "icon": "$(root-folder)"
+      },
+      {
         "command": "platformio-ide.refreshProjectTasks",
         "title": "Refresh Project Tasks",
         "category": "PlatformIO",
@@ -172,11 +178,6 @@
         "category": "PlatformIO"
       },
       {
-        "command": "platformio-ide.switchProjectEnv",
-        "title": "Switch Project Environment",
-        "category": "PlatformIO"
-      },
-      {
         "category": "PlatformIO Debug",
         "command": "platformio-debug.peripherals.updateNode",
         "title": "Update Value"
@@ -247,14 +248,6 @@
     ],
     "debuggers": [
       {
-        "enableBreakpointsFor": {
-          "languageIds": [
-            "c",
-            "cpp",
-            "platformio-debug.asm",
-            "platformio-debug.disassembly"
-          ]
-        },
         "configurationAttributes": {
           "launch": {
             "properties": {
@@ -264,6 +257,10 @@
               },
               "toolchainBinDir": {
                 "description": "Path of toolchain binary directory",
+                "type": "string"
+              },
+              "projectEnvName": {
+                "description": "Working project environment",
                 "type": "string"
               },
               "svdPath": {
@@ -312,38 +309,6 @@
     ],
     "menus": {
       "commandPalette": [
-        {
-          "command": "platformio-debug.peripherals.updateNode",
-          "when": "false"
-        },
-        {
-          "command": "platformio-debug.peripherals.selectedNode",
-          "when": "false"
-        },
-        {
-          "command": "platformio-debug.peripherals.copyValue",
-          "when": "false"
-        },
-        {
-          "command": "platformio-debug.peripherals.setFormat",
-          "when": "false"
-        },
-        {
-          "command": "platformio-debug.registers.copyValue",
-          "when": "false"
-        },
-        {
-          "command": "platformio-debug.registers.selectedNode",
-          "when": "false"
-        },
-        {
-          "command": "platformio-debug.registers.setFormat",
-          "when": "false"
-        },
-        {
-          "command": "platformio-debug.memory.deleteHistoryItem",
-          "when": "false"
-        },
         {
           "command": "platformio-debug.examineMemory",
           "when": "debugType == platformio-debug"
@@ -410,6 +375,11 @@
       ],
       "view/title": [
         {
+          "command": "platformio-ide.switchProjectEnv",
+          "when": "pioCoreReady && pioMultiEnvProject && view == platformio-ide.projectTasks",
+          "group": "navigation"
+        },
+        {
           "command": "platformio-ide.refreshProjectTasks",
           "when": "pioCoreReady && view == platformio-ide.projectTasks",
           "group": "navigation"
@@ -441,7 +411,6 @@
         {
           "id": "platformio-ide.projectTasks",
           "name": "Project Tasks",
-          "icon": "root-folder",
           "when": "pioProjectReady"
         },
         {
@@ -609,25 +578,25 @@
     "vscode:package": "webpack --mode production && vsce package"
   },
   "devDependencies": {
-    "@babel/core": "~7.12.1",
+    "@babel/core": "~7.12.3",
     "@types/node": "~12",
     "@types/vscode": "~1.44.0",
     "babel-eslint": "~10.1.0",
     "babel-loader": "~8.1.0",
     "babel-plugin-transform-class-properties": "~6.24.1",
     "babel-preset-env": "~1.7.0",
-    "eslint": "~7.11.0",
+    "eslint": "~7.12.1",
     "eslint-import-resolver-webpack": "~0.13.0",
     "eslint-plugin-import": "~2.22.1",
     "prettier": "~2.1.2",
     "vsce": "~1.81.1",
-    "webpack": "~5.1.3",
-    "webpack-cli": "~4.0.0"
+    "webpack": "~5.3.2",
+    "webpack-cli": "~4.1.0"
   },
   "dependencies": {
     "fs-plus": "~3.1.1",
-    "platformio-node-helpers": "~8.0.1",
-    "platformio-vscode-debug": "~1.2.12"
+    "platformio-node-helpers": "~8.1.0",
+    "platformio-vscode-debug": "~1.3.0"
   },
   "extensionDependencies": [
     "ms-vscode.cpptools"
