@@ -2,5 +2,6 @@
 /dist
 *.vsix
 yarn.lock
+package-lock.json
 *.dict
 .vscode/settings.json
