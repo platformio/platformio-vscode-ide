@@ -256,16 +256,16 @@ class PlatformIOVSCodeExtension {
         vscode.commands.executeCommand('workbench.action.debug.start');
       }),
       vscode.commands.registerCommand('platformio-ide.updateGlobalLibs', () =>
-        this.pioTerm.sendText('platformio lib --global update')
+        this.pioTerm.sendText('pio lib --global update')
       ),
       vscode.commands.registerCommand('platformio-ide.updatePlatforms', () =>
-        this.pioTerm.sendText('platformio platform update')
+        this.pioTerm.sendText('pio platform update')
       ),
       vscode.commands.registerCommand('platformio-ide.updateCore', () =>
-        this.pioTerm.sendText('platformio update')
+        this.pioTerm.sendText('pio update')
       ),
       vscode.commands.registerCommand('platformio-ide.upgradeCore', () =>
-        this.pioTerm.sendText('platformio upgrade')
+        this.pioTerm.sendText('pio upgrade')
       )
     );
   }
