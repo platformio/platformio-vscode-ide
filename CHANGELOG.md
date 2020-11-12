@@ -1,5 +1,9 @@
 # Release Notes
 
+## 2.2.1 (2020-11-12)
+
+- Fixed a regression bug when a debug breakpoint was not allowed for Assembly files
+
 ## 2.2.0 (2020-11-03)
 
 - Refactored "Project Tasks" view

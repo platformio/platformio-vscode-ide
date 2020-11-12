@@ -1,6 +1,6 @@
 {
   "name": "platformio-ide",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "publisher": "platformio",
   "engines": {
     "vscode": "^1.44.0"
@@ -248,6 +248,14 @@
     ],
     "debuggers": [
       {
+        "enableBreakpointsFor": {
+          "languageIds": [
+            "c",
+            "cpp",
+            "platformio-debug.asm",
+            "platformio-debug.disassembly"
+          ]
+        },
         "configurationAttributes": {
           "launch": {
             "properties": {
@@ -582,16 +590,16 @@
     "@types/node": "~12",
     "@types/vscode": "~1.44.0",
     "babel-eslint": "~10.1.0",
-    "babel-loader": "~8.1.0",
+    "babel-loader": "~8.2.1",
     "babel-plugin-transform-class-properties": "~6.24.1",
     "babel-preset-env": "~1.7.0",
-    "eslint": "~7.12.1",
+    "eslint": "~7.13.0",
     "eslint-import-resolver-webpack": "~0.13.0",
     "eslint-plugin-import": "~2.22.1",
     "prettier": "~2.1.2",
     "vsce": "~1.81.1",
-    "webpack": "~5.3.2",
-    "webpack-cli": "~4.1.0"
+    "webpack": "~5.4.0",
+    "webpack-cli": "~4.2.0"
   },
   "dependencies": {
     "fs-plus": "~3.1.1",

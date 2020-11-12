@@ -163,14 +163,10 @@ export default class ProjectTaskManager {
       vscode.workspace.getWorkspaceFolder(vscode.Uri.file(this.projectDir)),
       projectTask.title,
       ProjectTaskManager.type,
-      new vscode.ProcessExecution(
-        IS_WINDOWS ? 'platformio.exe' : 'platformio',
-        projectTask.args,
-        {
-          cwd: this.projectDir,
-          env: envClone,
-        }
-      ),
+      new vscode.ProcessExecution(IS_WINDOWS ? 'pio.exe' : 'pio', projectTask.args, {
+        cwd: this.projectDir,
+        env: envClone,
+      }),
       '$platformio'
     );
     vscodeTask.presentationOptions = {
