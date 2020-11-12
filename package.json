@@ -248,6 +248,14 @@
     ],
     "debuggers": [
       {
+        "enableBreakpointsFor": {
+          "languageIds": [
+            "c",
+            "cpp",
+            "platformio-debug.asm",
+            "platformio-debug.disassembly"
+          ]
+        },
         "configurationAttributes": {
           "launch": {
             "properties": {
