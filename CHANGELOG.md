@@ -1,6 +1,6 @@
 # Release Notes
 
-## 2.2.1 (2020-11-??)
+## 2.2.1 (2020-11-12)
 
 - Fixed a regression bug when a debug breakpoint was not allowed for Assembly files
 
