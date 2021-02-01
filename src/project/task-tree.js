@@ -8,7 +8,7 @@
 
 import * as vscode from 'vscode';
 
-import ProjectTaskManager from './project';
+import ProjectTaskManager from './tasks';
 
 export default class ProjectTasksTreeProvider {
   constructor(id, envTasks, selectedEnvName) {
