@@ -51,6 +51,7 @@ export default class ProjectTaskManager {
 
     if (force) {
       this.projectObserver.resetCache();
+      this._sid = Math.random();
     }
 
     const projectEnvs = await this.projectObserver.getProjectEnvs();
@@ -108,7 +109,7 @@ export default class ProjectTaskManager {
       return;
     }
     await this.projectObserver.loadEnvTasks(name);
-    return await this.refresh();
+    return await this.requestRefresh();
   }
 
   toVSCodeTask(projectTask) {
