@@ -8,15 +8,15 @@
 
 import * as vscode from 'vscode';
 
-import ProjectTaskManager from './tasks';
-
 export default class ProjectTasksTreeProvider {
-  constructor(id, envTasks, selectedEnvName) {
+  static DEFAULT_ENV_NAME = 'Default';
+
+  constructor(id, envs, tasks, activeEnvName) {
     this.id = id;
-    this.envTasks = envTasks;
-    this.selectedEnvName = selectedEnvName;
-    this.multiEnvProject =
-      Object.keys(this.envTasks).filter((env) => env.includes('env:')).length > 1;
+    this.envs = envs;
+    this.tasks = tasks;
+    this.activeEnvName = activeEnvName;
+    this.multiEnvProject = this.envs.length > 1;
   }
 
   getTreeItem(item) {
@@ -29,13 +29,8 @@ export default class ProjectTasksTreeProvider {
     treeItem.tooltip = task.title;
     treeItem.command = {
       title: task.title,
-      command: 'workbench.action.tasks.runTask',
-      arguments: [
-        {
-          type: ProjectTaskManager.type,
-          task: task.id,
-        },
-      ],
+      command: 'platformio-ide.privateRunTask',
+      arguments: [task],
     };
     if (!task.coreEnv && task.multienv && this.multiEnvProject) {
       treeItem.label += ' All';
@@ -45,7 +40,7 @@ export default class ProjectTasksTreeProvider {
 
   getChildren(element) {
     if (element && element.group) {
-      return this.getGroupChildren(element.group, element.env);
+      return this.getEnvGroupChildren(element.env, element.group);
     } else if (element && element.env) {
       return this.getEnvChildren(element.env);
     }
@@ -54,32 +49,31 @@ export default class ProjectTasksTreeProvider {
 
   getRootChildren() {
     const result = [];
-    for (const env of Object.keys(this.envTasks)) {
+    for (const envName of [undefined, ...this.envs.map((item) => item.name)]) {
       const treeItem = new vscode.TreeItem(
-        env,
-        env === `env:${this.selectedEnvName}` ||
-        (env.includes('env:') && !this.multiEnvProject)
+        envName || ProjectTasksTreeProvider.DEFAULT_ENV_NAME,
+        envName && (envName === this.activeEnvName || !this.multiEnvProject)
           ? vscode.TreeItemCollapsibleState.Expanded
           : vscode.TreeItemCollapsibleState.Collapsed
       );
-      treeItem.id = `${this.id}-${env}`;
-      treeItem.env = env;
+      treeItem.id = `${this.id}-${envName}`;
+      treeItem.env = envName;
       treeItem.iconPath = new vscode.ThemeIcon('root-folder');
       result.push(treeItem);
     }
     return result;
   }
 
-  getGroupChildren(group, env = undefined) {
-    return this.envTasks[env].filter((task) => task.group === group);
+  getEnvGroupChildren(env, group) {
+    return this.tasks.filter((task) => task.coreEnv === env && task.group === group);
   }
 
   getEnvChildren(env) {
-    const envTasks = this.envTasks[env];
+    const envTasks = this.tasks.filter((task) => task.coreEnv === env);
     if (!envTasks.length) {
       return [new vscode.TreeItem('Loading...')];
     }
-    const result = envTasks.filter((task) => !task.group && !task.coreEnv);
+    const result = envTasks.filter((task) => !task.group);
     // root groups
     for (const group of this.getTaskGroups(envTasks)) {
       const element = new vscode.TreeItem(

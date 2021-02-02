@@ -5,7 +5,8 @@
 **Requires PlatformIO Core 5.1 or above**
 
 * Allowed passing custom base URL of the Python Package Index using new `customPyPiIndexUrl` setting
-* Updated PlatformIO Core installer to 1.0.0 ([release notes](https://github.com/platformio/platformio-core-installer/releases/tag/v1.0.0))
+* Updated PlatformIO Core installer to v1.0.0 ([release notes](https://github.com/platformio/platformio-core-installer/releases/tag/v1.0.0))
+* Fixed issues when the "Upload and Monitor" command didn't terminate the running task and didn't reopen a monitor with delay (issue [#2266](https://github.com/platformio/platformio-vscode-ide/issues/2266), issue [#2319](https://github.com/platformio/platformio-vscode-ide/issues/2319))
 
 ## 2.2.1 (2020-11-12)
 

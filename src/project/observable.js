@@ -59,7 +59,10 @@ export default class ProjectObservable {
         this._pool.rebuildIndex(this.getActivePIOProjectDir())
       ),
       vscode.commands.registerCommand('platformio-ide.refreshProjectTasks', () =>
-        this._tasks.refresh({ force: true })
+        this._taskManager.refresh({ force: true })
+      ),
+      vscode.commands.registerCommand('platformio-ide.privateRunTask', (task) =>
+        this._taskManager.runTask(task)
       ),
     ];
 

@@ -26,6 +26,8 @@ export default class ProjectTaskManager {
     this._sid = Math.random();
     this._refreshTimeout = undefined;
     this._sbEnvSwitcher = undefined;
+    this._restoreOnDidEndTask = undefined;
+    this._tasksToRestore = [];
 
     this.refresh();
   }
@@ -44,21 +46,26 @@ export default class ProjectTaskManager {
     );
   }
 
-  async refresh(options = { force: false }) {
+  async refresh({ force = false } = {}) {
     this.dispose();
 
-    if (options.force) {
+    if (force) {
       this.projectObserver.resetCache();
     }
 
     const projectEnvs = await this.projectObserver.getProjectEnvs();
-    const defaultTasks = await this.projectObserver.getDefaultTasks();
-    const envTasks = await this.getEnvTasks(projectEnvs);
+    const projectTasks = [...(await this.projectObserver.getDefaultTasks())];
+    for (const item of projectEnvs) {
+      projectTasks.push(
+        ...((await this.projectObserver.getLoadedEnvTasks(item.name)) || [])
+      );
+    }
 
     const taskViewer = vscode.window.createTreeView(ProjectTaskManager.TASKS_VIEW_ID, {
       treeDataProvider: new ProjectTasksTreeProvider(
         this._sid,
-        { ...{ Default: defaultTasks }, ...envTasks },
+        projectEnvs,
+        projectTasks,
         this.projectObserver.activeEnvName
       ),
       showCollapseAll: true,
@@ -66,29 +73,26 @@ export default class ProjectTaskManager {
 
     this.subscriptions.push(
       taskViewer,
+
       // pre-fetch expanded env tasks
-      taskViewer.onDidExpandElement(async ({ element }) =>
-        (element.env || '').includes('env:')
-          ? await this.onDidRequestEnvTasks(element.env.substring(4))
-          : undefined
-      ),
+      taskViewer.onDidExpandElement(async ({ element }) => {
+        if (element.env) {
+          await this.onDidRequestEnvTasks(element.env);
+        }
+      }),
+
       // register VSCode Task Provider
       vscode.tasks.registerTaskProvider(ProjectTaskManager.PROVIDER_TYPE, {
-        provideTasks: async () => {
-          const result = defaultTasks.map((task) => this.toVSCodeTask(task));
-          for (const tasks of Object.values(envTasks)) {
-            result.push(...tasks.map((task) => this.toVSCodeTask(task)));
-          }
-          return result;
-        },
+        provideTasks: async () => projectTasks.map((task) => this.toVSCodeTask(task)),
         resolveTask: () => {
           return undefined;
         },
-      })
+      }),
+
+      vscode.tasks.onDidEndTaskProcess((event) => this.onDidEndTaskProcess(event))
     );
 
-    this.controlDeviceMonitorTasks();
-    this.registerTaskBasedCommands();
+    this.registerTaskBasedCommands(projectTasks);
     if (projectEnvs.length > 1) {
       this.registerEnvSwitcher(projectEnvs);
     }
@@ -97,15 +101,6 @@ export default class ProjectTaskManager {
       'pioMultiEnvProject',
       projectEnvs.length > 1
     );
-  }
-
-  async getEnvTasks(envs) {
-    const result = {};
-    for (const item of envs) {
-      result[`env:${item.name}`] =
-        (await this.projectObserver.getLoadedEnvTasks(item.name)) || [];
-    }
-    return result;
   }
 
   async onDidRequestEnvTasks(name) {
@@ -153,107 +148,106 @@ export default class ProjectTaskManager {
     return vscodeTask;
   }
 
-  controlDeviceMonitorTasks() {
-    let restoreAfterTask = undefined;
-    let restoreTasks = [];
-
-    this.subscriptions.push(
-      vscode.tasks.onDidStartTaskProcess((event) => {
-        if (
-          !vscode.workspace
-            .getConfiguration('platformio-ide')
-            .get('autoCloseSerialMonitor')
-        ) {
-          return;
-        }
-        if (
-          !['upload', 'test'].some((arg) =>
-            event.execution.task.execution.args.includes(arg)
-          )
-        ) {
-          return;
-        }
-        vscode.tasks.taskExecutions.forEach((e) => {
-          if (event.execution.task === e.task) {
-            return;
-          }
-          if (
-            ['device', 'monitor'].every((arg) => e.task.execution.args.includes(arg))
-          ) {
-            restoreTasks.push(e.task);
-          }
-          if (e.task.execution.args.includes('monitor')) {
-            e.terminate();
-          }
-        });
-        restoreAfterTask = event.execution.task;
-      }),
-
-      vscode.tasks.onDidEndTaskProcess((event) => {
-        if (event.execution.task !== restoreAfterTask || event.exitCode !== 0) {
-          return;
-        }
-        setTimeout(() => {
-          restoreTasks.forEach((task) => {
-            vscode.tasks.executeTask(task);
-          });
-          restoreTasks = [];
-        }, parseInt(vscode.workspace.getConfiguration('platformio-ide').get('reopenSerialMonitorDelay')));
-      })
-    );
+  runTask(task) {
+    this._autoCloseSerialMonitor(task);
+    vscode.commands.executeCommand('workbench.action.tasks.runTask', {
+      type: ProjectTaskManager.PROVIDER_TYPE,
+      task: task.id,
+    });
   }
 
-  registerTaskBasedCommands() {
-    const maybeEnvTask = (name) => {
-      return this.projectObserver.activeEnvName
-        ? `${name} (${this.projectObserver.activeEnvName})`
-        : name;
+  _autoCloseSerialMonitor(task) {
+    const closeMonitorConds = [
+      extension.getSetting('autoCloseSerialMonitor'),
+      ['upload', 'test'].some((arg) => task.args.includes(arg)),
+    ];
+    if (!closeMonitorConds.every((value) => value)) {
+      return;
+    }
+    vscode.tasks.taskExecutions.forEach((event) => {
+      const isMonitorAndUploadTask = ['--target', 'upload', 'monitor'].every((arg) =>
+        event.task.execution.args.includes(arg)
+      );
+      const skipConds = [
+        // skip non-PlatformIO task
+        event.task.definition.type !== ProjectTaskManager.PROVIDER_TYPE,
+        !event.task.execution.args.includes('monitor'),
+        this.areTasksEqual(task, event.task) && !isMonitorAndUploadTask,
+      ];
+      if (skipConds.some((value) => value)) {
+        return;
+      }
+      event.terminate();
+      if (
+        !isMonitorAndUploadTask &&
+        ['device', 'monitor'].every((arg) => event.task.execution.args.includes(arg))
+      ) {
+        this._tasksToRestore.push(event.task);
+      }
+    });
+    this._restoreOnDidEndTask = task;
+  }
+
+  onDidEndTaskProcess(event) {
+    const skipConds = [
+      !this._restoreOnDidEndTask,
+      event.execution.task.definition.type !== ProjectTaskManager.PROVIDER_TYPE,
+      event.exitCode !== 0,
+      this.areTasksEqual(this._restoreOnDidEndTask, event.execution.task),
+    ];
+    if (skipConds.some((value) => value)) {
+      return;
+    }
+    this._restoreOnDidEndTask = undefined;
+    setTimeout(() => {
+      while (this._tasksToRestore.length) {
+        vscode.tasks.executeTask(this._tasksToRestore.pop());
+      }
+    }, parseInt(extension.getSetting('reopenSerialMonitorDelay')));
+  }
+
+  areTasksEqual(task1, task2) {
+    if (!task1 || !task2) {
+      return task1 === task2;
+    }
+    const args1 = task1.args || task1.execution.args;
+    const args2 = task2.args || task2.execution.args;
+    return args1 === args2;
+  }
+
+  registerTaskBasedCommands(tasks) {
+    const _runTask = (name) => {
+      const candidates = tasks.filter(
+        (task) =>
+          task.name === name && task.coreEnv === this.projectObserver.activeEnvName
+      );
+      this.runTask(candidates[0]);
     };
 
     this.subscriptions.push(
       vscode.commands.registerCommand('platformio-ide.build', () => {
-        const taskName = extension.getSetting('buildTask') || {
-          type: ProjectTaskManager.PROVIDER_TYPE,
-          task: maybeEnvTask('Build'),
-        };
-        return vscode.commands.executeCommand(
-          'workbench.action.tasks.runTask',
-          taskName
-        );
+        if (extension.getSetting('buildTask')) {
+          return vscode.commands.executeCommand(
+            'workbench.action.tasks.runTask',
+            extension.getSetting('buildTask')
+          );
+        }
+        _runTask('Build');
       }),
       vscode.commands.registerCommand('platformio-ide.upload', () =>
-        vscode.commands.executeCommand('workbench.action.tasks.runTask', {
-          type: ProjectTaskManager.PROVIDER_TYPE,
-          task: maybeEnvTask(
-            extension.getSetting('forceUploadAndMonitor')
-              ? 'Upload and Monitor'
-              : 'Upload'
-          ),
-        })
+        _runTask(
+          extension.getSetting('forceUploadAndMonitor')
+            ? 'Upload and Monitor'
+            : 'Upload'
+        )
       ),
-      vscode.commands.registerCommand('platformio-ide.remote', () =>
-        vscode.commands.executeCommand('workbench.action.tasks.runTask', {
-          type: ProjectTaskManager.PROVIDER_TYPE,
-          task: maybeEnvTask('Remote'),
-        })
-      ),
-      vscode.commands.registerCommand('platformio-ide.test', () =>
-        vscode.commands.executeCommand('workbench.action.tasks.runTask', {
-          type: ProjectTaskManager.PROVIDER_TYPE,
-          task: maybeEnvTask('Test'),
-        })
-      ),
-      vscode.commands.registerCommand('platformio-ide.clean', () =>
-        vscode.commands.executeCommand('workbench.action.tasks.runTask', {
-          type: ProjectTaskManager.PROVIDER_TYPE,
-          task: maybeEnvTask('Clean'),
-        })
-      ),
+      vscode.commands.registerCommand('platformio-ide.test', () => _runTask('Test')),
+      vscode.commands.registerCommand('platformio-ide.clean', () => _runTask('Clean')),
       vscode.commands.registerCommand('platformio-ide.serialMonitor', () =>
-        vscode.commands.executeCommand('workbench.action.tasks.runTask', {
-          type: ProjectTaskManager.PROVIDER_TYPE,
-          task: maybeEnvTask('Monitor'),
-        })
+        _runTask('Monitor')
+      ),
+      vscode.commands.registerCommand('platformio-ide.remoteUpload', () =>
+        _runTask('Remote Upload')
       )
     );
   }
