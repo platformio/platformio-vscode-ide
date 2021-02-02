@@ -1,5 +1,12 @@
 # Release Notes
 
+## 2.3.0 (2021-??-??)
+
+**Requires PlatformIO Core 5.1 or above**
+
+* Allowed passing custom base URL of the Python Package Index using new `customPyPiIndexUrl` setting
+* Updated PlatformIO Core installer to 1.0.0 ([release notes](https://github.com/platformio/platformio-core-installer/releases/tag/v1.0.0))
+
 ## 2.2.1 (2020-11-12)
 
 - Fixed a regression bug when a debug breakpoint was not allowed for Assembly files

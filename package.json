@@ -575,6 +575,14 @@
         "platformio-ide.pioHomeServerHttpPort": {
           "type": "integer",
           "description": "PIO Home server HTTP port (the default value 0 automatically assigns a free port in the range [8010..8100])"
+        },
+        "platformio-ide.customPyPiIndexUrl": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "default": null,
+          "description": "Custom base URL of the Python Package Index (default `https://pypi.org/simple`)"
         }
       }
     }

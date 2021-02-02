@@ -137,6 +137,9 @@ class PlatformIOVSCodeExtension {
     if (http_proxy && !process.env.HTTPS_PROXY && !process.env.https_proxy) {
       extraVars['HTTPS_PROXY'] = http_proxy;
     }
+    if (this.getSetting('customPyPiIndexUrl')) {
+      extraVars['PIP_INDEX_URL'] = this.getSetting('customPyPiIndexUrl');
+    }
     pioNodeHelpers.proc.patchOSEnviron({
       caller: 'vscode',
       extraPath: this.getSetting('customPATH'),
