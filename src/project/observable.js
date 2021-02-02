@@ -133,5 +133,12 @@ export default class ProjectObservable {
       projectDir,
       this._pool.getObserver(projectDir)
     );
+
+    // open "platformio.ini" by default
+    if (vscode.window.visibleTextEditors.length === 0) {
+      vscode.window.showTextDocument(
+        vscode.Uri.file(path.join(projectDir, 'platformio.ini'))
+      );
+    }
   }
 }
