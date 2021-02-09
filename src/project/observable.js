@@ -9,26 +9,30 @@
 import * as pioNodeHelpers from 'platformio-node-helpers';
 
 import ProjectTaskManager from './tasks';
+import { STATUS_BAR_PRIORITY_START } from '../constants';
+import StateStorage from '../state-storage';
 import { extension } from '../main';
 import fs from 'fs';
+import { notifyError } from '../utils';
 import path from 'path';
 import vscode from 'vscode';
 
 export default class ProjectObservable {
   constructor() {
-    this._lastActiveProjectDir = undefined;
+    this._persistentState = new StateStorage(extension.context.globalState, 'projects');
     this._taskManager = undefined;
+    this._sbEnvSwitcher = undefined;
     this._pool = new pioNodeHelpers.project.ProjectPool({
       ide: 'vscode',
       api: {
         createFileSystemWatcher: vscode.workspace.createFileSystemWatcher,
         createDirSystemWatcher: (dir) =>
           vscode.workspace.createFileSystemWatcher(path.join(dir, '*')),
-        withWindowProgress: (task, title) =>
+        withIndexRebuildingProgress: (task) =>
           vscode.window.withProgress(
             {
               location: { viewId: vscode.ProgressLocation.Window },
-              title,
+              title: 'PlatformIO: Rebuilding IntelliSense Index',
             },
             task
           ),
@@ -37,13 +41,22 @@ export default class ProjectObservable {
             {
               location: { viewId: ProjectTaskManager.TASKS_VIEW_ID },
             },
-            task
+            async () =>
+              await vscode.window.withProgress(
+                {
+                  location: { viewId: vscode.ProgressLocation.Window },
+                  title: 'PlatformIO: Loading tasks...',
+                },
+                task
+              )
           ),
         onDidChangeProjectConfig: (projectDir) => {
           if (this._taskManager && this._taskManager.projectDir === projectDir) {
             this._taskManager.requestRefresh();
           }
+          this.saveActiveProjectState();
         },
+        onDidNotifyError: notifyError.bind(this),
       },
       settings: {
         autoPreloadEnvTasks: extension.getSetting('autoPreloadEnvTasks'),
@@ -53,10 +66,12 @@ export default class ProjectObservable {
 
     this.subscriptions = [
       this._pool,
-      vscode.window.onDidChangeActiveTextEditor(() => this.switchToActiveProject()),
-      vscode.workspace.onDidChangeWorkspaceFolders(() => this.switchToActiveProject()),
+      // vscode.window.onDidChangeActiveTextEditor(() => this.switchToProject()),
+      vscode.workspace.onDidChangeWorkspaceFolders(() =>
+        this.switchToProject(this.findActiveProjectDir())
+      ),
       vscode.commands.registerCommand('platformio-ide.rebuildProjectIndex', () =>
-        this._pool.rebuildIndex(this.getActivePIOProjectDir())
+        this._pool.getActiveObserver().rebuildIndex({ force: true })
       ),
       vscode.commands.registerCommand('platformio-ide.refreshProjectTasks', () =>
         this._taskManager.refresh({ force: true })
@@ -66,8 +81,9 @@ export default class ProjectObservable {
       ),
     ];
 
+    this.registerEnvSwitcher();
     // switch to the first project in a workspace on start-up
-    this.switchToActiveProject();
+    this.switchToProject(this.findActiveProjectDir());
   }
 
   dispose() {
@@ -88,53 +104,88 @@ export default class ProjectObservable {
       .filter((projectDir) => ProjectObservable.isPIOProjectSync(projectDir));
   }
 
-  getActivePIOProjectDir() {
+  findActiveProjectDir() {
     const pioProjectDirs = ProjectObservable.getPIOProjectDirs();
+    const currentActiveDir = this._pool.getActiveProjectDir();
     if (pioProjectDirs.length < 1) {
-      this._lastActiveProjectDir = undefined;
       return undefined;
     }
     if (
-      !this._lastActiveProjectDir ||
-      !vscode.workspace.workspaceFolders.find(
-        (folder) => folder.uri.fsPath === this._lastActiveProjectDir
-      )
+      currentActiveDir &&
+      pioProjectDirs.find((projectDir) => projectDir === currentActiveDir)
     ) {
-      this._lastActiveProjectDir = pioProjectDirs[0];
+      return currentActiveDir;
     }
-    const editor = vscode.window.activeTextEditor;
-    if (!editor) {
-      return this._lastActiveProjectDir;
+    const lastActiveDir = this._persistentState.getValue('lastProjectDir');
+    if (
+      lastActiveDir &&
+      pioProjectDirs.find((projectDir) => projectDir === lastActiveDir)
+    ) {
+      return lastActiveDir;
     }
-    const resource = editor.document.uri;
-    if (resource.scheme !== 'file') {
-      return this._lastActiveProjectDir;
-    }
-    const folder = vscode.workspace.getWorkspaceFolder(resource);
-    if (!folder || !ProjectObservable.isPIOProjectSync(folder.uri.fsPath)) {
-      // outside workspace
-      return this._lastActiveProjectDir;
-    }
-    this._lastActiveProjectDir = folder.uri.fsPath;
-    return this._lastActiveProjectDir;
+    return pioProjectDirs[0];
   }
 
-  switchToActiveProject() {
-    const projectDir = this.getActivePIOProjectDir();
-    if (this._pool.getActiveProjectDir() === projectDir) {
+  loadProjectStateItem(projectDir, name) {
+    const data = (this._persistentState.getValue('projects') || {})[projectDir] || {};
+    return data[name];
+  }
+
+  saveProjectStateItem(projectDir, name, value) {
+    const projects = this._persistentState.getValue('projects') || {};
+    if (!projects[projectDir]) {
+      projects[projectDir] = {};
+    }
+    projects[projectDir][name] = value;
+
+    // cleanup removed project
+    for (const key of Object.keys(projects)) {
+      if (ProjectObservable.isPIOProjectSync(key)) {
+        continue;
+      }
+      delete projects[key];
+    }
+
+    this._persistentState.setValue('projects', projects);
+    this._persistentState.setValue('lastProjectDir', projectDir);
+  }
+
+  saveActiveProjectState() {
+    const observer = this._pool.getActiveObserver();
+    if (!observer) {
       return;
     }
+    this.saveProjectStateItem(
+      observer.projectDir,
+      'activeEnv',
+      observer.getActiveEnvName()
+    );
+  }
+
+  async switchToProject(projectDir, options = {}) {
+    if (!projectDir) {
+      console.error('switchProject => Please provide project folder');
+      return;
+    }
+    this._sbEnvSwitcher.text = '$(root-folder) Loading...';
+
+    const observer = this._pool.getObserver(projectDir);
+    let envName = undefined;
+    if ('envName' in options) {
+      envName = options.envName;
+    } else if (!observer.getActiveEnvName()) {
+      envName = this.loadProjectStateItem(projectDir, 'activeEnv');
+    }
+    await observer.switchProjectEnv(envName);
     this._pool.switch(projectDir);
+
     if (this._taskManager) {
       this._taskManager.dispose();
       this._taskManager = undefined;
     }
-    this._taskManager = new ProjectTaskManager(
-      projectDir,
-      this._pool.getObserver(projectDir)
-    );
+    this._taskManager = new ProjectTaskManager(projectDir, observer);
 
-    // open "platformio.ini" by default
+    // open "platformio.ini" if no visible editors
     if (vscode.window.visibleTextEditors.length === 0) {
       vscode.window.showTextDocument(
         vscode.Uri.file(path.join(projectDir, 'platformio.ini'))

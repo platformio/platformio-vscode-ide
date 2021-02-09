@@ -4,7 +4,9 @@
 
 **Requires PlatformIO Core 5.1 or above**
 
-* Show active project in statusbar (issue [#2276](https://github.com/platformio/platformio-vscode-ide/issues/2276))
+* Show active project in the status bar (issue [#2276](https://github.com/platformio/platformio-vscode-ide/issues/2276))
+* Automatically switch to the latest project on restart (issue [#2365](https://github.com/platformio/platformio-vscode-ide/issues/2365))
+* Automatically restore the latest project environment (issue [#2344](https://github.com/platformio/platformio-vscode-ide/issues/2344))
 * Allowed passing custom base URL of the Python Package Index using new `customPyPiIndexUrl` setting
 * Open ["platformio.ini" configuration file](https://docs.platformio.org/page/projectconf/index.html) from newly added project (if there are no other active editors) (issue [#2263](https://github.com/platformio/platformio-vscode-ide/issues/2263))
 * Updated PlatformIO Core installer to v1.0.0 ([release notes](https://github.com/platformio/platformio-core-installer/releases/tag/v1.0.0))
