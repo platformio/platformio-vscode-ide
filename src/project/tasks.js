@@ -8,7 +8,7 @@
 
 import * as pioNodeHelpers from 'platformio-node-helpers';
 
-import { IS_WINDOWS, STATUS_BAR_PRIORITY_START } from '../constants';
+import { IS_WINDOWS } from '../constants';
 import ProjectTasksTreeProvider from './task-tree';
 import { extension } from '../main';
 import vscode from 'vscode';
@@ -25,7 +25,6 @@ export default class ProjectTaskManager {
 
     this._sid = Math.random();
     this._refreshTimeout = undefined;
-    this._sbEnvSwitcher = undefined;
     this._restoreOnDidEndTask = undefined;
     this._tasksToRestore = [];
 
@@ -67,7 +66,7 @@ export default class ProjectTaskManager {
         this._sid,
         projectEnvs,
         projectTasks,
-        this.projectObserver.activeEnvName
+        this.projectObserver.getActiveEnvName()
       ),
       showCollapseAll: true,
     });
@@ -94,9 +93,6 @@ export default class ProjectTaskManager {
     );
 
     this.registerTaskBasedCommands(projectTasks);
-    if (projectEnvs.length > 1) {
-      this.registerEnvSwitcher(projectEnvs);
-    }
     vscode.commands.executeCommand(
       'setContext',
       'pioMultiEnvProject',
@@ -109,7 +105,7 @@ export default class ProjectTaskManager {
       return;
     }
     await this.projectObserver.loadEnvTasks(name);
-    return await this.requestRefresh();
+    return this.requestRefresh();
   }
 
   toVSCodeTask(projectTask) {
@@ -220,7 +216,7 @@ export default class ProjectTaskManager {
     const _runTask = (name) => {
       const candidates = tasks.filter(
         (task) =>
-          task.name === name && task.coreEnv === this.projectObserver.activeEnvName
+          task.name === name && task.coreEnv === this.projectObserver.getActiveEnvName()
       );
       this.runTask(candidates[0]);
     };
@@ -251,62 +247,5 @@ export default class ProjectTaskManager {
         _runTask('Remote Upload')
       )
     );
-  }
-
-  registerEnvSwitcher(envs) {
-    // reset last selected env if it was removed from config
-    if (
-      this.projectObserver.activeEnvName &&
-      !envs.some((item) => item.name === this.projectObserver.activeEnvName)
-    ) {
-      this.projectObserver.activeEnvName = undefined;
-    }
-
-    this._sbEnvSwitcher = vscode.window.createStatusBarItem(
-      vscode.StatusBarAlignment.Left,
-      STATUS_BAR_PRIORITY_START
-    );
-    this._sbEnvSwitcher.tooltip = 'Switch PlatformIO Project Environment';
-    this._sbEnvSwitcher.command = 'platformio-ide.switchProjectEnv';
-    this._sbEnvSwitcher.text = `$(root-folder) ${
-      this.projectObserver.activeEnvName
-        ? `env:${this.projectObserver.activeEnvName}`
-        : 'Default'
-    }`;
-    this._sbEnvSwitcher.show();
-
-    this.subscriptions.push(
-      this._sbEnvSwitcher,
-      vscode.commands.registerCommand('platformio-ide.switchProjectEnv', () =>
-        this.switchProjectEnv(envs)
-      )
-    );
-  }
-
-  async switchProjectEnv(envs) {
-    const items = [
-      {
-        label: 'Default',
-        description:
-          'All or "default_envs" declared in [platformio] section of "platformio.ini"',
-      },
-    ];
-    items.push(...envs.map((item) => ({ label: `env:${item.name}` })));
-    const pickedItem = await vscode.window.showQuickPick(items);
-    if (!pickedItem) {
-      return;
-    }
-    const newEnv =
-      pickedItem.label === 'Default' ? undefined : pickedItem.label.substring(4);
-    if (newEnv === this.projectObserver.activeEnvName) {
-      return;
-    }
-    this.projectObserver.activeEnvName = newEnv;
-    if (this.projectObserver.activeEnvName) {
-      this._sbEnvSwitcher.text = '$(root-folder) Loading...';
-      await this.projectObserver.loadEnvTasks(this.projectObserver.activeEnvName);
-      this.refresh();
-    }
-    this.projectObserver.rebuildIndex();
   }
 }

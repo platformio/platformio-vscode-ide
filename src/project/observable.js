@@ -140,5 +140,69 @@ export default class ProjectObservable {
         vscode.Uri.file(path.join(projectDir, 'platformio.ini'))
       );
     }
+
+    this.updateEnvSwitcher();
+    this.saveActiveProjectState();
+  }
+
+  registerEnvSwitcher() {
+    this._sbEnvSwitcher = vscode.window.createStatusBarItem(
+      vscode.StatusBarAlignment.Left,
+      STATUS_BAR_PRIORITY_START
+    );
+    this._sbEnvSwitcher.tooltip = 'Switch PlatformIO Project Environment';
+    this._sbEnvSwitcher.command = 'platformio-ide.switchProjectEnv';
+    this._sbEnvSwitcher.text = '$(root-folder) Loading...';
+    this._sbEnvSwitcher.show();
+
+    this.subscriptions.push(
+      this._sbEnvSwitcher,
+      vscode.commands.registerCommand('platformio-ide.switchProjectEnv', () =>
+        this.pickProjectEnv()
+      )
+    );
+  }
+
+  updateEnvSwitcher() {
+    const observer = this._pool.getActiveObserver();
+    if (!observer) {
+      return;
+    }
+    const envName = observer.getActiveEnvName()
+      ? `env:${observer.getActiveEnvName()}`
+      : 'Default';
+    this._sbEnvSwitcher.text = `$(root-folder) ${envName} (${path.basename(
+      observer.projectDir
+    )})`;
+  }
+
+  async pickProjectEnv() {
+    const items = [];
+    for (const projectDir of ProjectObservable.getPIOProjectDirs()) {
+      const shortPrpjectDir = `${path.basename(
+        path.dirname(projectDir)
+      )}/${path.basename(projectDir)}`;
+      items.push({
+        projectDir,
+        label: 'Default',
+        description: `$(folder) ${shortPrpjectDir} ("default_envs" from "platformio.ini")`,
+      });
+      const observer = this._pool.getObserver(projectDir);
+      items.push(
+        ...(await observer.getProjectEnvs()).map((item) => ({
+          projectDir,
+          envName: item.name,
+          label: `env:${item.name}`,
+          description: `$(folder) ${shortPrpjectDir}`,
+        }))
+      );
+    }
+    const pickedItem = await vscode.window.showQuickPick(items, {
+      matchOnDescription: true,
+    });
+    if (!pickedItem) {
+      return;
+    }
+    this.switchToProject(pickedItem.projectDir, { envName: pickedItem.envName });
   }
 }
