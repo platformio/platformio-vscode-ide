@@ -7,6 +7,7 @@
 * Allowed passing custom base URL of the Python Package Index using new `customPyPiIndexUrl` setting
 * Open ["platformio.ini" configuration file](https://docs.platformio.org/page/projectconf/index.html) from newly added project (if there are no other active editors) (issue [#2263](https://github.com/platformio/platformio-vscode-ide/issues/2263))
 * Updated PlatformIO Core installer to v1.0.0 ([release notes](https://github.com/platformio/platformio-core-installer/releases/tag/v1.0.0))
+* Added protection for infinite IntelliSense index rebuilding (issue [#2363](https://github.com/platformio/platformio-vscode-ide/issues/2363))
 * Fixed issues when the "Upload and Monitor" command didn't terminate the running task and didn't reopen a monitor with delay (issue [#2266](https://github.com/platformio/platformio-vscode-ide/issues/2266), issue [#2319](https://github.com/platformio/platformio-vscode-ide/issues/2319))
 * Fixed an issue with broken IntelliSense index rebuilding or tasks loading for big projects (issue [#2321](https://github.com/platformio/platformio-vscode-ide/issues/2321))
 
