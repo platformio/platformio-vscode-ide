@@ -146,7 +146,16 @@ export default class ProjectTaskManager {
   }
 
   runTask(task) {
+    this._restoreOnDidEndTask = undefined;
+    this._tasksToRestore = [];
     this._autoCloseSerialMonitor(task);
+    // skip MonitorAndUpload task thatwill be added to this._tasksToRestore
+    if (
+      this._tasksToRestore.some((t) => this.isMonitorAndUploadTask(t)) &&
+      this.isMonitorAndUploadTask(task)
+    ) {
+      return;
+    }
     vscode.commands.executeCommand('workbench.action.tasks.runTask', {
       type: ProjectTaskManager.PROVIDER_TYPE,
       task: task.id,
@@ -161,10 +170,9 @@ export default class ProjectTaskManager {
     if (!closeMonitorConds.every((value) => value)) {
       return;
     }
+    this._restoreOnDidEndTask = task;
     vscode.tasks.taskExecutions.forEach((event) => {
-      const isMonitorAndUploadTask = ['--target', 'upload', 'monitor'].every((arg) =>
-        event.task.execution.args.includes(arg)
-      );
+      const isMonitorAndUploadTask = this.isMonitorAndUploadTask(event.task);
       const skipConds = [
         // skip non-PlatformIO task
         event.task.definition.type !== ProjectTaskManager.PROVIDER_TYPE,
@@ -174,22 +182,21 @@ export default class ProjectTaskManager {
       if (skipConds.some((value) => value)) {
         return;
       }
-      event.terminate();
       if (
-        !isMonitorAndUploadTask &&
+        isMonitorAndUploadTask ||
         ['device', 'monitor'].every((arg) => event.task.execution.args.includes(arg))
       ) {
         this._tasksToRestore.push(event.task);
       }
+      event.terminate();
     });
-    this._restoreOnDidEndTask = task;
   }
 
   onDidEndTaskProcess(event) {
     const skipConds = [
       !this._restoreOnDidEndTask,
       event.execution.task.definition.type !== ProjectTaskManager.PROVIDER_TYPE,
-      event.exitCode !== 0,
+      event.exitCode !== 0 && !this.isMonitorAndUploadTask(event.execution.task),
       this.areTasksEqual(this._restoreOnDidEndTask, event.execution.task),
     ];
     if (skipConds.some((value) => value)) {
@@ -201,6 +208,11 @@ export default class ProjectTaskManager {
         vscode.tasks.executeTask(this._tasksToRestore.pop());
       }
     }, parseInt(extension.getSetting('reopenSerialMonitorDelay')));
+  }
+
+  isMonitorAndUploadTask(task) {
+    const args = task.args || task.execution.args;
+    return ['--target', 'upload', 'monitor'].every((arg) => args.includes(arg));
   }
 
   areTasksEqual(task1, task2) {
