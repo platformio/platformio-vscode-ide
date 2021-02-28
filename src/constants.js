@@ -14,4 +14,5 @@ export const STATUS_BAR_PRIORITY_START = 10;
 export const CONFLICTED_EXTENSION_IDS = [
   'llvm-vs-code-extensions.vscode-clangd',
   'vsciot-vscode.vscode-arduino',
+  'vscode-openapi'
 ];
