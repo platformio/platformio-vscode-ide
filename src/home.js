@@ -93,7 +93,7 @@ export default class PIOHome {
 
   async getWebviewContent(startUrl) {
     this._lastStartUrl = startUrl;
-    const params = await pioNodeHelpers.home.ensureServerStarted({
+    await pioNodeHelpers.home.ensureServerStarted({
       port: extension.getSetting('pioHomeServerHttpPort'),
       onIDECommand: async (command, params) => {
         if (command === 'open_project') {
@@ -147,7 +147,7 @@ export default class PIOHome {
       <body style="margin: 0; padding: 0; height: 100%; overflow: hidden; background-color: ${
         theme === 'light' ? '#FFF' : '#1E1E1E'
       }">
-        <iframe src="${pioNodeHelpers.home.getFrontendUri(params.host, params.port, {
+        <iframe src="${pioNodeHelpers.home.getFrontendUrl({
           start: startUrl,
           theme,
           workspace: extension.getEnterpriseSetting('defaultPIOHomeWorkspace'),
