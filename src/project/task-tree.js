@@ -41,7 +41,7 @@ export default class ProjectTasksTreeProvider {
   getChildren(element) {
     if (element && element.group) {
       return this.getEnvGroupChildren(element.env, element.group);
-    } else if (element && element.env) {
+    } else if (element) {
       return this.getEnvChildren(element.env);
     }
     return this.getRootChildren();
