@@ -12,7 +12,7 @@ export default class StateStorage {
     this._stateKey = stateKey;
   }
 
-  _loadState() {
+  getState() {
     try {
       const value = this._globalState.get(this._stateKey);
       return value || {};
@@ -22,11 +22,11 @@ export default class StateStorage {
   }
 
   getValue(key) {
-    return (this._loadState() || {})[key];
+    return (this.getState() || {})[key];
   }
 
   setValue(key, value) {
-    const data = this._loadState();
+    const data = this.getState();
     data[key] = value;
     this._globalState.update(this._stateKey, data);
   }

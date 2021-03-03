@@ -14,11 +14,10 @@ import * as utils from './utils';
 import InstallationManager from './installer/manager';
 import PIOHome from './home';
 import PIOTerminal from './terminal';
-import ProjectManager from './project';
+import ProjectObservable from './project/observable';
 import QuickAccessTreeProvider from './views/quick-access-tree';
 import { STATUS_BAR_PRIORITY_START } from './constants';
 import StateStorage from './state-storage';
-import TaskManager from './tasks/manager';
 import fs from 'fs-plus';
 import vscode from 'vscode';
 
@@ -35,13 +34,12 @@ class PlatformIOVSCodeExtension {
   async activate(context) {
     this.context = context;
     this.stateStorage = new StateStorage(context.globalState);
-    this.projectManager = new ProjectManager();
     this.pioHome = new PIOHome();
     this.pioTerm = new PIOTerminal();
 
-    this.subscriptions.push(this.projectManager, this.pioHome, this.pioTerm);
+    this.subscriptions.push(this.pioHome, this.pioTerm);
 
-    const hasPIOProject = !!this.projectManager.getActivePIOProjectDir();
+    const hasPIOProject = ProjectObservable.getPIOProjectDirs().length > 0;
     if (!hasPIOProject && this.getSetting('activateOnlyOnPlatformIOProject')) {
       return;
     }
@@ -82,14 +80,11 @@ class PlatformIOVSCodeExtension {
 
     vscode.commands.executeCommand('setContext', 'pioProjectReady', true);
 
-    this.subscriptions.push(new TaskManager());
     this.initDebug();
     this.initToolbar({
       ignoreCommands: this.getEnterpriseSetting('ignoreToolbarCommands'),
     });
-    this.projectManager.initIndexer({
-      autoRebuild: this.getSetting('autoRebuildAutocompleteIndex'),
-    });
+    this.subscriptions.push(new ProjectObservable());
 
     this.startPIOHome();
 
@@ -141,6 +136,9 @@ class PlatformIOVSCodeExtension {
     }
     if (http_proxy && !process.env.HTTPS_PROXY && !process.env.https_proxy) {
       extraVars['HTTPS_PROXY'] = http_proxy;
+    }
+    if (this.getSetting('customPyPiIndexUrl')) {
+      extraVars['PIP_INDEX_URL'] = this.getSetting('customPyPiIndexUrl');
     }
     pioNodeHelpers.proc.patchOSEnviron({
       caller: 'vscode',

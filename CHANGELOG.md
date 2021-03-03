@@ -1,5 +1,22 @@
 # Release Notes
 
+## 2.3.0 (2021-??-??)
+
+**Requires PlatformIO Core 5.1 or above**
+
+* Project management:
+  - Show active project in the status bar (issue [#2276](https://github.com/platformio/platformio-vscode-ide/issues/2276))
+  - Automatically switch to the latest project on restart (issue [#2365](https://github.com/platformio/platformio-vscode-ide/issues/2365))
+  - Automatically restore the latest project environment (issue [#2344](https://github.com/platformio/platformio-vscode-ide/issues/2344))
+* Allowed passing custom base URL of the Python Package Index using new `customPyPiIndexUrl` setting
+* Open ["platformio.ini" configuration file](https://docs.platformio.org/page/projectconf/index.html) from newly added project (if there are no other active editors) (issue [#2263](https://github.com/platformio/platformio-vscode-ide/issues/2263))
+* Updated PlatformIO Core installer to v1.0.0 ([release notes](https://github.com/platformio/platformio-core-installer/releases/tag/v1.0.0))
+* Added protection for infinite IntelliSense index rebuilding (issue [#2363](https://github.com/platformio/platformio-vscode-ide/issues/2363))
+* Added "OpenAPI (Swagger) Editor" extension to the conflicted list (issue [#2324](https://github.com/platformio/platformio-vscode-ide/issues/2324))
+* Fixed issues when the "Upload and Monitor" command didn't terminate the running task and didn't reopen a monitor with delay (issue [#2266](https://github.com/platformio/platformio-vscode-ide/issues/2266), issue [#2319](https://github.com/platformio/platformio-vscode-ide/issues/2319))
+* Fixed an issue with broken IntelliSense index rebuilding or tasks loading for big projects (issue [#2321](https://github.com/platformio/platformio-vscode-ide/issues/2321))
+* Fixed an issue when a debug breakpoint was not allowed for Assembly files
+
 ## 2.2.1 (2020-11-12)
 
 - Fixed a regression bug when a debug breakpoint was not allowed for Assembly files
