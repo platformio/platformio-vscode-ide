@@ -252,16 +252,22 @@
         "title": "Set Force Disassembly"
       }
     ],
+    "breakpoints": [
+      {
+        "language": "c"
+      },
+      {
+        "language": "cpp"
+      },
+      {
+        "language": "platformio-debug.asm"
+      },
+      {
+        "language": "platformio-debug.disassembly"
+      }
+    ],
     "debuggers": [
       {
-        "enableBreakpointsFor": {
-          "languageIds": [
-            "c",
-            "cpp",
-            "platformio-debug.asm",
-            "platformio-debug.disassembly"
-          ]
-        },
         "configurationAttributes": {
           "launch": {
             "properties": {
