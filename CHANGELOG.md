@@ -1,6 +1,10 @@
 # Release Notes
 
-## 2.3.0 (2021-??-??)
+## 2.3.1 (2021-??-??)
+
+- Automatically activate project environment opened via PIO Home > New Project / Open Project (issue [#2414](https://github.com/platformio/platformio-vscode-ide/issues/2414))
+
+## 2.3.0 (2021-03-03)
 
 **Requires PlatformIO Core 5.1 or above**
 

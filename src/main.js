@@ -26,6 +26,7 @@ class PlatformIOVSCodeExtension {
     this.context = undefined;
     this.pioTerm = undefined;
     this.pioHome = undefined;
+    this.projectObservable = undefined;
     this.subscriptions = [];
 
     this._enterpriseSettings = undefined;
@@ -84,7 +85,8 @@ class PlatformIOVSCodeExtension {
     this.initToolbar({
       ignoreCommands: this.getEnterpriseSetting('ignoreToolbarCommands'),
     });
-    this.subscriptions.push(new ProjectObservable());
+    this.projectObservable = new ProjectObservable();
+    this.subscriptions.push(this.projectObservable);
 
     this.startPIOHome();
 
