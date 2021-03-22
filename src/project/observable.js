@@ -230,21 +230,25 @@ export default class ProjectObservable {
   async pickProjectEnv() {
     const items = [];
     for (const projectDir of ProjectObservable.getPIOProjectDirs()) {
-      const shortPrpjectDir = `${path.basename(
+      const observer = this._pool.getObserver(projectDir);
+      const envs = await observer.getProjectEnvs();
+      if (!envs || !envs.length) {
+        continue;
+      }
+      const shortProjectDir = `${path.basename(
         path.dirname(projectDir)
       )}/${path.basename(projectDir)}`;
       items.push({
         projectDir,
         label: 'Default',
-        description: `$(folder) ${shortPrpjectDir} ("default_envs" from "platformio.ini")`,
+        description: `$(folder) ${shortProjectDir} ("default_envs" from "platformio.ini")`,
       });
-      const observer = this._pool.getObserver(projectDir);
       items.push(
-        ...(await observer.getProjectEnvs()).map((item) => ({
+        ...envs.map((item) => ({
           projectDir,
           envName: item.name,
           label: `env:${item.name}`,
-          description: `$(folder) ${shortPrpjectDir}`,
+          description: `$(folder) ${shortProjectDir}`,
         }))
       );
     }

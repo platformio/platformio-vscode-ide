@@ -2,7 +2,8 @@
 
 ## 2.3.1 (2021-??-??)
 
-- Automatically activate project environment opened via PIO Home > New Project / Open Project (issue [#2414](https://github.com/platformio/platformio-vscode-ide/issues/2414))
+- Automatically activate project environment opened via "PIO Home > New Project / Open Project" (issue [#2414](https://github.com/platformio/platformio-vscode-ide/issues/2414))
+- Do not show "Default" environment when a project does not have any build environments (issue [#2450](https://github.com/platformio/platformio-vscode-ide/issues/2450))
 
 ## 2.3.0 (2021-03-03)
 
