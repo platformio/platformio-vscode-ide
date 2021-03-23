@@ -1,6 +1,6 @@
 # Release Notes
 
-## 2.3.1 (2021-??-??)
+## 2.3.1 (2021-03-23)
 
 - Added a new setting ``platformio-ide.autoOpenPlatformIOIniFile`` to control an automatic opening of the `platformio.ini` file from a project when no other editors are opened (issue [#2419](https://github.com/platformio/platformio-vscode-ide/issues/2419))
 - Added a new setting ``platformio-ide.activateProjectOnTextEditorChange`` to enable automatic project activation depending on an active opened text editor (issue [#2410](https://github.com/platformio/platformio-vscode-ide/issues/2410))
