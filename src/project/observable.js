@@ -186,7 +186,10 @@ export default class ProjectObservable {
     this._taskManager = new ProjectTaskManager(projectDir, observer);
 
     // open "platformio.ini" if no visible editors
-    if (vscode.window.visibleTextEditors.length === 0) {
+    if (
+      vscode.window.visibleTextEditors.length === 0 &&
+      extension.getSetting('autoOpenPlatformIOIniFile')
+    ) {
       vscode.window.showTextDocument(
         vscode.Uri.file(path.join(projectDir, 'platformio.ini'))
       );

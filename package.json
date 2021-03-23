@@ -517,6 +517,11 @@
           "default": false,
           "description": "Activate the PlatformIO extension only when a PlatformIO-based project (with `platformio.ini`) is opened in the workspace"
         },
+        "platformio-ide.autoOpenPlatformIOIniFile": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically open the `platformio.ini` file from a project when no other editors are opened"
+        },
         "platformio-ide.autoCloseSerialMonitor": {
           "type": "boolean",
           "default": true,
