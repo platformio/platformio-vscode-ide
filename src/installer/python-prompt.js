@@ -16,13 +16,15 @@ export default class PythonPrompt {
 
   async prompt() {
     const selectedItem = await vscode.window.showInformationMessage(
-      'PlatformIO: Can not find working Python 2.7 or 3.5+ Interpreter. Please install the latest Python 3 and restart VSCode',
+      'PlatformIO: Can not find working Python 3.6+ Interpreter. Please install the latest Python 3 and restart VSCode',
       { title: 'Install Python', isCloseAffordance: false },
       { title: 'I have Python', isCloseAffordance: false },
       { title: 'Try again', isCloseAffordance: false },
       { title: 'Abort PlatformIO IDE Installation', isCloseAffordance: true }
     );
 
+    let result = { status: this.STATUS_TRY_AGAIN };
+    let pythonExecutable = undefined;
     switch (selectedItem ? selectedItem.title : undefined) {
       case 'Install Python':
         vscode.commands.executeCommand(
@@ -31,21 +33,26 @@ export default class PythonPrompt {
             'http://docs.platformio.org/page/faq.html#install-python-interpreter'
           )
         );
-        return { status: this.STATUS_TRY_AGAIN };
+        break;
       case 'I have Python':
-        return {
-          status: this.STATUS_CUSTOMEXE,
-          pythonExecutable: await vscode.window.showInputBox({
-            prompt: 'Please specify a full path to Python executable file',
-            placeHolder: 'Full path to python/python.exe',
-            validateInput: (value) =>
-              !fs.isFileSync(value) ? 'Invalid path to Python Interpreter' : null,
-          }),
-        };
+        pythonExecutable = await vscode.window.showInputBox({
+          prompt: 'Please specify a full path to Python executable file',
+          placeHolder: 'Full path to python/python.exe',
+          validateInput: (value) =>
+            !fs.isFileSync(value) ? 'Invalid path to Python Interpreter' : null,
+        });
+        if (pythonExecutable) {
+          result = {
+            status: this.STATUS_CUSTOMEXE,
+            pythonExecutable,
+          };
+        }
+        break;
       case 'Abort PlatformIO IDE Installation':
-        return { status: this.STATUS_ABORT };
-      default:
-        return { status: this.STATUS_TRY_AGAIN };
+        result = { status: this.STATUS_ABORT };
+        break;
     }
+
+    return result;
   }
 }

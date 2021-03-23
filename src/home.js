@@ -97,6 +97,13 @@ export default class PIOHome {
       port: extension.getSetting('pioHomeServerHttpPort'),
       onIDECommand: async (command, params) => {
         if (command === 'open_project') {
+          if (extension.projectObservable) {
+            extension.projectObservable.saveProjectStateItem(
+              vscode.Uri.file(params).fsPath,
+              'activeEnv',
+              undefined
+            );
+          }
           this.disposePanel();
           if (vscode.workspace.workspaceFolders) {
             vscode.workspace.updateWorkspaceFolders(

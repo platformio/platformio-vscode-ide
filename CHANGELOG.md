@@ -1,21 +1,33 @@
 # Release Notes
 
-## 2.3.0 (2021-??-??)
+## 2.3.1 (2021-03-23)
+
+- Added a new setting ``platformio-ide.autoOpenPlatformIOIniFile`` to control an automatic opening of the `platformio.ini` file from a project when no other editors are opened (issue [#2419](https://github.com/platformio/platformio-vscode-ide/issues/2419))
+- Added a new setting ``platformio-ide.activateProjectOnTextEditorChange`` to enable automatic project activation depending on an active opened text editor (issue [#2410](https://github.com/platformio/platformio-vscode-ide/issues/2410))
+- Automatically activate project environment opened via "PIO Home > New Project / Open Project" (issue [#2414](https://github.com/platformio/platformio-vscode-ide/issues/2414))
+- Do not show "Default" environment when a project does not have any build environments (issue [#2450](https://github.com/platformio/platformio-vscode-ide/issues/2450))
+- Fixed an issue "Failed to load symbols from executable file" when debugging native/desktop application
+- PlatformIO IDE Installer
+  * Updated PlatformIO Core installer to v1.0.1
+  * Rebuild project index only when the environment changes
+  * Fixed an issue "The 'path' argument must be of type string. Received undefined"
+
+## 2.3.0 (2021-03-03)
 
 **Requires PlatformIO Core 5.1 or above**
 
-* Project management:
-  - Show active project in the status bar (issue [#2276](https://github.com/platformio/platformio-vscode-ide/issues/2276))
-  - Automatically switch to the latest project on restart (issue [#2365](https://github.com/platformio/platformio-vscode-ide/issues/2365))
-  - Automatically restore the latest project environment (issue [#2344](https://github.com/platformio/platformio-vscode-ide/issues/2344))
-* Allowed passing custom base URL of the Python Package Index using new `customPyPiIndexUrl` setting
-* Open ["platformio.ini" configuration file](https://docs.platformio.org/page/projectconf/index.html) from newly added project (if there are no other active editors) (issue [#2263](https://github.com/platformio/platformio-vscode-ide/issues/2263))
-* Updated PlatformIO Core installer to v1.0.0 ([release notes](https://github.com/platformio/platformio-core-installer/releases/tag/v1.0.0))
-* Added protection for infinite IntelliSense index rebuilding (issue [#2363](https://github.com/platformio/platformio-vscode-ide/issues/2363))
-* Added "OpenAPI (Swagger) Editor" extension to the conflicted list (issue [#2324](https://github.com/platformio/platformio-vscode-ide/issues/2324))
-* Fixed issues when the "Upload and Monitor" command didn't terminate the running task and didn't reopen a monitor with delay (issue [#2266](https://github.com/platformio/platformio-vscode-ide/issues/2266), issue [#2319](https://github.com/platformio/platformio-vscode-ide/issues/2319))
-* Fixed an issue with broken IntelliSense index rebuilding or tasks loading for big projects (issue [#2321](https://github.com/platformio/platformio-vscode-ide/issues/2321))
-* Fixed an issue when a debug breakpoint was not allowed for Assembly files
+- Project management:
+  * Show active project in the status bar (issue [#2276](https://github.com/platformio/platformio-vscode-ide/issues/2276))
+  * Automatically switch to the latest project on restart (issue [#2365](https://github.com/platformio/platformio-vscode-ide/issues/2365))
+  * Automatically restore the latest project environment (issue [#2344](https://github.com/platformio/platformio-vscode-ide/issues/2344))
+- Allowed passing custom base URL of the Python Package Index using new `customPyPiIndexUrl` setting
+- Open ["platformio.ini" configuration file](https://docs.platformio.org/page/projectconf/index.html) from newly added project (if there are no other active editors) (issue [#2263](https://github.com/platformio/platformio-vscode-ide/issues/2263))
+- Updated PlatformIO Core installer to v1.0.0 ([release notes](https://github.com/platformio/platformio-core-installer/releases/tag/v1.0.0))
+- Added protection for infinite IntelliSense index rebuilding (issue [#2363](https://github.com/platformio/platformio-vscode-ide/issues/2363))
+- Added "OpenAPI (Swagger) Editor" extension to the conflicted list (issue [#2324](https://github.com/platformio/platformio-vscode-ide/issues/2324))
+- Fixed issues when the "Upload and Monitor" command didn't terminate the running task and didn't reopen a monitor with delay (issue [#2266](https://github.com/platformio/platformio-vscode-ide/issues/2266), issue [#2319](https://github.com/platformio/platformio-vscode-ide/issues/2319))
+- Fixed an issue with broken IntelliSense index rebuilding or tasks loading for big projects (issue [#2321](https://github.com/platformio/platformio-vscode-ide/issues/2321))
+- Fixed an issue when a debug breakpoint was not allowed for Assembly files
 
 ## 2.2.1 (2020-11-12)
 
@@ -50,36 +62,36 @@
 
 ## 2.1.0 (2020-09-16)
 
-* Added a new setting ``platformio-ide.autoPreloadEnvTasks`` to enable automatic preloading of the project environment tasks (issue [#2004](https://github.com/platformio/platformio-vscode-ide/issues/2004))
-* Renamed "PIO Remote" group of tasks to "Remote Development"
-* Updated PlatformIO Core installer to [v0.3.5](https://github.com/platformio/platformio-core-installer/releases/tag/v0.3.5)
+- Added a new setting ``platformio-ide.autoPreloadEnvTasks`` to enable automatic preloading of the project environment tasks (issue [#2004](https://github.com/platformio/platformio-vscode-ide/issues/2004))
+- Renamed "PIO Remote" group of tasks to "Remote Development"
+- Updated PlatformIO Core installer to [v0.3.5](https://github.com/platformio/platformio-core-installer/releases/tag/v0.3.5)
 
 ## 2.0.1 (2020-09-10)
 
-* Moved "Project Tasks" view back to "PlatformIO" activity (you can now drag it to any location)
+- Moved "Project Tasks" view back to "PlatformIO" activity (you can now drag it to any location)
 
 ## 2.0.0 (2020-09-10)
 
 **Requires PlatformIO Core 5.0 or above**
 **Requires VSCode 1.44 or above**
 
-* New PlatformIO Task Explorer
-  - Instant access to the Project Tasks within the VSCode Explorer
-  - Grouped tasks: Generic, Advanced, PIO Remote, Platform, Custom, etc.
-  - Support for PlatformIO dev-platform tasks (Program FPGA bitstream, Burn bootloader, Upload to FS, OTA Update, etc). The list of tasks depends on a particular dev-platform
-  - Access to [User Custom Targets](https://docs.platformio.org/en/latest/projectconf/advanced_scripting.html#custom-targets)
-* New Project Environment Switcher
-  - Switch between project environments declared in [platformio.ini](https://docs.platformio.org/en/latest/projectconf/index.html) project configuration file (issue [#544](https://github.com/platformio/platformio-vscode-ide/issues/544))
-  - Activate IntelliSense service based on the current environment
-  - Automatically generate a debugging configuration for the active environment
-* New PlatformIO IDE Installer
-  - Added progress information
-  - Switched to the cross-platform and portable [get-platformio.py](https://github.com/platformio/platformio-core-installer) installer script
-  - Use built-in portable Python 3 on Windows and macOS (it can be disabled with ``platformio-ide.useBuiltinPython`` setting)
-* Added support for ``extends`` option in ``platformio.ini`` project configuration file (issue [#1371](https://github.com/platformio/platformio-vscode-ide/issues/1371))
-* Contribute PlatformIO Core CLI into VSCode's default Terminal
-* Reduced startup time (PlatformIO Core verification process)
-* Fixed a bug when hotkeys in PlatformIO Home did not work on macOS (issue [#606](https://github.com/platformio/platformio-vscode-ide/issues/606))
+- New PlatformIO Task Explorer
+  * Instant access to the Project Tasks within the VSCode Explorer
+  * Grouped tasks: Generic, Advanced, PIO Remote, Platform, Custom, etc.
+  * Support for PlatformIO dev-platform tasks (Program FPGA bitstream, Burn bootloader, Upload to FS, OTA Update, etc). The list of tasks depends on a particular dev-platform
+  * Access to [User Custom Targets](https://docs.platformio.org/en/latest/projectconf/advanced_scripting.html#custom-targets)
+- New Project Environment Switcher
+  * Switch between project environments declared in [platformio.ini](https://docs.platformio.org/en/latest/projectconf/index.html) project configuration file (issue [#544](https://github.com/platformio/platformio-vscode-ide/issues/544))
+  * Activate IntelliSense service based on the current environment
+  * Automatically generate a debugging configuration for the active environment
+- New PlatformIO IDE Installer
+  * Added progress information
+  * Switched to the cross-platform and portable [get-platformio.py](https://github.com/platformio/platformio-core-installer) installer script
+  * Use built-in portable Python 3 on Windows and macOS (it can be disabled with ``platformio-ide.useBuiltinPython`` setting)
+- Added support for ``extends`` option in ``platformio.ini`` project configuration file (issue [#1371](https://github.com/platformio/platformio-vscode-ide/issues/1371))
+- Contribute PlatformIO Core CLI into VSCode's default Terminal
+- Reduced startup time (PlatformIO Core verification process)
+- Fixed a bug when hotkeys in PlatformIO Home did not work on macOS (issue [#606](https://github.com/platformio/platformio-vscode-ide/issues/606))
 
 ## 1.10.0 (2019-11-20)
 
