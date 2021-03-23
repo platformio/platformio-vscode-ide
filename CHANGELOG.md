@@ -3,6 +3,7 @@
 ## 2.3.1 (2021-??-??)
 
 - Added a new setting ``platformio-ide.autoOpenPlatformIOIniFile`` to control an automatic opening of the `platformio.ini` file from a project when no other editors are opened (issue [#2419](https://github.com/platformio/platformio-vscode-ide/issues/2419))
+- Added a new setting ``platformio-ide.activateProjectOnTextEditorChange`` to enable automatic project activation depending on an active opened text editor (issue [#2410](https://github.com/platformio/platformio-vscode-ide/issues/2410))
 - Automatically activate project environment opened via "PIO Home > New Project / Open Project" (issue [#2414](https://github.com/platformio/platformio-vscode-ide/issues/2414))
 - Do not show "Default" environment when a project does not have any build environments (issue [#2450](https://github.com/platformio/platformio-vscode-ide/issues/2450))
 

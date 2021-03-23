@@ -517,6 +517,11 @@
           "default": false,
           "description": "Activate the PlatformIO extension only when a PlatformIO-based project (with `platformio.ini`) is opened in the workspace"
         },
+        "platformio-ide.activateProjectOnTextEditorChange": {
+          "type": "boolean",
+          "default": false,
+          "description": "Automatically activate project depending on an active opened text editor"
+        },
         "platformio-ide.autoOpenPlatformIOIniFile": {
           "type": "boolean",
           "default": true,

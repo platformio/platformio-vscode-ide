@@ -99,7 +99,7 @@ export default class PIOHome {
         if (command === 'open_project') {
           if (extension.projectObservable) {
             extension.projectObservable.saveProjectStateItem(
-              vscode.Uri.file(params).path,
+              vscode.Uri.file(params).fsPath,
               'activeEnv',
               undefined
             );
