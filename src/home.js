@@ -95,6 +95,7 @@ export default class PIOHome {
     this._lastStartUrl = startUrl;
     await pioNodeHelpers.home.ensureServerStarted({
       port: extension.getSetting('pioHomeServerHttpPort'),
+      host: extension.getSetting('pioHomeServerHttpHost'),
       onIDECommand: async (command, params) => {
         if (command === 'open_project') {
           if (extension.projectObservable) {

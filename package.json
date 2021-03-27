@@ -598,6 +598,11 @@
           "type": "integer",
           "description": "PIO Home server HTTP port (the default value 0 automatically assigns a free port in the range [8010..8100])"
         },
+        "platformio-ide.pioHomeServerHttpHost": {
+          "type": "string",
+          "default": "127.0.0.1",
+          "description": "PIO Home server HTTP host (default is 127.0.0.1, but in case of dockerized environments 0.0.0.0)"
+        },
         "platformio-ide.customPyPiIndexUrl": {
           "type": [
             "string",
