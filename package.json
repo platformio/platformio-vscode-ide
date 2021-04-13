@@ -1,6 +1,6 @@
 {
   "name": "platformio-ide",
-  "version": "2.3.1",
+  "version": "2.3.2",
   "publisher": "platformio",
   "engines": {
     "vscode": "^1.44.0"
@@ -594,6 +594,11 @@
           "default": false,
           "description": "Disable showing PIO Home at startup"
         },
+        "platformio-ide.pioHomeServerHttpHost": {
+          "type": "string",
+          "default": "127.0.0.1",
+          "description": "PIO Home server HTTP host (default is 127.0.0.1, but in case of dockerized environments 0.0.0.0)"
+        },
         "platformio-ide.pioHomeServerHttpPort": {
           "type": "integer",
           "description": "PIO Home server HTTP port (the default value 0 automatically assigns a free port in the range [8010..8100])"
@@ -616,24 +621,24 @@
     "vscode:package": "webpack --mode production && vsce package"
   },
   "devDependencies": {
-    "@babel/core": "~7.13.10",
+    "@babel/core": "~7.13.15",
     "@types/node": "~12",
     "@types/vscode": "~1.44.0",
     "babel-eslint": "~10.1.0",
     "babel-loader": "~8.2.2",
     "babel-plugin-transform-class-properties": "~6.24.1",
     "babel-preset-env": "~1.7.0",
-    "eslint": "~7.22.0",
+    "eslint": "~7.24.0",
     "eslint-import-resolver-webpack": "~0.13.0",
     "eslint-plugin-import": "~2.22.1",
     "prettier": "~2.2.1",
-    "vsce": "~1.87.0",
-    "webpack": "~5.27.2",
-    "webpack-cli": "~4.5.0"
+    "vsce": "~1.87.1",
+    "webpack": "~5.32.0",
+    "webpack-cli": "~4.6.0"
   },
   "dependencies": {
     "fs-plus": "~3.1.1",
-    "platformio-node-helpers": "~9.1.2",
+    "platformio-node-helpers": "~9.2.2",
     "platformio-vscode-debug": "~1.3.1"
   },
   "extensionDependencies": [

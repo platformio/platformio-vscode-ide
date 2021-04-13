@@ -1,5 +1,11 @@
 # Release Notes
 
+## 2.3.2 (2021-04-13)
+
+- Added a new setting ``platformio-ide.pioHomeServerHttpHost`` to set a custom host for PlatformIO Home (useful for dockerized environments) (issue [#2465](https://github.com/platformio/platformio-vscode-ide/issues/2465))
+- Updated PlatformIO Core installer to v1.0.2 ([changes](https://github.com/platformio/platformio-core-installer/releases/tag/v1.0.2)):
+  * Do not raise an exception when checking PlatformIO Core for updates and the Internet is off-line (issue [#2398](https://github.com/platformio/platformio-vscode-ide/issues/2398))
+
 ## 2.3.1 (2021-03-23)
 
 - Added a new setting ``platformio-ide.autoOpenPlatformIOIniFile`` to control an automatic opening of the `platformio.ini` file from a project when no other editors are opened (issue [#2419](https://github.com/platformio/platformio-vscode-ide/issues/2419))
