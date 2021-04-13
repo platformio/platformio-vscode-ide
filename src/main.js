@@ -57,7 +57,10 @@ class PlatformIOVSCodeExtension {
     }
 
     this.patchOSEnviron();
-    await this.startInstaller(!hasPIOProject);
+    const UpdateCheckEnabled = vscode.workspace
+        .getConfiguration('extensions')
+        .get('autoUpdate');
+    await this.startInstaller(!UpdateCheckEnabled);
     this.subscriptions.push(this.handleUseDevelopmentPIOCoreConfiguration());
 
     vscode.commands.executeCommand('setContext', 'pioCoreReady', true);
