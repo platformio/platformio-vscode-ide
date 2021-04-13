@@ -1,6 +1,6 @@
 # Release Notes
 
-## 2.3.2 (2021-??-??)
+## 2.3.2 (2021-04-13)
 
 - Added a new setting ``platformio-ide.pioHomeServerHttpHost`` to set a custom host for PlatformIO Home (useful for dockerized environments) (issue [#2465](https://github.com/platformio/platformio-vscode-ide/issues/2465))
 - Updated PlatformIO Core installer to v1.0.2 ([changes](https://github.com/platformio/platformio-core-installer/releases/tag/v1.0.2)):
