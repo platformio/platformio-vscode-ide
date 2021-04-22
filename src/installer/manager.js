@@ -87,7 +87,7 @@ export default class InstallationManager {
         });
       });
     }
-    progress.report({ message: 'Finish! Please restart VSCode.', increment: 100 });
+    progress.report({ message: 'Finished! Please restart VSCode.', increment: 100 });
   }
 
   destroy() {
