@@ -17,8 +17,8 @@
 ## Features
 
 * Cross-platform code builder without external dependencies to a system software:
-    - 800+ embedded boards
-    - 35+ development platforms
+    - 1000+ embedded boards
+    - 40+ development platforms
     - 20+ frameworks
 * [Debugging](http://docs.platformio.org/page/plus/debugging.html)
 * [Unit Testing](http://docs.platformio.org/page/plus/unit-testing.html)
