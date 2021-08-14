@@ -1,5 +1,11 @@
 # Release Notes
 
+## 2.3.3 (2021-08-14)
+
+- Updated PlatformIO Core installer to v1.0.3 ([changes](https://github.com/platformio/platformio-core-installer/releases/tag/v1.0.3)):
+  * Fix a bug with "OSError / WinError" when looking for a compatible Python
+  * Fixed "UnboundLocalError"
+
 ## 2.3.2 (2021-04-13)
 
 - Added a new setting ``platformio-ide.pioHomeServerHttpHost`` to set a custom host for PlatformIO Home (useful for dockerized environments) (issue [#2465](https://github.com/platformio/platformio-vscode-ide/issues/2465))
