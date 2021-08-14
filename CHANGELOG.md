@@ -1,6 +1,6 @@
 # Release Notes
 
-## 2.3.3 (2021-08-??)
+## 2.3.3 (2021-08-14)
 
 - Updated PlatformIO Core installer to v1.0.3 ([changes](https://github.com/platformio/platformio-core-installer/releases/tag/v1.0.3)):
   * Fix a bug with "OSError / WinError" when looking for a compatible Python
