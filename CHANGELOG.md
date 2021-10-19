@@ -1,5 +1,9 @@
 # Release Notes
 
+## 2.3.4 (2021-10-??)
+
+- Start debugging without firmware uploading using a new ``loadMode`` launch option (see docs for [debug_load_mode](https://docs.platformio.org/en/latest/projectconf/section_env_debug.html#debug-load-mode) for more details)
+
 ## 2.3.3 (2021-08-14)
 
 - Updated PlatformIO Core installer to v1.0.3 ([changes](https://github.com/platformio/platformio-core-installer/releases/tag/v1.0.3)):
