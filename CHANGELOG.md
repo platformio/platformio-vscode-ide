@@ -2,7 +2,11 @@
 
 ## 2.3.4 (2021-10-??)
 
-- Start debugging without firmware uploading using a new ``loadMode`` launch option (see docs for [debug_load_mode](https://docs.platformio.org/en/latest/projectconf/section_env_debug.html#debug-load-mode) for more details)
+- Start debugging without firmware uploading using a new ``loadMode`` launch option (see docs for [debug_load_mode](https://docs.platformio.org/en/latest/projectconf/section_env_debug.html#debug-load-mode) for more details). **Requires PlatformIO Core 5.2.2 or above**.
+- PlatformIO IDE Installer
+  * Ask the user to install Python manually if the portable version does not work
+  * Check compatible Python using the installer script
+  * Use pre-built Python 3.7 for Windows 7 and below
 
 ## 2.3.3 (2021-08-14)
 

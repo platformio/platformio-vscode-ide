@@ -637,7 +637,7 @@
     "vscode:package": "webpack --mode production && vsce package"
   },
   "devDependencies": {
-    "@babel/core": "~7.15.0",
+    "@babel/core": "~7.15.8",
     "@types/node": "~12",
     "@types/vscode": "~1.44.0",
     "babel-eslint": "~10.1.0",
@@ -646,15 +646,15 @@
     "babel-preset-env": "~1.7.0",
     "eslint": "~7.32.0",
     "eslint-import-resolver-webpack": "~0.13.1",
-    "eslint-plugin-import": "~2.24.0",
+    "eslint-plugin-import": "~2.24.2",
     "prettier": "~2.3.2",
-    "vsce": "~1.96.1",
+    "vsce": "~1.96.3",
     "webpack": "~5.50.0",
     "webpack-cli": "~4.7.2"
   },
   "dependencies": {
     "fs-plus": "~3.1.1",
-    "platformio-node-helpers": "~9.2.3",
+    "platformio-node-helpers": "~9.2.4",
     "platformio-vscode-debug": "~1.4.0"
   },
   "extensionDependencies": [
