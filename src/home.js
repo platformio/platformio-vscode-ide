@@ -140,22 +140,23 @@ export default class PIOHome {
     const iframeId =
       'pioHomeIFrame-' +
       crypto.createHash('sha1').update(crypto.randomBytes(512)).digest('hex');
+    const iframeScript = `
+<script>
+  for (const command of ['selectAll', 'copy', 'paste', 'cut', 'undo', 'redo']) {
+    document.addEventListener(command, (e) => {
+      document.getElementById('${iframeId}').contentWindow.postMessage({'command': 'execCommand', 'data': command}, '*');
+    });
+  }
+  window.addEventListener('message', (e) => {
+    if (e.data.command === 'kbd-event') {
+      window.dispatchEvent(new KeyboardEvent('keydown', e.data.data));
+    }
+  });
+</script>
+  `;
     return `<!DOCTYPE html>
       <html lang="en">
-      <head>
-        <script>
-          for (const command of ['selectAll', 'copy', 'paste', 'cut', 'undo', 'redo']) {
-            document.addEventListener(command, (e) => {
-              document.getElementById('${iframeId}').contentWindow.postMessage({'command': 'execCommand', 'data': command}, '*');
-            });
-          }
-          window.addEventListener('message', (e) => {
-            if (e.data.command === 'kbd-event' && ${IS_OSX}) {
-              window.dispatchEvent(new KeyboardEvent('keydown', e.data.data));
-            }
-          });
-        </script>
-      </head>
+      <head>${IS_OSX ? iframeScript : ''}</head>
       <body style="margin: 0; padding: 0; height: 100%; overflow: hidden; background-color: ${
         theme === 'light' ? '#FFF' : '#1E1E1E'
       }">
