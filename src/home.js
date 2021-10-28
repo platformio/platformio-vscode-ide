@@ -9,6 +9,7 @@
 import * as pioNodeHelpers from 'platformio-node-helpers';
 
 import { IS_OSX } from './constants';
+import crypto from 'crypto';
 import { extension } from './main';
 import { notifyError } from './utils';
 import path from 'path';
@@ -136,30 +137,33 @@ export default class PIOHome {
       },
     });
     const theme = this.getTheme();
+    const iframeId =
+      'pioHomeIFrame-' +
+      crypto.createHash('sha1').update(crypto.randomBytes(512)).digest('hex');
     return `<!DOCTYPE html>
       <html lang="en">
       <head>
         <script>
+          for (const command of ['selectAll', 'copy', 'paste', 'cut', 'undo', 'redo']) {
+            document.addEventListener(command, (e) => {
+              document.getElementById('${iframeId}').contentWindow.postMessage({'command': 'execCommand', 'data': command}, '*');
+            });
+          }
           window.addEventListener('message', (e) => {
-            switch (e.data.command) {
-              case 'kbd-event': {
-                if (${IS_OSX}) {
-                  window.dispatchEvent(new KeyboardEvent('keydown', e.data.data));
-                }
-                break;
-              }
+            if (e.data.command === 'kbd-event' && ${IS_OSX}) {
+              window.dispatchEvent(new KeyboardEvent('keydown', e.data.data));
             }
-          }, false);
+          });
         </script>
       </head>
       <body style="margin: 0; padding: 0; height: 100%; overflow: hidden; background-color: ${
         theme === 'light' ? '#FFF' : '#1E1E1E'
       }">
-        <iframe src="${pioNodeHelpers.home.getFrontendUrl({
-          start: startUrl,
-          theme,
-          workspace: extension.getEnterpriseSetting('defaultPIOHomeWorkspace'),
-        })}"
+        <iframe id="${iframeId}" src="${pioNodeHelpers.home.getFrontendUrl({
+      start: startUrl,
+      theme,
+      workspace: extension.getEnterpriseSetting('defaultPIOHomeWorkspace'),
+    })}"
           width="100%"
           height="100%"
           frameborder="0"
