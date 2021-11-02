@@ -9,6 +9,7 @@
 import * as pioNodeHelpers from 'platformio-node-helpers';
 
 import { IS_OSX } from './constants';
+import ProjectObservable from './project/observable';
 import crypto from 'crypto';
 import { extension } from './main';
 import { notifyError } from './utils';
@@ -97,44 +98,7 @@ export default class PIOHome {
     await pioNodeHelpers.home.ensureServerStarted({
       port: extension.getSetting('pioHomeServerHttpPort'),
       host: extension.getSetting('pioHomeServerHttpHost'),
-      onIDECommand: async (command, params) => {
-        if (command === 'open_project') {
-          if (extension.projectObservable) {
-            extension.projectObservable.saveProjectStateItem(
-              vscode.Uri.file(params).fsPath,
-              'activeEnv',
-              undefined
-            );
-          }
-          this.disposePanel();
-          if (vscode.workspace.workspaceFolders) {
-            vscode.workspace.updateWorkspaceFolders(
-              vscode.workspace.workspaceFolders.length,
-              null,
-              { uri: vscode.Uri.file(params) }
-            );
-          } else {
-            vscode.commands.executeCommand(
-              'vscode.openFolder',
-              vscode.Uri.file(params)
-            );
-          }
-          vscode.commands.executeCommand('workbench.view.explorer');
-        } else if (command === 'open_text_document') {
-          const editor = await vscode.window.showTextDocument(
-            vscode.Uri.file(params.path)
-          );
-          const gotoPosition = new vscode.Position(
-            (params.line || 1) - 1,
-            (params.column || 1) - 1
-          );
-          editor.selection = new vscode.Selection(gotoPosition, gotoPosition);
-          editor.revealRange(
-            new vscode.Range(gotoPosition, gotoPosition),
-            vscode.TextEditorRevealType.InCenter
-          );
-        }
-      },
+      onIDECommand: await this.onIDECommand.bind(this),
     });
     const theme = this.getTheme();
     const iframeId =
@@ -172,6 +136,57 @@ export default class PIOHome {
       </body>
       </html>
     `;
+  }
+
+  async onIDECommand(command, params) {
+    switch (command) {
+      case 'open_project':
+        return this.onOpenProjectCommand(params);
+      case 'open_text_document':
+        return await this.onOpenTextDocumentCommand(params);
+      case 'get_pio_project_dirs':
+        return this.onGetPIOProjectDirs();
+    }
+  }
+
+  onOpenProjectCommand(params) {
+    if (extension.projectObservable) {
+      extension.projectObservable.saveProjectStateItem(
+        vscode.Uri.file(params).fsPath,
+        'activeEnv',
+        undefined
+      );
+    }
+    this.disposePanel();
+    if (vscode.workspace.workspaceFolders) {
+      vscode.workspace.updateWorkspaceFolders(
+        vscode.workspace.workspaceFolders.length,
+        null,
+        { uri: vscode.Uri.file(params) }
+      );
+    } else {
+      vscode.commands.executeCommand('vscode.openFolder', vscode.Uri.file(params));
+    }
+    vscode.commands.executeCommand('workbench.view.explorer');
+    return true;
+  }
+
+  async onOpenTextDocumentCommand(params) {
+    const editor = await vscode.window.showTextDocument(vscode.Uri.file(params.path));
+    const gotoPosition = new vscode.Position(
+      (params.line || 1) - 1,
+      (params.column || 1) - 1
+    );
+    editor.selection = new vscode.Selection(gotoPosition, gotoPosition);
+    editor.revealRange(
+      new vscode.Range(gotoPosition, gotoPosition),
+      vscode.TextEditorRevealType.InCenter
+    );
+    return true;
+  }
+
+  onGetPIOProjectDirs() {
+    return ProjectObservable.getPIOProjectDirs();
   }
 
   onPanelDisposed() {
