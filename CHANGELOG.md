@@ -1,8 +1,14 @@
 # Release Notes
 
+## 2.3.5 (2021-11-??)
+
+- Added "Verbose Check" project task
+- Synchronize VSCode workspaces with PlatformIO Home Projects (requires PlatformIO Core 5.2.3 or above) (issue [#1367](https://github.com/platformio/platformio-vscode-ide/issues/1367))
+- Handle "Could not find distutils module" error on Linux
+
 ## 2.3.4 (2021-10-19)
 
-- Start debugging without firmware uploading using a new ``loadMode`` launch option (see docs for [debug_load_mode](https://docs.platformio.org/en/latest/projectconf/section_env_debug.html#debug-load-mode) for more details). **Requires PlatformIO Core 5.2.2 or above**.
+- Start debugging without firmware uploading using a new ``loadMode`` launch option (see docs for [debug_load_mode](https://docs.platformio.org/en/latest/projectconf/section_env_debug.html#debug-load-mode) for more details).
 - PlatformIO IDE Installer
   * Ask the user to install Python manually if the portable version does not work
   * Check compatible Python using the installer script
