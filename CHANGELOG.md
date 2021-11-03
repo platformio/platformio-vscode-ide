@@ -1,10 +1,14 @@
 # Release Notes
 
-## 2.3.5 (2021-11-??)
+## 2.4.0 (2021-11-??)
 
+**Requires VSCode 1.57 or above**
+
+- Added named status bars: "PlatformIO: Toolbar" and "PlatformIO: Project Environment Switcher" (ability to hide them separately) (issue [#2593](https://github.com/platformio/platformio-vscode-ide/issues/2593))
 - Added "Verbose Check" project task
 - Synchronize VSCode workspaces with PlatformIO Home Projects (requires PlatformIO Core 5.2.3 or above) (issue [#1367](https://github.com/platformio/platformio-vscode-ide/issues/1367))
 - Handle "Could not find distutils module" error on Linux
+- Fixed an issue when "Copy to Clipboard" does not work in PlatformIO Home on macOS (requires PlatformIO Core 5.2.3 or above) (issue [#2570](https://github.com/platformio/platformio-vscode-ide/issues/2570))
 
 ## 2.3.4 (2021-10-19)
 

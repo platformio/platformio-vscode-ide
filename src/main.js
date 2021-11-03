@@ -295,9 +295,11 @@ class PlatformIOVSCodeExtension {
       .forEach((item, index) => {
         const [text, tooltip, command] = item;
         const sbItem = vscode.window.createStatusBarItem(
+          'pio-toolbar',
           vscode.StatusBarAlignment.Left,
           STATUS_BAR_PRIORITY_START + index + 1
         );
+        sbItem.name = 'PlatformIO: Toolbar';
         sbItem.text = text;
         sbItem.tooltip = tooltip;
         sbItem.command = command;
