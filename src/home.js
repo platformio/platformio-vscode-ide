@@ -156,6 +156,7 @@ export default class PIOHome {
         'activeEnv',
         undefined
       );
+      extension.projectObservable.switchToProject(vscode.Uri.file(params).fsPath);
     }
     this.disposePanel();
     if (vscode.workspace.workspaceFolders) {
