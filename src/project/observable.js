@@ -253,9 +253,11 @@ export default class ProjectObservable {
 
   registerEnvSwitcher() {
     this._sbEnvSwitcher = vscode.window.createStatusBarItem(
+      'pio-env-switcher',
       vscode.StatusBarAlignment.Left,
       STATUS_BAR_PRIORITY_START
     );
+    this._sbEnvSwitcher.name = 'PlatformIO: Project Environment Switcher';
     this._sbEnvSwitcher.tooltip = 'Switch PlatformIO Project Environment';
     this._sbEnvSwitcher.command = 'platformio-ide.switchProjectEnv';
     this._sbEnvSwitcher.text = '$(root-folder) Loading...';

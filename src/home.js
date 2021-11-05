@@ -9,6 +9,8 @@
 import * as pioNodeHelpers from 'platformio-node-helpers';
 
 import { IS_OSX } from './constants';
+import ProjectObservable from './project/observable';
+import crypto from 'crypto';
 import { extension } from './main';
 import { notifyError } from './utils';
 import path from 'path';
@@ -96,70 +98,37 @@ export default class PIOHome {
     await pioNodeHelpers.home.ensureServerStarted({
       port: extension.getSetting('pioHomeServerHttpPort'),
       host: extension.getSetting('pioHomeServerHttpHost'),
-      onIDECommand: async (command, params) => {
-        if (command === 'open_project') {
-          if (extension.projectObservable) {
-            extension.projectObservable.saveProjectStateItem(
-              vscode.Uri.file(params).fsPath,
-              'activeEnv',
-              undefined
-            );
-          }
-          this.disposePanel();
-          if (vscode.workspace.workspaceFolders) {
-            vscode.workspace.updateWorkspaceFolders(
-              vscode.workspace.workspaceFolders.length,
-              null,
-              { uri: vscode.Uri.file(params) }
-            );
-          } else {
-            vscode.commands.executeCommand(
-              'vscode.openFolder',
-              vscode.Uri.file(params)
-            );
-          }
-          vscode.commands.executeCommand('workbench.view.explorer');
-        } else if (command === 'open_text_document') {
-          const editor = await vscode.window.showTextDocument(
-            vscode.Uri.file(params.path)
-          );
-          const gotoPosition = new vscode.Position(
-            (params.line || 1) - 1,
-            (params.column || 1) - 1
-          );
-          editor.selection = new vscode.Selection(gotoPosition, gotoPosition);
-          editor.revealRange(
-            new vscode.Range(gotoPosition, gotoPosition),
-            vscode.TextEditorRevealType.InCenter
-          );
-        }
-      },
+      onIDECommand: await this.onIDECommand.bind(this),
     });
     const theme = this.getTheme();
+    const iframeId =
+      'pioHomeIFrame-' +
+      crypto.createHash('sha1').update(crypto.randomBytes(512)).digest('hex');
+    const iframeScript = `
+<script>
+  for (const command of ['selectAll', 'copy', 'paste', 'cut', 'undo', 'redo']) {
+    document.addEventListener(command, (e) => {
+      document.getElementById('${iframeId}').contentWindow.postMessage({'command': 'execCommand', 'data': command}, '*');
+    });
+  }
+  window.addEventListener('message', (e) => {
+    if (e.data.command === 'kbd-event') {
+      window.dispatchEvent(new KeyboardEvent('keydown', e.data.data));
+    }
+  });
+</script>
+  `;
     return `<!DOCTYPE html>
       <html lang="en">
-      <head>
-        <script>
-          window.addEventListener('message', (e) => {
-            switch (e.data.command) {
-              case 'kbd-event': {
-                if (${IS_OSX}) {
-                  window.dispatchEvent(new KeyboardEvent('keydown', e.data.data));
-                }
-                break;
-              }
-            }
-          }, false);
-        </script>
-      </head>
+      <head>${IS_OSX ? iframeScript : ''}</head>
       <body style="margin: 0; padding: 0; height: 100%; overflow: hidden; background-color: ${
         theme === 'light' ? '#FFF' : '#1E1E1E'
       }">
-        <iframe src="${pioNodeHelpers.home.getFrontendUrl({
-          start: startUrl,
-          theme,
-          workspace: extension.getEnterpriseSetting('defaultPIOHomeWorkspace'),
-        })}"
+        <iframe id="${iframeId}" src="${pioNodeHelpers.home.getFrontendUrl({
+      start: startUrl,
+      theme,
+      workspace: extension.getEnterpriseSetting('defaultPIOHomeWorkspace'),
+    })}"
           width="100%"
           height="100%"
           frameborder="0"
@@ -167,6 +136,58 @@ export default class PIOHome {
       </body>
       </html>
     `;
+  }
+
+  async onIDECommand(command, params) {
+    switch (command) {
+      case 'open_project':
+        return this.onOpenProjectCommand(params);
+      case 'open_text_document':
+        return await this.onOpenTextDocumentCommand(params);
+      case 'get_pio_project_dirs':
+        return this.onGetPIOProjectDirs();
+    }
+  }
+
+  onOpenProjectCommand(params) {
+    if (extension.projectObservable) {
+      extension.projectObservable.saveProjectStateItem(
+        vscode.Uri.file(params).fsPath,
+        'activeEnv',
+        undefined
+      );
+      extension.projectObservable.switchToProject(vscode.Uri.file(params).fsPath);
+    }
+    this.disposePanel();
+    if (vscode.workspace.workspaceFolders) {
+      vscode.workspace.updateWorkspaceFolders(
+        vscode.workspace.workspaceFolders.length,
+        null,
+        { uri: vscode.Uri.file(params) }
+      );
+    } else {
+      vscode.commands.executeCommand('vscode.openFolder', vscode.Uri.file(params));
+    }
+    vscode.commands.executeCommand('workbench.view.explorer');
+    return true;
+  }
+
+  async onOpenTextDocumentCommand(params) {
+    const editor = await vscode.window.showTextDocument(vscode.Uri.file(params.path));
+    const gotoPosition = new vscode.Position(
+      (params.line || 1) - 1,
+      (params.column || 1) - 1
+    );
+    editor.selection = new vscode.Selection(gotoPosition, gotoPosition);
+    editor.revealRange(
+      new vscode.Range(gotoPosition, gotoPosition),
+      vscode.TextEditorRevealType.InCenter
+    );
+    return true;
+  }
+
+  onGetPIOProjectDirs() {
+    return ProjectObservable.getPIOProjectDirs();
   }
 
   onPanelDisposed() {

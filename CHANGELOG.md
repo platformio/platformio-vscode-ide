@@ -1,8 +1,23 @@
 # Release Notes
 
+## 2.4.0 (2021-11-05)
+
+**Requires VSCode 1.57 or above**
+
+- Added named status bars: "PlatformIO: Toolbar" and "PlatformIO: Project Environment Switcher" (ability to hide them separately) (issue [#2593](https://github.com/platformio/platformio-vscode-ide/issues/2593))
+- Added "Verbose Check" project task
+- Synchronize VSCode workspaces with PlatformIO Home Projects (requires PlatformIO Core 5.2.3 or above) (issue [#1367](https://github.com/platformio/platformio-vscode-ide/issues/1367))
+- Automatically switch to newly created project's environment (issue [#2414](https://github.com/platformio/platformio-vscode-ide/issues/2414))
+- Fixed an issue when "Copy to Clipboard" does not work in PlatformIO Home on macOS (requires PlatformIO Core 5.2.3 or above) (issue [#2570](https://github.com/platformio/platformio-vscode-ide/issues/2570))
+- PlatformIO IDE Installer
+  * Updated installer script to 1.1.0
+  * Check global PlatformIO Core installation when built-in is disabled
+  * Handle "Could not find distutils module" error on Linux
+  * Rebuild project IDE configuration on "platformio.ini" change
+
 ## 2.3.4 (2021-10-19)
 
-- Start debugging without firmware uploading using a new ``loadMode`` launch option (see docs for [debug_load_mode](https://docs.platformio.org/en/latest/projectconf/section_env_debug.html#debug-load-mode) for more details). **Requires PlatformIO Core 5.2.2 or above**.
+- Start debugging without firmware uploading using a new ``loadMode`` launch option (see docs for [debug_load_mode](https://docs.platformio.org/en/latest/projectconf/section_env_debug.html#debug-load-mode) for more details).
 - PlatformIO IDE Installer
   * Ask the user to install Python manually if the portable version does not work
   * Check compatible Python using the installer script

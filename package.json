@@ -3,7 +3,7 @@
   "version": "2.3.4",
   "publisher": "platformio",
   "engines": {
-    "vscode": "^1.44.0"
+    "vscode": "^1.57.0"
   },
   "license": "Apache-2.0",
   "displayName": "PlatformIO IDE",
@@ -636,26 +636,26 @@
     "format": "prettier --single-quote --print-width 88 --write \"src/**/*.js\"",
     "vscode:package": "webpack --mode production && vsce package"
   },
-  "devDependencies": {
-    "@babel/core": "~7.15.8",
-    "@types/node": "~12",
-    "@types/vscode": "~1.44.0",
-    "babel-eslint": "~10.1.0",
-    "babel-loader": "~8.2.2",
-    "babel-plugin-transform-class-properties": "~6.24.1",
-    "babel-preset-env": "~1.7.0",
-    "eslint": "~7.32.0",
-    "eslint-import-resolver-webpack": "~0.13.1",
-    "eslint-plugin-import": "~2.24.2",
-    "prettier": "~2.3.2",
-    "vsce": "~1.96.3",
-    "webpack": "~5.50.0",
-    "webpack-cli": "~4.7.2"
-  },
   "dependencies": {
     "fs-plus": "~3.1.1",
-    "platformio-node-helpers": "~9.2.4",
+    "platformio-node-helpers": "~9.4.0",
     "platformio-vscode-debug": "~1.4.0"
+  },
+  "devDependencies": {
+    "@babel/core": "~7.16.0",
+    "@babel/eslint-parser": "~7.16.0",
+    "@babel/plugin-proposal-class-properties": "~7.16.0",
+    "@babel/preset-env": "~7.16.0",
+    "@types/node": "~12",
+    "@types/vscode": "~1.57.0",
+    "babel-loader": "~8.2.3",
+    "eslint": "~8.1.0",
+    "eslint-import-resolver-webpack": "~0.13.2",
+    "eslint-plugin-import": "~2.25.2",
+    "prettier": "~2.4.1",
+    "vsce": "~2.2.0",
+    "webpack": "~5.61.0",
+    "webpack-cli": "~4.9.1"
   },
   "extensionDependencies": [
     "ms-vscode.cpptools"
