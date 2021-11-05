@@ -8,8 +8,12 @@
 - Added "Verbose Check" project task
 - Synchronize VSCode workspaces with PlatformIO Home Projects (requires PlatformIO Core 5.2.3 or above) (issue [#1367](https://github.com/platformio/platformio-vscode-ide/issues/1367))
 - Automatically switch to newly created project's environment (issue [#2414](https://github.com/platformio/platformio-vscode-ide/issues/2414))
-- Handle "Could not find distutils module" error on Linux
 - Fixed an issue when "Copy to Clipboard" does not work in PlatformIO Home on macOS (requires PlatformIO Core 5.2.3 or above) (issue [#2570](https://github.com/platformio/platformio-vscode-ide/issues/2570))
+- PlatformIO IDE Installer
+  * Updated installer script to 1.1.0
+  * Check global PlatformIO Core installation when built-in is disabled
+  * Handle "Could not find distutils module" error on Linux
+  * Rebuild project IDE configuration on "platformio.ini" change
 
 ## 2.3.4 (2021-10-19)
 
