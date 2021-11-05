@@ -653,7 +653,7 @@
     "eslint-import-resolver-webpack": "~0.13.2",
     "eslint-plugin-import": "~2.25.2",
     "prettier": "~2.4.1",
-    "vsce": "~1.103.0",
+    "vsce": "~2.2.0",
     "webpack": "~5.61.0",
     "webpack-cli": "~4.9.1"
   },
