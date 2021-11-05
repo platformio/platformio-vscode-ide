@@ -1,6 +1,6 @@
 # Release Notes
 
-## 2.4.0 (2021-11-??)
+## 2.4.0 (2021-11-05)
 
 **Requires VSCode 1.57 or above**
 
