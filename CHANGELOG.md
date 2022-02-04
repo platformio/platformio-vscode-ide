@@ -1,5 +1,9 @@
 # Release Notes
 
+## 2.4.1 (2022-02-??)
+
+- Fixed an issue when debugging does not start on Windows (issue [#2925](https://github.com/platformio/platformio-vscode-ide/issues/2925))
+
 ## 2.4.0 (2021-11-05)
 
 **Requires VSCode 1.57 or above**
