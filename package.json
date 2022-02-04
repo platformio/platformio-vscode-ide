@@ -1,6 +1,6 @@
 {
   "name": "platformio-ide",
-  "version": "2.4.0",
+  "version": "2.4.1",
   "publisher": "platformio",
   "engines": {
     "vscode": "^1.57.0"
@@ -642,20 +642,20 @@
     "platformio-vscode-debug": "~1.4.1"
   },
   "devDependencies": {
-    "@babel/core": "~7.16.0",
-    "@babel/eslint-parser": "~7.16.0",
-    "@babel/plugin-proposal-class-properties": "~7.16.0",
-    "@babel/preset-env": "~7.16.0",
+    "@babel/core": "~7.17.0",
+    "@babel/eslint-parser": "~7.17.0",
+    "@babel/plugin-proposal-class-properties": "~7.16.7",
+    "@babel/preset-env": "~7.16.11",
     "@types/node": "~12",
     "@types/vscode": "~1.57.0",
     "babel-loader": "~8.2.3",
-    "eslint": "~8.1.0",
+    "eslint": "~8.8.0",
     "eslint-import-resolver-webpack": "~0.13.2",
-    "eslint-plugin-import": "~2.25.2",
-    "prettier": "~2.4.1",
-    "vsce": "~2.2.0",
-    "webpack": "~5.61.0",
-    "webpack-cli": "~4.9.1"
+    "eslint-plugin-import": "~2.25.4",
+    "prettier": "~2.5.1",
+    "vsce": "~2.6.7",
+    "webpack": "~5.68.0",
+    "webpack-cli": "~4.9.2"
   },
   "extensionDependencies": [
     "ms-vscode.cpptools"
