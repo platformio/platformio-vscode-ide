@@ -1,6 +1,10 @@
 # Release Notes
 
-## 2.4.1 (2022-02-??)
+## 2.4.2 (2022-02-??)
+
+- Fixed an "Error: No such command "home" when opening PIO Home (issue [#2923](https://github.com/platformio/platformio-vscode-ide/issues/2923))
+
+## 2.4.1 (2022-02-04)
 
 - Fixed an issue when debugging does not start on Windows (issue [#2925](https://github.com/platformio/platformio-vscode-ide/issues/2925))
 
