@@ -1,6 +1,6 @@
 # Release Notes
 
-## 2.4.2 (2022-02-??)
+## 2.4.2 (2022-02-11)
 
 - Fixed an "Error: No such command "home" when opening PIO Home (issue [#2923](https://github.com/platformio/platformio-vscode-ide/issues/2923))
 
