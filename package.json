@@ -642,19 +642,19 @@
     "platformio-vscode-debug": "~1.4.1"
   },
   "devDependencies": {
-    "@babel/core": "~7.17.2",
+    "@babel/core": "~7.17.7",
     "@babel/eslint-parser": "~7.17.0",
     "@babel/plugin-proposal-class-properties": "~7.16.7",
     "@babel/preset-env": "~7.16.11",
     "@types/node": "~12",
     "@types/vscode": "~1.57.0",
     "babel-loader": "~8.2.3",
-    "eslint": "~8.8.0",
+    "eslint": "~8.11.0",
     "eslint-import-resolver-webpack": "~0.13.2",
     "eslint-plugin-import": "~2.25.4",
-    "prettier": "~2.5.1",
-    "vsce": "~2.6.7",
-    "webpack": "~5.68.0",
+    "prettier": "~2.6.0",
+    "vsce": "~2.7.0",
+    "webpack": "~5.70.0",
     "webpack-cli": "~4.9.2"
   },
   "extensionDependencies": [
