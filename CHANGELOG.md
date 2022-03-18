@@ -1,6 +1,6 @@
 # Release Notes
 
-## 2.4.3 (2022-03-??)
+## 2.4.3 (2022-03-18)
 
 - Fixed an issue when PlatformIO IDE installer asks to install Python interpreter on Windows OS (issue [#3076](https://github.com/platformio/platformio-vscode-ide/issues/3076))
 
