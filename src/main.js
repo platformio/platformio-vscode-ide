@@ -255,15 +255,6 @@ class PlatformIOVSCodeExtension {
         vscode.commands.executeCommand('workbench.debug.action.toggleRepl');
         vscode.commands.executeCommand('workbench.action.debug.start');
       }),
-      vscode.commands.registerCommand('platformio-ide.updateGlobalLibs', () =>
-        this.pioTerm.sendText('pio lib --global update')
-      ),
-      vscode.commands.registerCommand('platformio-ide.updatePlatforms', () =>
-        this.pioTerm.sendText('pio platform update')
-      ),
-      vscode.commands.registerCommand('platformio-ide.updateCore', () =>
-        this.pioTerm.sendText('pio update')
-      ),
       vscode.commands.registerCommand('platformio-ide.upgradeCore', () =>
         this.pioTerm.sendText('pio upgrade')
       )

@@ -164,21 +164,6 @@
         "category": "PlatformIO"
       },
       {
-        "command": "platformio-ide.updateGlobalLibs",
-        "title": "Update global libraries",
-        "category": "PlatformIO"
-      },
-      {
-        "command": "platformio-ide.updatePlatforms",
-        "title": "Update platforms & packages",
-        "category": "PlatformIO"
-      },
-      {
-        "command": "platformio-ide.updateCore",
-        "title": "Update All (platforms, packages, libraries)",
-        "category": "PlatformIO"
-      },
-      {
         "command": "platformio-ide.upgradeCore",
         "title": "Upgrade PlatformIO Core to the latest version",
         "category": "PlatformIO"

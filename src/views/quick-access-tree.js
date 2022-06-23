@@ -57,21 +57,6 @@ export default class QuickAccessTreeProvider {
         ]
       ),
       new QuickItem(
-        'Updates',
-        undefined,
-        undefined,
-        vscode.TreeItemCollapsibleState.Expanded,
-        [
-          new QuickItem('Library Updates', 'platformio-ide.showHome', [
-            '/libraries/updates',
-          ]),
-          new QuickItem('Platform Updates', 'platformio-ide.showHome', [
-            '/platforms/updates',
-          ]),
-          new QuickItem('Update All', 'platformio-ide.updateCore'),
-        ]
-      ),
-      new QuickItem(
         'Miscellaneous',
         undefined,
         undefined,
