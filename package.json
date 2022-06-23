@@ -1,6 +1,6 @@
 {
   "name": "platformio-ide",
-  "version": "2.4.3",
+  "version": "2.5.0",
   "publisher": "platformio",
   "engines": {
     "vscode": "^1.57.0"
@@ -161,21 +161,6 @@
       {
         "command": "platformio-ide.startDebugging",
         "title": "Start Debugging",
-        "category": "PlatformIO"
-      },
-      {
-        "command": "platformio-ide.updateGlobalLibs",
-        "title": "Update global libraries",
-        "category": "PlatformIO"
-      },
-      {
-        "command": "platformio-ide.updatePlatforms",
-        "title": "Update platforms & packages",
-        "category": "PlatformIO"
-      },
-      {
-        "command": "platformio-ide.updateCore",
-        "title": "Update All (platforms, packages, libraries)",
         "category": "PlatformIO"
       },
       {
@@ -638,24 +623,24 @@
   },
   "dependencies": {
     "fs-plus": "~3.1.1",
-    "platformio-node-helpers": "~9.4.2",
+    "platformio-node-helpers": "~9.5.0",
     "platformio-vscode-debug": "~1.4.1"
   },
   "devDependencies": {
-    "@babel/core": "~7.17.7",
-    "@babel/eslint-parser": "~7.17.0",
-    "@babel/plugin-proposal-class-properties": "~7.16.7",
-    "@babel/preset-env": "~7.16.11",
+    "@babel/core": "~7.18.5",
+    "@babel/eslint-parser": "~7.18.2",
+    "@babel/plugin-proposal-class-properties": "~7.17.12",
+    "@babel/preset-env": "~7.18.2",
     "@types/node": "~12",
     "@types/vscode": "~1.57.0",
-    "babel-loader": "~8.2.3",
-    "eslint": "~8.11.0",
+    "babel-loader": "~8.2.5",
+    "eslint": "~8.18.0",
     "eslint-import-resolver-webpack": "~0.13.2",
-    "eslint-plugin-import": "~2.25.4",
-    "prettier": "~2.6.0",
-    "vsce": "~2.7.0",
-    "webpack": "~5.70.0",
-    "webpack-cli": "~4.9.2"
+    "eslint-plugin-import": "~2.26.0",
+    "prettier": "~2.7.1",
+    "vsce": "~2.9.2",
+    "webpack": "~5.73.0",
+    "webpack-cli": "~4.10.0"
   },
   "extensionDependencies": [
     "ms-vscode.cpptools"

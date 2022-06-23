@@ -30,7 +30,7 @@ export default class PythonPrompt {
         vscode.commands.executeCommand(
           'vscode.open',
           vscode.Uri.parse(
-            'http://docs.platformio.org/page/faq.html#install-python-interpreter'
+            'https://docs.platformio.org/en/latest/faq/install-python.html'
           )
         );
         break;

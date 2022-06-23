@@ -1,5 +1,21 @@
 # Release Notes
 
+## 2.5.0 (2022-06-23)
+
+**Requires PlatformIO Core 6.0 or above**
+
+- Added a new "Dependencies" group to the [Project Tasks](https://docs.platformio.org/en/latest/integration/ide/vscode.html#project-tasks)
+  * List project dependencies
+  * Check outdated project dependencies
+  * Update project dependencies
+- Added "Verbose Test" to the [Project Tasks](https://docs.platformio.org/en/latest/integration/ide/vscode.html#project-tasks)
+- Added the "Test" button to the [PlatformIO Toolbar](https://docs.platformio.org/en/latest/integration/ide/vscode.html#platformio-toolbar)
+- Switched to the official PlatformIO Core 6.0 public API
+- Updated installer script to [v1.1.2](https://github.com/platformio/platformio-core-installer/releases/tag/v1.1.2)
+- Ensure that the PlatformIO Core installer script is not corrupted (issue [#3084](https://github.com/platformio/platformio-vscode-ide/issues/3084))
+- Removed deprecated "updates" related command in favor of project dependency management (issue [#3219](https://github.com/platformio/platformio-vscode-ide/issues/3219))
+- Fixed a bug with the handling of package registry mirrors
+
 ## 2.4.3 (2022-03-18)
 
 - Fixed an issue when PlatformIO IDE installer asks to install Python interpreter on Windows OS (issue [#3076](https://github.com/platformio/platformio-vscode-ide/issues/3076))
