@@ -274,6 +274,7 @@ class PlatformIOVSCodeExtension {
       ['$(check)', 'PlatformIO: Build', 'platformio-ide.build'],
       ['$(arrow-right)', 'PlatformIO: Upload', 'platformio-ide.upload'],
       ['$(trashcan)', 'PlatformIO: Clean', 'platformio-ide.clean'],
+      ['$(beaker)', 'PlatformIO: Test', 'platformio-ide.test'],
       ['$(plug)', 'PlatformIO: Serial Monitor', 'platformio-ide.serialMonitor'],
       ['$(terminal)', 'PlatformIO: New Terminal', 'platformio-ide.newTerminal'],
     ]
