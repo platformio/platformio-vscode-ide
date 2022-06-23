@@ -4,6 +4,7 @@
 
 **Requires PlatformIO Core 6.0 or above**
 
+- Ensure that the PlatformIO Core installer script is not corrupted (issue [#3084](https://github.com/platformio/platformio-vscode-ide/issues/3084))
 - Fixed a bug with the handling of package registry mirrors
 
 ## 2.4.3 (2022-03-18)
