@@ -1,5 +1,11 @@
 # Release Notes
 
+## 2.5.0 (2022-06-23)
+
+**Requires PlatformIO Core 6.0 or above**
+
+- Fixed a bug with the handling of package registry mirrors
+
 ## 2.4.3 (2022-03-18)
 
 - Fixed an issue when PlatformIO IDE installer asks to install Python interpreter on Windows OS (issue [#3076](https://github.com/platformio/platformio-vscode-ide/issues/3076))
