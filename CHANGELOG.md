@@ -2,6 +2,8 @@
 
 ## 2.5.1 (2022-??-??)
 
+**Requires VSCode 1.63 or above**
+
 - Show "Build/Upload/Test/Clean" and "Serial Monitor" buttons in the editor title bar
 - Show PlatformIO service commands in the Explorer context:
   * Open PlatformIO Home
