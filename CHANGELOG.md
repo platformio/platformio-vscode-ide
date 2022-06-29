@@ -3,6 +3,11 @@
 ## 2.5.1 (2022-??-??)
 
 - Show "Build/Upload/Test/Clean" and "Serial Monitor" buttons in the editor title bar
+- Show PlatformIO service commands in the Explorer context:
+  * Open PlatformIO Home
+  * Rebuild IntelliSense Index
+  * Open PlatformIO Core CLI
+  * Upgrade PlatformIO Core
 
 ## 2.5.0 (2022-06-23)
 
