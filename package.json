@@ -608,7 +608,7 @@
         "platformio-ide.autoRebuildAutocompleteIndex": {
           "type": "boolean",
           "default": true,
-          "description": "Automatically rebuild the project IntelliSense index when platformio.ini is changed or when new libraries are installed."
+          "description": "Automatically rebuild the project IntelliSense index when platformio.ini is changed or when new libraries are installed"
         },
         "platformio-ide.buildTask": {
           "type": [
@@ -616,12 +616,12 @@
             "null"
           ],
           "default": null,
-          "description": "The build task (label) used for the `Build` button in the bottom toolbar and for key bindings. The default is `PlatformIO: Build`."
+          "description": "The build task (label) used for the `Build` button in the bottom toolbar and for key bindings. The default is `PlatformIO: Build`"
         },
         "platformio-ide.showEditorTitleShortcuts": {
           "type": "boolean",
           "default": true,
-          "description": "Show Build, Upload, Clean, and other buttons in the editor title bar for C/C++ files."
+          "description": "Show Build, Upload, Clean, and other buttons in the editor title bar"
         },
         "platformio-ide.autoPreloadEnvTasks": {
           "type": "boolean",
