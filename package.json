@@ -3,7 +3,7 @@
   "version": "2.5.0",
   "publisher": "platformio",
   "engines": {
-    "vscode": "^1.57.0"
+    "vscode": "^1.63.0"
   },
   "license": "Apache-2.0",
   "displayName": "PlatformIO IDE",
@@ -36,6 +36,15 @@
   "activationEvents": [
     "*"
   ],
+  "configurationDefaults": {
+    "C_Cpp.debugShortcut": false,
+    "[c]": {
+      "C_Cpp.debugShorcut": false
+    },
+    "[cpp]": {
+      "C_Cpp.debugShorcut": false
+    }
+  },
   "contributes": {
     "languages": [
       {
