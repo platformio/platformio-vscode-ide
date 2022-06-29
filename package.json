@@ -559,11 +559,6 @@
           "default": null,
           "description": "Custom PATH for the `platformio` command, if you prefer to use a custom version of PlatformIO Core. Fill in the result of the system terminal command `echo $PATH` (Unix) / `echo %PATH%` (Windows)."
         },
-        "platformio-ide.disableToolbar": {
-          "type": "boolean",
-          "default": false,
-          "description": "Disable the PlatformIO toolbar"
-        },
         "platformio-ide.forceUploadAndMonitor": {
           "type": "boolean",
           "default": false,

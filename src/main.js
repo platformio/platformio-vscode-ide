@@ -266,9 +266,6 @@ class PlatformIOVSCodeExtension {
   }
 
   initToolbar({ filterCommands, ignoreCommands }) {
-    if (this.getSetting('disableToolbar')) {
-      return;
-    }
     [
       ['$(home)', 'PlatformIO: Home', 'platformio-ide.showHome'],
       ['$(check)', 'PlatformIO: Build', 'platformio-ide.build'],
