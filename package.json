@@ -98,7 +98,7 @@
       },
       {
         "command": "platformio-ide.showHome",
-        "title": "Home",
+        "title": "PlatformIO Home",
         "category": "PlatformIO"
       },
       {
@@ -116,31 +116,36 @@
       {
         "command": "platformio-ide.build",
         "title": "Build",
-        "category": "PlatformIO"
+        "category": "PlatformIO",
+        "icon": "$(check)"
       },
       {
         "command": "platformio-ide.upload",
         "title": "Upload",
-        "category": "PlatformIO"
+        "category": "PlatformIO",
+        "icon": "$(arrow-right)"
       },
       {
         "command": "platformio-ide.clean",
         "title": "Clean",
-        "category": "PlatformIO"
+        "category": "PlatformIO",
+        "icon": "$(trashcan)"
       },
       {
         "command": "platformio-ide.test",
         "title": "Test",
-        "category": "PlatformIO"
-      },
-      {
-        "command": "platformio-ide.remoteUpload",
-        "title": "Remote Upload",
-        "category": "PlatformIO"
+        "category": "PlatformIO",
+        "icon": "$(beaker)"
       },
       {
         "command": "platformio-ide.serialMonitor",
         "title": "Serial Monitor",
+        "category": "PlatformIO",
+        "icon": "$(plug)"
+      },
+      {
+        "command": "platformio-ide.remoteUpload",
+        "title": "Remote Upload",
         "category": "PlatformIO"
       },
       {
@@ -165,7 +170,7 @@
       },
       {
         "command": "platformio-ide.upgradeCore",
-        "title": "Upgrade PlatformIO Core to the latest version",
+        "title": "Upgrade PlatformIO Core",
         "category": "PlatformIO"
       },
       {
@@ -415,6 +420,36 @@
           "when": "debugType == platformio-debug && view == platformio-debug.memory",
           "group": "navigation"
         }
+      ],
+      "editor/title/run": [
+        {
+          "command": "platformio-ide.build",
+          "when": "pioCoreReady && config.platformio-ide.showEditorTitleShortcuts",
+          "group": "navigation@0"
+        },
+        {
+          "command": "platformio-ide.upload",
+          "when": "pioCoreReady && config.platformio-ide.showEditorTitleShortcuts",
+          "group": "navigation@1"
+        },
+        {
+          "command": "platformio-ide.test",
+          "when": "pioCoreReady && config.platformio-ide.showEditorTitleShortcuts",
+          "group": "navigation@2"
+        },
+        {
+          "command": "platformio-ide.clean",
+          "when": "pioCoreReady && config.platformio-ide.showEditorTitleShortcuts",
+          "group": "navigation@3"
+        }
+      ],
+      "editor/title": [
+        {
+          "command": "platformio-ide.serialMonitor",
+          "when": "pioCoreReady && config.platformio-ide.showEditorTitleShortcuts",
+          "group": "navigation"
+        }
+      ],
       ]
     },
     "viewsContainers": {
@@ -545,6 +580,11 @@
           ],
           "default": null,
           "description": "The build task (label) used for the `Build` button in the bottom toolbar and for key bindings. The default is `PlatformIO: Build`."
+        },
+        "platformio-ide.showEditorTitleShortcuts": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show Build, Upload, Clean, and other buttons in the editor title bar for C/C++ files."
         },
         "platformio-ide.autoPreloadEnvTasks": {
           "type": "boolean",

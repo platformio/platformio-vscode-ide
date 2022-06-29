@@ -1,5 +1,9 @@
 # Release Notes
 
+## 2.5.1 (2022-??-??)
+
+- Show "Build/Upload/Test/Clean" and "Serial Monitor" buttons in the editor title bar
+
 ## 2.5.0 (2022-06-23)
 
 **Requires PlatformIO Core 6.0 or above**
