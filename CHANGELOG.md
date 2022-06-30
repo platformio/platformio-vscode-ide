@@ -11,6 +11,7 @@
   * Open PlatformIO Core CLI
   * Upgrade PlatformIO Core
 - Added support for the macOS Touch Bar (issue [#311](https://github.com/platformio/platformio-vscode-ide/issues/311))
+- Prevented users from using wrong Build/debug buttons (issue [#3239](https://github.com/platformio/platformio-vscode-ide/issues/3239))
 
 ## 2.5.0 (2022-06-23)
 

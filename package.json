@@ -38,16 +38,10 @@
   "activationEvents": [
     "*"
   ],
-  "configurationDefaults": {
-    "C_Cpp.debugShortcut": false,
-    "[c]": {
-      "C_Cpp.debugShorcut": false
-    },
-    "[cpp]": {
-      "C_Cpp.debugShorcut": false
-    }
-  },
   "contributes": {
+    "configurationDefaults": {
+      "C_Cpp.debugShortcut": false
+    },
     "languages": [
       {
         "id": "platformio-debug.disassembly",
