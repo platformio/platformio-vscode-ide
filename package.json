@@ -39,9 +39,6 @@
     "*"
   ],
   "contributes": {
-    "configurationDefaults": {
-      "C_Cpp.debugShortcut": false
-    },
     "languages": [
       {
         "id": "platformio-debug.disassembly",
@@ -604,6 +601,9 @@
         }
       }
     ],
+    "configurationDefaults": {
+      "C_Cpp.debugShortcut": false
+    },
     "configuration": {
       "type": "object",
       "title": "PlatformIO IDE configuration",
