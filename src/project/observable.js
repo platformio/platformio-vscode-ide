@@ -31,10 +31,17 @@ export default class ProjectObservable {
         withIndexRebuildingProgress: (task) =>
           vscode.window.withProgress(
             {
-              location: { viewId: vscode.ProgressLocation.Window },
-              title: 'PlatformIO: Rebuilding IntelliSense Index',
+              location: { viewId: vscode.ProgressLocation.Notification },
+              title: 'PlatformIO: Configuring project',
+              cancellable: true,
             },
-            task
+            async (progress) =>
+              await task((message, increment = undefined) =>
+                progress.report({
+                  message,
+                  increment: increment,
+                })
+              )
           ),
         withTasksLoadingProgress: (task) =>
           vscode.window.withProgress(
@@ -212,7 +219,6 @@ export default class ProjectObservable {
       currentProjectDir = this._pool.getActiveObserver().projectDir;
       currentEnvName = this._pool.getActiveObserver().getActiveEnvName();
     }
-
     const observer = this._pool.getObserver(projectDir);
     if ('envName' in options) {
       await observer.switchProjectEnv(options.envName);
@@ -247,7 +253,7 @@ export default class ProjectObservable {
       }
     }
 
-    this.updateEnvSwitcher();
+    this.showSelectedEnv();
     this.saveActiveProjectState();
   }
 
@@ -271,7 +277,7 @@ export default class ProjectObservable {
     );
   }
 
-  updateEnvSwitcher() {
+  showSelectedEnv() {
     const observer = this._pool.getActiveObserver();
     if (!observer) {
       return;
