@@ -22,9 +22,14 @@ export default class ProjectObservable {
     this._persistentState = new StateStorage(extension.context.globalState, 'projects');
     this._taskManager = undefined;
     this._sbEnvSwitcher = undefined;
+    this._logOutputChannel = vscode.window.createOutputChannel(
+      'PlatformIO: Project Configuration'
+    );
+
     this._pool = new pioNodeHelpers.project.ProjectPool({
       ide: 'vscode',
       api: {
+        logOutputChannel: this._logOutputChannel,
         createFileSystemWatcher: vscode.workspace.createFileSystemWatcher,
         createDirSystemWatcher: (dir) =>
           vscode.workspace.createFileSystemWatcher(path.join(dir, '*')),
@@ -72,6 +77,7 @@ export default class ProjectObservable {
     });
 
     this.subscriptions = [
+      this._logOutputChannel,
       this._pool,
       vscode.window.onDidChangeActiveTextEditor(() => {
         if (!extension.getSetting('activateProjectOnTextEditorChange')) {
