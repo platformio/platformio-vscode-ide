@@ -3,7 +3,6 @@
 src/**
 test/**
 .babelrc
-.esformatter
 .eslintignore
 .eslintrc.js
 .gitignore

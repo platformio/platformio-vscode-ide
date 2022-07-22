@@ -23,7 +23,7 @@
     "arduino"
   ],
   "main": "./dist/extension",
-  "icon": "resources/platformio-logo.png",
+  "icon": "assets/images/platformio-logo.png",
   "homepage": "https://platformio.org",
   "author": {
     "name": "PlatformIO.Org"
@@ -215,8 +215,8 @@
         "command": "platformio-debug.examineMemory",
         "title": " View Memory",
         "icon": {
-          "light": "resources/icons/add.svg",
-          "dark": "resources/icons/add-inverse.svg"
+          "light": "assets/icons/add.svg",
+          "dark": "assets/icons/add-inverse.svg"
         }
       },
       {
@@ -224,8 +224,8 @@
         "command": "platformio-debug.memory.clearHistory",
         "title": "Clear Memory View History",
         "icon": {
-          "light": "resources/icons/closeall.svg",
-          "dark": "resources/icons/closeall-inverse.svg"
+          "light": "assets/icons/closeall.svg",
+          "dark": "assets/icons/closeall-inverse.svg"
         }
       },
       {
@@ -514,7 +514,7 @@
         {
           "id": "platformio",
           "title": "PlatformIO",
-          "icon": "resources/platformio-activity-icon.svg",
+          "icon": "assets/icons/platformio-activity-icon.svg",
           "when": "pioCoreReady"
         }
       ]
