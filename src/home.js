@@ -61,7 +61,8 @@ export default class PIOHome {
     panel.iconPath = vscode.Uri.file(
       path.join(
         extension.context.extensionPath,
-        'resources',
+        'assets',
+        'images',
         'platformio-mini-logo.svg'
       )
     );
