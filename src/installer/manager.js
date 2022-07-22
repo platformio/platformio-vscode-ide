@@ -11,6 +11,8 @@ import * as pioNodeHelpers from 'platformio-node-helpers';
 import { PIO_CORE_VERSION_SPEC } from '../constants';
 import PythonPrompt from './python-prompt';
 import StateStorage from '../state-storage';
+import { extension } from '../main';
+import path from 'path';
 import vscode from 'vscode';
 
 export default class InstallationManager {
@@ -34,6 +36,11 @@ export default class InstallationManager {
           useDevelopmentPIOCore: config.get('useDevelopmentPIOCore'),
           pythonPrompt: new PythonPrompt(),
           disableAutoUpdates: disableAutoUpdates,
+          predownloadedPackageDir: path.join(
+            extension.context.extensionPath,
+            'assets',
+            'predownloaded'
+          ),
         }
       ),
     ];
