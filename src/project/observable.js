@@ -40,12 +40,14 @@ export default class ProjectObservable {
               title: 'PlatformIO: Configuring project',
               cancellable: true,
             },
-            async (progress) =>
-              await task((message, increment = undefined) =>
-                progress.report({
-                  message,
-                  increment: increment,
-                })
+            async (progress, token) =>
+              await task(
+                (message, increment = undefined) =>
+                  progress.report({
+                    message,
+                    increment: increment,
+                  }),
+                token
               )
           ),
         withTasksLoadingProgress: (task) =>
