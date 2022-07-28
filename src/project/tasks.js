@@ -156,10 +156,10 @@ export default class ProjectTaskManager {
     ) {
       return;
     }
-    vscode.commands.executeCommand(
-      'workbench.action.tasks.runTask',
-      `${ProjectTaskManager.PROVIDER_TYPE}: ${task.id}`
-    );
+    vscode.commands.executeCommand('workbench.action.tasks.runTask', {
+      type: ProjectTaskManager.PROVIDER_TYPE,
+      task: task.id,
+    });
   }
 
   _autoCloseSerialMonitor(task) {
