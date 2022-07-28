@@ -2,8 +2,6 @@
 
 ## 3.0.0 (2022-??-??)
 
-**Requires VSCode 1.63 or above**
-
 - Project Management
   * Show project configuring progress
   * Log configuration process to the output channel
@@ -17,9 +15,11 @@
     - Open PlatformIO Core CLI
     - Upgrade PlatformIO Core
 
-## 2.5.1 (2022-??-??)
+## 2.5.1 (2022-07-28)
 
-- Prevented users from using wrong Build/debug buttons (issue [#3239](https://github.com/platformio/platformio-vscode-ide/issues/3239))
+**Requires VSCode 1.63 or above**
+
+- Prevented users from using wrong Build/Debug buttons (issue [#3239](https://github.com/platformio/platformio-vscode-ide/issues/3239))
 
 ## 2.5.0 (2022-06-23)
 
