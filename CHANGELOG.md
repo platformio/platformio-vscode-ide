@@ -1,5 +1,11 @@
 # Release Notes
 
+## 2.5.1 (2022-07-28)
+
+**Requires VSCode 1.63 or above**
+
+- Prevented users from using wrong Build/Debug buttons (issue [#3239](https://github.com/platformio/platformio-vscode-ide/issues/3239))
+
 ## 2.5.0 (2022-06-23)
 
 **Requires PlatformIO Core 6.0 or above**

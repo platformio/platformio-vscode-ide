@@ -34,7 +34,7 @@ export default class ProjectObservable {
               location: { viewId: vscode.ProgressLocation.Window },
               title: 'PlatformIO: Rebuilding IntelliSense Index',
             },
-            task
+            async () => await task()
           ),
         withTasksLoadingProgress: (task) =>
           vscode.window.withProgress(

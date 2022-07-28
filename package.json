@@ -1,27 +1,29 @@
 {
   "name": "platformio-ide",
-  "version": "2.5.0",
+  "version": "2.5.1",
   "publisher": "platformio",
   "engines": {
-    "vscode": "^1.57.0"
+    "vscode": "^1.63.0"
   },
   "license": "Apache-2.0",
   "displayName": "PlatformIO IDE",
   "description": "Professional development environment for Embedded, IoT, Arduino, CMSIS, ESP-IDF, FreeRTOS, libOpenCM3, mbed OS, Pulp OS, SPL, STM32Cube, Zephyr RTOS, ARM, AVR, Espressif (ESP8266/ESP32), FPGA, MCS-51 (8051), MSP430, Nordic (nRF51/nRF52), NXP i.MX RT, PIC32, RISC-V, STMicroelectronics (STM8/STM32), Teensy",
   "categories": [
     "Programming Languages",
+    "Linters",
     "Debuggers",
+    "Testing",
     "Other"
   ],
   "keywords": [
     "embedded",
-    "debug",
-    "c",
-    "c++",
-    "microcontroller"
+    "microcontroller",
+    "arm",
+    "risc-v",
+    "arduino"
   ],
   "main": "./dist/extension",
-  "icon": "resources/platformio-logo.png",
+  "icon": "assets/images/platformio-logo.png",
   "homepage": "https://platformio.org",
   "author": {
     "name": "PlatformIO.Org"
@@ -208,8 +210,8 @@
         "command": "platformio-debug.examineMemory",
         "title": " View Memory",
         "icon": {
-          "light": "resources/icons/add.svg",
-          "dark": "resources/icons/add-inverse.svg"
+          "light": "assets/icons/add.svg",
+          "dark": "assets/icons/add-inverse.svg"
         }
       },
       {
@@ -217,8 +219,8 @@
         "command": "platformio-debug.memory.clearHistory",
         "title": "Clear Memory View History",
         "icon": {
-          "light": "resources/icons/closeall.svg",
-          "dark": "resources/icons/closeall-inverse.svg"
+          "light": "assets/icons/closeall.svg",
+          "dark": "assets/icons/closeall-inverse.svg"
         }
       },
       {
@@ -422,7 +424,7 @@
         {
           "id": "platformio",
           "title": "PlatformIO",
-          "icon": "resources/platformio-activity-icon.svg",
+          "icon": "assets/icons/platformio-activity-icon.svg",
           "when": "pioCoreReady"
         }
       ]
@@ -509,6 +511,9 @@
         }
       }
     ],
+    "configurationDefaults": {
+      "C_Cpp.debugShortcut": false
+    },
     "configuration": {
       "type": "object",
       "title": "PlatformIO IDE configuration",
@@ -623,23 +628,23 @@
   },
   "dependencies": {
     "fs-plus": "~3.1.1",
-    "platformio-node-helpers": "~9.5.0",
+    "platformio-node-helpers": "~9.6.0",
     "platformio-vscode-debug": "~1.4.1"
   },
   "devDependencies": {
-    "@babel/core": "~7.18.5",
-    "@babel/eslint-parser": "~7.18.2",
-    "@babel/plugin-proposal-class-properties": "~7.17.12",
-    "@babel/preset-env": "~7.18.2",
-    "@types/node": "~12",
-    "@types/vscode": "~1.57.0",
+    "@babel/core": "~7.18.9",
+    "@babel/eslint-parser": "~7.18.9",
+    "@babel/plugin-proposal-class-properties": "~7.18.6",
+    "@babel/preset-env": "~7.18.9",
+    "@types/node": "~14",
+    "@types/vscode": "~1.63.0",
     "babel-loader": "~8.2.5",
-    "eslint": "~8.18.0",
+    "eslint": "~8.20.0",
     "eslint-import-resolver-webpack": "~0.13.2",
     "eslint-plugin-import": "~2.26.0",
     "prettier": "~2.7.1",
-    "vsce": "~2.9.2",
-    "webpack": "~5.73.0",
+    "vsce": "~2.10.0",
+    "webpack": "~5.74.0",
     "webpack-cli": "~4.10.0"
   },
   "extensionDependencies": [
