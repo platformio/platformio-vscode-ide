@@ -1,16 +1,24 @@
 # Release Notes
 
-## 2.6.0 (2022-??-??)
+## 3.0.0 (2022-??-??)
 
 **Requires VSCode 1.63 or above**
 
-- Added "Build/Upload/Test/Clean" and "Serial Monitor" buttons to the Editor title bar
-- Added PlatformIO commands to the Explorer context menu:
-  * Open PlatformIO Home
-  * Rebuild IntelliSense Index
-  * Open PlatformIO Core CLI
-  * Upgrade PlatformIO Core
-- Added support for the macOS Touch Bar (issue [#311](https://github.com/platformio/platformio-vscode-ide/issues/311))
+- Project Management
+  * Show project configuring progress
+  * Log configuration process to the output channel
+  * Added support for canceling project configuration process
+- UI Improvements
+  * Added support for the macOS Touch Bar (issue [#311](https://github.com/platformio/platformio-vscode-ide/issues/311))
+  * Added "Build/Upload/Test/Clean" and "Serial Monitor" buttons to the Editor title bar
+  * Added PlatformIO commands to the Explorer context menu:
+    - Open PlatformIO Home
+    - Rebuild IntelliSense Index
+    - Open PlatformIO Core CLI
+    - Upgrade PlatformIO Core
+
+## 2.5.1 (2022-??-??)
+
 - Prevented users from using wrong Build/debug buttons (issue [#3239](https://github.com/platformio/platformio-vscode-ide/issues/3239))
 
 ## 2.5.0 (2022-06-23)
