@@ -404,12 +404,12 @@
       "view/title": [
         {
           "command": "platformio-ide.switchProjectEnv",
-          "when": "pioCoreReady && pioMultiEnvProject && view == platformio-ide.projectTasks",
+          "when": "pioMultiEnvProject && view == platformio-ide.projectTasks",
           "group": "navigation"
         },
         {
           "command": "platformio-ide.refreshProjectTasks",
-          "when": "pioCoreReady && view == platformio-ide.projectTasks",
+          "when": "pioProjectReady && view == platformio-ide.projectTasks",
           "group": "navigation"
         },
         {
@@ -426,22 +426,22 @@
       "editor/title/run": [
         {
           "command": "platformio-ide.build",
-          "when": "pioCoreReady && config.platformio-ide.showEditorTitleShortcuts",
+          "when": "pioProjectReady && config.platformio-ide.showEditorTitleShortcuts",
           "group": "pio_run@0"
         },
         {
           "command": "platformio-ide.upload",
-          "when": "pioCoreReady && config.platformio-ide.showEditorTitleShortcuts",
+          "when": "pioProjectReady && config.platformio-ide.showEditorTitleShortcuts",
           "group": "pio_run@1"
         },
         {
           "command": "platformio-ide.test",
-          "when": "pioCoreReady && config.platformio-ide.showEditorTitleShortcuts",
+          "when": "pioProjectReady && config.platformio-ide.showEditorTitleShortcuts",
           "group": "pio_run@2"
         },
         {
           "command": "platformio-ide.clean",
-          "when": "pioCoreReady && config.platformio-ide.showEditorTitleShortcuts",
+          "when": "pioProjectReady && config.platformio-ide.showEditorTitleShortcuts",
           "group": "pio_run@3"
         }
       ],
@@ -467,7 +467,7 @@
         },
         {
           "command": "platformio-ide.rebuildProjectIndex",
-          "when": "pioCoreReady",
+          "when": "pioProjectReady",
           "group": "z_pio_service@1"
         },
         {
@@ -484,22 +484,22 @@
       "touchBar": [
         {
           "command": "platformio-ide.build",
-          "when": "pioCoreReady && config.platformio-ide.showEditorTitleShortcuts",
+          "when": "pioProjectReady && config.platformio-ide.showEditorTitleShortcuts",
           "group": "z_pio_run@0"
         },
         {
           "command": "platformio-ide.upload",
-          "when": "pioCoreReady && config.platformio-ide.showEditorTitleShortcuts",
+          "when": "pioProjectReady && config.platformio-ide.showEditorTitleShortcuts",
           "group": "z_pio_run@1"
         },
         {
           "command": "platformio-ide.test",
-          "when": "pioCoreReady && config.platformio-ide.showEditorTitleShortcuts",
+          "when": "pioProjectReady && config.platformio-ide.showEditorTitleShortcuts",
           "group": "z_pio_run@2"
         },
         {
           "command": "platformio-ide.clean",
-          "when": "pioCoreReady && config.platformio-ide.showEditorTitleShortcuts",
+          "when": "pioProjectReady && config.platformio-ide.showEditorTitleShortcuts",
           "group": "z_pio_run@3"
         },
         {
@@ -524,7 +524,7 @@
         {
           "id": "platformio-ide.projectTasks",
           "name": "Project Tasks",
-          "when": "pioProjectReady"
+          "when": "pioCoreReady"
         },
         {
           "id": "platformio-activitybar.quickAccess",
