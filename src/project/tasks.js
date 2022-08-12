@@ -120,7 +120,7 @@ export default class ProjectTaskManager {
         task: projectTask.id,
       },
       vscode.workspace.getWorkspaceFolder(vscode.Uri.file(this.projectDir)),
-      projectTask.title,
+      projectTask.id,
       ProjectTaskManager.PROVIDER_TYPE,
       new vscode.ProcessExecution(
         IS_WINDOWS ? 'platformio.exe' : 'platformio',

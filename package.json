@@ -1,13 +1,13 @@
 {
   "name": "platformio-ide",
-  "version": "2.5.1",
+  "version": "2.5.2",
   "publisher": "platformio",
   "engines": {
     "vscode": "^1.63.0"
   },
   "license": "Apache-2.0",
   "displayName": "PlatformIO IDE",
-  "description": "Professional development environment for Embedded, IoT, Arduino, CMSIS, ESP-IDF, FreeRTOS, libOpenCM3, mbed OS, Pulp OS, SPL, STM32Cube, Zephyr RTOS, ARM, AVR, Espressif (ESP8266/ESP32), FPGA, MCS-51 (8051), MSP430, Nordic (nRF51/nRF52), NXP i.MX RT, PIC32, RISC-V, STMicroelectronics (STM8/STM32), Teensy",
+  "description": "Professional development environment for Embedded, IoT, Arduino, CMSIS, ESP-IDF, FreeRTOS, libOpenCM3, mbed OS, Pulp OS, SPL, STM32Cube, Zephyr RTOS, ARM, AVR, Espressif (ESP8266/ESP32), FPGA, MCS-51 (8051), MSP430, Nordic (nRF51/nRF52), PIC32, RISC-V, STMicroelectronics (STM8/STM32), Teensy",
   "categories": [
     "Programming Languages",
     "Linters",
@@ -722,14 +722,14 @@
     "platformio-vscode-debug": "~1.4.1"
   },
   "devDependencies": {
-    "@babel/core": "~7.18.9",
+    "@babel/core": "~7.18.10",
     "@babel/eslint-parser": "~7.18.9",
     "@babel/plugin-proposal-class-properties": "~7.18.6",
-    "@babel/preset-env": "~7.18.9",
+    "@babel/preset-env": "~7.18.10",
     "@types/node": "~14",
     "@types/vscode": "~1.63.0",
     "babel-loader": "~8.2.5",
-    "eslint": "~8.20.0",
+    "eslint": "~8.21.0",
     "eslint-import-resolver-webpack": "~0.13.2",
     "eslint-plugin-import": "~2.26.0",
     "prettier": "~2.7.1",
