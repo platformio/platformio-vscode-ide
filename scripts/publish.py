@@ -72,6 +72,7 @@ def predownload_portable_python(dst_dir: Path, custom_system):
 
 
 if __name__ == "__main__":
+    subprocess.run(["yarn", "build"], cwd=ROOT_DIR)
     for item in PLATFORM_LIST:
         print(f"Publishing {item}")
         cleanup_predownload_dir(PREDOWNLOADED_DIR)
