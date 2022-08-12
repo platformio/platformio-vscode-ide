@@ -1,13 +1,13 @@
 {
   "name": "platformio-ide",
-  "version": "2.5.1",
+  "version": "2.5.2",
   "publisher": "platformio",
   "engines": {
     "vscode": "^1.63.0"
   },
   "license": "Apache-2.0",
   "displayName": "PlatformIO IDE",
-  "description": "Professional development environment for Embedded, IoT, Arduino, CMSIS, ESP-IDF, FreeRTOS, libOpenCM3, mbed OS, Pulp OS, SPL, STM32Cube, Zephyr RTOS, ARM, AVR, Espressif (ESP8266/ESP32), FPGA, MCS-51 (8051), MSP430, Nordic (nRF51/nRF52), NXP i.MX RT, PIC32, RISC-V, STMicroelectronics (STM8/STM32), Teensy",
+  "description": "Professional development environment for Embedded, IoT, Arduino, CMSIS, ESP-IDF, FreeRTOS, libOpenCM3, mbed OS, Pulp OS, SPL, STM32Cube, Zephyr RTOS, ARM, AVR, Espressif (ESP8266/ESP32), FPGA, MCS-51 (8051), MSP430, Nordic (nRF51/nRF52), PIC32, RISC-V, STMicroelectronics (STM8/STM32), Teensy",
   "categories": [
     "Programming Languages",
     "Linters",

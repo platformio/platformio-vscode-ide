@@ -1,6 +1,6 @@
 # Release Notes
 
-## 2.5.2 (2022-08-??)
+## 2.5.2 (2022-08-12)
 
 - Fixed an issue when project tasks with a title didn't work (issue [#3274](https://github.com/platformio/platformio-vscode-ide/issues/3274))
 
