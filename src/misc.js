@@ -113,7 +113,7 @@ export async function warnAboutInoFile(editor, stateStorage) {
     case 'Show instruction':
       vscode.commands.executeCommand(
         'vscode.open',
-        vscode.Uri.parse('http://bit.ly/ino2cpp')
+        vscode.Uri.parse('https://bit.ly/convert-ino-to-cpp')
       );
       break;
     case 'Do not show again':
