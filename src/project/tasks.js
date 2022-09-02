@@ -156,9 +156,8 @@ export default class ProjectTaskManager {
     ) {
       return;
     }
-    vscode.commands.executeCommand('workbench.action.tasks.runTask', {
-      type: ProjectTaskManager.PROVIDER_TYPE,
-      task: task.id,
+    vscode.tasks.fetchTasks({ type: ProjectTaskManager.PROVIDER_TYPE }).then((tasks) => {
+      vscode.tasks.executeTask(tasks.find((r) => r.name == task.id));
     });
   }
 
