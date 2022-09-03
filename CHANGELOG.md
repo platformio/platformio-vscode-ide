@@ -1,5 +1,9 @@
 # Release Notes
 
+## 2.5.4 (2022-09-03)
+
+- Keep using legacy API for calling VSCode tasks
+
 ## 2.5.3 (2022-09-03)
 
 - Fixed an issue when Project Tasks are disabled in the VSCode v1.71 (issue [#3299](https://github.com/platformio/platformio-vscode-ide/issues/3299))
