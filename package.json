@@ -95,8 +95,7 @@
       {
         "command": "platformio-ide.privateRunTask",
         "title": "Custom task runner (private)",
-        "category": "PlatformIO",
-        "enablement": "false"
+        "category": "PlatformIO"
       },
       {
         "command": "platformio-ide.showHome",
