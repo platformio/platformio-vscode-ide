@@ -15,6 +15,10 @@
     - Open PlatformIO Core CLI
     - Upgrade PlatformIO Core
 
+## 2.5.3 (2022-09-03)
+
+- Fixed an issue when Project Tasks are disabled in the VSCode v1.71 (issue [#3299](https://github.com/platformio/platformio-vscode-ide/issues/3299))
+
 ## 2.5.2 (2022-08-12)
 
 - Fixed an issue when project tasks with a title didn't work (issue [#3274](https://github.com/platformio/platformio-vscode-ide/issues/3274))
