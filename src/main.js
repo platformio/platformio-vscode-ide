@@ -132,12 +132,11 @@ class PlatformIOVSCodeExtension {
     if (http_proxy && !process.env.HTTP_PROXY && !process.env.http_proxy) {
       extraVars['HTTP_PROXY'] = http_proxy;
     }
-    if (!vscode.workspace.getConfiguration('http').get('proxyStrictSSL')) {
-      // https://stackoverflow.com/questions/48391750/disable-python-requests-ssl-validation-for-an-imported-module
-      extraVars['CURL_CA_BUNDLE'] = '';
-    }
     if (http_proxy && !process.env.HTTPS_PROXY && !process.env.https_proxy) {
       extraVars['HTTPS_PROXY'] = http_proxy;
+    }
+    if (!vscode.workspace.getConfiguration('http').get('proxyStrictSSL')) {
+      extraVars['PLATFORMIO_SETTING_ENABLE_PROXY_STRICT_SSL'] = 'false';
     }
     if (this.getSetting('customPyPiIndexUrl')) {
       extraVars['PIP_INDEX_URL'] = this.getSetting('customPyPiIndexUrl');
