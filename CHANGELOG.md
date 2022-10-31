@@ -1,5 +1,10 @@
 # Release Notes
 
+## 2.5.5 (2022-10-31)
+
+- Inherit VSCode Proxy configuration for PlatformIO Core (requires PlatformIO Core 6.1.5+)
+- Fixed an issue with passing VSCode environment variables to the terminal processes (issue [#3287](https://github.com/platformio/platformio-vscode-ide/issues/3287))
+
 ## 2.5.4 (2022-09-03)
 
 - Keep using legacy API for calling VSCode tasks
