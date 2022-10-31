@@ -109,7 +109,7 @@ export default class ProjectTaskManager {
   }
 
   toVSCodeTask(projectTask) {
-    const envClone = Object.create(process.env);
+    const envClone = Object.assign({}, process.env);
     if (process.env.PLATFORMIO_PATH) {
       envClone.PATH = process.env.PLATFORMIO_PATH;
       envClone.Path = process.env.PLATFORMIO_PATH;
