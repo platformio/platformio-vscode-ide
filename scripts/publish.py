@@ -59,7 +59,8 @@ def cleanup_predownload_dir(path: Path):
 def predownload_portable_python(dst_dir: Path, custom_system):
     tm = ToolPackageManager()
     package = tm.fetch_registry_package(PackageSpec("platformio/python-portable"))
-    assert package
+    if not package:
+        raise AssertionError
     version = tm.pick_best_registry_version(
         package["versions"], custom_system=custom_system
     )
