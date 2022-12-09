@@ -104,7 +104,7 @@ export default class PIOHome {
     const theme = this.getTheme();
     const iframeId =
       'pioHomeIFrame-' +
-      crypto.createHash('sha1').update(crypto.randomBytes(512)).digest('hex');
+      crypto.createHash("sha256").update(crypto.randomBytes(512)).digest('hex');
     const iframeScript = `
 <script>
   for (const command of ['selectAll', 'copy', 'paste', 'cut', 'undo', 'redo']) {
