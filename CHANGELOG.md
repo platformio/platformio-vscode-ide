@@ -15,7 +15,8 @@
     - Open PlatformIO Core CLI
     - Upgrade PlatformIO Core
 - Miscellaneous
-  * Activate keyboard shortcuts only when PlatformIO Project is opened (issue [#3324](https://github.com/platformio/platformio-vscode-ide/issues/3324))
+  * Activate PlatformIO IDE extension when intending to use PlatformIO (issue [#66](https://github.com/platformio/platformio-vscode-ide/issues/66))
+  * Activate keyboard shortcuts when PlatformIO Project is opened (issue [#3324](https://github.com/platformio/platformio-vscode-ide/issues/3324))
 
 ## 2.5.5 (2022-10-31)
 

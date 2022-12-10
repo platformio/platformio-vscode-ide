@@ -41,9 +41,6 @@ class PlatformIOVSCodeExtension {
     this.subscriptions.push(this.pioHome, this.pioTerm);
 
     const hasPIOProject = ProjectObservable.getPIOProjectDirs().length > 0;
-    if (!hasPIOProject && this.getSetting('activateOnlyOnPlatformIOProject')) {
-      return;
-    }
 
     // temporary workaround for https://github.com/Microsoft/vscode/issues/58348
     if (
@@ -67,7 +64,7 @@ class PlatformIOVSCodeExtension {
 
     this.subscriptions.push(
       vscode.window.registerTreeDataProvider(
-        'platformio-activitybar.quickAccess',
+        'platformio-ide.quickAccess',
         new QuickAccessTreeProvider()
       )
     );
@@ -164,7 +161,7 @@ class PlatformIOVSCodeExtension {
       },
       async (progress) => {
         progress.report({
-          message: 'Checking PlatformIO Core installation...',
+          message: 'Initializing PlatformIO Core...',
         });
         try {
           return !(await im.check());
@@ -325,6 +322,7 @@ class PlatformIOVSCodeExtension {
 
   disposeLocalSubscriptions() {
     vscode.commands.executeCommand('setContext', 'pioCoreReady', false);
+    vscode.commands.executeCommand('setContext', 'pioProjectReady', false);
     pioNodeHelpers.misc.disposeSubscriptions(this.subscriptions);
   }
 
