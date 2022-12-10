@@ -17,6 +17,7 @@
 - Miscellaneous
   * Activate PlatformIO IDE extension when intending to use PlatformIO (issue [#66](https://github.com/platformio/platformio-vscode-ide/issues/66))
   * Activate keyboard shortcuts when PlatformIO Project is opened (issue [#3324](https://github.com/platformio/platformio-vscode-ide/issues/3324))
+  * Fixed an issue with "'platformio-ide.build' not found" (issue [#1398](https://github.com/platformio/platformio-vscode-ide/issues/1398))
 
 ## 2.5.5 (2022-10-31)
 
