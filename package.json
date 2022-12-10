@@ -553,19 +553,18 @@
     "keybindings": [
       {
         "command": "platformio-ide.build",
-        "key": "ctrl+alt+b"
+        "key": "ctrl+alt+b",
+        "when": "pioProjectReady"
       },
       {
         "command": "platformio-ide.upload",
-        "key": "ctrl+alt+u"
+        "key": "ctrl+alt+u",
+        "when": "pioProjectReady"
       },
       {
         "command": "platformio-ide.serialMonitor",
-        "key": "ctrl+alt+s"
-      },
-      {
-        "command": "workbench.action.tasks.runTask",
-        "key": "ctrl+alt+t"
+        "key": "ctrl+alt+s",
+        "when": "pioCoreReady"
       }
     ],
     "taskDefinitions": [

@@ -1,6 +1,6 @@
 # Release Notes
 
-## 3.0.0 (2022-??-??)
+## 3.0.0 (2023-??-??)
 
 - Project Management
   * Show project configuring progress
@@ -14,6 +14,8 @@
     - Rebuild IntelliSense Index
     - Open PlatformIO Core CLI
     - Upgrade PlatformIO Core
+- Miscellaneous
+  * Activate keyboard shortcuts only when PlatformIO Project is opened (issue [#3324](https://github.com/platformio/platformio-vscode-ide/issues/3324))
 
 ## 2.5.5 (2022-10-31)
 
