@@ -14,6 +14,7 @@
 
 import os
 import shutil
+import sys
 import subprocess
 from dataclasses import dataclass
 from pathlib import Path
@@ -86,6 +87,6 @@ if __name__ == "__main__":
                 "--allow-star-activation",
                 "--target",
                 item.target,
-            ],
+            ] + sys.argv[1:],
             cwd=ROOT_DIR,
         )
