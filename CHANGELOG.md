@@ -6,7 +6,8 @@
   * Show project configuring progress
   * Log configuration process to the output channel
   * Added support for canceling project configuration process
-- UI Improvements
+- UX/UI Improvements
+  * Added walkthroughs (appear on the Getting Started page) to introduce users to features of the PlatformIO ecosystem
   * Added support for the macOS Touch Bar (issue [#311](https://github.com/platformio/platformio-vscode-ide/issues/311))
   * Added "Build/Upload/Test/Clean" and "Serial Monitor" buttons to the Editor title bar
   * Added PlatformIO commands to the Explorer context menu:

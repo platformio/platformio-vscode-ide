@@ -593,6 +593,71 @@
         "contents": "Initializing PlatformIO Core..."
       }
     ],
+    "walkthroughs": [
+      {
+        "id": "platformio-ide.welcome",
+        "title": "Get started with PlatformIO IDE",
+        "description": "The most loved IDE solution for Microsoft Visual Studio Code",
+        "steps": [
+          {
+            "id": "platformio-core",
+            "title": "Rich CLI developed for Humans",
+            "description": "[PlatformIO Core](https://bit.ly/vscode-platformio-core-docs) is the heart of PlatformIO IDE and it's your one-stop shop for professional embedded development.\nIt takes care of everything from dependency management to testing, so you can focus on what matters most – your project.\n[Install PlatformIO Core](command:platformio-ide.openPIOCoreCLI)",
+            "media": {
+              "image": "assets/welcome/platformio-core-cli-demo.png",
+              "altText": "PlatformIO Core CLI Demo"
+            },
+            "completionEvents": [
+              "onContext:pioCoreReady"
+            ]
+          },
+          {
+            "id": "platformio.ini",
+            "title": "Platform-agnostic shareable configuration",
+            "description": "[platformio.ini](https://bit.ly/vscode-platformio-ini-docs) is the single configuration file that lets you set up your development environment and share your configurations with your team or organization.\nLeverage a declarative approach to embedded development and the power of semantic versioning.\n[Learn More](https://bit.ly/vscode-platformio-ini-docs)",
+            "media": {
+              "markdown": "assets/welcome/platformio-ini-example.md"
+            },
+            "completionEvents": [
+              "onLink:https://bit.ly/vscode-platformio-ini-docs"
+            ]
+          },
+          {
+            "id": "platformio-home",
+            "title": "Advanced project management",
+            "description": "Boost your product development with [PIO Home](https://bit.ly/vscode-platformio-home-docs) – a powerful, modern, and interactive user interface for advanced project management.\nIt allows you to enhance your project source code with advanced instruments such as firmware explorer, memory inspection, and static code analysis.\n[Open PIO Home](command:platformio-ide.showHome)\nTip: Use 🏠 icon at the bottom status bar.",
+            "media": {
+              "image": "assets/welcome/project-inspection-demo.png",
+              "altText": "PlatformIO Project Inspection Demo"
+            }
+          },
+          {
+            "id": "explore-more-resources",
+            "title": "Explore more resources",
+            "description": "📦 Browse over 10,000 libraries from software vendors, open-source projects, and the community in the [PlatformIO Registry](https://bit.ly/platformio-registry).\n🚀 Learn more about getting started with [PlatformIO IDE for VSCode](https://bit.ly/platformio-ide-for-vscode-docs).\n🧡 Have any ideas or need help with your project? Ask our awesome [PlatformIO Community](https://community.platformio.org/).\n[Learn More](https://bit.ly/platformio-ide-for-vscode-docs)",
+            "media": {
+              "image": "assets/welcome/platformio-package-registry-demo.png",
+              "altText": "PlatformIO Package Registry"
+            },
+            "completionEvents": [
+              "onLink:https://bit.ly/platformio-ide-for-vscode-docs"
+            ]
+          },
+          {
+            "id": "ready-to-start",
+            "title": "Ready to start?",
+            "description": "Navigate to the PlatformIO IDE View in the left activity bar and open an existing project or create a new one.\n[Open PlatformIO IDE View](command:workbench.view.extension.platformio)",
+            "media": {
+              "image": "assets/welcome/platformio-ide-view-demo.png",
+              "altText": "PlatformIO IDE View"
+            },
+            "completionEvents": [
+              "onView:platformio-ide.projectTasks"
+            ]
+          }
+        ]
+      }
+    ],
     "keybindings": [
       {
         "command": "platformio-ide.build",
