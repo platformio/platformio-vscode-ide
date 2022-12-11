@@ -84,7 +84,6 @@ if __name__ == "__main__":
                 "npx",
                 "vsce",
                 "publish",
-                "--allow-star-activation",
                 "--target",
                 item.target,
             ] + sys.argv[1:],
