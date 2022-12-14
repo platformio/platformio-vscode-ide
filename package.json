@@ -130,12 +130,6 @@
         "enablement": "pioCoreReady"
       },
       {
-        "command": "platformio-ide.privateRunTask",
-        "title": "Custom task runner (private)",
-        "category": "PlatformIO",
-        "enablement": "pioProjectReady"
-      },
-      {
         "command": "platformio-ide.switchProjectEnv",
         "title": "Switch Project Environment",
         "category": "PlatformIO",
