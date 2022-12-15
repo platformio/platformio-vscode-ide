@@ -2,10 +2,15 @@
 
 ## 3.0.0 (2023-??-??)
 
+**Requires VSCode 1.65 or above**
+
 - Project Management
   * Show project configuring progress
   * Log configuration process to the output channel
   * Added support for canceling project configuration process
+- Testing
+  * Integrated PlatformIO [Unit Testing](https://docs.platformio.org/en/latest/advanced/unit-testing/index.html)
+  * Run project tests and analyze testing results using the native VSCode Testing view
 - UX/UI Improvements
   * Added walkthroughs (appear on the Getting Started page) to introduce users to features of the PlatformIO ecosystem
   * Added support for the macOS Touch Bar (issue [#311](https://github.com/platformio/platformio-vscode-ide/issues/311))

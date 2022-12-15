@@ -9,6 +9,7 @@
 import * as pioNodeHelpers from 'platformio-node-helpers';
 
 import ProjectTaskManager from './tasks';
+import ProjectTestManager from './tests';
 import { STATUS_BAR_PRIORITY_START } from '../constants';
 import StateStorage from '../state-storage';
 import { extension } from '../main';
@@ -21,6 +22,7 @@ export default class ProjectObservable {
   constructor() {
     this._persistentState = new StateStorage(extension.context.globalState, 'projects');
     this._taskManager = undefined;
+    this._testManager = undefined;
     this._sbEnvSwitcher = undefined;
     this._logOutputChannel = vscode.window.createOutputChannel(
       'PlatformIO: Project Configuration'
@@ -79,8 +81,8 @@ export default class ProjectObservable {
     });
 
     this.subscriptions = [
-      this._logOutputChannel,
       this._pool,
+      this._logOutputChannel,
       vscode.window.onDidChangeActiveTextEditor(() => {
         if (!extension.getSetting('activateProjectOnTextEditorChange')) {
           return;
@@ -110,6 +112,11 @@ export default class ProjectObservable {
   }
 
   dispose() {
+    for (const manager of [this._taskManager, this._testManager]) {
+      if (manager) {
+        this.subscriptions.push(manager);
+      }
+    }
     pioNodeHelpers.misc.disposeSubscriptions(this.subscriptions);
   }
 
@@ -244,11 +251,11 @@ export default class ProjectObservable {
     ) {
       this._pool.switch(projectDir);
 
-      if (this._taskManager) {
-        this._taskManager.dispose();
-        this._taskManager = undefined;
-      }
+      [this._taskManage, this._testManager]
+        .filter((manager) => !!manager)
+        .forEach((manager) => manager.dispose());
       this._taskManager = new ProjectTaskManager(projectDir, observer);
+      this._testManager = new ProjectTestManager(projectDir);
 
       // open "platformio.ini" if no visible editors
       if (
