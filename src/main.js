@@ -17,7 +17,6 @@ import PIOTerminal from './terminal';
 import ProjectObservable from './project/observable';
 import QuickAccessTreeProvider from './views/quick-access-tree';
 import { STATUS_BAR_PRIORITY_START } from './constants';
-import StateStorage from './state-storage';
 import fs from 'fs-plus';
 import { getPIOProjectDirs } from './project/helpers';
 import vscode from 'vscode';
@@ -35,13 +34,19 @@ class PlatformIOVSCodeExtension {
 
   async activate(context) {
     this.context = context;
-    this.stateStorage = new StateStorage(context.globalState);
     this.pioHome = new PIOHome();
     this.pioTerm = new PIOTerminal();
-
     this.subscriptions.push(this.pioHome, this.pioTerm);
-
     const hasPIOProject = getPIOProjectDirs().length > 0;
+
+    // dump global state
+    console.info(
+      'PlatformIO IDE Global State',
+      context.globalState.keys().reduce((state, key) => {
+        state[key] = context.globalState.get(key);
+        return state;
+      }, {})
+    );
 
     // temporary workaround for https://github.com/Microsoft/vscode/issues/58348
     if (
@@ -88,11 +93,11 @@ class PlatformIOVSCodeExtension {
 
     this.startPIOHome();
 
-    misc.maybeRateExtension(this.stateStorage);
+    misc.maybeRateExtension();
     misc.warnAboutConflictedExtensions();
     this.subscriptions.push(
       vscode.window.onDidChangeActiveTextEditor((editor) =>
-        misc.warnAboutInoFile(editor, this.stateStorage)
+        misc.warnAboutInoFile(editor)
       )
     );
   }
@@ -147,7 +152,7 @@ class PlatformIOVSCodeExtension {
   }
 
   async startInstaller(disableAutoUpdates) {
-    const im = new InstallationManager(this.context.globalState, disableAutoUpdates);
+    const im = new InstallationManager(disableAutoUpdates);
     if (im.locked()) {
       vscode.window.showInformationMessage(
         'PlatformIO IDE installation has been suspended, because PlatformIO ' +

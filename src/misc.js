@@ -7,12 +7,13 @@
  */
 
 import { CONFLICTED_EXTENSION_IDS } from './constants';
+import { extension } from './main';
 import vscode from 'vscode';
 
-export async function maybeRateExtension(stateStorage) {
+export async function maybeRateExtension() {
   const stateKey = 'rate-extension';
   const askAfterSessionNums = 13;
-  let state = stateStorage.getValue(stateKey);
+  let state = extension.context.globalState.get(stateKey);
   if (state && state.done) {
     return;
   } else if (!state || !state.callCounter) {
@@ -24,7 +25,7 @@ export async function maybeRateExtension(stateStorage) {
 
   state.callCounter += 1;
   if (state.callCounter < askAfterSessionNums) {
-    stateStorage.setValue(stateKey, state);
+    extension.context.globalState.update(stateKey, state);
     return;
   }
 
@@ -50,7 +51,7 @@ export async function maybeRateExtension(stateStorage) {
     default:
       state.callCounter = 0;
   }
-  stateStorage.setValue(stateKey, state);
+  extension.context.globalState.update(stateKey, state);
 }
 
 export async function warnAboutConflictedExtensions() {
@@ -89,7 +90,7 @@ export async function warnAboutConflictedExtensions() {
   }
 }
 
-export async function warnAboutInoFile(editor, stateStorage) {
+export async function warnAboutInoFile(editor) {
   if (!editor || !editor.document || !editor.document.fileName) {
     return;
   }
@@ -97,7 +98,7 @@ export async function warnAboutInoFile(editor, stateStorage) {
     return;
   }
   const stateKey = 'ino-warn-disabled';
-  if (stateStorage.getValue(stateKey)) {
+  if (extension.context.globalState.get(stateKey)) {
     return;
   }
 
@@ -117,7 +118,7 @@ export async function warnAboutInoFile(editor, stateStorage) {
       );
       break;
     case 'Do not show again':
-      stateStorage.setValue(stateKey, 1);
+      extension.context.globalState.update(stateKey, 1);
       break;
   }
 }

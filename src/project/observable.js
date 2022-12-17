@@ -12,7 +12,6 @@ import * as projectHelpers from './helpers';
 import ProjectTaskManager from './tasks';
 import ProjectTestManager from './tests';
 import { STATUS_BAR_PRIORITY_START } from '../constants';
-import StateStorage from '../state-storage';
 import { extension } from '../main';
 import { notifyError } from '../utils';
 import path from 'path';
@@ -20,7 +19,6 @@ import vscode from 'vscode';
 
 export default class ProjectObservable {
   constructor() {
-    this._persistentState = new StateStorage(extension.context.globalState, 'projects');
     this._taskManager = undefined;
     this._testManager = undefined;
     this._sbEnvSwitcher = undefined;
