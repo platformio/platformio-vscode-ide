@@ -111,13 +111,6 @@
         "category": "PlatformIO"
       },
       {
-        "command": "platformio-ide.serialMonitor",
-        "title": "Serial Monitor",
-        "category": "PlatformIO",
-        "icon": "$(plug)",
-        "enablement": "pioCoreReady"
-      },
-      {
         "command": "platformio-ide.newTerminal",
         "title": "New Terminal",
         "category": "PlatformIO",
@@ -134,6 +127,13 @@
         "title": "Switch Project Environment",
         "category": "PlatformIO",
         "icon": "$(root-folder)",
+        "enablement": "pioProjectReady"
+      },
+      {
+        "command": "platformio-ide.setProjectPort",
+        "title": "Set Project Port (upload/monitor/test)",
+        "category": "PlatformIO",
+        "icon": "$(plug)",
         "enablement": "pioProjectReady"
       },
       {
@@ -162,6 +162,13 @@
         "title": "Clean",
         "category": "PlatformIO",
         "icon": "$(trashcan)",
+        "enablement": "pioProjectReady"
+      },
+      {
+        "command": "platformio-ide.serialMonitor",
+        "title": "Serial Monitor",
+        "category": "PlatformIO",
+        "icon": "$(plug)",
         "enablement": "pioProjectReady"
       },
       {
@@ -666,7 +673,7 @@
       {
         "command": "platformio-ide.serialMonitor",
         "key": "ctrl+alt+s",
-        "when": "pioCoreReady"
+        "when": "pioProjectReady"
       }
     ],
     "taskDefinitions": [

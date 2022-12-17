@@ -8,10 +8,11 @@
 
 import * as pioNodeHelpers from 'platformio-node-helpers';
 
-import { IS_WINDOWS } from '../constants';
+import { IS_WINDOWS, STATUS_BAR_PRIORITY_START } from '../constants';
 import { getProjectItemState, updateProjectItemState } from './helpers';
 import ProjectTasksTreeProvider from './task-tree';
 import { extension } from '../main';
+import path from 'path';
 import vscode from 'vscode';
 
 export default class ProjectTaskManager {
@@ -28,6 +29,8 @@ export default class ProjectTaskManager {
     this._refreshTimeout = undefined;
     this._restoreOnDidEndTask = undefined;
     this._tasksToRestore = [];
+    this._sbPortSwitcher = undefined;
+    this._customPort = getProjectItemState(projectDir, 'customPort');
 
     this.refresh();
   }
@@ -84,7 +87,7 @@ export default class ProjectTaskManager {
 
       // register VSCode Task Provider
       vscode.tasks.registerTaskProvider(ProjectTaskManager.PROVIDER_TYPE, {
-        provideTasks: async () => projectTasks.map((task) => this.toVSCodeTask(task)),
+        provideTasks: () => projectTasks.map((task) => this.toVSCodeTask(task)),
         resolveTask: () => {
           return undefined;
         },
@@ -94,6 +97,7 @@ export default class ProjectTaskManager {
     );
 
     this.registerTaskBasedCommands(projectTasks);
+    this.registerPortSwitcher();
     vscode.commands.executeCommand(
       'setContext',
       'pioMultiEnvProject',
@@ -125,7 +129,7 @@ export default class ProjectTaskManager {
       ProjectTaskManager.PROVIDER_TYPE,
       new vscode.ProcessExecution(
         IS_WINDOWS ? 'platformio.exe' : 'platformio',
-        projectTask.args,
+        projectTask.getCoreArgs({ port: this._customPort }),
         {
           cwd: this.projectDir,
           env: envClone,
@@ -260,5 +264,74 @@ export default class ProjectTaskManager {
         _runTask('Remote Upload')
       )
     );
+  }
+
+  registerPortSwitcher() {
+    this._sbPortSwitcher = vscode.window.createStatusBarItem(
+      'pio-port-switcher',
+      vscode.StatusBarAlignment.Left,
+      STATUS_BAR_PRIORITY_START
+    );
+    this._sbPortSwitcher.name = 'PlatformIO: Port Switcher';
+    this._sbPortSwitcher.tooltip = 'Set upload/monitor/test port';
+    this._sbPortSwitcher.command = 'platformio-ide.setProjectPort';
+    this.switchPort(this._customPort);
+
+    this.subscriptions.push(
+      this._sbPortSwitcher,
+      vscode.commands.registerCommand('platformio-ide.setProjectPort', () =>
+        this.pickProjectPort()
+      )
+    );
+  }
+
+  async pickProjectPort() {
+    const script = `
+import json
+from platformio.public import list_serial_ports
+
+print(json.dumps(list_serial_ports()))
+  `;
+    const output = await pioNodeHelpers.core.getCorePythonCommandOutput(['-c', script]);
+    const serialPorts = JSON.parse(output.trim());
+    const pickedItem = await vscode.window.showQuickPick(
+      [
+        { label: 'Auto' },
+        ...serialPorts.map((port) => ({
+          label: port.port,
+          description: [port.description, port.hwid]
+            .filter((value) => value !== 'n/a')
+            .join(' | '),
+        })),
+        { label: 'Custom...' },
+      ],
+      {
+        matchOnDescription: true,
+      }
+    );
+    if (!pickedItem) {
+      return;
+    }
+    if (pickedItem.label === 'Custom...') {
+      const value = await vscode.window.showInputBox({
+        title: 'Enter custom upload/monitor/test port',
+        placeHolder: 'Examples: COM3, /dev/ttyUSB*, 192.168.0.13, /media/disk',
+      });
+      if (!value) {
+        return;
+      }
+      this.switchPort(value.trim());
+    } else {
+      this.switchPort(pickedItem.label !== 'Auto' ? pickedItem.label : undefined);
+    }
+  }
+
+  switchPort(port = undefined) {
+    updateProjectItemState(this.projectDir, 'customPort', port);
+    this._customPort = port;
+    this._sbPortSwitcher.text = `$(plug) ${
+      this._customPort ? path.basename(this._customPort) : 'Auto'
+    }`;
+    this._sbPortSwitcher.show();
   }
 }

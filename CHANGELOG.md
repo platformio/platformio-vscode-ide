@@ -5,6 +5,7 @@
 **Requires VSCode 1.65 or above**
 
 - Project Management
+  * Override upload/monitor/test port with a new port switcher (issue [#545](https://github.com/platformio/
   * Show project configuring progress
   * Log configuration process to the output channel
   * Added support for canceling project configuration process
