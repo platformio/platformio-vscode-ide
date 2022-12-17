@@ -8,8 +8,8 @@
 
 import * as pioNodeHelpers from 'platformio-node-helpers';
 
+import { getPIOProjectDirs, updateProjectItemState } from './project/helpers';
 import { IS_OSX } from './constants';
-import ProjectObservable from './project/observable';
 import crypto from 'crypto';
 import { extension } from './main';
 import { notifyError } from './utils';
@@ -152,11 +152,7 @@ export default class PIOHome {
 
   onOpenProjectCommand(params) {
     if (extension.projectObservable) {
-      extension.projectObservable.saveProjectStateItem(
-        vscode.Uri.file(params).fsPath,
-        'activeEnv',
-        undefined
-      );
+      updateProjectItemState(vscode.Uri.file(params).fsPath, 'activeEnv', undefined);
       extension.projectObservable.switchToProject(vscode.Uri.file(params).fsPath);
     }
     this.disposePanel();
@@ -188,7 +184,7 @@ export default class PIOHome {
   }
 
   onGetPIOProjectDirs() {
-    return ProjectObservable.getPIOProjectDirs();
+    return getPIOProjectDirs();
   }
 
   onPanelDisposed() {

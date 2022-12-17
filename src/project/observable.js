@@ -7,13 +7,13 @@
  */
 
 import * as pioNodeHelpers from 'platformio-node-helpers';
+import * as projectHelpers from './helpers';
 
 import ProjectTaskManager from './tasks';
 import ProjectTestManager from './tests';
 import { STATUS_BAR_PRIORITY_START } from '../constants';
 import StateStorage from '../state-storage';
 import { extension } from '../main';
-import fs from 'fs';
 import { notifyError } from '../utils';
 import path from 'path';
 import vscode from 'vscode';
@@ -87,7 +87,7 @@ export default class ProjectObservable {
         if (!extension.getSetting('activateProjectOnTextEditorChange')) {
           return;
         }
-        const projectDir = this.getActiveEditorProjectDir();
+        const projectDir = projectHelpers.getActiveEditorProjectDir();
         if (projectDir) {
           this.switchToProject(projectDir);
         }
@@ -120,30 +120,16 @@ export default class ProjectObservable {
     pioNodeHelpers.misc.disposeSubscriptions(this.subscriptions);
   }
 
-  static isPIOProjectSync(projectDir) {
-    try {
-      fs.accessSync(path.join(projectDir, 'platformio.ini'));
-      return true;
-    } catch (err) {}
-    return false;
-  }
-
-  static getPIOProjectDirs() {
-    return (vscode.workspace.workspaceFolders || [])
-      .map((folder) => folder.uri.fsPath)
-      .filter((projectDir) => ProjectObservable.isPIOProjectSync(projectDir));
-  }
-
   findActiveProjectDir() {
     let projectDir = undefined;
     if (extension.getSetting('activateProjectOnTextEditorChange')) {
-      projectDir = this.getActiveEditorProjectDir();
+      projectDir = projectHelpers.getActiveEditorProjectDir();
     }
     return projectDir || this.getSelectedProjectDir();
   }
 
   getSelectedProjectDir() {
-    const pioProjectDirs = ProjectObservable.getPIOProjectDirs();
+    const pioProjectDirs = projectHelpers.getPIOProjectDirs();
     const currentActiveDir = this._pool.getActiveProjectDir();
     if (pioProjectDirs.length < 1) {
       return undefined;
@@ -154,7 +140,7 @@ export default class ProjectObservable {
     ) {
       return currentActiveDir;
     }
-    const lastActiveDir = this._persistentState.getValue('lastProjectDir');
+    const lastActiveDir = projectHelpers.getLastProjectDir();
     if (
       lastActiveDir &&
       pioProjectDirs.find((projectDir) => projectDir === lastActiveDir)
@@ -164,57 +150,12 @@ export default class ProjectObservable {
     return pioProjectDirs[0];
   }
 
-  getActiveEditorProjectDir() {
-    const pioProjectDirs = ProjectObservable.getPIOProjectDirs();
-    if (pioProjectDirs.length < 1) {
-      return undefined;
-    }
-    const editor = vscode.window.activeTextEditor;
-    if (!editor) {
-      return undefined;
-    }
-    const resource = editor.document.uri;
-    if (resource.scheme !== 'file') {
-      return undefined;
-    }
-    const folder = vscode.workspace.getWorkspaceFolder(resource);
-    if (!folder || !ProjectObservable.isPIOProjectSync(folder.uri.fsPath)) {
-      // outside workspace
-      return undefined;
-    }
-    return folder.uri.fsPath;
-  }
-
-  loadProjectStateItem(projectDir, name) {
-    const data = (this._persistentState.getValue('projects') || {})[projectDir] || {};
-    return data[name];
-  }
-
-  saveProjectStateItem(projectDir, name, value) {
-    const projects = this._persistentState.getValue('projects') || {};
-    if (!projects[projectDir]) {
-      projects[projectDir] = {};
-    }
-    projects[projectDir][name] = value;
-
-    // cleanup removed project
-    for (const key of Object.keys(projects)) {
-      if (ProjectObservable.isPIOProjectSync(key)) {
-        continue;
-      }
-      delete projects[key];
-    }
-
-    this._persistentState.setValue('projects', projects);
-    this._persistentState.setValue('lastProjectDir', projectDir);
-  }
-
   saveActiveProjectState() {
     const observer = this._pool.getActiveObserver();
     if (!observer) {
       return;
     }
-    this.saveProjectStateItem(
+    projectHelpers.updateProjectItemState(
       observer.projectDir,
       'activeEnv',
       observer.getActiveEnvName()
@@ -239,7 +180,7 @@ export default class ProjectObservable {
       await observer.switchProjectEnv(options.envName);
     } else if (!observer.getActiveEnvName()) {
       await observer.switchProjectEnv(
-        this.loadProjectStateItem(projectDir, 'activeEnv')
+        projectHelpers.getProjectItemState(projectDir, 'activeEnv')
       );
     }
 
@@ -251,9 +192,9 @@ export default class ProjectObservable {
     ) {
       this._pool.switch(projectDir);
 
-      [this._taskManage, this._testManager]
-        .filter((manager) => !!manager)
-        .forEach((manager) => manager.dispose());
+      [this._taskManager, this._testManager].forEach((manager) =>
+        manager ? manager.dispose() : undefined
+      );
       this._taskManager = new ProjectTaskManager(projectDir, observer);
       this._testManager = new ProjectTestManager(projectDir);
 
@@ -307,7 +248,7 @@ export default class ProjectObservable {
 
   async pickProjectEnv() {
     const items = [];
-    for (const projectDir of ProjectObservable.getPIOProjectDirs()) {
+    for (const projectDir of projectHelpers.getPIOProjectDirs()) {
       const observer = this._pool.getObserver(projectDir);
       const envs = await observer.getProjectEnvs();
       if (!envs || !envs.length) {

@@ -19,6 +19,7 @@ import QuickAccessTreeProvider from './views/quick-access-tree';
 import { STATUS_BAR_PRIORITY_START } from './constants';
 import StateStorage from './state-storage';
 import fs from 'fs-plus';
+import { getPIOProjectDirs } from './project/helpers';
 import vscode from 'vscode';
 
 class PlatformIOVSCodeExtension {
@@ -40,7 +41,7 @@ class PlatformIOVSCodeExtension {
 
     this.subscriptions.push(this.pioHome, this.pioTerm);
 
-    const hasPIOProject = ProjectObservable.getPIOProjectDirs().length > 0;
+    const hasPIOProject = getPIOProjectDirs().length > 0;
 
     // temporary workaround for https://github.com/Microsoft/vscode/issues/58348
     if (

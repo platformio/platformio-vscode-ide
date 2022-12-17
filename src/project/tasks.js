@@ -9,6 +9,7 @@
 import * as pioNodeHelpers from 'platformio-node-helpers';
 
 import { IS_WINDOWS } from '../constants';
+import { getProjectItemState, updateProjectItemState } from './helpers';
 import ProjectTasksTreeProvider from './task-tree';
 import { extension } from '../main';
 import vscode from 'vscode';
