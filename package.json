@@ -713,7 +713,7 @@
     },
     "configuration": {
       "type": "object",
-      "title": "PlatformIO IDE configuration",
+      "title": "PlatformIO IDE",
       "properties": {
         "platformio-ide.activateProjectOnTextEditorChange": {
           "type": "boolean",

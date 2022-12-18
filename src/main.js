@@ -102,7 +102,7 @@ class PlatformIOVSCodeExtension {
     );
   }
 
-  getSetting(id) {
+  getConfiguration(id) {
     return vscode.workspace.getConfiguration('platformio-ide').get(id);
   }
 
@@ -141,12 +141,12 @@ class PlatformIOVSCodeExtension {
     if (!vscode.workspace.getConfiguration('http').get('proxyStrictSSL')) {
       extraVars['PLATFORMIO_SETTING_ENABLE_PROXY_STRICT_SSL'] = 'false';
     }
-    if (this.getSetting('customPyPiIndexUrl')) {
-      extraVars['PIP_INDEX_URL'] = this.getSetting('customPyPiIndexUrl');
+    if (this.getConfiguration('customPyPiIndexUrl')) {
+      extraVars['PIP_INDEX_URL'] = this.getConfiguration('customPyPiIndexUrl');
     }
     pioNodeHelpers.proc.patchOSEnviron({
       caller: 'vscode',
-      extraPath: this.getSetting('customPATH'),
+      extraPath: this.getConfiguration('customPATH'),
       extraVars,
     });
   }
@@ -233,7 +233,7 @@ class PlatformIOVSCodeExtension {
 
   async startPIOHome() {
     if (
-      this.getSetting('disablePIOHomeStartup') ||
+      this.getConfiguration('disablePIOHomeStartup') ||
       !pioNodeHelpers.home.showAtStartup('vscode')
     ) {
       return;
@@ -303,7 +303,7 @@ class PlatformIOVSCodeExtension {
     return vscode.workspace.onDidChangeConfiguration((e) => {
       if (
         !e.affectsConfiguration('platformio-ide.useDevelopmentPIOCore') ||
-        !this.getSetting('useBuiltinPIOCore')
+        !this.getConfiguration('useBuiltinPIOCore')
       ) {
         return;
       }

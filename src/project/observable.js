@@ -73,8 +73,8 @@ export default class ProjectObservable {
         onDidNotifyError: notifyError.bind(this),
       },
       settings: {
-        autoPreloadEnvTasks: extension.getSetting('autoPreloadEnvTasks'),
-        autoRebuild: extension.getSetting('autoRebuildAutocompleteIndex'),
+        autoPreloadEnvTasks: extension.getConfiguration('autoPreloadEnvTasks'),
+        autoRebuild: extension.getConfiguration('autoRebuildAutocompleteIndex'),
       },
     });
 
@@ -82,7 +82,7 @@ export default class ProjectObservable {
       this._pool,
       this._logOutputChannel,
       vscode.window.onDidChangeActiveTextEditor(() => {
-        if (!extension.getSetting('activateProjectOnTextEditorChange')) {
+        if (!extension.getConfiguration('activateProjectOnTextEditorChange')) {
           return;
         }
         const projectDir = projectHelpers.getActiveEditorProjectDir();
@@ -120,7 +120,7 @@ export default class ProjectObservable {
 
   findActiveProjectDir() {
     let projectDir = undefined;
-    if (extension.getSetting('activateProjectOnTextEditorChange')) {
+    if (extension.getConfiguration('activateProjectOnTextEditorChange')) {
       projectDir = projectHelpers.getActiveEditorProjectDir();
     }
     return projectDir || this.getSelectedProjectDir();
@@ -199,7 +199,7 @@ export default class ProjectObservable {
       // open "platformio.ini" if no visible editors
       if (
         vscode.window.visibleTextEditors.length === 0 &&
-        extension.getSetting('autoOpenPlatformIOIniFile')
+        extension.getConfiguration('autoOpenPlatformIOIniFile')
       ) {
         vscode.window.showTextDocument(
           vscode.Uri.file(path.join(projectDir, 'platformio.ini'))

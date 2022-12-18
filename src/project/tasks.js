@@ -169,7 +169,7 @@ export default class ProjectTaskManager {
 
   _autoCloseSerialMonitor(task) {
     const closeMonitorConds = [
-      extension.getSetting('autoCloseSerialMonitor'),
+      extension.getConfiguration('autoCloseSerialMonitor'),
       ['upload', 'test'].some((arg) => task.args.includes(arg)),
     ];
     if (!closeMonitorConds.every((value) => value)) {
@@ -212,7 +212,7 @@ export default class ProjectTaskManager {
       while (this._tasksToRestore.length) {
         vscode.tasks.executeTask(this._tasksToRestore.pop());
       }
-    }, parseInt(extension.getSetting('reopenSerialMonitorDelay')));
+    }, parseInt(extension.getConfiguration('reopenSerialMonitorDelay')));
   }
 
   isMonitorAndUploadTask(task) {
@@ -240,17 +240,17 @@ export default class ProjectTaskManager {
 
     this.subscriptions.push(
       vscode.commands.registerCommand('platformio-ide.build', () => {
-        if (extension.getSetting('buildTask')) {
+        if (extension.getConfiguration('buildTask')) {
           return vscode.commands.executeCommand(
             'workbench.action.tasks.runTask',
-            extension.getSetting('buildTask')
+            extension.getConfiguration('buildTask')
           );
         }
         _runTask('Build');
       }),
       vscode.commands.registerCommand('platformio-ide.upload', () =>
         _runTask(
-          extension.getSetting('forceUploadAndMonitor')
+          extension.getConfiguration('forceUploadAndMonitor')
             ? 'Upload and Monitor'
             : 'Upload'
         )
