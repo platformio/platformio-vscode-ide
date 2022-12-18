@@ -42,11 +42,16 @@ export default class ProjectTestManager {
     let output = undefined;
     let error = new Error();
     try {
+      const envClone = Object.assign({}, process.env);
+      envClone['PLATFORMIO_FORCE_ANSI'] = 'true';
       output = await pioNodeHelpers.core.getPIOCommandOutput(
         ['test', ...args, '--json-output-path', jsonOutputPath],
         {
           projectDir: this.projectDir,
           runInQueue: true,
+          spawnOptions: {
+            env: envClone,
+          },
         }
       );
     } catch (err) {
