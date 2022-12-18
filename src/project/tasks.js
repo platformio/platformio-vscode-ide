@@ -239,21 +239,9 @@ export default class ProjectTaskManager {
     };
 
     this.subscriptions.push(
-      vscode.commands.registerCommand('platformio-ide.build', () => {
-        if (extension.getConfiguration('buildTask')) {
-          return vscode.commands.executeCommand(
-            'workbench.action.tasks.runTask',
-            extension.getConfiguration('buildTask')
-          );
-        }
-        _runTask('Build');
-      }),
+      vscode.commands.registerCommand('platformio-ide.build', () => _runTask('Build')),
       vscode.commands.registerCommand('platformio-ide.upload', () =>
-        _runTask(
-          extension.getConfiguration('forceUploadAndMonitor')
-            ? 'Upload and Monitor'
-            : 'Upload'
-        )
+        _runTask('Upload')
       ),
       vscode.commands.registerCommand('platformio-ide.test', () => _runTask('Test')),
       vscode.commands.registerCommand('platformio-ide.clean', () => _runTask('Clean')),

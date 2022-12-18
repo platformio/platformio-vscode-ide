@@ -13,7 +13,8 @@
   * Integrated PlatformIO [Unit Testing](https://docs.platformio.org/en/latest/advanced/unit-testing/index.html)
   * Run project tests and analyze testing results using the native VSCode Testing view
 - UX/UI Improvements
-  * Added walkthroughs (appear on the Getting Started page) to introduce users to features of the PlatformIO ecosystem
+  * Configure custom buttons and commands in PlatformIO Toolbar with a new `platformio-ide.toolbar` configuration option (issue [#1697](https://github.com/platformio/platformio-vscode-ide/issues/1697))
+  * Added walkthroughs (Menu: Help > Get Started) to introduce users to features of the PlatformIO ecosystem
   * Added support for the macOS Touch Bar (issue [#311](https://github.com/platformio/platformio-vscode-ide/issues/311))
   * Added "Build/Upload/Test/Clean" and "Serial Monitor" buttons to the Editor title bar
   * Added PlatformIO commands to the Explorer context menu:

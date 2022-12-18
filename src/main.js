@@ -14,9 +14,9 @@ import * as utils from './utils';
 import InstallationManager from './installer/manager';
 import PIOHome from './home';
 import PIOTerminal from './terminal';
+import PIOToolbar from './toolbar';
 import ProjectObservable from './project/observable';
 import QuickAccessTreeProvider from './views/quick-access-tree';
-import { STATUS_BAR_PRIORITY_START } from './constants';
 import fs from 'fs-plus';
 import { getPIOProjectDirs } from './project/helpers';
 import vscode from 'vscode';
@@ -78,16 +78,20 @@ class PlatformIOVSCodeExtension {
     this.registerGlobalCommands();
 
     if (!hasPIOProject) {
-      this.initToolbar({ filterCommands: ['platformio-ide.showHome'] });
+      this.subscriptions.push(
+        new PIOToolbar({ filterCommands: ['platformio-ide.showHome'] })
+      );
       return;
     }
 
     vscode.commands.executeCommand('setContext', 'pioProjectReady', true);
+    this.subscriptions.push(
+      new PIOToolbar({
+        ignoreCommands: this.getEnterpriseSetting('ignoreToolbarCommands'),
+      })
+    );
 
     this.initDebug();
-    this.initToolbar({
-      ignoreCommands: this.getEnterpriseSetting('ignoreToolbarCommands'),
-    });
     this.projectObservable = new ProjectObservable();
     this.subscriptions.push(this.projectObservable);
 
@@ -252,6 +256,9 @@ class PlatformIOVSCodeExtension {
       vscode.commands.registerCommand('platformio-ide.openPIOCoreCLI', () =>
         this.pioTerm.sendText('pio --help')
       ),
+      vscode.commands.registerCommand('platformio-ide.runPIOCoreCommand', (cmd) =>
+        this.pioTerm.sendText(cmd)
+      ),
       vscode.commands.registerCommand('platformio-ide.startDebugging', () => {
         vscode.commands.executeCommand('workbench.view.debug');
         vscode.commands.executeCommand('workbench.debug.action.toggleRepl');
@@ -265,38 +272,6 @@ class PlatformIOVSCodeExtension {
 
   initDebug() {
     piodebug.activate(this.context);
-  }
-
-  initToolbar({ filterCommands, ignoreCommands }) {
-    [
-      ['$(home)', 'PlatformIO: Home', 'platformio-ide.showHome'],
-      ['$(check)', 'PlatformIO: Build', 'platformio-ide.build'],
-      ['$(arrow-right)', 'PlatformIO: Upload', 'platformio-ide.upload'],
-      ['$(trashcan)', 'PlatformIO: Clean', 'platformio-ide.clean'],
-      ['$(beaker)', 'PlatformIO: Test', 'platformio-ide.test'],
-      ['$(plug)', 'PlatformIO: Serial Monitor', 'platformio-ide.serialMonitor'],
-      ['$(terminal)', 'PlatformIO: New Terminal', 'platformio-ide.newTerminal'],
-    ]
-      .filter(
-        (item) =>
-          (!filterCommands || filterCommands.includes(item[2])) &&
-          (!ignoreCommands || !ignoreCommands.includes(item[2]))
-      )
-      .reverse()
-      .forEach((item, index) => {
-        const [text, tooltip, command] = item;
-        const sbItem = vscode.window.createStatusBarItem(
-          'pio-toolbar',
-          vscode.StatusBarAlignment.Left,
-          STATUS_BAR_PRIORITY_START + index + 1
-        );
-        sbItem.name = 'PlatformIO: Toolbar';
-        sbItem.text = text;
-        sbItem.tooltip = tooltip;
-        sbItem.command = command;
-        sbItem.show();
-        this.subscriptions.push(sbItem);
-      });
   }
 
   handleUseDevelopmentPIOCoreConfiguration() {

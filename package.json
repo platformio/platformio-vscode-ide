@@ -735,14 +735,6 @@
           "default": true,
           "description": "Automatically rebuild the project IntelliSense index when platformio.ini is changed or when new libraries are installed"
         },
-        "platformio-ide.buildTask": {
-          "type": [
-            "string",
-            "null"
-          ],
-          "default": null,
-          "description": "The build task (label) used for the `Build` button in the bottom toolbar and for key bindings. The default is `PlatformIO: Build`"
-        },
         "platformio-ide.showEditorTitleShortcuts": {
           "type": "boolean",
           "default": true,
@@ -760,11 +752,6 @@
           ],
           "default": null,
           "description": "Custom PATH for the `platformio` command, if you prefer to use a custom version of PlatformIO Core. Fill in the result of the system terminal command `echo $PATH` (Unix) / `echo %PATH%` (Windows)."
-        },
-        "platformio-ide.forceUploadAndMonitor": {
-          "type": "boolean",
-          "default": false,
-          "description": "Force the `platformio-ide.upload` command to use the 'Upload and Monitor' task"
         },
         "platformio-ide.reopenSerialMonitorDelay": {
           "type": "integer",
@@ -808,6 +795,101 @@
           ],
           "default": null,
           "description": "Custom base URL of the Python Package Index (default `https://pypi.org/simple`)"
+        },
+        "platformio-ide.toolbar": {
+          "description": "PlatformIO Toolbar",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "title": "Button",
+            "properties": {
+              "text": {
+                "type": "string",
+                "description": "The text to show for the button",
+                "required": true
+              },
+              "tooltip": {
+                "type": "string",
+                "description": "The tooltip text when you hover over this button"
+              },
+              "commands": {
+                "description": "The button command or list of commands to execute",
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "title": "The command identifier"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "title": "The command identifier"
+                    }
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "title": "Command",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "title": "The command identifier"
+                        },
+                        "args": {
+                          "type": [
+                            "array",
+                            "string",
+                            "object",
+                            "null"
+                          ],
+                          "description": "The button command arguments",
+                          "default": null
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "default": [
+            {
+              "text": "$(home)",
+              "tooltip": "PlatformIO: Home",
+              "commands": "platformio-ide.showHome"
+            },
+            {
+              "text": "$(check)",
+              "tooltip": "PlatformIO: Build",
+              "commands": "platformio-ide.build"
+            },
+            {
+              "text": "$(arrow-right)",
+              "tooltip": "PlatformIO: Upload",
+              "commands": "platformio-ide.upload"
+            },
+            {
+              "text": "$(trashcan)",
+              "tooltip": "PlatformIO: Clean",
+              "commands": "platformio-ide.clean"
+            },
+            {
+              "text": "$(beaker)",
+              "tooltip": "PlatformIO: Test",
+              "commands": "platformio-ide.test"
+            },
+            {
+              "text": "$(plug)",
+              "tooltip": "PlatformIO: Serial Monitor",
+              "commands": "platformio-ide.serialMonitor"
+            },
+            {
+              "text": "$(terminal)",
+              "tooltip": "PlatformIO: New Terminal",
+              "commands": "platformio-ide.newTerminal"
+            }
+          ]
         }
       }
     }
@@ -820,7 +902,7 @@
   },
   "dependencies": {
     "fs-plus": "~3.1.1",
-    "platformio-node-helpers": "~9.7.0",
+    "platformio-node-helpers": "~9.8.0",
     "platformio-vscode-debug": "~1.4.1"
   },
   "devDependencies": {
@@ -832,7 +914,7 @@
     "@types/vscode": "~1.65.0",
     "@vscode/vsce": "~2.15.0",
     "babel-loader": "~9.1.0",
-    "eslint": "~8.29.0",
+    "eslint": "~8.30.0",
     "eslint-import-resolver-webpack": "~0.13.2",
     "eslint-plugin-import": "~2.26.0",
     "prettier": "~2.8.1",
