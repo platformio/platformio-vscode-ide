@@ -9,15 +9,15 @@
 import * as pioNodeHelpers from 'platformio-node-helpers';
 import * as projectHelpers from './helpers';
 
+import { disposeSubscriptions, notifyError } from '../utils';
 import ProjectTaskManager from './tasks';
 import ProjectTestManager from './tests';
 import { STATUS_BAR_PRIORITY_START } from '../constants';
 import { extension } from '../main';
-import { notifyError } from '../utils';
 import path from 'path';
 import vscode from 'vscode';
 
-export default class ProjectObservable {
+export default class ProjectManager {
   constructor() {
     this._taskManager = undefined;
     this._testManager = undefined;
@@ -115,7 +115,7 @@ export default class ProjectObservable {
         this.subscriptions.push(manager);
       }
     }
-    pioNodeHelpers.misc.disposeSubscriptions(this.subscriptions);
+    disposeSubscriptions(this.subscriptions);
   }
 
   findActiveProjectDir() {

@@ -151,9 +151,9 @@ export default class PIOHome {
   }
 
   onOpenProjectCommand(params) {
-    if (extension.projectObservable) {
+    if (extension.ProjectManager) {
       updateProjectItemState(vscode.Uri.file(params).fsPath, 'activeEnv', undefined);
-      extension.projectObservable.switchToProject(vscode.Uri.file(params).fsPath);
+      extension.ProjectManager.switchToProject(vscode.Uri.file(params).fsPath);
     }
     this.disposePanel();
     if (vscode.workspace.workspaceFolders) {

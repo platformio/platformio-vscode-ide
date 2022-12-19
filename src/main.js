@@ -15,7 +15,7 @@ import InstallationManager from './installer/manager';
 import PIOHome from './home';
 import PIOTerminal from './terminal';
 import PIOToolbar from './toolbar';
-import ProjectObservable from './project/observable';
+import ProjectManager from './project/manager';
 import QuickAccessTreeProvider from './views/quick-access-tree';
 import fs from 'fs-plus';
 import { getPIOProjectDirs } from './project/helpers';
@@ -26,7 +26,7 @@ class PlatformIOVSCodeExtension {
     this.context = undefined;
     this.pioTerm = undefined;
     this.pioHome = undefined;
-    this.projectObservable = undefined;
+    this.ProjectManager = undefined;
     this.subscriptions = [];
 
     this._enterpriseSettings = undefined;
@@ -92,8 +92,8 @@ class PlatformIOVSCodeExtension {
     );
 
     this.initDebug();
-    this.projectObservable = new ProjectObservable();
-    this.subscriptions.push(this.projectObservable);
+    this.ProjectManager = new ProjectManager();
+    this.subscriptions.push(this.ProjectManager);
 
     this.startPIOHome();
 
