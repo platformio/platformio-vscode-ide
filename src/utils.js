@@ -11,6 +11,12 @@ import * as pioNodeHelpers from 'platformio-node-helpers';
 import os from 'os';
 import vscode from 'vscode';
 
+export function disposeSubscriptions(subscriptions) {
+  while (subscriptions.length) {
+    subscriptions.pop().dispose();
+  }
+}
+
 export async function notifyError(title, err) {
   const description = err.stack || err.toString();
   const ghbody = `# Description of problem

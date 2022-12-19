@@ -11,6 +11,7 @@ import * as pioNodeHelpers from 'platformio-node-helpers';
 import { IS_WINDOWS, STATUS_BAR_PRIORITY_START } from '../constants';
 import { getProjectItemState, updateProjectItemState } from './helpers';
 import ProjectTasksTreeProvider from './task-tree';
+import { disposeSubscriptions } from '../utils';
 import { extension } from '../main';
 import path from 'path';
 import vscode from 'vscode';
@@ -36,7 +37,7 @@ export default class ProjectTaskManager {
   }
 
   dispose() {
-    pioNodeHelpers.misc.disposeSubscriptions(this.subscriptions);
+    disposeSubscriptions(this.subscriptions);
   }
 
   requestRefresh() {

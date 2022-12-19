@@ -7,6 +7,7 @@
  */
 
 import * as pioNodeHelpers from 'platformio-node-helpers';
+import { disposeSubscriptions } from '../utils';
 import { promises as fs } from 'fs';
 import path from 'path';
 import vscode from 'vscode';
@@ -31,7 +32,7 @@ export default class ProjectTestManager {
   }
 
   dispose() {
-    pioNodeHelpers.misc.disposeSubscriptions(this.subscriptions);
+    disposeSubscriptions(this.subscriptions);
   }
 
   async runCoreTestCommand(args) {

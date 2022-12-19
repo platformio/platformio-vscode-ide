@@ -8,11 +8,11 @@
 
 import * as pioNodeHelpers from 'platformio-node-helpers';
 
+import { disposeSubscriptions, notifyError } from './utils';
 import { getPIOProjectDirs, updateProjectItemState } from './project/helpers';
 import { IS_OSX } from './constants';
 import crypto from 'crypto';
 import { extension } from './main';
-import { notifyError } from './utils';
 import path from 'path';
 import vscode from 'vscode';
 
@@ -201,7 +201,7 @@ export default class PIOHome {
 
   dispose() {
     this.disposePanel();
-    pioNodeHelpers.misc.disposeSubscriptions(this.subscriptions);
+    disposeSubscriptions(this.subscriptions);
     pioNodeHelpers.home.shutdownServer();
   }
 }

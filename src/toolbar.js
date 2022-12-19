@@ -6,8 +6,8 @@
  * the root directory of this source tree.
  */
 
-import * as pioNodeHelpers from 'platformio-node-helpers';
 import { STATUS_BAR_PRIORITY_START } from './constants';
+import { disposeSubscriptions } from './utils';
 import { extension } from './main';
 import vscode from 'vscode';
 
@@ -68,7 +68,7 @@ export default class PIOToolbar {
   }
 
   dispose() {
-    pioNodeHelpers.misc.disposeSubscriptions(this.subscriptions);
+    disposeSubscriptions(this.subscriptions);
   }
 
   static getButtons() {

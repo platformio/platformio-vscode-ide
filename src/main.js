@@ -304,7 +304,7 @@ class PlatformIOVSCodeExtension {
   disposeLocalSubscriptions() {
     vscode.commands.executeCommand('setContext', 'pioCoreReady', false);
     vscode.commands.executeCommand('setContext', 'pioProjectReady', false);
-    pioNodeHelpers.misc.disposeSubscriptions(this.subscriptions);
+    utils.disposeSubscriptions(this.subscriptions);
   }
 
   deactivate() {
