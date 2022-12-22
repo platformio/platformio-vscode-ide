@@ -5,26 +5,19 @@
 **Requires VSCode 1.65 or above**
 
 - Project Management
-  * Override upload/monitor/test port with a new port switcher (issue [#545](https://github.com/platformio/
-  * Show project configuring progress
-  * Log configuration process to the output channel
-  * Added support for canceling project configuration process
-- Testing
-  * Integrated PlatformIO [Unit Testing](https://docs.platformio.org/en/latest/advanced/unit-testing/index.html)
-  * Run project tests and analyze testing results using the native VSCode Testing view
-- UX/UI Improvements
-  * Configure custom buttons and commands in PlatformIO Toolbar with a new `platformio-ide.toolbar` configuration option (issue [#1697](https://github.com/platformio/platformio-vscode-ide/issues/1697))
-  * Added walkthroughs (Menu: Help > Get Started) to introduce users to features of the PlatformIO ecosystem
+  * Native integration of [PlatformIO Unit Testing](https://docs.platformio.org/en/latest/advanced/unit-testing/index.html) with VSCode Testing UI
+  * New port switcher to override upload, monitor, or testing port (issue [#545](https://github.com/platformio/platformio-vscode-ide/issues/545))
+  * Advanced project configuring progress with logging and canceling features
+- Navigation
   * Added support for the macOS Touch Bar (issue [#311](https://github.com/platformio/platformio-vscode-ide/issues/311))
   * Added "Build/Upload/Test/Clean" and "Serial Monitor" buttons to the Editor title bar
-  * Added PlatformIO commands to the Explorer context menu:
-    - Open PlatformIO Home
-    - Rebuild IntelliSense Index
-    - Open PlatformIO Core CLI
-    - Upgrade PlatformIO Core
-- Miscellaneous
+  * Added PlatformIO base commands to the Explorer context menu
+  * Configure custom buttons and commands in PlatformIO Toolbar with a new `platformio-ide.toolbar` configuration option (issue [#1697](https://github.com/platformio/platformio-vscode-ide/issues/1697))
+- UX/UI Improvements
+  * Added walkthroughs (Menu: Help > Get Started) to introduce users to the features of the PlatformIO ecosystem
   * Activate PlatformIO IDE extension when intending to use PlatformIO (issue [#66](https://github.com/platformio/platformio-vscode-ide/issues/66))
   * Activate keyboard shortcuts when PlatformIO Project is opened (issue [#3324](https://github.com/platformio/platformio-vscode-ide/issues/3324))
+- Miscellaneous
   * Fixed an issue with "'platformio-ide.build' not found" (issue [#1398](https://github.com/platformio/platformio-vscode-ide/issues/1398))
 
 ## 2.5.5 (2022-10-31)
