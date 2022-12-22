@@ -10,6 +10,7 @@ import * as pioNodeHelpers from 'platformio-node-helpers';
 import * as projectHelpers from './helpers';
 
 import { disposeSubscriptions, notifyError } from '../utils';
+import { ProjectConfigLanguageProvider } from './config';
 import ProjectTaskManager from './tasks';
 import ProjectTestManager from './tests';
 import { STATUS_BAR_PRIORITY_START } from '../constants';
@@ -20,7 +21,6 @@ import vscode from 'vscode';
 export default class ProjectManager {
   constructor() {
     this._taskManager = undefined;
-    this._testManager = undefined;
     this._sbEnvSwitcher = undefined;
     this._logOutputChannel = vscode.window.createOutputChannel(
       'PlatformIO: Project Configuration'
@@ -103,6 +103,7 @@ export default class ProjectManager {
         this._taskManager.runTask(task)
       ),
     ];
+    this.internalSubscriptions = [];
 
     this.registerEnvSwitcher();
     // switch to the first project in a workspace on start-up
@@ -110,11 +111,8 @@ export default class ProjectManager {
   }
 
   dispose() {
-    for (const manager of [this._taskManager, this._testManager]) {
-      if (manager) {
-        this.subscriptions.push(manager);
-      }
-    }
+    this.disposeInternals();
+    disposeSubscriptions(this.internalSubscriptions);
     disposeSubscriptions(this.subscriptions);
   }
 
@@ -188,13 +186,14 @@ export default class ProjectManager {
       currentProjectDir !== projectDir ||
       currentEnvName !== observer.getActiveEnvName()
     ) {
+      disposeSubscriptions(this.internalSubscriptions);
       this._pool.switch(projectDir);
-
-      [this._taskManager, this._testManager].forEach((manager) =>
-        manager ? manager.dispose() : undefined
-      );
       this._taskManager = new ProjectTaskManager(projectDir, observer);
-      this._testManager = new ProjectTestManager(projectDir);
+      this.internalSubscriptions.push(
+        this._taskManager,
+        new ProjectConfigLanguageProvider(projectDir),
+        new ProjectTestManager(projectDir)
+      );
 
       // open "platformio.ini" if no visible editors
       if (
