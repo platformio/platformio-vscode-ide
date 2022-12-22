@@ -6,12 +6,10 @@
  * the root directory of this source tree.
  */
 
-import * as pioNodeHelpers from 'platformio-node-helpers';
-
 import { IS_WINDOWS, STATUS_BAR_PRIORITY_START } from '../constants';
+import { disposeSubscriptions, listCoreSerialPorts } from '../utils';
 import { getProjectItemState, updateProjectItemState } from './helpers';
 import ProjectTasksTreeProvider from './task-tree';
-import { disposeSubscriptions } from '../utils';
 import { extension } from '../main';
 import path from 'path';
 import vscode from 'vscode';
@@ -275,21 +273,14 @@ export default class ProjectTaskManager {
   }
 
   async pickProjectPort() {
-    const script = `
-import json
-from platformio.public import list_serial_ports
-
-print(json.dumps(list_serial_ports()))
-  `;
-    const output = await pioNodeHelpers.core.getCorePythonCommandOutput(['-c', script]);
-    const serialPorts = JSON.parse(output.trim());
+    const serialPorts = await listCoreSerialPorts();
     const pickedItem = await vscode.window.showQuickPick(
       [
         { label: 'Auto' },
         ...serialPorts.map((port) => ({
           label: port.port,
           description: [port.description, port.hwid]
-            .filter((value) => value !== 'n/a')
+            .filter((value) => !!value)
             .join(' | '),
         })),
         { label: 'Custom...' },
