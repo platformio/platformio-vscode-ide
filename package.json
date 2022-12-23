@@ -43,6 +43,7 @@
     "onView:platformio-debug.registers",
     "onView:platformio-debug.memory",
     "onView:platformio-debug.disassembly",
+    "onCommand:platformio-ide.showReleaseNotes",
     "onCommand:platformio-ide.showHome",
     "onCommand:platformio-ide.openPIOCoreCLI"
   ],
@@ -100,6 +101,11 @@
       }
     ],
     "commands": [
+      {
+        "command": "platformio-ide.showReleaseNotes",
+        "title": "Show Release Notes",
+        "category": "PlatformIO"
+      },
       {
         "command": "platformio-ide.showHome",
         "title": "PlatformIO Home",

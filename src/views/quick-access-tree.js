@@ -66,6 +66,7 @@ export default class QuickAccessTreeProvider {
           new QuickItem('Clone Git Project', 'git.clone'),
           new QuickItem('New Terminal', 'platformio-ide.newTerminal'),
           new QuickItem('Upgrade PlatformIO Core', 'platformio-ide.upgradeCore'),
+          new QuickItem('Show Release Notes', 'platformio-ide.showReleaseNotes'),
         ]
       ),
     ];
