@@ -276,7 +276,7 @@ class PlatformIOVSCodeExtension {
   }
 
   handleUseDevelopmentPIOCoreConfiguration() {
-    return vscode.workspace.onDidChangeConfiguration((e) => {
+    return vscode.workspace.onDidChangeConfiguration(async (e) => {
       if (
         !e.affectsConfiguration('platformio-ide.useDevelopmentPIOCore') ||
         !this.getConfiguration('useBuiltinPIOCore')
@@ -287,18 +287,16 @@ class PlatformIOVSCodeExtension {
       if (!envDir || !fs.isDirectorySync(envDir)) {
         return;
       }
-      pioNodeHelpers.home.shutdownServer();
-      const delayedJob = () => {
-        try {
-          fs.removeSync(envDir);
-        } catch (err) {
-          console.warn(err);
-        }
-        vscode.window.showInformationMessage(
-          'Please restart VSCode to apply the changes.'
-        );
-      };
-      setTimeout(delayedJob, 2000);
+      await PIOHome.shutdownAllServers();
+      await pioNodeHelpers.misc.sleep(2000);
+      try {
+        fs.removeSync(envDir);
+      } catch (err) {
+        console.warn(err);
+      }
+      vscode.window.showInformationMessage(
+        'Please restart VSCode to apply the changes.'
+      );
     });
   }
 

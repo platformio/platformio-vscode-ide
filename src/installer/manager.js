@@ -8,6 +8,7 @@
 
 import * as pioNodeHelpers from 'platformio-node-helpers';
 
+import PIOHome from '../home';
 import { PIO_CORE_VERSION_SPEC } from '../constants';
 import PythonPrompt from './python-prompt';
 import { extension } from '../main';
@@ -84,6 +85,8 @@ export default class InstallationManager {
 
   async install(progress) {
     const stageIncrementTotal = 100 / this.stages.length;
+    // shutdown all PIO Home servers which block python.exe on Windows
+    await PIOHome.shutdownAllServers();
     for (const stage of this.stages) {
       await stage.install((message, increment) => {
         progress.report({

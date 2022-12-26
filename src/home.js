@@ -11,7 +11,6 @@ import * as pioNodeHelpers from 'platformio-node-helpers';
 import { disposeSubscriptions, notifyError } from './utils';
 import { getPIOProjectDirs, updateProjectItemState } from './project/helpers';
 import { IS_OSX } from './constants';
-import crypto from 'crypto';
 import { extension } from './main';
 import path from 'path';
 import vscode from 'vscode';
@@ -28,6 +27,29 @@ export default class PIOHome {
     this.subscriptions.push(
       vscode.workspace.onDidChangeWorkspaceFolders(this.disposePanel.bind(this))
     );
+  }
+
+  static async shutdownAllServers() {
+    await pioNodeHelpers.home.shutdownServer();
+    await pioNodeHelpers.home.shutdownAllServers();
+  }
+
+  onPanelDisposed() {
+    this._currentPanel = undefined;
+  }
+
+  disposePanel() {
+    if (!this._currentPanel) {
+      return;
+    }
+    this._currentPanel.dispose();
+    this._currentPanel = undefined;
+  }
+
+  dispose() {
+    pioNodeHelpers.home.shutdownServer();
+    this.disposePanel();
+    disposeSubscriptions(this.subscriptions);
   }
 
   async toggle(startUrl = PIOHome.defaultStartUrl) {
@@ -102,9 +124,7 @@ export default class PIOHome {
       onIDECommand: await this.onIDECommand.bind(this),
     });
     const theme = this.getTheme();
-    const iframeId =
-      'pioHomeIFrame-' +
-      crypto.createHash('sha1').update(crypto.randomBytes(512)).digest('hex');
+    const iframeId = `pioHomeIFrame-${vscode.env.sessionId}`;
     const iframeScript = `
 <script>
   for (const command of ['selectAll', 'copy', 'paste', 'cut', 'undo', 'redo']) {
@@ -185,23 +205,5 @@ export default class PIOHome {
 
   onGetPIOProjectDirs() {
     return getPIOProjectDirs();
-  }
-
-  onPanelDisposed() {
-    this._currentPanel = undefined;
-  }
-
-  disposePanel() {
-    if (!this._currentPanel) {
-      return;
-    }
-    this._currentPanel.dispose();
-    this._currentPanel = undefined;
-  }
-
-  dispose() {
-    this.disposePanel();
-    disposeSubscriptions(this.subscriptions);
-    pioNodeHelpers.home.shutdownServer();
   }
 }

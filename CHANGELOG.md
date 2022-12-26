@@ -32,6 +32,7 @@
 
 ### Miscellaneous
 
+* Changed Default PIO Home port range from "8010..8100" to "45000..45999"
 * Fixed an issue with "'platformio-ide.build' not found" (issue [#1398](https://github.com/platformio/platformio-vscode-ide/issues/1398))
 
 ## 2.5.5 (2022-10-31)
