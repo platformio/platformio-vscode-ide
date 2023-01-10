@@ -498,28 +498,6 @@
           "group": "navigation"
         }
       ],
-      "explorer/context": [
-        {
-          "command": "platformio-ide.showHome",
-          "when": "pioCoreReady",
-          "group": "z_pio_service@0"
-        },
-        {
-          "command": "platformio-ide.rebuildProjectIndex",
-          "when": "pioProjectReady",
-          "group": "z_pio_service@1"
-        },
-        {
-          "command": "platformio-ide.openPIOCoreCLI",
-          "when": "pioCoreReady",
-          "group": "z_pio_service@2"
-        },
-        {
-          "command": "platformio-ide.upgradeCore",
-          "when": "pioCoreReady",
-          "group": "z_pio_service@3"
-        }
-      ],
       "touchBar": [
         {
           "command": "platformio-ide.build",

@@ -20,7 +20,6 @@
 
 * Added support for the macOS Touch Bar (issue [#311](https://github.com/platformio/platformio-vscode-ide/issues/311))
 * Added "Build/Upload/Test/Clean" and "Serial Monitor" buttons to the Editor title bar
-* Added PlatformIO base commands to the Explorer context menu
 * Configure custom buttons and commands in PlatformIO Toolbar with a new `platformio-ide.toolbar` configuration option (issue [#1697](https://github.com/platformio/platformio-vscode-ide/issues/1697))
 
 ### UX/UI Improvements
