@@ -2,7 +2,7 @@
 
 ## 3.0.0 (2023-02-01)
 
-**Requires VSCode 1.65 or above**
+**Requires PlatformIO Core 6.1.6 + VSCode 1.65 or above**
 
 ### Project Management
 
