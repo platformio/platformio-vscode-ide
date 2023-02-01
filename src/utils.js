@@ -11,6 +11,12 @@ import * as pioNodeHelpers from 'platformio-node-helpers';
 import os from 'os';
 import vscode from 'vscode';
 
+export function disposeSubscriptions(subscriptions) {
+  while (subscriptions.length) {
+    subscriptions.pop().dispose();
+  }
+}
+
 export async function notifyError(title, err) {
   const description = err.stack || err.toString();
   const ghbody = `# Description of problem
@@ -53,4 +59,22 @@ export function getIDEManifest() {
 
 export function getIDEVersion() {
   return getIDEManifest().version;
+}
+
+export async function listCoreSerialPorts() {
+  const script = `
+import json
+from platformio.public import list_serial_ports
+
+print(json.dumps(list_serial_ports()))
+    `;
+  const output = await pioNodeHelpers.core.getCorePythonCommandOutput(['-c', script]);
+  return JSON.parse(output.trim()).map((item) => {
+    for (const key of ['description', 'hwid']) {
+      if (item[key] === 'n/a') {
+        item[key] = undefined;
+      }
+    }
+    return item;
+  });
 }

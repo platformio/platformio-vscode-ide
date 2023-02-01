@@ -8,11 +8,10 @@
 
 import * as pioNodeHelpers from 'platformio-node-helpers';
 
+import { disposeSubscriptions, notifyError } from './utils';
+import { getPIOProjectDirs, updateProjectItemState } from './project/helpers';
 import { IS_OSX } from './constants';
-import ProjectObservable from './project/observable';
-import crypto from 'crypto';
 import { extension } from './main';
-import { notifyError } from './utils';
 import path from 'path';
 import vscode from 'vscode';
 
@@ -28,6 +27,29 @@ export default class PIOHome {
     this.subscriptions.push(
       vscode.workspace.onDidChangeWorkspaceFolders(this.disposePanel.bind(this))
     );
+  }
+
+  static async shutdownAllServers() {
+    await pioNodeHelpers.home.shutdownServer();
+    await pioNodeHelpers.home.shutdownAllServers();
+  }
+
+  onPanelDisposed() {
+    this._currentPanel = undefined;
+  }
+
+  disposePanel() {
+    if (!this._currentPanel) {
+      return;
+    }
+    this._currentPanel.dispose();
+    this._currentPanel = undefined;
+  }
+
+  dispose() {
+    pioNodeHelpers.home.shutdownServer();
+    this.disposePanel();
+    disposeSubscriptions(this.subscriptions);
   }
 
   async toggle(startUrl = PIOHome.defaultStartUrl) {
@@ -97,14 +119,12 @@ export default class PIOHome {
   async getWebviewContent(startUrl) {
     this._lastStartUrl = startUrl;
     await pioNodeHelpers.home.ensureServerStarted({
-      port: extension.getSetting('pioHomeServerHttpPort'),
-      host: extension.getSetting('pioHomeServerHttpHost'),
+      port: extension.getConfiguration('pioHomeServerHttpPort'),
+      host: extension.getConfiguration('pioHomeServerHttpHost'),
       onIDECommand: await this.onIDECommand.bind(this),
     });
     const theme = this.getTheme();
-    const iframeId =
-      'pioHomeIFrame-' +
-      crypto.createHash('sha1').update(crypto.randomBytes(512)).digest('hex');
+    const iframeId = `pioHomeIFrame-${vscode.env.sessionId}`;
     const iframeScript = `
 <script>
   for (const command of ['selectAll', 'copy', 'paste', 'cut', 'undo', 'redo']) {
@@ -151,13 +171,9 @@ export default class PIOHome {
   }
 
   onOpenProjectCommand(params) {
-    if (extension.projectObservable) {
-      extension.projectObservable.saveProjectStateItem(
-        vscode.Uri.file(params).fsPath,
-        'activeEnv',
-        undefined
-      );
-      extension.projectObservable.switchToProject(vscode.Uri.file(params).fsPath);
+    if (extension.ProjectManager) {
+      updateProjectItemState(vscode.Uri.file(params).fsPath, 'activeEnv', undefined);
+      extension.ProjectManager.switchToProject(vscode.Uri.file(params).fsPath);
     }
     this.disposePanel();
     if (vscode.workspace.workspaceFolders) {
@@ -188,24 +204,6 @@ export default class PIOHome {
   }
 
   onGetPIOProjectDirs() {
-    return ProjectObservable.getPIOProjectDirs();
-  }
-
-  onPanelDisposed() {
-    this._currentPanel = undefined;
-  }
-
-  disposePanel() {
-    if (!this._currentPanel) {
-      return;
-    }
-    this._currentPanel.dispose();
-    this._currentPanel = undefined;
-  }
-
-  dispose() {
-    this.disposePanel();
-    pioNodeHelpers.misc.disposeSubscriptions(this.subscriptions);
-    pioNodeHelpers.home.shutdownServer();
+    return getPIOProjectDirs();
   }
 }

@@ -13,12 +13,13 @@ import * as utils from './utils';
 
 import InstallationManager from './installer/manager';
 import PIOHome from './home';
+import PIOReleaseNotes from './release-notes';
 import PIOTerminal from './terminal';
-import ProjectObservable from './project/observable';
+import PIOToolbar from './toolbar';
+import ProjectManager from './project/manager';
 import QuickAccessTreeProvider from './views/quick-access-tree';
-import { STATUS_BAR_PRIORITY_START } from './constants';
-import StateStorage from './state-storage';
 import fs from 'fs-plus';
+import { getPIOProjectDirs } from './project/helpers';
 import vscode from 'vscode';
 
 class PlatformIOVSCodeExtension {
@@ -26,7 +27,7 @@ class PlatformIOVSCodeExtension {
     this.context = undefined;
     this.pioTerm = undefined;
     this.pioHome = undefined;
-    this.projectObservable = undefined;
+    this.ProjectManager = undefined;
     this.subscriptions = [];
 
     this._enterpriseSettings = undefined;
@@ -34,16 +35,19 @@ class PlatformIOVSCodeExtension {
 
   async activate(context) {
     this.context = context;
-    this.stateStorage = new StateStorage(context.globalState);
     this.pioHome = new PIOHome();
     this.pioTerm = new PIOTerminal();
+    this.subscriptions.push(this.pioHome, this.pioTerm, new PIOReleaseNotes());
+    const hasPIOProject = getPIOProjectDirs().length > 0;
 
-    this.subscriptions.push(this.pioHome, this.pioTerm);
-
-    const hasPIOProject = ProjectObservable.getPIOProjectDirs().length > 0;
-    if (!hasPIOProject && this.getSetting('activateOnlyOnPlatformIOProject')) {
-      return;
-    }
+    // dump global state
+    console.info(
+      'PlatformIO IDE Global State',
+      context.globalState.keys().reduce((state, key) => {
+        state[key] = context.globalState.get(key);
+        return state;
+      }, {})
+    );
 
     // temporary workaround for https://github.com/Microsoft/vscode/issues/58348
     if (
@@ -67,7 +71,7 @@ class PlatformIOVSCodeExtension {
 
     this.subscriptions.push(
       vscode.window.registerTreeDataProvider(
-        'platformio-activitybar.quickAccess',
+        'platformio-ide.quickAccess',
         new QuickAccessTreeProvider()
       )
     );
@@ -75,31 +79,35 @@ class PlatformIOVSCodeExtension {
     this.registerGlobalCommands();
 
     if (!hasPIOProject) {
-      this.initToolbar({ filterCommands: ['platformio-ide.showHome'] });
+      this.subscriptions.push(
+        new PIOToolbar({ filterCommands: ['platformio-ide.showHome'] })
+      );
       return;
     }
 
     vscode.commands.executeCommand('setContext', 'pioProjectReady', true);
+    this.subscriptions.push(
+      new PIOToolbar({
+        ignoreCommands: this.getEnterpriseSetting('ignoreToolbarCommands'),
+      })
+    );
 
     this.initDebug();
-    this.initToolbar({
-      ignoreCommands: this.getEnterpriseSetting('ignoreToolbarCommands'),
-    });
-    this.projectObservable = new ProjectObservable();
-    this.subscriptions.push(this.projectObservable);
+    this.ProjectManager = new ProjectManager();
+    this.subscriptions.push(this.ProjectManager);
 
     this.startPIOHome();
 
-    misc.maybeRateExtension(this.stateStorage);
+    misc.maybeRateExtension();
     misc.warnAboutConflictedExtensions();
     this.subscriptions.push(
       vscode.window.onDidChangeActiveTextEditor((editor) =>
-        misc.warnAboutInoFile(editor, this.stateStorage)
+        misc.warnAboutInoFile(editor)
       )
     );
   }
 
-  getSetting(id) {
+  getConfiguration(id) {
     return vscode.workspace.getConfiguration('platformio-ide').get(id);
   }
 
@@ -138,18 +146,18 @@ class PlatformIOVSCodeExtension {
     if (!vscode.workspace.getConfiguration('http').get('proxyStrictSSL')) {
       extraVars['PLATFORMIO_SETTING_ENABLE_PROXY_STRICT_SSL'] = 'false';
     }
-    if (this.getSetting('customPyPiIndexUrl')) {
-      extraVars['PIP_INDEX_URL'] = this.getSetting('customPyPiIndexUrl');
+    if (this.getConfiguration('customPyPiIndexUrl')) {
+      extraVars['PIP_INDEX_URL'] = this.getConfiguration('customPyPiIndexUrl');
     }
     pioNodeHelpers.proc.patchOSEnviron({
       caller: 'vscode',
-      extraPath: this.getSetting('customPATH'),
+      extraPath: this.getConfiguration('customPATH'),
       extraVars,
     });
   }
 
   async startInstaller(disableAutoUpdates) {
-    const im = new InstallationManager(this.context.globalState, disableAutoUpdates);
+    const im = new InstallationManager(disableAutoUpdates);
     if (im.locked()) {
       vscode.window.showInformationMessage(
         'PlatformIO IDE installation has been suspended, because PlatformIO ' +
@@ -164,7 +172,7 @@ class PlatformIOVSCodeExtension {
       },
       async (progress) => {
         progress.report({
-          message: 'Checking PlatformIO Core installation...',
+          message: 'Initializing PlatformIO Core...',
         });
         try {
           return !(await im.check());
@@ -230,7 +238,7 @@ class PlatformIOVSCodeExtension {
 
   async startPIOHome() {
     if (
-      this.getSetting('disablePIOHomeStartup') ||
+      this.getConfiguration('disablePIOHomeStartup') ||
       !pioNodeHelpers.home.showAtStartup('vscode')
     ) {
       return;
@@ -249,6 +257,9 @@ class PlatformIOVSCodeExtension {
       vscode.commands.registerCommand('platformio-ide.openPIOCoreCLI', () =>
         this.pioTerm.sendText('pio --help')
       ),
+      vscode.commands.registerCommand('platformio-ide.runPIOCoreCommand', (cmd) =>
+        this.pioTerm.sendText(cmd)
+      ),
       vscode.commands.registerCommand('platformio-ide.startDebugging', () => {
         vscode.commands.executeCommand('workbench.view.debug');
         vscode.commands.executeCommand('workbench.debug.action.toggleRepl');
@@ -264,46 +275,11 @@ class PlatformIOVSCodeExtension {
     piodebug.activate(this.context);
   }
 
-  initToolbar({ filterCommands, ignoreCommands }) {
-    if (this.getSetting('disableToolbar')) {
-      return;
-    }
-    [
-      ['$(home)', 'PlatformIO: Home', 'platformio-ide.showHome'],
-      ['$(check)', 'PlatformIO: Build', 'platformio-ide.build'],
-      ['$(arrow-right)', 'PlatformIO: Upload', 'platformio-ide.upload'],
-      ['$(trashcan)', 'PlatformIO: Clean', 'platformio-ide.clean'],
-      ['$(beaker)', 'PlatformIO: Test', 'platformio-ide.test'],
-      ['$(plug)', 'PlatformIO: Serial Monitor', 'platformio-ide.serialMonitor'],
-      ['$(terminal)', 'PlatformIO: New Terminal', 'platformio-ide.newTerminal'],
-    ]
-      .filter(
-        (item) =>
-          (!filterCommands || filterCommands.includes(item[2])) &&
-          (!ignoreCommands || !ignoreCommands.includes(item[2]))
-      )
-      .reverse()
-      .forEach((item, index) => {
-        const [text, tooltip, command] = item;
-        const sbItem = vscode.window.createStatusBarItem(
-          'pio-toolbar',
-          vscode.StatusBarAlignment.Left,
-          STATUS_BAR_PRIORITY_START + index + 1
-        );
-        sbItem.name = 'PlatformIO: Toolbar';
-        sbItem.text = text;
-        sbItem.tooltip = tooltip;
-        sbItem.command = command;
-        sbItem.show();
-        this.subscriptions.push(sbItem);
-      });
-  }
-
   handleUseDevelopmentPIOCoreConfiguration() {
-    return vscode.workspace.onDidChangeConfiguration((e) => {
+    return vscode.workspace.onDidChangeConfiguration(async (e) => {
       if (
         !e.affectsConfiguration('platformio-ide.useDevelopmentPIOCore') ||
-        !this.getSetting('useBuiltinPIOCore')
+        !this.getConfiguration('useBuiltinPIOCore')
       ) {
         return;
       }
@@ -311,24 +287,23 @@ class PlatformIOVSCodeExtension {
       if (!envDir || !fs.isDirectorySync(envDir)) {
         return;
       }
-      pioNodeHelpers.home.shutdownServer();
-      const delayedJob = () => {
-        try {
-          fs.removeSync(envDir);
-        } catch (err) {
-          console.warn(err);
-        }
-        vscode.window.showInformationMessage(
-          'Please restart VSCode to apply the changes.'
-        );
-      };
-      setTimeout(delayedJob, 2000);
+      await PIOHome.shutdownAllServers();
+      await pioNodeHelpers.misc.sleep(2000);
+      try {
+        fs.removeSync(envDir);
+      } catch (err) {
+        console.warn(err);
+      }
+      vscode.window.showInformationMessage(
+        'Please restart VSCode to apply the changes.'
+      );
     });
   }
 
   disposeLocalSubscriptions() {
     vscode.commands.executeCommand('setContext', 'pioCoreReady', false);
-    pioNodeHelpers.misc.disposeSubscriptions(this.subscriptions);
+    vscode.commands.executeCommand('setContext', 'pioProjectReady', false);
+    utils.disposeSubscriptions(this.subscriptions);
   }
 
   deactivate() {

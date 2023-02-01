@@ -1,9 +1,9 @@
 {
   "name": "platformio-ide",
-  "version": "2.5.5",
+  "version": "3.0.0",
   "publisher": "platformio",
   "engines": {
-    "vscode": "^1.63.0"
+    "vscode": "^1.65.0"
   },
   "license": "Apache-2.0",
   "displayName": "PlatformIO IDE",
@@ -36,7 +36,16 @@
     "url": "https://github.com/platformio/platformio-vscode-ide.git"
   },
   "activationEvents": [
-    "*"
+    "workspaceContains:**/platformio.ini",
+    "onView:platformio-ide.quickAccess",
+    "onView:platformio-ide.projectTasks",
+    "onView:platformio-debug.peripherals",
+    "onView:platformio-debug.registers",
+    "onView:platformio-debug.memory",
+    "onView:platformio-debug.disassembly",
+    "onCommand:platformio-ide.showReleaseNotes",
+    "onCommand:platformio-ide.showHome",
+    "onCommand:platformio-ide.openPIOCoreCLI"
   ],
   "contributes": {
     "languages": [
@@ -93,65 +102,13 @@
     ],
     "commands": [
       {
-        "command": "platformio-ide.privateRunTask",
-        "title": "Custom task runner (private)",
+        "command": "platformio-ide.showReleaseNotes",
+        "title": "Show Release Notes",
         "category": "PlatformIO"
       },
       {
         "command": "platformio-ide.showHome",
-        "title": "Home",
-        "category": "PlatformIO"
-      },
-      {
-        "command": "platformio-ide.switchProjectEnv",
-        "title": "Switch Project Environment",
-        "category": "PlatformIO",
-        "icon": "$(root-folder)"
-      },
-      {
-        "command": "platformio-ide.refreshProjectTasks",
-        "title": "Refresh Project Tasks",
-        "category": "PlatformIO",
-        "icon": "$(refresh)"
-      },
-      {
-        "command": "platformio-ide.build",
-        "title": "Build",
-        "category": "PlatformIO"
-      },
-      {
-        "command": "platformio-ide.upload",
-        "title": "Upload",
-        "category": "PlatformIO"
-      },
-      {
-        "command": "platformio-ide.clean",
-        "title": "Clean",
-        "category": "PlatformIO"
-      },
-      {
-        "command": "platformio-ide.test",
-        "title": "Test",
-        "category": "PlatformIO"
-      },
-      {
-        "command": "platformio-ide.remoteUpload",
-        "title": "Remote Upload",
-        "category": "PlatformIO"
-      },
-      {
-        "command": "platformio-ide.serialMonitor",
-        "title": "Serial Monitor",
-        "category": "PlatformIO"
-      },
-      {
-        "command": "platformio-ide.rebuildProjectIndex",
-        "title": "Rebuild IntelliSense Index",
-        "category": "PlatformIO"
-      },
-      {
-        "command": "platformio-ide.newTerminal",
-        "title": "New Terminal",
+        "title": "PlatformIO Home",
         "category": "PlatformIO"
       },
       {
@@ -160,49 +117,132 @@
         "category": "PlatformIO"
       },
       {
-        "command": "platformio-ide.startDebugging",
-        "title": "Start Debugging",
-        "category": "PlatformIO"
+        "command": "platformio-ide.newTerminal",
+        "title": "New Terminal",
+        "category": "PlatformIO",
+        "enablement": "pioCoreReady"
       },
       {
         "command": "platformio-ide.upgradeCore",
-        "title": "Upgrade PlatformIO Core to the latest version",
-        "category": "PlatformIO"
+        "title": "Upgrade PlatformIO Core",
+        "category": "PlatformIO",
+        "enablement": "pioCoreReady"
+      },
+      {
+        "command": "platformio-ide.switchProjectEnv",
+        "title": "Switch Project Environment",
+        "category": "PlatformIO",
+        "icon": "$(root-folder)",
+        "enablement": "pioProjectReady"
+      },
+      {
+        "command": "platformio-ide.setProjectPort",
+        "title": "Set Project Port (upload/monitor/test)",
+        "category": "PlatformIO",
+        "icon": "$(plug)",
+        "enablement": "pioProjectReady"
+      },
+      {
+        "command": "platformio-ide.refreshProjectTasks",
+        "title": "Refresh Project Tasks",
+        "category": "PlatformIO",
+        "icon": "$(refresh)",
+        "enablement": "pioProjectReady"
+      },
+      {
+        "command": "platformio-ide.build",
+        "title": "Build",
+        "category": "PlatformIO",
+        "icon": "$(check)",
+        "enablement": "pioProjectReady"
+      },
+      {
+        "command": "platformio-ide.upload",
+        "title": "Upload",
+        "category": "PlatformIO",
+        "icon": "$(arrow-right)",
+        "enablement": "pioProjectReady"
+      },
+      {
+        "command": "platformio-ide.clean",
+        "title": "Clean",
+        "category": "PlatformIO",
+        "icon": "$(trashcan)",
+        "enablement": "pioProjectReady"
+      },
+      {
+        "command": "platformio-ide.serialMonitor",
+        "title": "Serial Monitor",
+        "category": "PlatformIO",
+        "icon": "$(plug)",
+        "enablement": "pioProjectReady"
+      },
+      {
+        "command": "platformio-ide.test",
+        "title": "Test",
+        "category": "PlatformIO",
+        "icon": "$(beaker)",
+        "enablement": "pioProjectReady"
+      },
+      {
+        "command": "platformio-ide.remoteUpload",
+        "title": "Remote Upload",
+        "category": "PlatformIO",
+        "enablement": "pioProjectReady"
+      },
+      {
+        "command": "platformio-ide.rebuildProjectIndex",
+        "title": "Rebuild IntelliSense Index",
+        "category": "PlatformIO",
+        "enablement": "pioProjectReady"
+      },
+      {
+        "command": "platformio-ide.startDebugging",
+        "title": "Start Debugging",
+        "category": "PlatformIO",
+        "enablement": "pioProjectReady"
       },
       {
         "category": "PlatformIO Debug",
         "command": "platformio-debug.peripherals.updateNode",
-        "title": "Update Value"
+        "title": "Update Value",
+        "enablement": "pioProjectReady"
       },
       {
         "category": "PlatformIO Debug",
         "command": "platformio-debug.peripherals.selectedNode",
-        "title": "Selected"
+        "title": "Selected",
+        "enablement": "pioProjectReady"
       },
       {
         "category": "PlatformIO Debug",
         "command": "platformio-debug.registers.selectedNode",
-        "title": "Selected"
+        "title": "Selected",
+        "enablement": "pioProjectReady"
       },
       {
         "category": "PlatformIO Debug",
         "command": "platformio-debug.peripherals.copyValue",
-        "title": "Copy Value"
+        "title": "Copy Value",
+        "enablement": "pioProjectReady"
       },
       {
         "category": "PlatformIO Debug",
         "command": "platformio-debug.registers.copyValue",
-        "title": "Copy Value"
+        "title": "Copy Value",
+        "enablement": "pioProjectReady"
       },
       {
         "category": "PlatformIO Debug",
         "command": "platformio-debug.peripherals.setFormat",
-        "title": "Set Value Format"
+        "title": "Set Value Format",
+        "enablement": "pioProjectReady"
       },
       {
         "category": "PlatformIO Debug",
         "command": "platformio-debug.registers.setFormat",
-        "title": "Set Value Format"
+        "title": "Set Value Format",
+        "enablement": "pioProjectReady"
       },
       {
         "category": "PlatformIO Debug",
@@ -211,7 +251,8 @@
         "icon": {
           "light": "assets/icons/add.svg",
           "dark": "assets/icons/add-inverse.svg"
-        }
+        },
+        "enablement": "pioProjectReady"
       },
       {
         "category": "PlatformIO Debug",
@@ -220,22 +261,26 @@
         "icon": {
           "light": "assets/icons/closeall.svg",
           "dark": "assets/icons/closeall-inverse.svg"
-        }
+        },
+        "enablement": "pioProjectReady"
       },
       {
         "category": "PlatformIO Debug",
         "command": "platformio-debug.memory.deleteHistoryItem",
-        "title": "Delete"
+        "title": "Delete",
+        "enablement": "pioProjectReady"
       },
       {
         "category": "PlatformIO Debug",
         "command": "platformio-debug.viewDisassembly",
-        "title": "View Disassembly (Function)"
+        "title": "View Disassembly (Function)",
+        "enablement": "pioProjectReady"
       },
       {
         "category": "PlatformIO Debug",
         "command": "platformio-debug.setForceDisassembly",
-        "title": "Set Force Disassembly"
+        "title": "Set Force Disassembly",
+        "enablement": "pioProjectReady"
       }
     ],
     "breakpoints": [
@@ -398,12 +443,12 @@
       "view/title": [
         {
           "command": "platformio-ide.switchProjectEnv",
-          "when": "pioCoreReady && pioMultiEnvProject && view == platformio-ide.projectTasks",
+          "when": "pioMultiEnvProject && view == platformio-ide.projectTasks",
           "group": "navigation"
         },
         {
           "command": "platformio-ide.refreshProjectTasks",
-          "when": "pioCoreReady && view == platformio-ide.projectTasks",
+          "when": "pioProjectReady && view == platformio-ide.projectTasks",
           "group": "navigation"
         },
         {
@@ -416,6 +461,69 @@
           "when": "debugType == platformio-debug && view == platformio-debug.memory",
           "group": "navigation"
         }
+      ],
+      "editor/title/run": [
+        {
+          "command": "platformio-ide.build",
+          "when": "pioProjectReady && config.platformio-ide.showEditorTitleShortcuts",
+          "group": "pio_run@0"
+        },
+        {
+          "command": "platformio-ide.upload",
+          "when": "pioProjectReady && config.platformio-ide.showEditorTitleShortcuts",
+          "group": "pio_run@1"
+        },
+        {
+          "command": "platformio-ide.test",
+          "when": "pioProjectReady && config.platformio-ide.showEditorTitleShortcuts",
+          "group": "pio_run@2"
+        },
+        {
+          "command": "platformio-ide.clean",
+          "when": "pioProjectReady && config.platformio-ide.showEditorTitleShortcuts",
+          "group": "pio_run@3"
+        }
+      ],
+      "editor/title": [
+        {
+          "command": "platformio-ide.serialMonitor",
+          "when": "pioCoreReady && config.platformio-ide.showEditorTitleShortcuts",
+          "group": "navigation"
+        }
+      ],
+      "file/newFile": [
+        {
+          "command": "platformio-ide.showHome",
+          "when": "pioCoreReady",
+          "group": "navigation"
+        }
+      ],
+      "touchBar": [
+        {
+          "command": "platformio-ide.build",
+          "when": "pioProjectReady && config.platformio-ide.showEditorTitleShortcuts",
+          "group": "z_pio_run@0"
+        },
+        {
+          "command": "platformio-ide.upload",
+          "when": "pioProjectReady && config.platformio-ide.showEditorTitleShortcuts",
+          "group": "z_pio_run@1"
+        },
+        {
+          "command": "platformio-ide.test",
+          "when": "pioProjectReady && config.platformio-ide.showEditorTitleShortcuts",
+          "group": "z_pio_run@2"
+        },
+        {
+          "command": "platformio-ide.clean",
+          "when": "pioProjectReady && config.platformio-ide.showEditorTitleShortcuts",
+          "group": "z_pio_run@3"
+        },
+        {
+          "command": "platformio-ide.serialMonitor",
+          "when": "pioCoreReady && config.platformio-ide.showEditorTitleShortcuts",
+          "group": "z_pio_tools"
+        }
       ]
     },
     "viewsContainers": {
@@ -423,8 +531,7 @@
         {
           "id": "platformio",
           "title": "PlatformIO",
-          "icon": "assets/icons/platformio-activity-icon.svg",
-          "when": "pioCoreReady"
+          "icon": "assets/icons/platformio-activity-icon.svg"
         }
       ]
     },
@@ -433,12 +540,13 @@
         {
           "id": "platformio-ide.projectTasks",
           "name": "Project Tasks",
-          "when": "pioProjectReady"
+          "when": "pioCoreReady",
+          "type": "tree"
         },
         {
-          "id": "platformio-activitybar.quickAccess",
+          "id": "platformio-ide.quickAccess",
           "name": "Quick Access",
-          "when": "pioCoreReady"
+          "type": "tree"
         }
       ],
       "debug": [
@@ -460,22 +568,96 @@
         }
       ]
     },
+    "viewsWelcome": [
+      {
+        "view": "platformio-ide.projectTasks",
+        "contents": "You have not yet opened a PlatformIO project.\nYou can open an existing PlatformIO-based project (a folder that contains [platformio.ini](https://bit.ly/vscode-platformio-ini-docs) file).\n[Pick a folder](command:workbench.action.files.openFolder)\nYou can create a new PlatformIO Project or explore examples using PlatformIO Home.\n[Create New Project](command:platformio-ide.showHome)"
+      },
+      {
+        "view": "platformio-ide.quickAccess",
+        "contents": "Initializing PlatformIO Core..."
+      }
+    ],
+    "walkthroughs": [
+      {
+        "id": "platformio-ide.welcome",
+        "title": "Get started with PlatformIO IDE",
+        "description": "The most loved IDE solution for Microsoft Visual Studio Code",
+        "steps": [
+          {
+            "id": "platformio-core",
+            "title": "Rich CLI developed for Humans",
+            "description": "[PlatformIO Core](https://bit.ly/vscode-platformio-core-docs) is the heart of PlatformIO IDE and it's your one-stop shop for professional embedded development.\nIt takes care of everything from dependency management to testing, so you can focus on what matters most – your project.\n[Install PlatformIO Core](command:platformio-ide.openPIOCoreCLI)",
+            "media": {
+              "image": "assets/welcome/platformio-core-cli-demo.png",
+              "altText": "PlatformIO Core CLI Demo"
+            },
+            "completionEvents": [
+              "onContext:pioCoreReady"
+            ]
+          },
+          {
+            "id": "platformio.ini",
+            "title": "Platform-agnostic shareable configuration",
+            "description": "[platformio.ini](https://bit.ly/vscode-platformio-ini-docs) is the single configuration file that lets you set up your development environment and share your configurations with your team or organization.\nLeverage a declarative approach to embedded development and the power of semantic versioning.\n[Learn More](https://bit.ly/vscode-platformio-ini-docs)",
+            "media": {
+              "markdown": "assets/welcome/platformio-ini-example.md"
+            },
+            "completionEvents": [
+              "onLink:https://bit.ly/vscode-platformio-ini-docs"
+            ]
+          },
+          {
+            "id": "platformio-home",
+            "title": "Advanced project management",
+            "description": "Boost your product development with [PIO Home](https://bit.ly/vscode-platformio-home-docs) – a powerful, modern, and interactive user interface for advanced project management.\nIt allows you to enhance your project source code with advanced instruments such as firmware explorer, memory inspection, and static code analysis.\n[Open PIO Home](command:platformio-ide.showHome)\nTip: Use 🏠 icon at the bottom status bar.",
+            "media": {
+              "image": "assets/welcome/project-inspection-demo.png",
+              "altText": "PlatformIO Project Inspection Demo"
+            }
+          },
+          {
+            "id": "explore-more-resources",
+            "title": "Explore more resources",
+            "description": "📦 Browse over 10,000 libraries from software vendors, open-source projects, and the community in the [PlatformIO Registry](https://bit.ly/platformio-registry).\n🚀 Learn more about getting started with [PlatformIO IDE for VSCode](https://bit.ly/platformio-ide-for-vscode-docs).\n🧡 Have any ideas or need help with your project? Ask our awesome [PlatformIO Community](https://community.platformio.org/).\n[Learn More](https://bit.ly/platformio-ide-for-vscode-docs)",
+            "media": {
+              "image": "assets/welcome/platformio-package-registry-demo.png",
+              "altText": "PlatformIO Package Registry"
+            },
+            "completionEvents": [
+              "onLink:https://bit.ly/platformio-ide-for-vscode-docs"
+            ]
+          },
+          {
+            "id": "ready-to-start",
+            "title": "Ready to start?",
+            "description": "Navigate to the PlatformIO IDE View in the left activity bar and open an existing project or create a new one.\n[Open PlatformIO IDE View](command:workbench.view.extension.platformio)",
+            "media": {
+              "image": "assets/welcome/platformio-ide-view-demo.png",
+              "altText": "PlatformIO IDE View"
+            },
+            "completionEvents": [
+              "onView:platformio-ide.projectTasks"
+            ]
+          }
+        ]
+      }
+    ],
     "keybindings": [
       {
         "command": "platformio-ide.build",
-        "key": "ctrl+alt+b"
+        "key": "ctrl+alt+b",
+        "when": "pioProjectReady"
       },
       {
         "command": "platformio-ide.upload",
-        "key": "ctrl+alt+u"
+        "key": "ctrl+alt+u",
+        "when": "pioProjectReady"
       },
       {
         "command": "platformio-ide.serialMonitor",
-        "key": "ctrl+alt+s"
-      },
-      {
-        "command": "workbench.action.tasks.runTask",
-        "key": "ctrl+alt+t"
+        "key": "ctrl+alt+s",
+        "when": "pioProjectReady"
       }
     ],
     "taskDefinitions": [
@@ -515,13 +697,8 @@
     },
     "configuration": {
       "type": "object",
-      "title": "PlatformIO IDE configuration",
+      "title": "PlatformIO IDE",
       "properties": {
-        "platformio-ide.activateOnlyOnPlatformIOProject": {
-          "type": "boolean",
-          "default": false,
-          "description": "Activate the PlatformIO extension only when a PlatformIO-based project (with `platformio.ini`) is opened in the workspace"
-        },
         "platformio-ide.activateProjectOnTextEditorChange": {
           "type": "boolean",
           "default": false,
@@ -540,15 +717,12 @@
         "platformio-ide.autoRebuildAutocompleteIndex": {
           "type": "boolean",
           "default": true,
-          "description": "Automatically rebuild the project IntelliSense index when platformio.ini is changed or when new libraries are installed."
+          "description": "Automatically rebuild the project IntelliSense index when platformio.ini is changed or when new libraries are installed"
         },
-        "platformio-ide.buildTask": {
-          "type": [
-            "string",
-            "null"
-          ],
-          "default": null,
-          "description": "The build task (label) used for the `Build` button in the bottom toolbar and for key bindings. The default is `PlatformIO: Build`."
+        "platformio-ide.showEditorTitleShortcuts": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show Build, Upload, Clean, and other buttons in the editor title bar"
         },
         "platformio-ide.autoPreloadEnvTasks": {
           "type": "boolean",
@@ -562,16 +736,6 @@
           ],
           "default": null,
           "description": "Custom PATH for the `platformio` command, if you prefer to use a custom version of PlatformIO Core. Fill in the result of the system terminal command `echo $PATH` (Unix) / `echo %PATH%` (Windows)."
-        },
-        "platformio-ide.disableToolbar": {
-          "type": "boolean",
-          "default": false,
-          "description": "Disable the PlatformIO toolbar"
-        },
-        "platformio-ide.forceUploadAndMonitor": {
-          "type": "boolean",
-          "default": false,
-          "description": "Force the `platformio-ide.upload` command to use the 'Upload and Monitor' task"
         },
         "platformio-ide.reopenSerialMonitorDelay": {
           "type": "integer",
@@ -606,7 +770,7 @@
         },
         "platformio-ide.pioHomeServerHttpPort": {
           "type": "integer",
-          "description": "PIO Home server HTTP port (the default value 0 automatically assigns a free port in the range [8010..8100])"
+          "description": "PIO Home server HTTP port (the default value 0 automatically assigns a free port in the range [45000..45999])"
         },
         "platformio-ide.customPyPiIndexUrl": {
           "type": [
@@ -615,6 +779,101 @@
           ],
           "default": null,
           "description": "Custom base URL of the Python Package Index (default `https://pypi.org/simple`)"
+        },
+        "platformio-ide.toolbar": {
+          "description": "PlatformIO Toolbar",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "title": "Button",
+            "properties": {
+              "text": {
+                "type": "string",
+                "description": "The text to show for the button",
+                "required": true
+              },
+              "tooltip": {
+                "type": "string",
+                "description": "The tooltip text when you hover over this button"
+              },
+              "commands": {
+                "description": "The button command or list of commands to execute",
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "title": "The command identifier"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "title": "The command identifier"
+                    }
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "title": "Command",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "title": "The command identifier"
+                        },
+                        "args": {
+                          "type": [
+                            "array",
+                            "string",
+                            "object",
+                            "null"
+                          ],
+                          "description": "The button command arguments",
+                          "default": null
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "default": [
+            {
+              "text": "$(home)",
+              "tooltip": "PlatformIO: Home",
+              "commands": "platformio-ide.showHome"
+            },
+            {
+              "text": "$(check)",
+              "tooltip": "PlatformIO: Build",
+              "commands": "platformio-ide.build"
+            },
+            {
+              "text": "$(arrow-right)",
+              "tooltip": "PlatformIO: Upload",
+              "commands": "platformio-ide.upload"
+            },
+            {
+              "text": "$(trashcan)",
+              "tooltip": "PlatformIO: Clean",
+              "commands": "platformio-ide.clean"
+            },
+            {
+              "text": "$(beaker)",
+              "tooltip": "PlatformIO: Test",
+              "commands": "platformio-ide.test"
+            },
+            {
+              "text": "$(plug)",
+              "tooltip": "PlatformIO: Serial Monitor",
+              "commands": "platformio-ide.serialMonitor"
+            },
+            {
+              "text": "$(terminal)",
+              "tooltip": "PlatformIO: New Terminal",
+              "commands": "platformio-ide.newTerminal"
+            }
+          ]
         }
       }
     }
@@ -627,24 +886,24 @@
   },
   "dependencies": {
     "fs-plus": "~3.1.1",
-    "platformio-node-helpers": "~9.6.1",
+    "platformio-node-helpers": "~9.9.1",
     "platformio-vscode-debug": "~1.4.1"
   },
   "devDependencies": {
-    "@babel/core": "~7.19.6",
+    "@babel/core": "~7.20.12",
     "@babel/eslint-parser": "~7.19.1",
     "@babel/plugin-proposal-class-properties": "~7.18.6",
-    "@babel/preset-env": "~7.19.4",
+    "@babel/preset-env": "~7.20.2",
     "@types/node": "~14",
-    "@types/vscode": "~1.63.0",
-    "babel-loader": "~8.2.5",
-    "eslint": "~8.26.0",
+    "@types/vscode": "~1.65.0",
+    "@vscode/vsce": "~2.17.0",
+    "babel-loader": "~9.1.2",
+    "eslint": "~8.33.0",
     "eslint-import-resolver-webpack": "~0.13.2",
-    "eslint-plugin-import": "~2.26.0",
-    "prettier": "~2.7.1",
-    "vsce": "~2.13.0",
-    "webpack": "~5.74.0",
-    "webpack-cli": "~4.10.0"
+    "eslint-plugin-import": "~2.27.5",
+    "prettier": "~2.8.3",
+    "webpack": "~5.75.0",
+    "webpack-cli": "~5.0.1"
   },
   "extensionDependencies": [
     "ms-vscode.cpptools"

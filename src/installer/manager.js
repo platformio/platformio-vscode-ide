@@ -8,26 +8,25 @@
 
 import * as pioNodeHelpers from 'platformio-node-helpers';
 
+import PIOHome from '../home';
 import { PIO_CORE_VERSION_SPEC } from '../constants';
 import PythonPrompt from './python-prompt';
-import StateStorage from '../state-storage';
 import { extension } from '../main';
 import path from 'path';
 import vscode from 'vscode';
 
 export default class InstallationManager {
   LOCK_TIMEOUT = 1 * 60 * 1000; // 1 minute
-  LOCK_KEY = 'platformio-ide:installer-lock';
-  STORAGE_STATE_KEY = 'platformio-ide:installer-state';
+  LOCK_KEY = 'installer-lock';
 
-  constructor(globalState, disableAutoUpdates = false) {
-    this.globalState = globalState;
-    this.stateStorage = new StateStorage(globalState, this.STORAGE_STATE_KEY);
-
+  constructor(disableAutoUpdates = false) {
     const config = vscode.workspace.getConfiguration('platformio-ide');
     this.stages = [
       new pioNodeHelpers.installer.PlatformIOCoreStage(
-        this.stateStorage,
+        {
+          getValue: (key) => extension.context.globalState.get(key),
+          setValue: (key, value) => extension.context.globalState.update(key, value),
+        },
         this.onDidStatusChange.bind(this),
         {
           pioCoreVersionSpec: PIO_CORE_VERSION_SPEC,
@@ -54,15 +53,15 @@ export default class InstallationManager {
   }
 
   lock() {
-    return this.globalState.update(this.LOCK_KEY, new Date().getTime());
+    return extension.context.globalState.update(this.LOCK_KEY, new Date().getTime());
   }
 
   unlock() {
-    return this.globalState.update(this.LOCK_KEY, undefined);
+    return extension.context.globalState.update(this.LOCK_KEY, undefined);
   }
 
   locked() {
-    const lockTime = this.globalState.get(this.LOCK_KEY);
+    const lockTime = extension.context.globalState.get(this.LOCK_KEY);
     if (!lockTime) {
       return false;
     }
@@ -86,6 +85,8 @@ export default class InstallationManager {
 
   async install(progress) {
     const stageIncrementTotal = 100 / this.stages.length;
+    // shutdown all PIO Home servers which block python.exe on Windows
+    await PIOHome.shutdownAllServers();
     for (const stage of this.stages) {
       await stage.install((message, increment) => {
         progress.report({
