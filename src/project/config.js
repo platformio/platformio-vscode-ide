@@ -59,10 +59,7 @@ export class ProjectConfigLanguageProvider {
     }
     const script = `
 import json
-try:
-  from platformio.public import get_config_options_schema
-except ImportError:
-  from platformio.project.options import get_config_options_schema
+from platformio.public import get_config_options_schema
 
 print(json.dumps(get_config_options_schema()))
   `;
