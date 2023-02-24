@@ -3,8 +3,9 @@
 ## 3.0.1 (2023-??-??)
 
 * Added new ``platformio-ide.uploadAndMonitor`` command to "Upload and Monitor" active environment (useful for custom PlatformIO Toolbar) (issue [#1697](https://github.com/platformio/platformio-vscode-ide/issues/1697))
-* Fixed "Select All", "Undo", and "Redo" operations on macOS for PIO Home (pull [#3451](https://github.com/platformio/platformio-vscode-ide/pull/3451))
 * Focus on the project configuration output tab only on error (issue [#3535](https://github.com/platformio/platformio-vscode-ide/issues/3535))
+* Fixed an issue with a task runner on Windows 7 (issue [#3481](https://github.com/platformio/platformio-vscode-ide/issues/3481))
+* Fixed "Select All", "Undo", and "Redo" operations on macOS for PIO Home (pull [#3451](https://github.com/platformio/platformio-vscode-ide/pull/3451))
 
 ## 3.0.0 (2023-02-01)
 

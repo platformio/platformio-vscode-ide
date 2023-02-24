@@ -160,10 +160,11 @@ export default class ProjectTaskManager {
     ) {
       return;
     }
-    vscode.commands.executeCommand('workbench.action.tasks.runTask', {
-      type: ProjectTaskManager.PROVIDER_TYPE,
-      task: task.id,
-    });
+    // use string-based task defination for Win 7 // issue #3481
+    vscode.commands.executeCommand(
+      'workbench.action.tasks.runTask',
+      `${ProjectTaskManager.PROVIDER_TYPE}: ${task.id}`
+    );
   }
 
   _autoCloseSerialMonitor(task) {
