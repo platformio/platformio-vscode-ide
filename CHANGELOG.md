@@ -1,5 +1,9 @@
 # Release Notes
 
+## 3.0.1 (2023-??-??)
+
+* Added new ``platformio-ide.uploadAndMonitor`` command to "Upload and Monitor" active environment (useful for custom PlatformIO Toolbar) (issue [#1697](https://github.com/platformio/platformio-vscode-ide/issues/1697))
+
 ## 3.0.0 (2023-02-01)
 
 **Requires PlatformIO Core 6.1.6 + VSCode 1.65 or above**

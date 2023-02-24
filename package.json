@@ -151,21 +151,28 @@
       },
       {
         "command": "platformio-ide.build",
-        "title": "Build",
+        "title": "Build active environment",
         "category": "PlatformIO",
         "icon": "$(check)",
         "enablement": "pioProjectReady"
       },
       {
         "command": "platformio-ide.upload",
-        "title": "Upload",
+        "title": "Upload active environment",
+        "category": "PlatformIO",
+        "icon": "$(arrow-right)",
+        "enablement": "pioProjectReady"
+      },
+      {
+        "command": "platformio-ide.uploadAndMonitor",
+        "title": "Upload and Monitor active environment",
         "category": "PlatformIO",
         "icon": "$(arrow-right)",
         "enablement": "pioProjectReady"
       },
       {
         "command": "platformio-ide.clean",
-        "title": "Clean",
+        "title": "Clean active environment",
         "category": "PlatformIO",
         "icon": "$(trashcan)",
         "enablement": "pioProjectReady"

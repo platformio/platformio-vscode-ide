@@ -242,6 +242,9 @@ export default class ProjectTaskManager {
       vscode.commands.registerCommand('platformio-ide.upload', () =>
         _runTask('Upload')
       ),
+      vscode.commands.registerCommand('platformio-ide.uploadAndMonitor', () =>
+        _runTask('Upload and Monitor')
+      ),
       vscode.commands.registerCommand('platformio-ide.test', () => _runTask('Test')),
       vscode.commands.registerCommand('platformio-ide.clean', () => _runTask('Clean')),
       vscode.commands.registerCommand('platformio-ide.serialMonitor', () =>
