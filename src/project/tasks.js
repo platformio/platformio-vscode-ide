@@ -26,7 +26,7 @@ export default class ProjectTaskManager {
 
     this._sid = Math.random();
     this._refreshTimeout = undefined;
-    this._restoreOnDidEndTask = undefined;
+    this._ranTask = undefined;
     this._tasksToRestore = [];
     this._sbPortSwitcher = undefined;
     this._customPort = getProjectItemState(projectDir, 'customPort');
@@ -150,9 +150,9 @@ export default class ProjectTaskManager {
   }
 
   runTask(task) {
-    this._restoreOnDidEndTask = undefined;
+    this._ranTask = task;
     this._tasksToRestore = [];
-    this._autoCloseSerialMonitor(task);
+    this._autoCloseSerialMonitor();
     // use string-based task defination for Win 7 // issue #3481
     vscode.commands.executeCommand(
       'workbench.action.tasks.runTask',
@@ -160,25 +160,26 @@ export default class ProjectTaskManager {
     );
   }
 
-  _autoCloseSerialMonitor(task) {
+  _autoCloseSerialMonitor() {
     const closeMonitorConds = [
       extension.getConfiguration('autoCloseSerialMonitor'),
-      ['upload', 'test'].some((arg) => task.args.includes(arg)),
+      ['upload', 'test'].some((arg) => this._ranTask.args.includes(arg)),
     ];
     if (!closeMonitorConds.every((value) => value)) {
       return;
     }
-    this._restoreOnDidEndTask = task;
     vscode.tasks.taskExecutions.forEach((event) => {
+      const isCurrentEvent = this.areTasksEqual(this._ranTask, event.task);
       const skipConds = [
         // skip non-PlatformIO task
         event.task.definition.type !== ProjectTaskManager.PROVIDER_TYPE,
         !event.task.execution.args.includes('monitor'),
+        this.isMonitorAndUploadTask(event.task) && !isCurrentEvent,
       ];
       if (skipConds.some((value) => value)) {
         return;
       }
-      if (!this.isMonitorAndUploadTask(event.task)) {
+      if (!isCurrentEvent) {
         this._tasksToRestore.push(event.task);
       }
       event.terminate();
@@ -187,15 +188,15 @@ export default class ProjectTaskManager {
 
   onDidEndTaskProcess(event) {
     const skipConds = [
-      !this._restoreOnDidEndTask,
-      event.execution.task.definition.type !== ProjectTaskManager.PROVIDER_TYPE,
+      !this._ranTask,
+      !this.areTasksEqual(this._ranTask, event.execution.task),
       event.exitCode !== 0,
-      this.areTasksEqual(this._restoreOnDidEndTask, event.execution.task),
+      !this._tasksToRestore.length,
     ];
     if (skipConds.some((value) => value)) {
       return;
     }
-    this._restoreOnDidEndTask = undefined;
+    this._ranTask = undefined;
     setTimeout(() => {
       while (this._tasksToRestore.length) {
         vscode.tasks.executeTask(this._tasksToRestore.pop());
@@ -212,9 +213,12 @@ export default class ProjectTaskManager {
     if (!task1 || !task2) {
       return task1 === task2;
     }
-    const args1 = task1.args || task1.execution.args;
-    const args2 = task2.args || task2.execution.args;
-    return args1 === args2;
+    const args1 = task1.args || task1.execution.args || [];
+    const args2 = task2.args || task2.execution.args || [];
+    return (
+      args1.length === args2.length &&
+      args1.every((value, index) => value === args2[index])
+    );
   }
 
   registerTaskBasedCommands(tasks) {
