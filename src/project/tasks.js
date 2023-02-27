@@ -153,13 +153,6 @@ export default class ProjectTaskManager {
     this._restoreOnDidEndTask = undefined;
     this._tasksToRestore = [];
     this._autoCloseSerialMonitor(task);
-    // skip MonitorAndUpload task thatwill be added to this._tasksToRestore
-    if (
-      this._tasksToRestore.some((t) => this.isMonitorAndUploadTask(t)) &&
-      this.isMonitorAndUploadTask(task)
-    ) {
-      return;
-    }
     // use string-based task defination for Win 7 // issue #3481
     vscode.commands.executeCommand(
       'workbench.action.tasks.runTask',
@@ -177,20 +170,15 @@ export default class ProjectTaskManager {
     }
     this._restoreOnDidEndTask = task;
     vscode.tasks.taskExecutions.forEach((event) => {
-      const isMonitorAndUploadTask = this.isMonitorAndUploadTask(event.task);
       const skipConds = [
         // skip non-PlatformIO task
         event.task.definition.type !== ProjectTaskManager.PROVIDER_TYPE,
         !event.task.execution.args.includes('monitor'),
-        this.areTasksEqual(task, event.task) && !isMonitorAndUploadTask,
       ];
       if (skipConds.some((value) => value)) {
         return;
       }
-      if (
-        isMonitorAndUploadTask ||
-        ['device', 'monitor'].every((arg) => event.task.execution.args.includes(arg))
-      ) {
+      if (!this.isMonitorAndUploadTask(event.task)) {
         this._tasksToRestore.push(event.task);
       }
       event.terminate();
@@ -201,7 +189,7 @@ export default class ProjectTaskManager {
     const skipConds = [
       !this._restoreOnDidEndTask,
       event.execution.task.definition.type !== ProjectTaskManager.PROVIDER_TYPE,
-      event.exitCode !== 0 && !this.isMonitorAndUploadTask(event.execution.task),
+      event.exitCode !== 0,
       this.areTasksEqual(this._restoreOnDidEndTask, event.execution.task),
     ];
     if (skipConds.some((value) => value)) {

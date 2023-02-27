@@ -6,6 +6,7 @@
 * Focus on the project configuration output tab only on error (issue [#3535](https://github.com/platformio/platformio-vscode-ide/issues/3535))
 * Fixed an issue with a task runner on Windows 7 (issue [#3481](https://github.com/platformio/platformio-vscode-ide/issues/3481))
 * Fixed "Select All", "Undo", and "Redo" operations on macOS for PIO Home (pull [#3451](https://github.com/platformio/platformio-vscode-ide/pull/3451))
+* Fixed an issue when the "Upload & Monitor" task selects the wrong environment (issue [#2623](https://github.com/platformio/platformio-vscode-ide/issues/2623))
 
 ## 3.0.0 (2023-02-01)
 
