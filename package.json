@@ -176,12 +176,6 @@
         "enablement": "pioProjectReady"
       },
       {
-        "command": "platformio-ide.remoteUpload",
-        "title": "Remote Upload",
-        "category": "PlatformIO",
-        "enablement": "pioProjectReady"
-      },
-      {
         "command": "platformio-ide.rebuildProjectIndex",
         "title": "Rebuild IntelliSense Index",
         "category": "PlatformIO",
