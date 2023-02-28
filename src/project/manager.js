@@ -102,6 +102,9 @@ export default class ProjectManager {
       vscode.commands.registerCommand('platformio-ide._runProjectTask', (task) =>
         this._taskManager.runTask(task)
       ),
+      vscode.commands.registerCommand('platformio-ide.activeEnvironment', () =>
+        this._pool.getActiveObserver().getActiveEnvName()
+      ),
     ];
     this.internalSubscriptions = [];
 

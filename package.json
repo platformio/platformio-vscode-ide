@@ -155,13 +155,6 @@
         "enablement": "pioProjectReady"
       },
       {
-        "command": "platformio-ide.uploadAndMonitor",
-        "title": "Upload and Monitor active environment",
-        "category": "PlatformIO",
-        "icon": "$(arrow-right)",
-        "enablement": "pioProjectReady"
-      },
-      {
         "command": "platformio-ide.clean",
         "title": "Clean active environment",
         "category": "PlatformIO",

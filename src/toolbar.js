@@ -111,16 +111,37 @@ export default class PIOToolbar {
       ),
       vscode.commands.registerCommand(
         PIOToolbar.RUN_BUTTON_COMMANDS_ID,
-        async (button) => {
-          for (const cmd of button.commands) {
-            const args = cmd.args || [];
-            await vscode.commands.executeCommand(
-              cmd.id,
-              ...(Array.isArray(args) ? args : [args])
-            );
-          }
-        }
+        this.onButtonClick.bind(this)
       )
     );
+  }
+
+  async onButtonClick(button) {
+    for (const cmd of button.commands) {
+      let args = cmd.args || [];
+      if (!Array.isArray(args)) {
+        args = [args];
+      }
+      for (let i = 0; i < args.length; i++) {
+        args[i] = await this._expandArgVariables(args[i]);
+      }
+      await vscode.commands.executeCommand(cmd.id, ...args);
+    }
+  }
+
+  async _expandArgVariables(arg) {
+    if (!arg.includes('${')) {
+      return arg;
+    }
+    const matches = arg.match(/\$\{[^\}]+\}/g);
+    for (const match of matches) {
+      if (match.startsWith('${command:')) {
+        arg = arg.replace(
+          match,
+          await vscode.commands.executeCommand(match.substring(10, match.length - 1))
+        );
+      }
+    }
+    return arg;
   }
 }
