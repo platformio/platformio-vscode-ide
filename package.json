@@ -830,23 +830,43 @@
             },
             {
               "text": "$(check)",
-              "tooltip": "PlatformIO: Build",
-              "commands": "platformio-ide.build"
+              "tooltip": "PlatformIO: Build Active Environment",
+              "commands": [
+                {
+                  "id": "workbench.action.tasks.runTask",
+                  "args": "PlatformIO: Build (${command:platformio-ide.activeEnvironment})"
+                }
+              ]
             },
             {
               "text": "$(arrow-right)",
-              "tooltip": "PlatformIO: Upload",
-              "commands": "platformio-ide.upload"
+              "tooltip": "PlatformIO: Upload Active Environment",
+              "commands": [
+                {
+                  "id": "workbench.action.tasks.runTask",
+                  "args": "PlatformIO: Upload (${command:platformio-ide.activeEnvironment})"
+                }
+              ]
             },
             {
               "text": "$(trashcan)",
-              "tooltip": "PlatformIO: Clean",
-              "commands": "platformio-ide.clean"
+              "tooltip": "PlatformIO: Clean Active Environment",
+              "commands": [
+                {
+                  "id": "workbench.action.tasks.runTask",
+                  "args": "PlatformIO: Clean (${command:platformio-ide.activeEnvironment})"
+                }
+              ]
             },
             {
               "text": "$(beaker)",
-              "tooltip": "PlatformIO: Test",
-              "commands": "platformio-ide.test"
+              "tooltip": "PlatformIO: Test Active Environment",
+              "commands": [
+                {
+                  "id": "workbench.action.tasks.runTask",
+                  "args": "PlatformIO: Test (${command:platformio-ide.activeEnvironment})"
+                }
+              ]
             },
             {
               "text": "$(plug)",

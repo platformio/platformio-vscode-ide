@@ -26,7 +26,7 @@ export default class ProjectTaskManager {
 
     this._sid = Math.random();
     this._refreshTimeout = undefined;
-    this._ranTask = undefined;
+    this._startedTask = undefined;
     this._tasksToRestore = [];
     this._sbPortSwitcher = undefined;
     this._customPort = getProjectItemState(projectDir, 'customPort');
@@ -92,6 +92,7 @@ export default class ProjectTaskManager {
         },
       }),
 
+      vscode.tasks.onDidStartTask((event) => this.onDidStartTask(event)),
       vscode.tasks.onDidEndTaskProcess((event) => this.onDidEndTaskProcess(event))
     );
 
@@ -150,9 +151,6 @@ export default class ProjectTaskManager {
   }
 
   runTask(task) {
-    this._ranTask = task;
-    this._tasksToRestore = [];
-    this._autoCloseSerialMonitor();
     // use string-based task defination for Win 7 // issue #3481
     vscode.commands.executeCommand(
       'workbench.action.tasks.runTask',
@@ -160,43 +158,55 @@ export default class ProjectTaskManager {
     );
   }
 
-  _autoCloseSerialMonitor() {
+  onDidStartTask(event) {
+    this._autoCloseSerialMonitor(event.execution.task);
+  }
+
+  _autoCloseSerialMonitor(startedTask) {
+    if (startedTask.definition.type !== ProjectTaskManager.PROVIDER_TYPE) {
+      return;
+    }
+
+    this._startedTask = startedTask;
+    this._tasksToRestore = [];
     const closeMonitorConds = [
       extension.getConfiguration('autoCloseSerialMonitor'),
-      ['upload', 'test'].some((arg) => this._ranTask.args.includes(arg)),
+      ['upload', 'test'].some((arg) =>
+        this.getTaskArgs(this._startedTask).includes(arg)
+      ),
     ];
     if (!closeMonitorConds.every((value) => value)) {
       return;
     }
+
     vscode.tasks.taskExecutions.forEach((event) => {
-      const isCurrentEvent = this.areTasksEqual(this._ranTask, event.task);
+      const isCurrentEvent = this.areTasksEqual(this._startedTask, event.task);
       const skipConds = [
+        isCurrentEvent,
         // skip non-PlatformIO task
         event.task.definition.type !== ProjectTaskManager.PROVIDER_TYPE,
-        !event.task.execution.args.includes('monitor'),
-        this.isMonitorAndUploadTask(event.task) && !isCurrentEvent,
+        !this.getTaskArgs(event.task).includes('monitor'),
+        this.isMonitorAndUploadTask(event.task),
       ];
       if (skipConds.some((value) => value)) {
         return;
       }
-      if (!isCurrentEvent) {
-        this._tasksToRestore.push(event.task);
-      }
+      this._tasksToRestore.push(event.task);
       event.terminate();
     });
   }
 
   onDidEndTaskProcess(event) {
     const skipConds = [
-      !this._ranTask,
-      !this.areTasksEqual(this._ranTask, event.execution.task),
+      !this._startedTask,
+      !this.areTasksEqual(this._startedTask, event.execution.task),
       event.exitCode !== 0,
       !this._tasksToRestore.length,
     ];
     if (skipConds.some((value) => value)) {
       return;
     }
-    this._ranTask = undefined;
+    this._startedTask = undefined;
     setTimeout(() => {
       while (this._tasksToRestore.length) {
         vscode.tasks.executeTask(this._tasksToRestore.pop());
@@ -204,8 +214,12 @@ export default class ProjectTaskManager {
     }, parseInt(extension.getConfiguration('reopenSerialMonitorDelay')));
   }
 
+  getTaskArgs(task) {
+    return task.args || task.execution.args;
+  }
+
   isMonitorAndUploadTask(task) {
-    const args = task.args || task.execution.args;
+    const args = this.getTaskArgs(task);
     return ['--target', 'upload', 'monitor'].every((arg) => args.includes(arg));
   }
 
@@ -213,8 +227,8 @@ export default class ProjectTaskManager {
     if (!task1 || !task2) {
       return task1 === task2;
     }
-    const args1 = task1.args || task1.execution.args || [];
-    const args2 = task2.args || task2.execution.args || [];
+    const args1 = this.getTaskArgs(task1);
+    const args2 = this.getTaskArgs(task2);
     return (
       args1.length === args2.length &&
       args1.every((value, index) => value === args2[index])
