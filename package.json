@@ -120,8 +120,8 @@
         "enablement": "pioCoreReady"
       },
       {
-        "command": "platformio-ide.switchProjectEnv",
-        "title": "Switch Project Environment",
+        "command": "platformio-ide.pickProjectEnv",
+        "title": "Pick Project Environment",
         "category": "PlatformIO",
         "icon": "$(root-folder)",
         "enablement": "pioProjectReady"
@@ -427,7 +427,7 @@
       ],
       "view/title": [
         {
-          "command": "platformio-ide.switchProjectEnv",
+          "command": "platformio-ide.pickProjectEnv",
           "when": "pioMultiEnvProject && view == platformio-ide.projectTasks",
           "group": "navigation"
         },

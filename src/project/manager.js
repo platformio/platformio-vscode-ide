@@ -221,13 +221,13 @@ export default class ProjectManager {
     );
     this._sbEnvSwitcher.name = 'PlatformIO: Project Environment Switcher';
     this._sbEnvSwitcher.tooltip = 'Switch PlatformIO Project Environment';
-    this._sbEnvSwitcher.command = 'platformio-ide.switchProjectEnv';
+    this._sbEnvSwitcher.command = 'platformio-ide.pickProjectEnv';
     this._sbEnvSwitcher.text = '$(root-folder) Loading...';
     this._sbEnvSwitcher.show();
 
     this.subscriptions.push(
       this._sbEnvSwitcher,
-      vscode.commands.registerCommand('platformio-ide.switchProjectEnv', () =>
+      vscode.commands.registerCommand('platformio-ide.pickProjectEnv', () =>
         this.pickProjectEnv()
       )
     );
