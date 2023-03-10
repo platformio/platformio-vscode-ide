@@ -56,12 +56,10 @@ export default class ProjectTaskManager {
       this._sid = Math.random();
     }
 
-    const projectEnvs = await this.projectObserver.getProjectEnvs();
+    const projectEnvs = (await this.projectObserver.getConfig()).envs();
     const projectTasks = [...(await this.projectObserver.getDefaultTasks())];
-    for (const item of projectEnvs) {
-      projectTasks.push(
-        ...((await this.projectObserver.getLoadedEnvTasks(item.name)) || [])
-      );
+    for (const env of projectEnvs) {
+      projectTasks.push(...((await this.projectObserver.getLoadedEnvTasks(env)) || []));
     }
 
     const taskViewer = vscode.window.createTreeView(ProjectTaskManager.TASKS_VIEW_ID, {
@@ -69,7 +67,7 @@ export default class ProjectTaskManager {
         this._sid,
         projectEnvs,
         projectTasks,
-        this.projectObserver.getActiveEnvName()
+        this.projectObserver.getSelectedEnv()
       ),
       showCollapseAll: true,
     });
@@ -239,7 +237,7 @@ export default class ProjectTaskManager {
     const _runTask = (name) => {
       const candidates = tasks.filter(
         (task) =>
-          task.name === name && task.coreEnv === this.projectObserver.getActiveEnvName()
+          task.name === name && task.coreEnv === this.projectObserver.getSelectedEnv()
       );
       this.runTask(candidates[0]);
     };

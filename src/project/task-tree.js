@@ -11,11 +11,11 @@ import * as vscode from 'vscode';
 export default class ProjectTasksTreeProvider {
   static DEFAULT_ENV_NAME = 'Default';
 
-  constructor(id, envs, tasks, activeEnvName) {
+  constructor(id, envs, tasks, selectedEnv = undefined) {
     this.id = id;
     this.envs = envs;
     this.tasks = tasks;
-    this.activeEnvName = activeEnvName;
+    this.selectedEnv = selectedEnv;
     this.multiEnvProject = this.envs.length > 1;
   }
 
@@ -49,15 +49,15 @@ export default class ProjectTasksTreeProvider {
 
   getRootChildren() {
     const result = [];
-    for (const envName of [undefined, ...this.envs.map((item) => item.name)]) {
+    for (const env of [undefined, ...this.envs]) {
       const treeItem = new vscode.TreeItem(
-        envName || ProjectTasksTreeProvider.DEFAULT_ENV_NAME,
-        envName && (envName === this.activeEnvName || !this.multiEnvProject)
+        env || ProjectTasksTreeProvider.DEFAULT_ENV_NAME,
+        env && (env === this.selectedEnv || !this.multiEnvProject)
           ? vscode.TreeItemCollapsibleState.Expanded
           : vscode.TreeItemCollapsibleState.Collapsed
       );
-      treeItem.id = `${this.id}-${envName}`;
-      treeItem.env = envName;
+      treeItem.id = `${this.id}-${env}`;
+      treeItem.env = env;
       treeItem.iconPath = new vscode.ThemeIcon('root-folder');
       result.push(treeItem);
     }

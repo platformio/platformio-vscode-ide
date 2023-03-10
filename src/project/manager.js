@@ -102,8 +102,9 @@ export default class ProjectManager {
       vscode.commands.registerCommand('platformio-ide._runProjectTask', (task) =>
         this._taskManager.runTask(task)
       ),
-      vscode.commands.registerCommand('platformio-ide.activeEnvironment', () =>
-        this._pool.getActiveObserver().getActiveEnvName()
+      vscode.commands.registerCommand(
+        'platformio-ide.activeEnvironment',
+        async () => await this._pool.getActiveObserver().revealActiveEnvironment()
       ),
     ];
     this.internalSubscriptions = [];
@@ -156,8 +157,8 @@ export default class ProjectManager {
     }
     projectHelpers.updateProjectItemState(
       observer.projectDir,
-      'activeEnv',
-      observer.getActiveEnvName()
+      'selectedEnv',
+      observer.getSelectedEnv()
     );
   }
 
@@ -169,17 +170,17 @@ export default class ProjectManager {
     this._sbEnvSwitcher.text = '$(root-folder) Loading...';
 
     let currentProjectDir = undefined;
-    let currentEnvName = undefined;
+    let currentEnv = undefined;
     if (this._pool.getActiveObserver()) {
       currentProjectDir = this._pool.getActiveObserver().projectDir;
-      currentEnvName = this._pool.getActiveObserver().getActiveEnvName();
+      currentEnv = this._pool.getActiveObserver().getSelectedEnv();
     }
     const observer = this._pool.getObserver(projectDir);
-    if ('envName' in options) {
-      await observer.switchProjectEnv(options.envName);
-    } else if (!observer.getActiveEnvName()) {
+    if ('env' in options) {
+      await observer.switchProjectEnv(options.env);
+    } else if (!observer.getSelectedEnv()) {
       await observer.switchProjectEnv(
-        projectHelpers.getProjectItemState(projectDir, 'activeEnv')
+        projectHelpers.getProjectItemState(projectDir, 'selectedEnv')
       );
     }
 
@@ -187,10 +188,10 @@ export default class ProjectManager {
     if (
       !currentProjectDir ||
       currentProjectDir !== projectDir ||
-      currentEnvName !== observer.getActiveEnvName()
+      currentEnv !== observer.getSelectedEnv()
     ) {
       disposeSubscriptions(this.internalSubscriptions);
-      this._pool.switch(projectDir);
+      await this._pool.switch(projectDir);
       this._taskManager = new ProjectTaskManager(projectDir, observer);
       this.internalSubscriptions.push(
         this._taskManager,
@@ -238,10 +239,10 @@ export default class ProjectManager {
     if (!observer) {
       return;
     }
-    const envName = observer.getActiveEnvName()
-      ? `env:${observer.getActiveEnvName()}`
+    const env = observer.getSelectedEnv()
+      ? `env:${observer.getSelectedEnv()}`
       : 'Default';
-    this._sbEnvSwitcher.text = `$(root-folder) ${envName} (${path.basename(
+    this._sbEnvSwitcher.text = `$(root-folder) ${env} (${path.basename(
       observer.projectDir
     )})`;
   }
@@ -250,7 +251,7 @@ export default class ProjectManager {
     const items = [];
     for (const projectDir of projectHelpers.getPIOProjectDirs()) {
       const observer = this._pool.getObserver(projectDir);
-      const envs = await observer.getProjectEnvs();
+      const envs = (await observer.getConfig()).envs();
       if (!envs || !envs.length) {
         continue;
       }
@@ -263,10 +264,10 @@ export default class ProjectManager {
         description: `$(folder) ${shortProjectDir} ("default_envs" from "platformio.ini")`,
       });
       items.push(
-        ...envs.map((item) => ({
+        ...envs.map((env) => ({
           projectDir,
-          envName: item.name,
-          label: `env:${item.name}`,
+          env,
+          label: `env:${env}`,
           description: `$(folder) ${shortProjectDir}`,
         }))
       );
@@ -277,6 +278,6 @@ export default class ProjectManager {
     if (!pickedItem) {
       return;
     }
-    this.switchToProject(pickedItem.projectDir, { envName: pickedItem.envName });
+    this.switchToProject(pickedItem.projectDir, { env: pickedItem.env });
   }
 }
