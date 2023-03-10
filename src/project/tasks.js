@@ -160,7 +160,7 @@ export default class ProjectTaskManager {
     this._autoCloseSerialMonitor(event.execution.task);
   }
 
-  _autoCloseSerialMonitor(startedTask) {
+  async _autoCloseSerialMonitor(startedTask) {
     if (startedTask.definition.type !== ProjectTaskManager.PROVIDER_TYPE) {
       return;
     }
@@ -174,6 +174,14 @@ export default class ProjectTaskManager {
       ),
     ];
     if (!closeMonitorConds.every((value) => value)) {
+      return;
+    }
+
+    // skip "native" dev-platform
+    const platform = (await this.projectObserver.getConfig()).getEnvPlatform(
+      await this.projectObserver.revealActiveEnvironment()
+    );
+    if (platform === 'native') {
       return;
     }
 
