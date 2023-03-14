@@ -1,6 +1,6 @@
 # Release Notes
 
-## 3.1.0 (2023-??-??)
+## 3.1.0 (2023-03-13)
 
 * Add support for the ``${command:platformio-ide.activeEnvironment}`` variable that can be used in a custom [PlatformIO Toolbar](https://docs.platformio.org/en/latest/integration/ide/vscode.html#platformio-toolbar) and [VSCode variable substitution](https://code.visualstudio.com/docs/editor/variables-reference) (issue [#3588](https://github.com/platformio/platformio-vscode-ide/issues/3588))
 * Focus on the project configuration output tab only on error (issue [#3535](https://github.com/platformio/platformio-vscode-ide/issues/3535))
