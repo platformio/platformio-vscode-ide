@@ -4,7 +4,6 @@
 
 * Add support for the ``${command:platformio-ide.activeEnvironment}`` variable that can be used in a custom [PlatformIO Toolbar](https://docs.platformio.org/en/latest/integration/ide/vscode.html#platformio-toolbar) and [VSCode variable substitution](https://code.visualstudio.com/docs/editor/variables-reference) (issue [#3588](https://github.com/platformio/platformio-vscode-ide/issues/3588))
 * Focus on the project configuration output tab only on error (issue [#3535](https://github.com/platformio/platformio-vscode-ide/issues/3535))
-* Do not automatically close active serial port monitors when the "native" development platform is used (issue [#2623](https://github.com/platformio/platformio-vscode-ide/issues/2623))
 * Fixed an issue with a task runner on Windows 7 (issue [#3481](https://github.com/platformio/platformio-vscode-ide/issues/3481))
 * Fixed "Select All", "Undo", and "Redo" operations on macOS for PIO Home (pull [#3451](https://github.com/platformio/platformio-vscode-ide/pull/3451))
 * Fixed an issue when the "Upload & Monitor" task selects the wrong environment (issue [#2623](https://github.com/platformio/platformio-vscode-ide/issues/2623))

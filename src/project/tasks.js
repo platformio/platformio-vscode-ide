@@ -178,12 +178,12 @@ export default class ProjectTaskManager {
     }
 
     // skip "native" dev-platform
-    const platform = (await this.projectObserver.getConfig()).getEnvPlatform(
-      await this.projectObserver.revealActiveEnvironment()
-    );
-    if (platform === 'native') {
-      return;
-    }
+    // const platform = (await this.projectObserver.getConfig()).getEnvPlatform(
+    //   await this.projectObserver.revealActiveEnvironment()
+    // );
+    // if (platform === 'native') {
+    //   return;
+    // }
 
     vscode.tasks.taskExecutions.forEach((event) => {
       const isCurrentEvent = this.areTasksEqual(this._startedTask, event.task);
