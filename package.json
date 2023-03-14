@@ -883,11 +883,11 @@
     "@types/vscode": "~1.65.0",
     "@vscode/vsce": "~2.18.0",
     "babel-loader": "~9.1.2",
-    "eslint": "~8.35.0",
+    "eslint": "~8.36.0",
     "eslint-import-resolver-webpack": "~0.13.2",
     "eslint-plugin-import": "~2.27.5",
     "prettier": "~2.8.4",
-    "webpack": "~5.76.0",
+    "webpack": "~5.76.1",
     "webpack-cli": "~5.0.1"
   },
   "extensionDependencies": [
