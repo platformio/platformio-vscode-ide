@@ -26,7 +26,7 @@ export default class ProjectTaskManager {
 
     this._sid = Math.random();
     this._refreshTimeout = undefined;
-    this._restoreOnDidEndTask = undefined;
+    this._startedTask = undefined;
     this._tasksToRestore = [];
     this._sbPortSwitcher = undefined;
     this._customPort = getProjectItemState(projectDir, 'customPort');
@@ -56,12 +56,10 @@ export default class ProjectTaskManager {
       this._sid = Math.random();
     }
 
-    const projectEnvs = await this.projectObserver.getProjectEnvs();
+    const projectEnvs = (await this.projectObserver.getConfig()).envs();
     const projectTasks = [...(await this.projectObserver.getDefaultTasks())];
-    for (const item of projectEnvs) {
-      projectTasks.push(
-        ...((await this.projectObserver.getLoadedEnvTasks(item.name)) || [])
-      );
+    for (const env of projectEnvs) {
+      projectTasks.push(...((await this.projectObserver.getLoadedEnvTasks(env)) || []));
     }
 
     const taskViewer = vscode.window.createTreeView(ProjectTaskManager.TASKS_VIEW_ID, {
@@ -69,7 +67,7 @@ export default class ProjectTaskManager {
         this._sid,
         projectEnvs,
         projectTasks,
-        this.projectObserver.getActiveEnvName()
+        this.projectObserver.getSelectedEnv()
       ),
       showCollapseAll: true,
     });
@@ -92,6 +90,7 @@ export default class ProjectTaskManager {
         },
       }),
 
+      vscode.tasks.onDidStartTask((event) => this.onDidStartTask(event)),
       vscode.tasks.onDidEndTaskProcess((event) => this.onDidEndTaskProcess(event))
     );
 
@@ -150,63 +149,70 @@ export default class ProjectTaskManager {
   }
 
   runTask(task) {
-    this._restoreOnDidEndTask = undefined;
-    this._tasksToRestore = [];
-    this._autoCloseSerialMonitor(task);
-    // skip MonitorAndUpload task thatwill be added to this._tasksToRestore
-    if (
-      this._tasksToRestore.some((t) => this.isMonitorAndUploadTask(t)) &&
-      this.isMonitorAndUploadTask(task)
-    ) {
-      return;
-    }
-    vscode.commands.executeCommand('workbench.action.tasks.runTask', {
-      type: ProjectTaskManager.PROVIDER_TYPE,
-      task: task.id,
-    });
+    // use string-based task defination for Win 7 // issue #3481
+    vscode.commands.executeCommand(
+      'workbench.action.tasks.runTask',
+      `${ProjectTaskManager.PROVIDER_TYPE}: ${task.id}`
+    );
   }
 
-  _autoCloseSerialMonitor(task) {
+  onDidStartTask(event) {
+    this._autoCloseSerialMonitor(event.execution.task);
+  }
+
+  async _autoCloseSerialMonitor(startedTask) {
+    if (startedTask.definition.type !== ProjectTaskManager.PROVIDER_TYPE) {
+      return;
+    }
+
+    this._startedTask = startedTask;
+    this._tasksToRestore = [];
     const closeMonitorConds = [
       extension.getConfiguration('autoCloseSerialMonitor'),
-      ['upload', 'test'].some((arg) => task.args.includes(arg)),
+      ['upload', 'test'].some((arg) =>
+        this.getTaskArgs(this._startedTask).includes(arg)
+      ),
     ];
     if (!closeMonitorConds.every((value) => value)) {
       return;
     }
-    this._restoreOnDidEndTask = task;
+
+    // skip "native" dev-platform
+    // const platform = (await this.projectObserver.getConfig()).getEnvPlatform(
+    //   await this.projectObserver.revealActiveEnvironment()
+    // );
+    // if (platform === 'native') {
+    //   return;
+    // }
+
     vscode.tasks.taskExecutions.forEach((event) => {
-      const isMonitorAndUploadTask = this.isMonitorAndUploadTask(event.task);
+      const isCurrentEvent = this.areTasksEqual(this._startedTask, event.task);
       const skipConds = [
+        isCurrentEvent,
         // skip non-PlatformIO task
         event.task.definition.type !== ProjectTaskManager.PROVIDER_TYPE,
-        !event.task.execution.args.includes('monitor'),
-        this.areTasksEqual(task, event.task) && !isMonitorAndUploadTask,
+        !this.getTaskArgs(event.task).includes('monitor'),
+        this.isMonitorAndUploadTask(event.task),
       ];
       if (skipConds.some((value) => value)) {
         return;
       }
-      if (
-        isMonitorAndUploadTask ||
-        ['device', 'monitor'].every((arg) => event.task.execution.args.includes(arg))
-      ) {
-        this._tasksToRestore.push(event.task);
-      }
+      this._tasksToRestore.push(event.task);
       event.terminate();
     });
   }
 
   onDidEndTaskProcess(event) {
     const skipConds = [
-      !this._restoreOnDidEndTask,
-      event.execution.task.definition.type !== ProjectTaskManager.PROVIDER_TYPE,
-      event.exitCode !== 0 && !this.isMonitorAndUploadTask(event.execution.task),
-      this.areTasksEqual(this._restoreOnDidEndTask, event.execution.task),
+      !this._startedTask,
+      !this.areTasksEqual(this._startedTask, event.execution.task),
+      event.exitCode !== 0,
+      !this._tasksToRestore.length,
     ];
     if (skipConds.some((value) => value)) {
       return;
     }
-    this._restoreOnDidEndTask = undefined;
+    this._startedTask = undefined;
     setTimeout(() => {
       while (this._tasksToRestore.length) {
         vscode.tasks.executeTask(this._tasksToRestore.pop());
@@ -214,8 +220,12 @@ export default class ProjectTaskManager {
     }, parseInt(extension.getConfiguration('reopenSerialMonitorDelay')));
   }
 
+  getTaskArgs(task) {
+    return task.args || task.execution.args;
+  }
+
   isMonitorAndUploadTask(task) {
-    const args = task.args || task.execution.args;
+    const args = this.getTaskArgs(task);
     return ['--target', 'upload', 'monitor'].every((arg) => args.includes(arg));
   }
 
@@ -223,16 +233,19 @@ export default class ProjectTaskManager {
     if (!task1 || !task2) {
       return task1 === task2;
     }
-    const args1 = task1.args || task1.execution.args;
-    const args2 = task2.args || task2.execution.args;
-    return args1 === args2;
+    const args1 = this.getTaskArgs(task1);
+    const args2 = this.getTaskArgs(task2);
+    return (
+      args1.length === args2.length &&
+      args1.every((value, index) => value === args2[index])
+    );
   }
 
   registerTaskBasedCommands(tasks) {
     const _runTask = (name) => {
       const candidates = tasks.filter(
         (task) =>
-          task.name === name && task.coreEnv === this.projectObserver.getActiveEnvName()
+          task.name === name && task.coreEnv === this.projectObserver.getSelectedEnv()
       );
       this.runTask(candidates[0]);
     };
@@ -242,13 +255,10 @@ export default class ProjectTaskManager {
       vscode.commands.registerCommand('platformio-ide.upload', () =>
         _runTask('Upload')
       ),
-      vscode.commands.registerCommand('platformio-ide.test', () => _runTask('Test')),
       vscode.commands.registerCommand('platformio-ide.clean', () => _runTask('Clean')),
+      vscode.commands.registerCommand('platformio-ide.test', () => _runTask('Test')),
       vscode.commands.registerCommand('platformio-ide.serialMonitor', () =>
         _runTask('Monitor')
-      ),
-      vscode.commands.registerCommand('platformio-ide.remoteUpload', () =>
-        _runTask('Remote Upload')
       )
     );
   }

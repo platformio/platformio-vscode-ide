@@ -127,11 +127,23 @@ export default class PIOHome {
     const iframeId = `pioHomeIFrame-${vscode.env.sessionId}`;
     const iframeScript = `
 <script>
-  for (const command of ['selectAll', 'copy', 'paste', 'cut', 'undo', 'redo']) {
+  function execCommand(data) {
+    document.getElementById('${iframeId}').contentWindow.postMessage({'command': 'execCommand', 'data': data}, '*');
+  }
+  for (const command of ['copy', 'paste', 'cut']) {
     document.addEventListener(command, (e) => {
-      document.getElementById('${iframeId}').contentWindow.postMessage({'command': 'execCommand', 'data': command}, '*');
+      execCommand(command);
     });
   }
+  document.addEventListener('selectstart', (e) => {
+    execCommand('selectAll');
+    e.preventDefault();
+  });
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'z' && e.metaKey) {
+      execCommand(e.shiftKey ? 'redo' : 'undo');
+    }
+  });
   window.addEventListener('message', (e) => {
     if (e.data.command === 'kbd-event') {
       window.dispatchEvent(new KeyboardEvent('keydown', e.data.data));
@@ -172,7 +184,7 @@ export default class PIOHome {
 
   onOpenProjectCommand(params) {
     if (extension.ProjectManager) {
-      updateProjectItemState(vscode.Uri.file(params).fsPath, 'activeEnv', undefined);
+      updateProjectItemState(vscode.Uri.file(params).fsPath, 'selectedEnv', undefined);
       extension.ProjectManager.switchToProject(vscode.Uri.file(params).fsPath);
     }
     this.disposePanel();

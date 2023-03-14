@@ -1,6 +1,6 @@
 {
   "name": "platformio-ide",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "publisher": "platformio",
   "engines": {
     "vscode": "^1.65.0"
@@ -36,16 +36,7 @@
     "url": "https://github.com/platformio/platformio-vscode-ide.git"
   },
   "activationEvents": [
-    "workspaceContains:**/platformio.ini",
-    "onView:platformio-ide.quickAccess",
-    "onView:platformio-ide.projectTasks",
-    "onView:platformio-debug.peripherals",
-    "onView:platformio-debug.registers",
-    "onView:platformio-debug.memory",
-    "onView:platformio-debug.disassembly",
-    "onCommand:platformio-ide.showReleaseNotes",
-    "onCommand:platformio-ide.showHome",
-    "onCommand:platformio-ide.openPIOCoreCLI"
+    "workspaceContains:**/platformio.ini"
   ],
   "contributes": {
     "languages": [
@@ -129,8 +120,8 @@
         "enablement": "pioCoreReady"
       },
       {
-        "command": "platformio-ide.switchProjectEnv",
-        "title": "Switch Project Environment",
+        "command": "platformio-ide.pickProjectEnv",
+        "title": "Pick Project Environment",
         "category": "PlatformIO",
         "icon": "$(root-folder)",
         "enablement": "pioProjectReady"
@@ -151,21 +142,21 @@
       },
       {
         "command": "platformio-ide.build",
-        "title": "Build",
+        "title": "Build active environment",
         "category": "PlatformIO",
         "icon": "$(check)",
         "enablement": "pioProjectReady"
       },
       {
         "command": "platformio-ide.upload",
-        "title": "Upload",
+        "title": "Upload active environment",
         "category": "PlatformIO",
         "icon": "$(arrow-right)",
         "enablement": "pioProjectReady"
       },
       {
         "command": "platformio-ide.clean",
-        "title": "Clean",
+        "title": "Clean active environment",
         "category": "PlatformIO",
         "icon": "$(trashcan)",
         "enablement": "pioProjectReady"
@@ -182,12 +173,6 @@
         "title": "Test",
         "category": "PlatformIO",
         "icon": "$(beaker)",
-        "enablement": "pioProjectReady"
-      },
-      {
-        "command": "platformio-ide.remoteUpload",
-        "title": "Remote Upload",
-        "category": "PlatformIO",
         "enablement": "pioProjectReady"
       },
       {
@@ -442,7 +427,7 @@
       ],
       "view/title": [
         {
-          "command": "platformio-ide.switchProjectEnv",
+          "command": "platformio-ide.pickProjectEnv",
           "when": "pioMultiEnvProject && view == platformio-ide.projectTasks",
           "group": "navigation"
         },
@@ -886,23 +871,23 @@
   },
   "dependencies": {
     "fs-plus": "~3.1.1",
-    "platformio-node-helpers": "~9.9.1",
+    "platformio-node-helpers": "~10.0.0",
     "platformio-vscode-debug": "~1.4.1"
   },
   "devDependencies": {
-    "@babel/core": "~7.20.12",
+    "@babel/core": "~7.21.0",
     "@babel/eslint-parser": "~7.19.1",
     "@babel/plugin-proposal-class-properties": "~7.18.6",
     "@babel/preset-env": "~7.20.2",
     "@types/node": "~14",
     "@types/vscode": "~1.65.0",
-    "@vscode/vsce": "~2.17.0",
+    "@vscode/vsce": "~2.18.0",
     "babel-loader": "~9.1.2",
-    "eslint": "~8.33.0",
+    "eslint": "~8.36.0",
     "eslint-import-resolver-webpack": "~0.13.2",
     "eslint-plugin-import": "~2.27.5",
-    "prettier": "~2.8.3",
-    "webpack": "~5.75.0",
+    "prettier": "~2.8.4",
+    "webpack": "~5.76.1",
     "webpack-cli": "~5.0.1"
   },
   "extensionDependencies": [
