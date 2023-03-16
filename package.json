@@ -882,8 +882,8 @@
     "platformio-vscode-debug": "~1.4.1"
   },
   "devDependencies": {
-    "@babel/core": "~7.21.0",
-    "@babel/eslint-parser": "~7.19.1",
+    "@babel/core": "~7.21.3",
+    "@babel/eslint-parser": "~7.21.3",
     "@babel/plugin-proposal-class-properties": "~7.18.6",
     "@babel/preset-env": "~7.20.2",
     "@types/node": "~14",
@@ -894,7 +894,7 @@
     "eslint-import-resolver-webpack": "~0.13.2",
     "eslint-plugin-import": "~2.27.5",
     "prettier": "~2.8.4",
-    "webpack": "~5.76.1",
+    "webpack": "~5.76.2",
     "webpack-cli": "~5.0.1"
   },
   "extensionDependencies": [
