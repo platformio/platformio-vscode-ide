@@ -2,7 +2,8 @@
 
 ## 3.1.1 (2023-03-??)
 
-* Fixed a regression bug where running the same "monitor" causes the notification that the task "is already active" (issue [#3656](https://github.com/platformio/platformio-vscode-ide/issues/3656))
+* Added new ``platformio-ide.uploadAndMonitor`` command to "Upload and Monitor" active environment (useful for custom [PlatformIO Toolbar](https://docs.platformio.org/en/latest/integration/ide/vscode.html#platformio-toolbar))
+* Fixed a regression bug where running the same "device monitor" causes the notification that the task "is already active" (issue [#3656](https://github.com/platformio/platformio-vscode-ide/issues/3656))
 
 ## 3.1.0 (2023-03-13)
 
