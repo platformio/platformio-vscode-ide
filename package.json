@@ -36,7 +36,16 @@
     "url": "https://github.com/platformio/platformio-vscode-ide.git"
   },
   "activationEvents": [
-    "workspaceContains:**/platformio.ini"
+    "workspaceContains:**/platformio.ini",
+    "onView:platformio-ide.quickAccess",
+    "onView:platformio-ide.projectTasks",
+    "onView:platformio-debug.peripherals",
+    "onView:platformio-debug.registers",
+    "onView:platformio-debug.memory",
+    "onView:platformio-debug.disassembly",
+    "onCommand:platformio-ide.showReleaseNotes",
+    "onCommand:platformio-ide.showHome",
+    "onCommand:platformio-ide.openPIOCoreCLI"
   ],
   "contributes": {
     "languages": [
