@@ -1,5 +1,9 @@
 # Release Notes
 
+## 3.1.1 (2023-03-??)
+
+* Fixed a regression bug where running the same "monitor" causes the notification that the task "is already active" (issue [#3656](https://github.com/platformio/platformio-vscode-ide/issues/3656))
+
 ## 3.1.0 (2023-03-13)
 
 * Add support for the ``${command:platformio-ide.activeEnvironment}`` variable that can be used in a custom [PlatformIO Toolbar](https://docs.platformio.org/en/latest/integration/ide/vscode.html#platformio-toolbar) and [VSCode variable substitution](https://code.visualstudio.com/docs/editor/variables-reference) (issue [#3588](https://github.com/platformio/platformio-vscode-ide/issues/3588))
