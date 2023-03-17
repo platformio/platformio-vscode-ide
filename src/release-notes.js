@@ -116,13 +116,13 @@ export default class PIOReleaseNotes {
   <p id="content">Loading...</p>
   <h2>Stay in touch with us</h2>
   <p>
-    Please follow us on <a href="https://www.linkedin.com/company/platformio">LinkedIn</a> and Twitter <a href="https://twitter.com/PlatformIO_Org">@PlatformIO_Org]</a>
+    Please follow us on <a href="https://www.linkedin.com/company/platformio">LinkedIn</a> and Twitter <a href="https://twitter.com/PlatformIO_Org">@PlatformIO_Org</a>
     to keep up to date with the latest news, articles and tips!
   </p>
   <hr />
   <p>
     <b>PlatformIO Core</b>: If you would like to read the PlatformIO Core release notes,
-    go to the <a href="https://docs.platformio.org/en/latest/core/history.html">Release Notes</a> on <a href="https://docs.platformio.org/">docs.platformio.org</a>).
+    go to the <a href="https://docs.platformio.org/en/latest/core/history.html">Release Notes</a> on <a href="https://docs.platformio.org/">docs.platformio.org</a>.
   </p>
   <textarea id="pioRNMarkdown" hidden="hidden">${releaseNotes}</textarea>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>

@@ -90,7 +90,6 @@ export default class ProjectTaskManager {
         },
       }),
 
-      vscode.tasks.onDidStartTask((event) => this.onDidStartTask(event)),
       vscode.tasks.onDidEndTaskProcess((event) => this.onDidEndTaskProcess(event))
     );
 
@@ -149,6 +148,7 @@ export default class ProjectTaskManager {
   }
 
   runTask(task) {
+    this._autoCloseSerialMonitor(task);
     // use string-based task defination for Win 7 // issue #3481
     vscode.commands.executeCommand(
       'workbench.action.tasks.runTask',
@@ -156,15 +156,7 @@ export default class ProjectTaskManager {
     );
   }
 
-  onDidStartTask(event) {
-    this._autoCloseSerialMonitor(event.execution.task);
-  }
-
   async _autoCloseSerialMonitor(startedTask) {
-    if (startedTask.definition.type !== ProjectTaskManager.PROVIDER_TYPE) {
-      return;
-    }
-
     this._startedTask = startedTask;
     this._tasksToRestore = [];
     const closeMonitorConds = [
@@ -186,18 +178,20 @@ export default class ProjectTaskManager {
     // }
 
     vscode.tasks.taskExecutions.forEach((event) => {
-      const isCurrentEvent = this.areTasksEqual(this._startedTask, event.task);
+      const isCurrentTask = this.areTasksEqual(this._startedTask, event.task);
       const skipConds = [
-        isCurrentEvent,
         // skip non-PlatformIO task
         event.task.definition.type !== ProjectTaskManager.PROVIDER_TYPE,
         !this.getTaskArgs(event.task).includes('monitor'),
-        this.isMonitorAndUploadTask(event.task),
+        this.isMonitorAndUploadTask(event.task) && !isCurrentTask,
       ];
       if (skipConds.some((value) => value)) {
         return;
       }
-      this._tasksToRestore.push(event.task);
+      // do not restart the same tasks
+      if (!isCurrentTask) {
+        this._tasksToRestore.push(event.task);
+      }
       event.terminate();
     });
   }
@@ -254,6 +248,9 @@ export default class ProjectTaskManager {
       vscode.commands.registerCommand('platformio-ide.build', () => _runTask('Build')),
       vscode.commands.registerCommand('platformio-ide.upload', () =>
         _runTask('Upload')
+      ),
+      vscode.commands.registerCommand('platformio-ide.uploadAndMonitor', () =>
+        _runTask('Upload and Monitor')
       ),
       vscode.commands.registerCommand('platformio-ide.clean', () => _runTask('Clean')),
       vscode.commands.registerCommand('platformio-ide.test', () => _runTask('Test')),
