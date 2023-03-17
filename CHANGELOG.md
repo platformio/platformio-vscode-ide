@@ -1,6 +1,6 @@
 # Release Notes
 
-## 3.1.1 (2023-03-??)
+## 3.1.1 (2023-03-16)
 
 * Added a new ``platformio-ide.uploadAndMonitor`` command which can be used with the custom [PlatformIO Toolbar](https://docs.platformio.org/en/latest/integration/ide/vscode.html#platformio-toolbar)
 * Restored support for macOS Touch Bar (issue [#3659](https://github.com/platformio/platformio-vscode-ide/issues/3659))
