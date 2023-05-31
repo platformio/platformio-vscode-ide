@@ -18,6 +18,7 @@ module.exports = {
   entry: __dirname + '/src/main.js',
   output: {
     path: path.resolve(__dirname, 'dist'),
+    filename: 'extension.js',
     libraryTarget: 'umd',
     umdNamedDefine: true
   },
