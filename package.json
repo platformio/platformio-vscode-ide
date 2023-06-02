@@ -1,6 +1,6 @@
 {
   "name": "platformio-ide",
-  "version": "3.1.1",
+  "version": "3.1.90",
   "publisher": "platformio",
   "engines": {
     "vscode": "^1.65.0"
