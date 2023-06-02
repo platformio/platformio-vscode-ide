@@ -11,6 +11,7 @@ const path = require('path');
 
 const packageConfig = JSON.parse(fs.readFileSync(path.join(__dirname, 'package.json'), 'utf8'));
 const externals = Object.keys(packageConfig.dependencies);
+externals.push('commonjs');
 externals.push('vscode');
 
 module.exports = {
@@ -19,8 +20,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'extension.js',
-    libraryTarget: 'umd',
-    umdNamedDefine: true
+    libraryTarget: 'commonjs2'
   },
   devtool: 'source-map',
   target: 'node',
