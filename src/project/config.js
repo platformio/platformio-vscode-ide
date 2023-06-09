@@ -9,6 +9,7 @@
 import * as pioNodeHelpers from 'platformio-node-helpers';
 
 import { disposeSubscriptions, listCoreSerialPorts } from '../utils';
+import path from 'path';
 import vscode from 'vscode';
 
 export class ProjectConfigLanguageProvider {
@@ -16,9 +17,11 @@ export class ProjectConfigLanguageProvider {
   SCOPE_PLATFORMIO = 'platformio';
   SCOPE_ENV = 'env';
 
-  constructor(projectDir) {
-    this.projectDir = projectDir;
+  constructor() {
+    this.diagnosticCollection =
+      vscode.languages.createDiagnosticCollection('PlatformIO');
     this.subscriptions = [
+      this.diagnosticCollection,
       vscode.languages.registerHoverProvider(
         ProjectConfigLanguageProvider.DOCUMENT_SELECTOR,
         {
@@ -33,6 +36,12 @@ export class ProjectConfigLanguageProvider {
             await this.provideCompletionItems(document, position, token, context),
         }
       ),
+      vscode.workspace.onDidOpenTextDocument((document) =>
+        this.lintConfig(document.uri)
+      ),
+      vscode.workspace.onDidSaveTextDocument((document) =>
+        this.lintConfig(document.uri)
+      ),
     ];
     // if (vscode.languages.registerInlineCompletionItemProvider) {
     //   this.subscriptions.push(
@@ -45,17 +54,27 @@ export class ProjectConfigLanguageProvider {
     //     )
     //   );
     // }
-    this._options = undefined;
+    this._optionsCache = new Map();
     this._ports = undefined;
+
+    // vscode.window.visibleTextEditors.forEach((editor) =>
+    //   this.lintConfig(editor.document)
+    // );
   }
 
   dispose() {
     disposeSubscriptions(this.subscriptions);
+    this._optionsCache.clear();
+    this.diagnosticCollection.clear();
   }
 
-  async getOptions() {
-    if (this._options) {
-      return this._options;
+  /**
+   * Completion
+   */
+  async getOptions(document) {
+    const configPath = document.uri.fsPath;
+    if (this._optionsCache.has(configPath)) {
+      return this._optionsCache.get(configPath);
     }
     const script = `
 import json
@@ -65,10 +84,10 @@ print(json.dumps(get_config_options_schema()))
   `;
     const output = await pioNodeHelpers.core.getCorePythonCommandOutput(
       ['-c', script],
-      { projectDir: this.projectDir }
+      { projectDir: path.dirname(configPath) }
     );
-    this._options = JSON.parse(output.trim());
-    return this._options;
+    this._optionsCache.set(configPath, JSON.parse(output));
+    return this._optionsCache.get(configPath);
   }
 
   renderOptionDocs(option) {
@@ -133,7 +152,9 @@ ${option.description}
         continue;
       }
       const optionName = line.split('=')[0].trim();
-      return (await this.getOptions()).find((option) => option.name === optionName);
+      return (await this.getOptions(document)).find(
+        (option) => option.name === optionName
+      );
     }
   }
 
@@ -149,7 +170,9 @@ ${option.description}
 
   async provideHover(document, position) {
     const word = document.getText(document.getWordRangeAtPosition(position));
-    const option = (await this.getOptions()).find((option) => option.name === word);
+    const option = (await this.getOptions(document)).find(
+      (option) => option.name === word
+    );
     if (option) {
       return new vscode.Hover(this.renderOptionDocs(option));
     }
@@ -212,7 +235,7 @@ ${option.description}
     if (!scope) {
       return;
     }
-    const options = await this.getOptions();
+    const options = await this.getOptions(document);
     return options
       .filter((option) => option.scope === scope)
       .map((option) => {
@@ -315,5 +338,115 @@ ${option.description}
     });
     items.push(this.createCustomCompletionValueItem());
     return items;
+  }
+
+  /**
+   * Linting
+   */
+  async lintConfig(uri) {
+    // ignore non-platformio.ini docs
+    if (path.basename(uri.fsPath) !== 'platformio.ini') {
+      return;
+    }
+    const script = `
+import configparser
+import glob
+import json
+
+from platformio import fs
+from platformio.project import exception
+from platformio.public import ProjectConfig
+
+
+# remove this code for PIO Core 6.1.8+
+class TmpProjectConfig(ProjectConfig):
+    def read(self, path, parse_extra=True):
+        if path in self._parsed:
+            return
+        self._parsed.append(path)
+        try:
+            self._parser.read(path, "utf-8")
+        except configparser.Error as exc:
+            raise exception.InvalidProjectConfError(path, str(exc)) from exc
+        if not parse_extra:
+            return
+        # load extra configs
+        for pattern in self.get("platformio", "extra_configs", []):
+            if pattern.startswith("~"):
+                pattern = fs.expanduser(pattern)
+            for item in glob.glob(pattern, recursive=True):
+                self.read(item)
+
+
+errors = []
+warnings = []
+
+try:
+    config = TmpProjectConfig()
+    config.validate(silent=True)
+    warnings = config.warnings
+    config.as_tuple()
+except Exception as exc:
+    if exc.__cause__:
+        exc = exc.__cause__
+    item = {"type": exc.__class__.__name__, "message": str(exc)}
+    for attr in ("lineno", "source"):
+        if hasattr(exc, attr):
+            item[attr] = getattr(exc, attr)
+    errors.append(item)
+    if item["type"] == "ParsingError" and hasattr(exc, "errors"):
+        for lineno, line in getattr(exc, "errors"):
+            errors.append(
+                {
+                    "type": item["type"],
+                    "message": f"Parsing error: {line}",
+                    "lineno": lineno,
+                    "source": item["source"]
+                }
+            )
+
+print(json.dumps(dict(errors=errors, warnings=warnings)))
+  `;
+    this.diagnosticCollection.clear();
+    const projectDir = path.dirname(uri.fsPath);
+    const output = await pioNodeHelpers.core.getCorePythonCommandOutput(
+      ['-c', script],
+      { projectDir }
+    );
+    const { errors, warnings } = JSON.parse(output);
+    this.diagnosticCollection.set(
+      uri,
+      warnings.map(
+        (msg) =>
+          new vscode.Diagnostic(
+            new vscode.Range(0, 0, 0, 0),
+            msg,
+            vscode.DiagnosticSeverity.Warning
+          )
+      )
+    );
+    const uriDiagnostics = new Map();
+    errors.forEach((data) => {
+      const sourceUri = data.source
+        ? vscode.Uri.file(
+            path.isAbsolute(data.source)
+              ? data.source
+              : path.join(projectDir, data.source)
+          )
+        : uri;
+      const diagnostics = uriDiagnostics.get(sourceUri.fsPath) || [];
+      diagnostics.push(
+        new vscode.Diagnostic(
+          new vscode.Range(data?.lineno - 1 || 0, 0, data?.lineno || 0, 0),
+          data.message,
+          vscode.DiagnosticSeverity.Error
+        )
+      );
+      uriDiagnostics.set(sourceUri.fsPath, diagnostics);
+    });
+    uriDiagnostics.forEach((diagnostics, fsPath) =>
+      this.diagnosticCollection.set(vscode.Uri.file(fsPath), diagnostics)
+    );
+    return !errors.length;
   }
 }

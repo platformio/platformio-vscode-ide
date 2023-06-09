@@ -20,11 +20,11 @@ class ToolbarButton {
 
   createStatusBarItem(options = { priority: 0 }) {
     const item = vscode.window.createStatusBarItem(
-      'pio-toolbar',
+      `pio-toolbar-${this.tooltip || this.text}`,
       vscode.StatusBarAlignment.Left,
       STATUS_BAR_PRIORITY_START + options.priority + 1
     );
-    item.name = 'PlatformIO: Toolbar';
+    item.name = this.tooltip || 'PlatformIO: Toolbar Item';
     item.text = this.text;
     item.tooltip = this.tooltip;
     item.command = {

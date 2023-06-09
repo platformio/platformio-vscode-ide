@@ -19,12 +19,16 @@ import path from 'path';
 import vscode from 'vscode';
 
 export default class ProjectManager {
+  CONFIG_CHANGED_DELAY = 3; // seconds
+
   constructor() {
     this._taskManager = undefined;
     this._sbEnvSwitcher = undefined;
     this._logOutputChannel = vscode.window.createOutputChannel(
       'PlatformIO: Project Configuration'
     );
+    this._configProvider = new ProjectConfigLanguageProvider();
+    this._configChangedTimeout = undefined;
 
     this._pool = new pioNodeHelpers.project.ProjectPool({
       ide: 'vscode',
@@ -64,11 +68,19 @@ export default class ProjectManager {
                 task
               )
           ),
-        onDidChangeProjectConfig: (projectDir) => {
-          if (this._taskManager && this._taskManager.projectDir === projectDir) {
-            this._taskManager.requestRefresh();
+        onDidChangeProjectConfig: (configPath) => {
+          const projectDir = path.dirname(configPath);
+          if (this._configChangedTimeout) {
+            clearTimeout(this._configChangedTimeout);
+            this._configChangedTimeout = undefined;
           }
-          this.saveActiveProjectState();
+          this._configChangedTimeout = setTimeout(
+            () =>
+              this.switchToProject(projectDir, {
+                force: true,
+              }),
+            ProjectManager.CONFIG_CHANGED_DELAY * 1000
+          );
         },
         onDidNotifyError: notifyError.bind(this),
       },
@@ -81,6 +93,7 @@ export default class ProjectManager {
     this.subscriptions = [
       this._pool,
       this._logOutputChannel,
+      this._configProvider,
       vscode.window.onDidChangeActiveTextEditor(() => {
         if (!extension.getConfiguration('activateProjectOnTextEditorChange')) {
           return;
@@ -111,7 +124,7 @@ export default class ProjectManager {
 
     this.registerEnvSwitcher();
     // switch to the first project in a workspace on start-up
-    this.switchToProject(this.findActiveProjectDir());
+    this.switchToProject(this.findActiveProjectDir(), { force: true });
   }
 
   dispose() {
@@ -176,6 +189,20 @@ export default class ProjectManager {
       currentEnv = this._pool.getActiveObserver().getSelectedEnv();
     }
     const observer = this._pool.getObserver(projectDir);
+
+    // validate configuration file
+    const configUri = vscode.Uri.file(path.join(projectDir, 'platformio.ini'));
+    const isConfigValid = await this._configProvider.lintConfig(configUri);
+    if (!isConfigValid) {
+      vscode.window.showErrorMessage(
+        'The project configuration process has encountered an error due to ' +
+          "a problem with the 'platformio.ini' file. " +
+          'Please review the file and fix the issues.'
+      );
+      vscode.window.showTextDocument(configUri);
+      return;
+    }
+
     if ('env' in options) {
       await observer.switchProjectEnv(options.env);
     } else if (!observer.getSelectedEnv()) {
@@ -186,6 +213,7 @@ export default class ProjectManager {
 
     // ignore active project and & env
     if (
+      options.force ||
       !currentProjectDir ||
       currentProjectDir !== projectDir ||
       currentEnv !== observer.getSelectedEnv()
@@ -195,7 +223,6 @@ export default class ProjectManager {
       this._taskManager = new ProjectTaskManager(projectDir, observer);
       this.internalSubscriptions.push(
         this._taskManager,
-        new ProjectConfigLanguageProvider(projectDir),
         new ProjectTestManager(projectDir)
       );
 
@@ -278,6 +305,6 @@ export default class ProjectManager {
     if (!pickedItem) {
       return;
     }
-    this.switchToProject(pickedItem.projectDir, { env: pickedItem.env });
+    this.switchToProject(pickedItem.projectDir, { env: pickedItem.env, force: true });
   }
 }

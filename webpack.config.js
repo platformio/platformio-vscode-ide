@@ -11,6 +11,7 @@ const path = require('path');
 
 const packageConfig = JSON.parse(fs.readFileSync(path.join(__dirname, 'package.json'), 'utf8'));
 const externals = Object.keys(packageConfig.dependencies);
+externals.push('commonjs');
 externals.push('vscode');
 
 module.exports = {
@@ -23,16 +24,7 @@ module.exports = {
   },
   devtool: 'source-map',
   target: 'node',
-  externals: externals, 
-  module: {
-    rules: [
-      {
-        test: /\.js$/,
-        loader: 'babel-loader',
-        exclude: /node_modules/
-      }
-    ]
-  },
+  externals: externals,
   resolve: {
     modules: [path.resolve('./node_modules'), path.resolve('./src')],
     extensions: ['.js']

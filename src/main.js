@@ -27,7 +27,7 @@ class PlatformIOVSCodeExtension {
     this.context = undefined;
     this.pioTerm = undefined;
     this.pioHome = undefined;
-    this.ProjectManager = undefined;
+    this.projectManager = undefined;
     this.subscriptions = [];
 
     this._enterpriseSettings = undefined;
@@ -93,8 +93,8 @@ class PlatformIOVSCodeExtension {
     );
 
     this.initDebug();
-    this.ProjectManager = new ProjectManager();
-    this.subscriptions.push(this.ProjectManager);
+    this.projectManager = new ProjectManager();
+    this.subscriptions.push(this.projectManager);
 
     this.startPIOHome();
 

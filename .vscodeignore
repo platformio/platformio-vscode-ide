@@ -1,8 +1,16 @@
+.github/**
 .vscode/**
 .vscode-test/**
 src/**
 test/**
-.babelrc
 .eslintignore
 .eslintrc.js
 .gitignore
+**/*.ts
+*.vsix
+node_modules/**/*.md
+node_modules/**/*.map
+node_modules/**/test.js
+node_modules/**/tests.js
+node_modules/**/test/**
+node_modules/**/tests/**
