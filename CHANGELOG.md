@@ -1,6 +1,6 @@
 # Release Notes
 
-## 3.2.0 (2023-06-??)
+## 3.2.0 (2023-06-09)
 
 * Introducing a powerful linting feature that highlights syntactical and stylistic issues in the ["platformio.ini"](https://docs.platformio.org/en/latest/projectconf/index.html) configuration file (issue [#3723](https://github.com/platformio/platformio-vscode-ide/issues/3723))
 * Improved project cleanup process by utilizing the ``fullclean`` target instead of ``cleanall``. This ensures a thorough clean-up, including the removal of dependent libraries
