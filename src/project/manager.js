@@ -192,15 +192,19 @@ export default class ProjectManager {
 
     // validate configuration file
     const configUri = vscode.Uri.file(path.join(projectDir, 'platformio.ini'));
-    const isConfigValid = await this._configProvider.lintConfig(configUri);
-    if (!isConfigValid) {
-      vscode.window.showErrorMessage(
-        'The project configuration process has encountered an error due to ' +
-          "a problem with the 'platformio.ini' file. " +
-          'Please review the file and fix the issues.'
-      );
-      vscode.window.showTextDocument(configUri);
-      return;
+    try {
+      const isConfigValid = await this._configProvider.lintConfig(configUri);
+      if (!isConfigValid) {
+        vscode.window.showErrorMessage(
+          'The project configuration process has encountered an error due to ' +
+            "a problem with the 'platformio.ini' file. " +
+            'Please review the file and fix the issues.'
+        );
+        vscode.window.showTextDocument(configUri);
+        return;
+      }
+    } catch (err) {
+      console.error(err);
     }
 
     if ('env' in options) {
