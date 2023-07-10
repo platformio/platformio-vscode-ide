@@ -143,39 +143,46 @@
         "enablement": "pioProjectReady"
       },
       {
+        "command": "platformio-ide.toggleMultiEnvProjectTasks",
+        "title": "Toggle between Multi Environment Project Tasks",
+        "category": "PlatformIO",
+        "icon": "$(layers)",
+        "enablement": "pioProjectTasksReady"
+      },
+      {
         "command": "platformio-ide.refreshProjectTasks",
         "title": "Refresh Project Tasks",
         "category": "PlatformIO",
         "icon": "$(refresh)",
-        "enablement": "pioProjectReady"
+        "enablement": "pioProjectTasksReady"
       },
       {
         "command": "platformio-ide.build",
         "title": "Build",
         "category": "PlatformIO",
         "icon": "$(check)",
-        "enablement": "pioProjectReady"
+        "enablement": "pioProjectTasksReady"
       },
       {
         "command": "platformio-ide.upload",
         "title": "Upload",
         "category": "PlatformIO",
         "icon": "$(arrow-right)",
-        "enablement": "pioProjectReady"
+        "enablement": "pioProjectTasksReady"
       },
       {
         "command": "platformio-ide.uploadAndMonitor",
         "title": "Upload and Monitor",
         "category": "PlatformIO",
         "icon": "$(arrow-right)",
-        "enablement": "pioProjectReady"
+        "enablement": "pioProjectTasksReady"
       },
       {
         "command": "platformio-ide.clean",
         "title": "Clean",
         "category": "PlatformIO",
         "icon": "$(trashcan)",
-        "enablement": "pioProjectReady"
+        "enablement": "pioProjectTasksReady"
       },
       {
         "command": "platformio-ide.serialMonitor",
@@ -189,13 +196,13 @@
         "title": "Test",
         "category": "PlatformIO",
         "icon": "$(beaker)",
-        "enablement": "pioProjectReady"
+        "enablement": "pioProjectTasksReady"
       },
       {
         "command": "platformio-ide.rebuildProjectIndex",
         "title": "Rebuild IntelliSense Index",
         "category": "PlatformIO",
-        "enablement": "pioProjectReady"
+        "enablement": "pioProjectTasksReady"
       },
       {
         "command": "platformio-ide.startDebugging",
@@ -444,12 +451,17 @@
       "view/title": [
         {
           "command": "platformio-ide.pickProjectEnv",
-          "when": "pioMultiEnvProject && view == platformio-ide.projectTasks",
+          "when": "pioProjectTasksReady && pioMultiEnvProject && view == platformio-ide.projectTasks",
+          "group": "navigation"
+        },
+        {
+          "command": "platformio-ide.toggleMultiEnvProjectTasks",
+          "when": "pioProjectTasksReady && view == platformio-ide.projectTasks",
           "group": "navigation"
         },
         {
           "command": "platformio-ide.refreshProjectTasks",
-          "when": "pioProjectReady && view == platformio-ide.projectTasks",
+          "when": "pioProjectTasksReady && view == platformio-ide.projectTasks",
           "group": "navigation"
         },
         {

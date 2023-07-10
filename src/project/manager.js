@@ -112,6 +112,9 @@ export default class ProjectManager {
       vscode.commands.registerCommand('platformio-ide.refreshProjectTasks', () =>
         this._taskManager.refresh({ force: true })
       ),
+      vscode.commands.registerCommand('platformio-ide.toggleMultiEnvProjectTasks', () =>
+        this._taskManager.toggleMultiEnvExplorer()
+      ),
       vscode.commands.registerCommand('platformio-ide._runProjectTask', (task) =>
         this._taskManager.runTask(task)
       ),
