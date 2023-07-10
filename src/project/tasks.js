@@ -25,6 +25,7 @@ export default class ProjectTaskManager {
     this.subscriptions = [];
 
     this._sid = Math.random();
+    this._multienvTaskExplorer = false;
     this._refreshTimeout = undefined;
     this._startedTask = undefined;
     this._tasksToRestore = [];
@@ -36,6 +37,11 @@ export default class ProjectTaskManager {
 
   dispose() {
     disposeSubscriptions(this.subscriptions);
+  }
+
+  toggleMultiEnvExplorer() {
+    this._multienvTaskExplorer = !this._multienvTaskExplorer;
+    this.refresh({ force: true });
   }
 
   requestRefresh() {
@@ -67,7 +73,8 @@ export default class ProjectTaskManager {
         this._sid,
         projectEnvs,
         projectTasks,
-        this.projectObserver.getSelectedEnv()
+        this.projectObserver.getSelectedEnv(),
+        this._multienvTaskExplorer
       ),
       showCollapseAll: true,
     });
@@ -95,6 +102,7 @@ export default class ProjectTaskManager {
 
     this.registerTaskBasedCommands(projectTasks);
     this.registerPortSwitcher();
+    vscode.commands.executeCommand('setContext', 'pioProjectTasksReady', true);
     vscode.commands.executeCommand(
       'setContext',
       'pioMultiEnvProject',

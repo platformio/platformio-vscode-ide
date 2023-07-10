@@ -62,6 +62,11 @@ export default class QuickAccessTreeProvider {
         undefined,
         vscode.TreeItemCollapsibleState.Expanded,
         [
+          new QuickItem(
+            'Serial & UDP Plotter',
+            'workbench.extensions.action.showExtensionsWithIds',
+            [['alexnesnes.teleplot']]
+          ),
           new QuickItem('PlatformIO Core CLI', 'platformio-ide.openPIOCoreCLI'),
           new QuickItem('Clone Git Project', 'git.clone'),
           new QuickItem('New Terminal', 'platformio-ide.newTerminal'),

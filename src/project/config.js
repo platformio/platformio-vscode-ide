@@ -349,63 +349,11 @@ ${option.description}
       return;
     }
     const script = `
-import configparser
-import glob
 import json
 
-from platformio import fs
-from platformio.project import exception
 from platformio.public import ProjectConfig
 
-
-# remove this code for PIO Core 6.1.8+
-class TmpProjectConfig(ProjectConfig):
-    def read(self, path, parse_extra=True):
-        if path in self._parsed:
-            return
-        self._parsed.append(path)
-        try:
-            self._parser.read(path, "utf-8")
-        except configparser.Error as exc:
-            raise exception.InvalidProjectConfError(path, str(exc)) from exc
-        if not parse_extra:
-            return
-        # load extra configs
-        for pattern in self.get("platformio", "extra_configs", []):
-            if pattern.startswith("~"):
-                pattern = fs.expanduser(pattern)
-            for item in glob.glob(pattern, recursive=True):
-                self.read(item)
-
-
-errors = []
-warnings = []
-
-try:
-    config = TmpProjectConfig()
-    config.validate(silent=True)
-    warnings = config.warnings
-    config.as_tuple()
-except Exception as exc:
-    if exc.__cause__:
-        exc = exc.__cause__
-    item = {"type": exc.__class__.__name__, "message": str(exc)}
-    for attr in ("lineno", "source"):
-        if hasattr(exc, attr):
-            item[attr] = getattr(exc, attr)
-    errors.append(item)
-    if item["type"] == "ParsingError" and hasattr(exc, "errors"):
-        for lineno, line in getattr(exc, "errors"):
-            errors.append(
-                {
-                    "type": item["type"],
-                    "message": f"Parsing error: {line}",
-                    "lineno": lineno,
-                    "source": item["source"]
-                }
-            )
-
-print(json.dumps(dict(errors=errors, warnings=warnings)))
+print(json.dumps(ProjectConfig.lint()))
   `;
     this.diagnosticCollection.clear();
     const projectDir = path.dirname(uri.fsPath);
