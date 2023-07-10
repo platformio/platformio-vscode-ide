@@ -1,5 +1,10 @@
 # Release Notes
 
+## 3.3.0 (2023-07-??)
+
+* Added [Serial & UDP Plotter"](https://marketplace.visualstudio.com/items?itemName=alexnesnes.teleplot) item to the "PlatformIO IDE > Quick Access" menu
+* Updated PlatformIO Core Installer Script to [v1.2.0](https://github.com/platformio/platformio-core-installer/releases/tag/v1.2.0)
+
 ## 3.2.0 (2023-06-09)
 
 * Introducing a powerful linting feature that highlights syntactical and stylistic issues in the ["platformio.ini"](https://docs.platformio.org/en/latest/projectconf/index.html) configuration file (issue [#3723](https://github.com/platformio/platformio-vscode-ide/issues/3723))
