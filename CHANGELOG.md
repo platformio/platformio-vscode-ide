@@ -1,6 +1,6 @@
 # Release Notes
 
-## 3.3.1 (2023-07-??)
+## 3.3.1 (2023-07-28)
 
 * Updated the PlatformIO Core Installer Script to version [1.2.1](https://github.com/platformio/platformio-core-installer/releases/tag/v1.2.1)
 
