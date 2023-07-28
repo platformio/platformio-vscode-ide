@@ -1,5 +1,9 @@
 # Release Notes
 
+## 3.3.1 (2023-07-??)
+
+* Updated the PlatformIO Core Installer Script to version [1.2.1](https://github.com/platformio/platformio-core-installer/releases/tag/v1.2.1)
+
 ## 3.3.0 (2023-07-10)
 
 * Enhanced the user experience in the "Project Tasks" explorer by displaying tasks specific to the selected environment by default
