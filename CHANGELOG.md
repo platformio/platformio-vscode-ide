@@ -1,10 +1,14 @@
 # Release Notes
 
+## 3.3.1 (2023-07-28)
+
+* Updated the PlatformIO Core Installer Script to version [1.2.1](https://github.com/platformio/platformio-core-installer/releases/tag/v1.2.1)
+
 ## 3.3.0 (2023-07-10)
 
 * Enhanced the user experience in the "Project Tasks" explorer by displaying tasks specific to the selected environment by default
 * Introduced a new option that allows seamless switching between multi-environment project tasks
-* Expanded the functionality of the "Actvity Bar > PlatformIO IDE > Quick Access" menu by including a new item called [Serial & UDP Plotter](https://marketplace.visualstudio.com/items?itemName=alexnesnes.teleplot)
+* Expanded the functionality of the "Activity Bar > PlatformIO IDE > Quick Access" menu by including a new item called [Serial & UDP Plotter](https://marketplace.visualstudio.com/items?itemName=alexnesnes.teleplot)
 * Updated the PlatformIO Core Installer Script to version [1.2.0](https://github.com/platformio/platformio-core-installer/releases/tag/v1.2.0)
 
 ![Toggle between Multi Environment Project Tasks](https://raw.githubusercontent.com/platformio/platformio-vscode-ide/develop/.github/media/platformio-toggle-multienv-tasks.gif)
