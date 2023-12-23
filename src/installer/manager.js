@@ -38,9 +38,9 @@ export default class InstallationManager {
           predownloadedPackageDir: path.join(
             extension.context.extensionPath,
             'assets',
-            'predownloaded'
+            'predownloaded',
           ),
-        }
+        },
       ),
     ];
   }

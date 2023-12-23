@@ -19,7 +19,7 @@ export default class PIOReleaseNotes {
 
     this.subscriptions = [
       vscode.commands.registerCommand('platformio-ide.showReleaseNotes', () =>
-        this.toggle()
+        this.toggle(),
       ),
     ];
 
@@ -57,20 +57,20 @@ export default class PIOReleaseNotes {
       {
         enableScripts: true,
         retainContextWhenHidden: true,
-      }
+      },
     );
     panel.iconPath = vscode.Uri.file(
       path.join(
         extension.context.extensionPath,
         'assets',
         'images',
-        'platformio-mini-logo.svg'
-      )
+        'platformio-mini-logo.svg',
+      ),
     );
     panel.onDidDispose(
       () => (this._currentPanel = undefined),
       undefined,
-      this.subscriptions
+      this.subscriptions,
     );
     const logoSrc = panel.webview.asWebviewUri(
       vscode.Uri.file(
@@ -78,9 +78,9 @@ export default class PIOReleaseNotes {
           extension.context.extensionPath,
           'assets',
           'images',
-          'platformio-logo.png'
-        )
-      )
+          'platformio-logo.png',
+        ),
+      ),
     );
     panel.webview.html = await this.getWebviewContent(logoSrc);
     return panel;

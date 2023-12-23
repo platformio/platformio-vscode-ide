@@ -7,7 +7,7 @@
   },
   "license": "Apache-2.0",
   "displayName": "PlatformIO IDE",
-  "description": "Professional development environment for Embedded, IoT, Arduino, CMSIS, ESP-IDF, FreeRTOS, libOpenCM3, mbed OS, Pulp OS, SPL, STM32Cube, Zephyr RTOS, ARM, AVR, Espressif (ESP8266/ESP32), FPGA, MCS-51 (8051), MSP430, Nordic (nRF51/nRF52), PIC32, RISC-V, STMicroelectronics (STM8/STM32), Teensy",
+  "description": "Your Gateway to Embedded Software Development Excellence: CMSIS, ESP-IDF, FreeRTOS, libOpenCM3, mbed OS, SPL, STM32Cube, Zephyr RTOS, Arduino, ARM, AVR, Espressif (ESP8266/ESP32), FPGA, MCS-51 (8051), MSP430, Nordic (nRF51/nRF52), PIC32, RISC-V, Raspberry Pi (RP2040), STMicroelectronics (STM8/STM32), Teensy",
   "categories": [
     "Programming Languages",
     "Linters",
@@ -905,12 +905,12 @@
   "devDependencies": {
     "@types/node": "~14",
     "@types/vscode": "~1.65.0",
-    "@vscode/vsce": "~2.20.0",
-    "eslint": "~8.46.0",
-    "eslint-import-resolver-webpack": "~0.13.2",
-    "eslint-plugin-import": "~2.28.0",
-    "prettier": "~2.8.8",
-    "webpack": "~5.88.2",
+    "@vscode/vsce": "~2.22.0",
+    "eslint": "~8.56.0",
+    "eslint-import-resolver-webpack": "~0.13.8",
+    "eslint-plugin-import": "~2.29.1",
+    "prettier": "~3.1.1",
+    "webpack": "~5.89.0",
     "webpack-cli": "~5.1.4"
   },
   "extensionDependencies": [

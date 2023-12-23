@@ -35,8 +35,8 @@ export default class ProjectTasksTreeProvider {
           (task) =>
             cmpGroup(task) &&
             env !== ProjectTasksTreeProvider.DEFAULT_ENV_NAME &&
-            !task.multienv
-        )
+            !task.multienv,
+        ),
       );
     }
     return result;
@@ -79,7 +79,7 @@ export default class ProjectTasksTreeProvider {
         env || ProjectTasksTreeProvider.DEFAULT_ENV_NAME,
         env && (env === this.selectedEnv || !this.multiEnvProject)
           ? vscode.TreeItemCollapsibleState.Expanded
-          : vscode.TreeItemCollapsibleState.Collapsed
+          : vscode.TreeItemCollapsibleState.Collapsed,
       );
       treeItem.id = `${this.id}-${env}`;
       treeItem.env = env;
@@ -101,7 +101,7 @@ export default class ProjectTasksTreeProvider {
         group,
         ['General', 'Platform'].includes(group)
           ? vscode.TreeItemCollapsibleState.Expanded
-          : vscode.TreeItemCollapsibleState.Collapsed
+          : vscode.TreeItemCollapsibleState.Collapsed,
       );
       element.env = env;
       element.group = group;

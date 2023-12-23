@@ -25,7 +25,7 @@ export default class PIOHome {
 
     // close PIO Home when workspaces folders are changed (VSCode reactivates extensiuon)
     this.subscriptions.push(
-      vscode.workspace.onDidChangeWorkspaceFolders(this.disposePanel.bind(this))
+      vscode.workspace.onDidChangeWorkspaceFolders(this.disposePanel.bind(this)),
     );
   }
 
@@ -77,7 +77,7 @@ export default class PIOHome {
       {
         enableScripts: true,
         retainContextWhenHidden: true,
-      }
+      },
     );
     this.subscriptions.push(panel.onDidDispose(this.onPanelDisposed.bind(this)));
     panel.iconPath = vscode.Uri.file(
@@ -85,8 +85,8 @@ export default class PIOHome {
         extension.context.extensionPath,
         'assets',
         'images',
-        'platformio-mini-logo.svg'
-      )
+        'platformio-mini-logo.svg',
+      ),
     );
     panel.webview.html = this.getLoadingContent();
     try {
@@ -158,10 +158,10 @@ export default class PIOHome {
         theme === 'light' ? '#FFF' : '#1E1E1E'
       }">
         <iframe id="${iframeId}" src="${pioNodeHelpers.home.getFrontendUrl({
-      start: startUrl,
-      theme,
-      workspace: extension.getEnterpriseSetting('defaultPIOHomeWorkspace'),
-    })}"
+          start: startUrl,
+          theme,
+          workspace: extension.getEnterpriseSetting('defaultPIOHomeWorkspace'),
+        })}"
           width="100%"
           height="100%"
           frameborder="0"
@@ -194,7 +194,7 @@ export default class PIOHome {
       vscode.workspace.updateWorkspaceFolders(
         vscode.workspace.workspaceFolders.length,
         null,
-        { uri: vscode.Uri.file(params) }
+        { uri: vscode.Uri.file(params) },
       );
     } else {
       vscode.commands.executeCommand('vscode.openFolder', vscode.Uri.file(params));
@@ -207,12 +207,12 @@ export default class PIOHome {
     const editor = await vscode.window.showTextDocument(vscode.Uri.file(params.path));
     const gotoPosition = new vscode.Position(
       (params.line || 1) - 1,
-      (params.column || 1) - 1
+      (params.column || 1) - 1,
     );
     editor.selection = new vscode.Selection(gotoPosition, gotoPosition);
     editor.revealRange(
       new vscode.Range(gotoPosition, gotoPosition),
-      vscode.TextEditorRevealType.InCenter
+      vscode.TextEditorRevealType.InCenter,
     );
     return true;
   }

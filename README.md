@@ -1,8 +1,8 @@
 # PlatformIO IDE for VSCode
 
-[PlatformIO](https://platformio.org) is a professional collaborative platform for embedded development.
+[PlatformIO](https://platformio.org): Your Gateway to Embedded Software Development Excellence.
 
-**A place where Developers and Teams have true Freedom! No more vendor lock-in!**
+Unlock the true potential of embedded software development with PlatformIO’s collaborative ecosystem, embracing declarative principles, test-driven methodologies, and modern toolchains for unrivaled success.
 
 * Open source, maximum permissive Apache 2.0 license
 * Cross-platform IDE and Unified Debugger

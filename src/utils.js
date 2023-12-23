@@ -45,7 +45,7 @@ export async function notifyError(title, err) {
 
   const selected = await vscode.window.showErrorMessage(
     description.substring(0, 700) + '...',
-    action
+    action,
   );
   if (selected === action) {
     vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(reportUrl));

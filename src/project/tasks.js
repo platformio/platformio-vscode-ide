@@ -50,7 +50,7 @@ export default class ProjectTaskManager {
     }
     this._refreshTimeout = setTimeout(
       this.refresh.bind(this),
-      ProjectTaskManager.AUTO_REFRESH_DELAY
+      ProjectTaskManager.AUTO_REFRESH_DELAY,
     );
   }
 
@@ -74,7 +74,7 @@ export default class ProjectTaskManager {
         projectEnvs,
         projectTasks,
         this.projectObserver.getSelectedEnv(),
-        this._multienvTaskExplorer
+        this._multienvTaskExplorer,
       ),
       showCollapseAll: true,
     });
@@ -97,7 +97,7 @@ export default class ProjectTaskManager {
         },
       }),
 
-      vscode.tasks.onDidEndTaskProcess((event) => this.onDidEndTaskProcess(event))
+      vscode.tasks.onDidEndTaskProcess((event) => this.onDidEndTaskProcess(event)),
     );
 
     this.registerTaskBasedCommands(projectTasks);
@@ -106,7 +106,7 @@ export default class ProjectTaskManager {
     vscode.commands.executeCommand(
       'setContext',
       'pioMultiEnvProject',
-      projectEnvs.length > 1
+      projectEnvs.length > 1,
     );
   }
 
@@ -138,9 +138,9 @@ export default class ProjectTaskManager {
         {
           cwd: this.projectDir,
           env: envClone,
-        }
+        },
       ),
-      '$platformio'
+      '$platformio',
     );
     vscodeTask.presentationOptions = {
       panel: vscode.TaskPanelKind.Dedicated,
@@ -160,7 +160,7 @@ export default class ProjectTaskManager {
     // use string-based task defination for Win 7 // issue #3481
     vscode.commands.executeCommand(
       'workbench.action.tasks.runTask',
-      `${ProjectTaskManager.PROVIDER_TYPE}: ${task.id}`
+      `${ProjectTaskManager.PROVIDER_TYPE}: ${task.id}`,
     );
   }
 
@@ -170,7 +170,7 @@ export default class ProjectTaskManager {
     const closeMonitorConds = [
       extension.getConfiguration('autoCloseSerialMonitor'),
       ['upload', 'test'].some((arg) =>
-        this.getTaskArgs(this._startedTask).includes(arg)
+        this.getTaskArgs(this._startedTask).includes(arg),
       ),
     ];
     if (!closeMonitorConds.every((value) => value)) {
@@ -215,11 +215,14 @@ export default class ProjectTaskManager {
       return;
     }
     this._startedTask = undefined;
-    setTimeout(() => {
-      while (this._tasksToRestore.length) {
-        vscode.tasks.executeTask(this._tasksToRestore.pop());
-      }
-    }, parseInt(extension.getConfiguration('reopenSerialMonitorDelay')));
+    setTimeout(
+      () => {
+        while (this._tasksToRestore.length) {
+          vscode.tasks.executeTask(this._tasksToRestore.pop());
+        }
+      },
+      parseInt(extension.getConfiguration('reopenSerialMonitorDelay')),
+    );
   }
 
   getTaskArgs(task) {
@@ -247,7 +250,7 @@ export default class ProjectTaskManager {
     const _runTask = (name) => {
       const candidates = tasks.filter(
         (task) =>
-          task.name === name && task.coreEnv === this.projectObserver.getSelectedEnv()
+          task.name === name && task.coreEnv === this.projectObserver.getSelectedEnv(),
       );
       this.runTask(candidates[0]);
     };
@@ -255,16 +258,16 @@ export default class ProjectTaskManager {
     this.subscriptions.push(
       vscode.commands.registerCommand('platformio-ide.build', () => _runTask('Build')),
       vscode.commands.registerCommand('platformio-ide.upload', () =>
-        _runTask('Upload')
+        _runTask('Upload'),
       ),
       vscode.commands.registerCommand('platformio-ide.uploadAndMonitor', () =>
-        _runTask('Upload and Monitor')
+        _runTask('Upload and Monitor'),
       ),
       vscode.commands.registerCommand('platformio-ide.clean', () => _runTask('Clean')),
       vscode.commands.registerCommand('platformio-ide.test', () => _runTask('Test')),
       vscode.commands.registerCommand('platformio-ide.serialMonitor', () =>
-        _runTask('Monitor')
-      )
+        _runTask('Monitor'),
+      ),
     );
   }
 
@@ -272,7 +275,7 @@ export default class ProjectTaskManager {
     this._sbPortSwitcher = vscode.window.createStatusBarItem(
       'pio-port-switcher',
       vscode.StatusBarAlignment.Left,
-      STATUS_BAR_PRIORITY_START
+      STATUS_BAR_PRIORITY_START,
     );
     this._sbPortSwitcher.name = 'PlatformIO: Port Switcher';
     this._sbPortSwitcher.tooltip = 'Set upload/monitor/test port';
@@ -282,8 +285,8 @@ export default class ProjectTaskManager {
     this.subscriptions.push(
       this._sbPortSwitcher,
       vscode.commands.registerCommand('platformio-ide.setProjectPort', () =>
-        this.pickProjectPort()
-      )
+        this.pickProjectPort(),
+      ),
     );
   }
 
@@ -302,7 +305,7 @@ export default class ProjectTaskManager {
       ],
       {
         matchOnDescription: true,
-      }
+      },
     );
     if (!pickedItem) {
       return;
