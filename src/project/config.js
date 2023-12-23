@@ -27,20 +27,20 @@ export class ProjectConfigLanguageProvider {
         {
           provideHover: async (document, position) =>
             await this.provideHover(document, position),
-        }
+        },
       ),
       vscode.languages.registerCompletionItemProvider(
         ProjectConfigLanguageProvider.DOCUMENT_SELECTOR,
         {
           provideCompletionItems: async (document, position, token, context) =>
             await this.provideCompletionItems(document, position, token, context),
-        }
+        },
       ),
       vscode.workspace.onDidOpenTextDocument((document) =>
-        this.lintConfig(document.uri)
+        this.lintConfig(document.uri),
       ),
       vscode.workspace.onDidSaveTextDocument((document) =>
-        this.lintConfig(document.uri)
+        this.lintConfig(document.uri),
       ),
     ];
     // if (vscode.languages.registerInlineCompletionItemProvider) {
@@ -84,7 +84,7 @@ print(json.dumps(get_config_options_schema()))
   `;
     const output = await pioNodeHelpers.core.getCorePythonCommandOutput(
       ['-c', script],
-      { projectDir: path.dirname(configPath) }
+      { projectDir: path.dirname(configPath) },
     );
     this._optionsCache.set(configPath, JSON.parse(output));
     return this._optionsCache.get(configPath);
@@ -121,7 +121,7 @@ print(json.dumps(get_config_options_schema()))
     const docs = new vscode.MarkdownString();
     docs.appendCodeblock(
       attrs.map(([name, value]) => `${name} = ${value}`).join('\n'),
-      'ini'
+      'ini',
     );
     docs.appendMarkdown(`
 ${option.description}
@@ -133,7 +133,7 @@ ${option.description}
 
   getScopeAt(document, position) {
     const text = document.getText(
-      new vscode.Range(new vscode.Position(0, 0), position)
+      new vscode.Range(new vscode.Position(0, 0), position),
     );
     for (const line of text.split('\n').reverse()) {
       if (line.startsWith('[platformio]')) {
@@ -153,7 +153,7 @@ ${option.description}
       }
       const optionName = line.split('=')[0].trim();
       return (await this.getOptions(document)).find(
-        (option) => option.name === optionName
+        (option) => option.name === optionName,
       );
     }
   }
@@ -171,7 +171,7 @@ ${option.description}
   async provideHover(document, position) {
     const word = document.getText(document.getWordRangeAtPosition(position));
     const option = (await this.getOptions(document)).find(
-      (option) => option.name === word
+      (option) => option.name === word,
     );
     if (option) {
       return new vscode.Hover(this.renderOptionDocs(option));
@@ -216,8 +216,8 @@ ${option.description}
 
     return new vscode.Hover(
       new vscode.MarkdownString(
-        `[Open in PlatformIO Registry](${pkgUrlParts.join('/')})`
-      )
+        `[Open in PlatformIO Registry](${pkgUrlParts.join('/')})`,
+      ),
     );
   }
 
@@ -244,7 +244,7 @@ ${option.description}
         }
         const item = new vscode.CompletionItem(
           option.name,
-          vscode.CompletionItemKind.Field
+          vscode.CompletionItemKind.Field,
         );
         item.documentation = this.renderOptionDocs(option);
         return item;
@@ -291,7 +291,7 @@ ${option.description}
     return values.map((value) => {
       const item = new vscode.CompletionItem(
         value.toString(),
-        vscode.CompletionItemKind.EnumMember
+        vscode.CompletionItemKind.EnumMember,
       );
       item.preselect = defaultValue === value;
       return item;
@@ -313,7 +313,7 @@ ${option.description}
     const items = (this._ports || []).map((port) => {
       const item = new vscode.CompletionItem(
         port.port,
-        vscode.CompletionItemKind.Value
+        vscode.CompletionItemKind.Value,
       );
       item.detail = port.description;
       item.documentation = port.hwid;
@@ -330,7 +330,7 @@ ${option.description}
     const items = values.map((value, index) => {
       const item = new vscode.CompletionItem(
         value.toString(),
-        vscode.CompletionItemKind.Value
+        vscode.CompletionItemKind.Value,
       );
       item.sortText = String.fromCharCode(index + 65);
       item.preselect = option.default === value;
@@ -359,7 +359,7 @@ print(json.dumps(ProjectConfig.lint()))
     const projectDir = path.dirname(uri.fsPath);
     const output = await pioNodeHelpers.core.getCorePythonCommandOutput(
       ['-c', script],
-      { projectDir }
+      { projectDir },
     );
     const { errors, warnings } = JSON.parse(output);
     this.diagnosticCollection.set(
@@ -369,9 +369,9 @@ print(json.dumps(ProjectConfig.lint()))
           new vscode.Diagnostic(
             new vscode.Range(0, 0, 0, 0),
             msg,
-            vscode.DiagnosticSeverity.Warning
-          )
-      )
+            vscode.DiagnosticSeverity.Warning,
+          ),
+      ),
     );
     const uriDiagnostics = new Map();
     errors.forEach((data) => {
@@ -379,7 +379,7 @@ print(json.dumps(ProjectConfig.lint()))
         ? vscode.Uri.file(
             path.isAbsolute(data.source)
               ? data.source
-              : path.join(projectDir, data.source)
+              : path.join(projectDir, data.source),
           )
         : uri;
       const diagnostics = uriDiagnostics.get(sourceUri.fsPath) || [];
@@ -387,13 +387,13 @@ print(json.dumps(ProjectConfig.lint()))
         new vscode.Diagnostic(
           new vscode.Range(data?.lineno - 1 || 0, 0, data?.lineno || 0, 0),
           data.message,
-          vscode.DiagnosticSeverity.Error
-        )
+          vscode.DiagnosticSeverity.Error,
+        ),
       );
       uriDiagnostics.set(sourceUri.fsPath, diagnostics);
     });
     uriDiagnostics.forEach((diagnostics, fsPath) =>
-      this.diagnosticCollection.set(vscode.Uri.file(fsPath), diagnostics)
+      this.diagnosticCollection.set(vscode.Uri.file(fsPath), diagnostics),
     );
     return !errors.length;
   }

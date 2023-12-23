@@ -17,7 +17,7 @@ export default class ProjectTestManager {
     this.projectDir = projectDir;
     this.controller = vscode.tests.createTestController(
       'platformio-tests',
-      'PlatformIO Tests'
+      'PlatformIO Tests',
     );
     this.subscriptions = [this.controller];
 
@@ -27,7 +27,7 @@ export default class ProjectTestManager {
       'Run Tests',
       vscode.TestRunProfileKind.Run,
       this.runHandler.bind(this),
-      true
+      true,
     );
   }
 
@@ -38,7 +38,7 @@ export default class ProjectTestManager {
   async runCoreTestCommand(args) {
     const jsonOutputPath = path.join(
       pioNodeHelpers.core.getTmpDir(),
-      `test-list-${Math.round(Math.random() * 100000)}.json`
+      `test-list-${Math.round(Math.random() * 100000)}.json`,
     );
     let output = undefined;
     let error = new Error();
@@ -53,7 +53,7 @@ export default class ProjectTestManager {
           spawnOptions: {
             env: envClone,
           },
-        }
+        },
       );
     } catch (err) {
       error = err;
@@ -88,7 +88,7 @@ export default class ProjectTestManager {
       const envToSuites = data.test_suites.reduce(
         (result, item) =>
           result.set(item.env_name, [...(result.get(item.env_name) || []), item]),
-        new Map()
+        new Map(),
       );
       envToSuites.forEach((suites, envName) => {
         const envSuite = this.controller.createTestItem(`env:${envName}`, envName);
@@ -97,9 +97,9 @@ export default class ProjectTestManager {
             this.controller.createTestItem(
               `suite:${envName}/${suite.test_name}`,
               suite.test_name,
-              suite.test_dir ? vscode.Uri.file(suite.test_dir) : undefined
-            )
-          )
+              suite.test_dir ? vscode.Uri.file(suite.test_dir) : undefined,
+            ),
+          ),
         );
         this.controller.items.add(envSuite);
       });
@@ -107,7 +107,7 @@ export default class ProjectTestManager {
       console.error(err);
       const item = this.controller.createTestItem(
         'error',
-        'Error (expand for details)'
+        'Error (expand for details)',
       );
       item.error = err.toString();
       this.controller.items.add(item);
@@ -133,17 +133,17 @@ export default class ProjectTestManager {
     if (request.include) {
       request.include.forEach((test) =>
         this.extractTestSuites(test).forEach((suite) =>
-          queue.includes(suite) ? undefined : queue.push(suite)
-        )
+          queue.includes(suite) ? undefined : queue.push(suite),
+        ),
       );
     } else {
       this.controller.items.forEach((item) =>
-        item.children.forEach((suite) => queue.push(suite))
+        item.children.forEach((suite) => queue.push(suite)),
       );
     }
     if (request.exclude) {
       request.exclude.forEach((test) =>
-        this.extractTestSuites(test).forEach((suite) => exclude.push(suite))
+        this.extractTestSuites(test).forEach((suite) => exclude.push(suite)),
       );
     }
 
@@ -172,7 +172,7 @@ export default class ProjectTestManager {
       ]);
       process.chdir(data.project_dir);
       const result = data.test_suites.find(
-        (item) => item.env_name === envName && item.test_name === testName
+        (item) => item.env_name === envName && item.test_name === testName,
       );
 
       switch (result.status) {
@@ -184,7 +184,7 @@ export default class ProjectTestManager {
           run.failed(
             suite,
             new vscode.TestMessage(result.test_cases[0].exception),
-            Date.now() - startedAt
+            Date.now() - startedAt,
           );
           break;
 
@@ -210,14 +210,14 @@ export default class ProjectTestManager {
         testCase.name,
         testCase.source
           ? vscode.Uri.file(path.resolve(testCase.source.file))
-          : undefined
+          : undefined,
       );
       if (testCase.source && testCase.source.line) {
         test.range = new vscode.Range(
           testCase.source.line - 1,
           0,
           testCase.source.line - 1,
-          0
+          0,
         );
       }
       suite.children.add(test);
@@ -230,14 +230,14 @@ export default class ProjectTestManager {
           run.failed(
             test,
             new vscode.TestMessage(testCase.exception),
-            Date.now() - startedAt
+            Date.now() - startedAt,
           );
           break;
         case 'FAILED':
           run.failed(
             test,
             new vscode.TestMessage(testCase.message),
-            Date.now() - startedAt
+            Date.now() - startedAt,
           );
           break;
         default:
@@ -249,7 +249,7 @@ export default class ProjectTestManager {
         run.appendOutput(
           testCase.stdout,
           test.uri ? new vscode.Location(test.uri, test.range) : undefined,
-          test
+          test,
         );
       }
     });

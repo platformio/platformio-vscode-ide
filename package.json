@@ -909,8 +909,8 @@
     "eslint": "~8.46.0",
     "eslint-import-resolver-webpack": "~0.13.2",
     "eslint-plugin-import": "~2.28.0",
-    "prettier": "~2.8.8",
     "webpack": "~5.88.2",
+    "prettier": "~3.1.1",
     "webpack-cli": "~5.1.4"
   },
   "extensionDependencies": [

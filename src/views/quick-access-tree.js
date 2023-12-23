@@ -44,7 +44,7 @@ export default class QuickAccessTreeProvider {
           new QuickItem('Boards', 'platformio-ide.showHome', ['/boards']),
           new QuickItem('Platforms', 'platformio-ide.showHome', ['/platforms']),
           new QuickItem('Devices', 'platformio-ide.showHome', ['/device']),
-        ]
+        ],
       ),
       new QuickItem(
         'Debug',
@@ -54,7 +54,7 @@ export default class QuickAccessTreeProvider {
         [
           new QuickItem('Start Debugging', 'platformio-ide.startDebugging'),
           new QuickItem('Toggle Debug Console', 'workbench.debug.action.toggleRepl'),
-        ]
+        ],
       ),
       new QuickItem(
         'Miscellaneous',
@@ -65,14 +65,14 @@ export default class QuickAccessTreeProvider {
           new QuickItem(
             'Serial & UDP Plotter',
             'workbench.extensions.action.showExtensionsWithIds',
-            [['alexnesnes.teleplot']]
+            [['alexnesnes.teleplot']],
           ),
           new QuickItem('PlatformIO Core CLI', 'platformio-ide.openPIOCoreCLI'),
           new QuickItem('Clone Git Project', 'git.clone'),
           new QuickItem('New Terminal', 'platformio-ide.newTerminal'),
           new QuickItem('Upgrade PlatformIO Core', 'platformio-ide.upgradeCore'),
           new QuickItem('Show Release Notes', 'platformio-ide.showReleaseNotes'),
-        ]
+        ],
       ),
     ];
   }

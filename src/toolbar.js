@@ -22,7 +22,7 @@ class ToolbarButton {
     const item = vscode.window.createStatusBarItem(
       `pio-toolbar-${this.tooltip || this.text}`,
       vscode.StatusBarAlignment.Left,
-      STATUS_BAR_PRIORITY_START + options.priority + 1
+      STATUS_BAR_PRIORITY_START + options.priority + 1,
     );
     item.name = this.tooltip || 'PlatformIO: Toolbar Item';
     item.text = this.text;
@@ -53,7 +53,7 @@ class ToolbarButtonCommands {
     return rawCommands.map((item) =>
       typeof item === 'object'
         ? new ToolbarButtonCommands(item.id, item.args)
-        : new ToolbarButtonCommands(item)
+        : new ToolbarButtonCommands(item),
     );
   }
 }
@@ -78,8 +78,8 @@ export default class PIOToolbar {
         new ToolbarButton(
           item.text,
           item.tooltip,
-          ToolbarButtonCommands.from(item.commands)
-        )
+          ToolbarButtonCommands.from(item.commands),
+        ),
     );
   }
 
@@ -93,10 +93,10 @@ export default class PIOToolbar {
       (button) =>
         (!this.options.filterCommands ||
           button.commands.some((cmd) =>
-            this.options.filterCommands.includes(cmd.id)
+            this.options.filterCommands.includes(cmd.id),
           )) &&
         (!this.options.ignoreCommands ||
-          !button.commands.some((cmd) => this.options.ignoreCommands.includes(cmd.id)))
+          !button.commands.some((cmd) => this.options.ignoreCommands.includes(cmd.id))),
     );
 
     buttons.forEach((button, index) => {
@@ -107,12 +107,12 @@ export default class PIOToolbar {
 
     this.subscriptions.push(
       vscode.workspace.onDidChangeConfiguration((e) =>
-        e.affectsConfiguration('platformio-ide.toolbar') ? this.refresh() : undefined
+        e.affectsConfiguration('platformio-ide.toolbar') ? this.refresh() : undefined,
       ),
       vscode.commands.registerCommand(
         PIOToolbar.RUN_BUTTON_COMMANDS_ID,
-        this.onButtonClick.bind(this)
-      )
+        this.onButtonClick.bind(this),
+      ),
     );
   }
 
@@ -138,7 +138,7 @@ export default class PIOToolbar {
       if (match.startsWith('${command:')) {
         arg = arg.replace(
           match,
-          await vscode.commands.executeCommand(match.substring(10, match.length - 1))
+          await vscode.commands.executeCommand(match.substring(10, match.length - 1)),
         );
       }
     }

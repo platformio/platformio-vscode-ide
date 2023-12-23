@@ -20,7 +20,7 @@ export default class PythonPrompt {
       { title: 'Install Python', isCloseAffordance: false },
       { title: 'I have Python', isCloseAffordance: false },
       { title: 'Try again', isCloseAffordance: false },
-      { title: 'Abort PlatformIO IDE Installation', isCloseAffordance: true }
+      { title: 'Abort PlatformIO IDE Installation', isCloseAffordance: true },
     );
 
     let result = { status: this.STATUS_TRY_AGAIN };
@@ -30,8 +30,8 @@ export default class PythonPrompt {
         vscode.commands.executeCommand(
           'vscode.open',
           vscode.Uri.parse(
-            'https://docs.platformio.org/en/latest/faq/install-python.html'
-          )
+            'https://docs.platformio.org/en/latest/faq/install-python.html',
+          ),
         );
         break;
       case 'I have Python':

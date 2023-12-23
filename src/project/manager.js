@@ -25,7 +25,7 @@ export default class ProjectManager {
     this._taskManager = undefined;
     this._sbEnvSwitcher = undefined;
     this._logOutputChannel = vscode.window.createOutputChannel(
-      'PlatformIO: Project Configuration'
+      'PlatformIO: Project Configuration',
     );
     this._configProvider = new ProjectConfigLanguageProvider();
     this._configChangedTimeout = undefined;
@@ -51,8 +51,8 @@ export default class ProjectManager {
                     message,
                     increment: increment,
                   }),
-                token
-              )
+                token,
+              ),
           ),
         withTasksLoadingProgress: (task) =>
           vscode.window.withProgress(
@@ -65,8 +65,8 @@ export default class ProjectManager {
                   location: { viewId: vscode.ProgressLocation.Window },
                   title: 'PlatformIO: Loading tasks...',
                 },
-                task
-              )
+                task,
+              ),
           ),
         onDidChangeProjectConfig: (configPath) => {
           const projectDir = path.dirname(configPath);
@@ -79,7 +79,7 @@ export default class ProjectManager {
               this.switchToProject(projectDir, {
                 force: true,
               }),
-            ProjectManager.CONFIG_CHANGED_DELAY * 1000
+            ProjectManager.CONFIG_CHANGED_DELAY * 1000,
           );
         },
         onDidNotifyError: notifyError.bind(this),
@@ -104,23 +104,23 @@ export default class ProjectManager {
         }
       }),
       vscode.workspace.onDidChangeWorkspaceFolders(() =>
-        this.switchToProject(this.findActiveProjectDir())
+        this.switchToProject(this.findActiveProjectDir()),
       ),
       vscode.commands.registerCommand('platformio-ide.rebuildProjectIndex', () =>
-        this._pool.getActiveObserver().rebuildIndex({ force: true })
+        this._pool.getActiveObserver().rebuildIndex({ force: true }),
       ),
       vscode.commands.registerCommand('platformio-ide.refreshProjectTasks', () =>
-        this._taskManager.refresh({ force: true })
+        this._taskManager.refresh({ force: true }),
       ),
       vscode.commands.registerCommand('platformio-ide.toggleMultiEnvProjectTasks', () =>
-        this._taskManager.toggleMultiEnvExplorer()
+        this._taskManager.toggleMultiEnvExplorer(),
       ),
       vscode.commands.registerCommand('platformio-ide._runProjectTask', (task) =>
-        this._taskManager.runTask(task)
+        this._taskManager.runTask(task),
       ),
       vscode.commands.registerCommand(
         'platformio-ide.activeEnvironment',
-        async () => await this._pool.getActiveObserver().revealActiveEnvironment()
+        async () => await this._pool.getActiveObserver().revealActiveEnvironment(),
       ),
     ];
     this.internalSubscriptions = [];
@@ -174,7 +174,7 @@ export default class ProjectManager {
     projectHelpers.updateProjectItemState(
       observer.projectDir,
       'selectedEnv',
-      observer.getSelectedEnv()
+      observer.getSelectedEnv(),
     );
   }
 
@@ -201,7 +201,7 @@ export default class ProjectManager {
         vscode.window.showErrorMessage(
           'The project configuration process has encountered an error due to ' +
             "a problem with the 'platformio.ini' file. " +
-            'Please review the file and fix the issues.'
+            'Please review the file and fix the issues.',
         );
         vscode.window.showTextDocument(configUri);
         return;
@@ -214,7 +214,7 @@ export default class ProjectManager {
       await observer.switchProjectEnv(options.env);
     } else if (!observer.getSelectedEnv()) {
       await observer.switchProjectEnv(
-        projectHelpers.getProjectItemState(projectDir, 'selectedEnv')
+        projectHelpers.getProjectItemState(projectDir, 'selectedEnv'),
       );
     }
 
@@ -230,7 +230,7 @@ export default class ProjectManager {
       this._taskManager = new ProjectTaskManager(projectDir, observer);
       this.internalSubscriptions.push(
         this._taskManager,
-        new ProjectTestManager(projectDir)
+        new ProjectTestManager(projectDir),
       );
 
       // open "platformio.ini" if no visible editors
@@ -239,7 +239,7 @@ export default class ProjectManager {
         extension.getConfiguration('autoOpenPlatformIOIniFile')
       ) {
         vscode.window.showTextDocument(
-          vscode.Uri.file(path.join(projectDir, 'platformio.ini'))
+          vscode.Uri.file(path.join(projectDir, 'platformio.ini')),
         );
       }
     }
@@ -252,7 +252,7 @@ export default class ProjectManager {
     this._sbEnvSwitcher = vscode.window.createStatusBarItem(
       'pio-env-switcher',
       vscode.StatusBarAlignment.Left,
-      STATUS_BAR_PRIORITY_START
+      STATUS_BAR_PRIORITY_START,
     );
     this._sbEnvSwitcher.name = 'PlatformIO: Project Environment Switcher';
     this._sbEnvSwitcher.tooltip = 'Switch PlatformIO Project Environment';
@@ -263,8 +263,8 @@ export default class ProjectManager {
     this.subscriptions.push(
       this._sbEnvSwitcher,
       vscode.commands.registerCommand('platformio-ide.pickProjectEnv', () =>
-        this.pickProjectEnv()
-      )
+        this.pickProjectEnv(),
+      ),
     );
   }
 
@@ -277,7 +277,7 @@ export default class ProjectManager {
       ? `env:${observer.getSelectedEnv()}`
       : 'Default';
     this._sbEnvSwitcher.text = `$(root-folder) ${env} (${path.basename(
-      observer.projectDir
+      observer.projectDir,
     )})`;
   }
 
@@ -290,7 +290,7 @@ export default class ProjectManager {
         continue;
       }
       const shortProjectDir = `${path.basename(
-        path.dirname(projectDir)
+        path.dirname(projectDir),
       )}/${path.basename(projectDir)}`;
       items.push({
         projectDir,
@@ -303,7 +303,7 @@ export default class ProjectManager {
           env,
           label: `env:${env}`,
           description: `$(folder) ${shortProjectDir}`,
-        }))
+        })),
       );
     }
     const pickedItem = await vscode.window.showQuickPick(items, {

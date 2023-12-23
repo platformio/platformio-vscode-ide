@@ -46,7 +46,7 @@ class PlatformIOVSCodeExtension {
       context.globalState.keys().reduce((state, key) => {
         state[key] = context.globalState.get(key);
         return state;
-      }, {})
+      }, {}),
     );
 
     // temporary workaround for https://github.com/Microsoft/vscode/issues/58348
@@ -72,15 +72,15 @@ class PlatformIOVSCodeExtension {
     this.subscriptions.push(
       vscode.window.registerTreeDataProvider(
         'platformio-ide.quickAccess',
-        new QuickAccessTreeProvider()
-      )
+        new QuickAccessTreeProvider(),
+      ),
     );
 
     this.registerGlobalCommands();
 
     if (!hasPIOProject) {
       this.subscriptions.push(
-        new PIOToolbar({ filterCommands: ['platformio-ide.showHome'] })
+        new PIOToolbar({ filterCommands: ['platformio-ide.showHome'] }),
       );
       return;
     }
@@ -89,7 +89,7 @@ class PlatformIOVSCodeExtension {
     this.subscriptions.push(
       new PIOToolbar({
         ignoreCommands: this.getEnterpriseSetting('ignoreToolbarCommands'),
-      })
+      }),
     );
 
     this.initDebug();
@@ -102,8 +102,8 @@ class PlatformIOVSCodeExtension {
     misc.warnAboutConflictedExtensions();
     this.subscriptions.push(
       vscode.window.onDidChangeActiveTextEditor((editor) =>
-        misc.warnAboutInoFile(editor)
-      )
+        misc.warnAboutInoFile(editor),
+      ),
     );
   }
 
@@ -116,7 +116,7 @@ class PlatformIOVSCodeExtension {
       (item) =>
         item.id.startsWith('platformio.') &&
         item.id !== 'platformio.platformio-ide' &&
-        item.isActive
+        item.isActive,
     );
     return ext && ext.exports ? ext.exports.settings : undefined;
   }
@@ -161,7 +161,7 @@ class PlatformIOVSCodeExtension {
     if (im.locked()) {
       vscode.window.showInformationMessage(
         'PlatformIO IDE installation has been suspended, because PlatformIO ' +
-          'IDE Installer is already started in another window.'
+          'IDE Installer is already started in another window.',
       );
       return;
     }
@@ -178,7 +178,7 @@ class PlatformIOVSCodeExtension {
           return !(await im.check());
         } catch (err) {}
         return true;
-      }
+      },
     );
 
     if (!doInstall) {
@@ -195,19 +195,19 @@ class PlatformIOVSCodeExtension {
           message: 'Installing PlatformIO IDE...',
         });
         const outputChannel = vscode.window.createOutputChannel(
-          'PlatformIO Installation'
+          'PlatformIO Installation',
         );
         outputChannel.show();
         outputChannel.appendLine('Installing PlatformIO IDE...');
         outputChannel.appendLine(
-          'It may take a few minutes depending on your connection speed'
+          'It may take a few minutes depending on your connection speed',
         );
         outputChannel.appendLine(
           'Please do not close this window and do not ' +
-            'open other folders until this process is completed.'
+            'open other folders until this process is completed.',
         );
         outputChannel.appendLine(
-          '\nDebugging information is available via VSCode > Help > Toggle Developer Tools > Console.'
+          '\nDebugging information is available via VSCode > Help > Toggle Developer Tools > Console.',
         );
 
         try {
@@ -218,7 +218,7 @@ class PlatformIOVSCodeExtension {
           const action = 'Reload Now';
           const selected = await vscode.window.showInformationMessage(
             'PlatformIO IDE has been successfully installed! Please reload window',
-            action
+            action,
           );
           if (selected === action) {
             vscode.commands.executeCommand('workbench.action.reloadWindow');
@@ -232,7 +232,7 @@ class PlatformIOVSCodeExtension {
 
         im.destroy();
         return true;
-      }
+      },
     );
   }
 
@@ -249,16 +249,16 @@ class PlatformIOVSCodeExtension {
   registerGlobalCommands() {
     this.subscriptions.push(
       vscode.commands.registerCommand('platformio-ide.showHome', (startUrl) =>
-        this.pioHome.toggle(startUrl)
+        this.pioHome.toggle(startUrl),
       ),
       vscode.commands.registerCommand('platformio-ide.newTerminal', () =>
-        this.pioTerm.new().show()
+        this.pioTerm.new().show(),
       ),
       vscode.commands.registerCommand('platformio-ide.openPIOCoreCLI', () =>
-        this.pioTerm.sendText('pio --help')
+        this.pioTerm.sendText('pio --help'),
       ),
       vscode.commands.registerCommand('platformio-ide.runPIOCoreCommand', (cmd) =>
-        this.pioTerm.sendText(cmd)
+        this.pioTerm.sendText(cmd),
       ),
       vscode.commands.registerCommand('platformio-ide.startDebugging', () => {
         vscode.commands.executeCommand('workbench.view.debug');
@@ -266,8 +266,8 @@ class PlatformIOVSCodeExtension {
         vscode.commands.executeCommand('workbench.action.debug.start');
       }),
       vscode.commands.registerCommand('platformio-ide.upgradeCore', () =>
-        this.pioTerm.sendText('pio upgrade')
-      )
+        this.pioTerm.sendText('pio upgrade'),
+      ),
     );
   }
 
@@ -295,7 +295,7 @@ class PlatformIOVSCodeExtension {
         console.warn(err);
       }
       vscode.window.showInformationMessage(
-        'Please restart VSCode to apply the changes.'
+        'Please restart VSCode to apply the changes.',
       );
     });
   }
