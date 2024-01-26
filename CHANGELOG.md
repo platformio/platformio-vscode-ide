@@ -1,14 +1,13 @@
 # Release Notes
 
+## 3.3.3 (2024-01-26)
+
+* Implemented automatic upgrading of outdated portable Python 3.9 distributions to the latest version, Python 3.11, enhancing the development environment with the latest features and improvements
+* Updated the PlatformIO Core Installer Script to version [1.2.2](https://github.com/platformio/platformio-core-installer/releases/tag/v1.2.2)
+
 ## 3.3.2 (2023-12-23)
 
 * Upgraded the integrated Python distribution for Windows users to version 3.11.7, ensuring compatibility and leveraging the latest features and optimizations.
-
-  Existing Windows users who installed PlatformIO IDE before and wish to transition to the latest Python 3.11 are advised to follow these steps:
-
-  1. Close VSCode
-  2. Navigate to the `C:\Users\%USERPROFILE%\.platformio` (or `C:\.platformio`) folder and delete the `penv` and `python3` directories
-  3. Open VSCode.
 
 ## 3.3.1 (2023-07-28)
 

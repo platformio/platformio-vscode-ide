@@ -35,7 +35,7 @@ class PlatformItem:
 
 PLATFORM_LIST = [
     PlatformItem("win32-arm64"),
-    PlatformItem("win32-ia32", "windows_x86"),
+    # PlatformItem("win32-ia32", "windows_x86"),
     PlatformItem("win32-x64", "windows_amd64"),
     PlatformItem("linux-arm64"),
     PlatformItem("linux-armhf"),
