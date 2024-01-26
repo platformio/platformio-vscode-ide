@@ -1,6 +1,6 @@
 # Release Notes
 
-## 3.3.3 (2024-??-??)
+## 3.3.3 (2024-01-26)
 
 * Implemented automatic upgrading of outdated portable Python 3.9 distributions to the latest version, Python 3.11, enhancing the development environment with the latest features and improvements
 * Updated the PlatformIO Core Installer Script to version [1.2.2](https://github.com/platformio/platformio-core-installer/releases/tag/v1.2.2)
