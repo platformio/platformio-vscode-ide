@@ -149,6 +149,24 @@ class PlatformIOVSCodeExtension {
     if (this.getConfiguration('customPyPiIndexUrl')) {
       extraVars['PIP_INDEX_URL'] = this.getConfiguration('customPyPiIndexUrl');
     }
+
+    // configure telemetry
+    extraVars['PLATFORMIO_SETTING_ENABLE_TELEMETRY'] = this.getConfiguration('enableTelemetry') ? 'yes' : 'no';
+
+    // configure custom paths
+    if (this.getConfiguration('platformsPATH')) {
+      extraVars['PLATFORMIO_PLATFORMS_DIR'] = this.getConfiguration('platformsPATH');
+    }
+    if (this.getConfiguration('packagesPATH')) {
+      extraVars['PLATFORMIO_PACKAGES_DIR'] = this.getConfiguration('packagesPATH');
+    }
+    if (this.getConfiguration('cachePATH')) {
+      extraVars['PLATFORMIO_CACHE_DIR'] = this.getConfiguration('cachePATH');
+    }
+    if (this.getConfiguration('projectsDirectoryPATH')) {
+      extraVars['PLATFORMIO_SETTING_PROJECTS_DIR'] = this.getConfiguration('projectsDirectoryPATH');
+    }
+
     pioNodeHelpers.proc.patchOSEnviron({
       caller: 'vscode',
       extraPath: this.getConfiguration('customPATH'),

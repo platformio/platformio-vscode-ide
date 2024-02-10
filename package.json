@@ -750,6 +750,38 @@
           "default": null,
           "description": "Custom PATH for the `platformio` command, if you prefer to use a custom version of PlatformIO Core. Fill in the result of the system terminal command `echo $PATH` (Unix) / `echo %PATH%` (Windows)."
         },
+        "platformio-ide.platformsPATH": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "default": null,
+          "description": "Custom PATH for the platforms directory, it will be the value of the enviroment variable PLATFORMIO_PLATFORMS_DIR."
+        },
+        "platformio-ide.packagesPATH": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "default": null,
+          "description": "Custom PATH for the packages directory, it will be the value of the enviroment variable PLATFORMIO_PACKAGES_DIR."
+        },
+        "platformio-ide.cachePATH": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "default": null,
+          "description": "Custom PATH for the cache directory, it will be the value of the enviroment variable PLATFORMIO_CACHE_DIR."
+        },
+        "platformio-ide.projectsDirectoryPATH": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "default": null,
+          "description": "Custom PATH for the projects directory, it will be the value of the enviroment variable PLATFORMIO_SETTING_PROJECTS_DIR."
+        },
         "platformio-ide.reopenSerialMonitorDelay": {
           "type": "integer",
           "default": 0,
@@ -792,6 +824,11 @@
           ],
           "default": null,
           "description": "Custom base URL of the Python Package Index (default `https://pypi.org/simple`)"
+        },
+        "platformio-ide.enableTelemetry": {
+          "type": "boolean",
+          "default": true,
+          "description": "Share minimal diagnostics and usage information to help us make PlatformIO better, more information: https://docs.platformio.org/en/latest/core/userguide/cmd_settings.html#setting-enable-telemetry."
         },
         "platformio-ide.toolbar": {
           "description": "PlatformIO Toolbar",
