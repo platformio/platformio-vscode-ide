@@ -241,7 +241,7 @@ export default class ProjectTaskManager {
     const args1 = this.getTaskArgs(task1);
     const args2 = this.getTaskArgs(task2);
     return (
-      args1.length === args2.length &&
+      ((args1.length === args2.length) || (args2.length - args1.length === 4)) &&
       args1.every((value, index) => value === args2[index])
     );
   }
