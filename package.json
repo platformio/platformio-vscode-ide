@@ -683,7 +683,7 @@
         "name": "platformio",
         "owner": "cpp",
         "fileLocation": [
-          "relative",
+          "autoDetect",
           "${workspaceFolder}"
         ],
         "pattern": {
