@@ -100,8 +100,9 @@ export default class PIOHome {
   }
 
   getTheme() {
-    const workbench = vscode.workspace.getConfiguration('workbench') || {};
-    return (workbench.colorTheme || '').toLowerCase().includes('light')
+    const themeKind = vscode.window.activeColorTheme.kind;
+    return themeKind === vscode.ColorThemeKind.Light ||
+      themeKind === vscode.ColorThemeKind.HighContrastLight
       ? 'light'
       : 'dark';
   }
