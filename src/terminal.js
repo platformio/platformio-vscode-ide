@@ -26,16 +26,16 @@ export default class PIOTerminal {
   }
 
   sendText(text) {
-  if (!this._instance || this._instance.exitStatus !== undefined) {
-    this._instance = this.new();
-    // Set Codepage to UTF-8, if Windows is used
-    if (process.platform === "win32") {
-      this._instance.sendText('chcp 65001');
+    if (!this._instance || this._instance.exitStatus !== undefined) {
+      this._instance = this.new();
+      // Set Codepage to UTF-8, if Windows is used
+      if (process.platform === "win32") {
+        this._instance.sendText('chcp 65001');
+      }
     }
+    this._instance.sendText(text);
+    this._instance.show();
   }
-  this._instance.sendText(text);
-  this._instance.show();
-}
 
   dispose() {
     if (this._instance) {
