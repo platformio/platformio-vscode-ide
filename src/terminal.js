@@ -24,7 +24,7 @@ export default class PIOTerminal {
       env: envClone,
     });
     // Set Codepage to UTF-8, if Windows is used
-    if (process.platform === "win32") {
+    if (process.platform === 'win32') {
       terminal.sendText('chcp 65001');
     }
     return terminal;
@@ -34,7 +34,7 @@ export default class PIOTerminal {
     if (!this._instance || this._instance.exitStatus !== undefined) {
       this._instance = this.new();
       // Set Codepage to UTF-8, if Windows is used
-      if (process.platform === "win32") {
+      if (process.platform === 'win32') {
         this._instance.sendText('chcp 65001');
       }
     }

@@ -7,7 +7,7 @@
  */
 
 import * as misc from './misc';
-import * as pioNodeHelpers from 'pioarduino-node-helpers';
+// import * as pioNodeHelpers from 'pioarduino-node-helpers';  // Lazy load this!
 import * as piodebug from 'platformio-vscode-debug';
 import * as utils from './utils';
 
@@ -148,6 +148,7 @@ class PlatformIOVSCodeExtension {
     if (this.getConfiguration('customPyPiIndexUrl')) {
       extraVars['PIP_INDEX_URL'] = this.getConfiguration('customPyPiIndexUrl');
     }
+    const pioNodeHelpers = require('pioarduino-node-helpers');
     pioNodeHelpers.proc.patchOSEnviron({
       caller: 'vscode',
       extraPath: this.getConfiguration('customPATH'),
@@ -175,8 +176,12 @@ class PlatformIOVSCodeExtension {
         });
         try {
           return !(await im.check());
-        } catch (err) {}
-        return true;
+        } catch (err) {
+          // In case of network errors or other issues, assume an existing installation is OK
+          // and no installation is required
+          console.warn('Installation check failed:', err);
+          return false; // No installation required
+        }
       },
     );
 
@@ -236,6 +241,7 @@ class PlatformIOVSCodeExtension {
   }
 
   async startPIOHome() {
+    const pioNodeHelpers = require('pioarduino-node-helpers');
     if (
       this.getConfiguration('disablePIOHomeStartup') ||
       !pioNodeHelpers.home.showAtStartup('vscode')
@@ -282,6 +288,7 @@ class PlatformIOVSCodeExtension {
       ) {
         return;
       }
+      const pioNodeHelpers = require('pioarduino-node-helpers');
       const envDir = pioNodeHelpers.core.getEnvDir();
       if (!envDir || !fs.isDirectorySync(envDir)) {
         return;

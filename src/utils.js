@@ -6,7 +6,7 @@
  * the root directory of this source tree.
  */
 
-import * as pioNodeHelpers from 'pioarduino-node-helpers';
+// import * as pioNodeHelpers from 'pioarduino-node-helpers';  // Lazy load!
 
 import os from 'os';
 import vscode from 'vscode';
@@ -36,6 +36,7 @@ export async function notifyError(title, err) {
   ${description}
   \`\`\`
   `;
+  const pioNodeHelpers = require('pioarduino-node-helpers');
   const reportUrl = pioNodeHelpers.misc.getErrorReportUrl(title, ghbody);
 
   let action = 'Report a problem';
@@ -62,6 +63,7 @@ export function getIDEVersion() {
 }
 
 export async function listCoreSerialPorts() {
+  const pioNodeHelpers = require('pioarduino-node-helpers');
   const script = `
 import json
 from platformio.public import list_serial_ports
