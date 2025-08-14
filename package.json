@@ -1,6 +1,6 @@
 {
   "name": "pioarduino-ide",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "icon": "assets/images/pioarduino-128x128.png",
   "publisher": "pioarduino",
   "engines": {
@@ -8,7 +8,7 @@
   },
   "license": "Apache-2.0",
   "displayName": "pioarduino IDE",
-  "description": "pioarduino a Community Fork of Platformio supporting Espressif (esp32/esp8266) Arduino, IDF",
+  "description": "pioarduino a community fork of Platformio supporting Espressif MCU (Arduino/IDF)",
   "categories": [
     "Programming Languages",
     "Linters",
@@ -877,11 +877,11 @@
   },
   "dependencies": {
     "fs-plus": "~3.1.1",
-    "pioarduino-node-helpers": "~11.4.0",
+    "pioarduino-node-helpers": "~11.4.1",
     "platformio-vscode-debug": "~1.4.1"
   },
   "devDependencies": {
-    "@types/node": "~14",
+    "@types/node": "~16",
     "@types/vscode": "~1.65.0",
     "@vscode/vsce": "~3.2.1",
     "eslint": "^8",
