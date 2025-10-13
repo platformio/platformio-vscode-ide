@@ -1,6 +1,6 @@
 {
   "name": "pioarduino-ide",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "icon": "assets/images/pioarduino-128x128.png",
   "publisher": "pioarduino",
   "engines": {
@@ -877,7 +877,7 @@
   },
   "dependencies": {
     "fs-plus": "~3.1.1",
-    "pioarduino-node-helpers": "~12.1.1",
+    "pioarduino-node-helpers": "~12.1.2",
     "platformio-vscode-debug": "~1.4.1"
   },
   "devDependencies": {
