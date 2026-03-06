@@ -34,6 +34,12 @@ class PlatformIOVSCodeExtension {
 
   async activate(context) {
     this.context = context;
+
+    const shouldContinue = await misc.checkConflictingPlatformIOExtension();
+    if (!shouldContinue) {
+      return;
+    }
+
     this.pioHome = new PIOHome();
     this.pioTerm = new PIOTerminal();
     this.subscriptions.push(this.pioHome, this.pioTerm);

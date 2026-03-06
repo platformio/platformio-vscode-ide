@@ -90,6 +90,60 @@ export async function warnAboutConflictedExtensions() {
   }
 }
 
+export async function checkConflictingPlatformIOExtension() {
+  const platformioExt = vscode.extensions.all.find(
+    (ext) => ext.id === 'platformio.platformio-ide',
+  );
+  if (!platformioExt) {
+    return true;
+  }
+
+  const selected = await vscode.window.showWarningMessage(
+    'The PlatformIO IDE extension is also installed. ' +
+      'Both extensions cannot be active at the same time. ' +
+      'Which extension do you want to keep active?',
+    { modal: true },
+    { title: 'pioarduino IDE', id: 'pioarduino' },
+    { title: 'PlatformIO IDE', id: 'platformio' },
+  );
+
+  if (!selected) {
+    return false;
+  }
+
+  if (selected.id === 'pioarduino') {
+    await vscode.commands.executeCommand(
+      'workbench.extensions.action.disableExtension',
+      'platformio.platformio-ide',
+    );
+    const action = await vscode.window.showInformationMessage(
+      'PlatformIO IDE has been disabled. Please reload the window.',
+      'Reload Now',
+    );
+    if (action === 'Reload Now') {
+      await vscode.commands.executeCommand('workbench.action.reloadWindow');
+      return false;
+    }
+    return true;
+  } else {
+    await vscode.commands.executeCommand(
+      'workbench.extensions.action.disableExtension',
+      'pioarduino.pioarduino-ide',
+    );
+    vscode.window
+      .showInformationMessage(
+        'pioarduino IDE has been disabled. Please reload the window.',
+        'Reload Now',
+      )
+      .then((action) => {
+        if (action === 'Reload Now') {
+          vscode.commands.executeCommand('workbench.action.reloadWindow');
+        }
+      });
+    return false;
+  }
+}
+
 export async function warnAboutInoFile(editor) {
   if (!editor || !editor.document || !editor.document.fileName) {
     return;
