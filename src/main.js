@@ -8,7 +8,7 @@
 
 import * as misc from './misc';
 // import * as pioNodeHelpers from 'pioarduino-node-helpers';  // Lazy load this!
-import * as piodebug from 'platformio-vscode-debug';
+import * as piodebug from 'pioarduino-vscode-debug';
 import * as utils from './utils';
 
 import InstallationManager from './installer/manager';
