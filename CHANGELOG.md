@@ -4,6 +4,14 @@ All notable changes to the **pioarduino IDE** VSCode extension are documented in
 
 ---
 
+## [1.1.7] - 2026-03-13
+
+### 📦 Dependencies
+
+- Use `pioarduino-vscode-debug` for debugging. Replaces `platformio-vscode-debug`
+
+---
+
 ## [1.1.6] - 2026-03-06
 
 ### 🚀 Features
