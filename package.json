@@ -683,9 +683,7 @@
         }
       }
     ],
-    "configurationDefaults": {
-      "C_Cpp.debugShortcut": false
-    },
+    "configurationDefaults": {},
     "configuration": {
       "type": "object",
       "title": "pioarduino IDE",
@@ -709,6 +707,19 @@
           "type": "boolean",
           "default": true,
           "description": "Automatically rebuild the project IntelliSense index when platformio.ini is changed or when new libraries are installed"
+        },
+        "platformio-ide.intelliSenseEngine": {
+          "type": "string",
+          "enum": [
+            "cpptools",
+            "clangd"
+          ],
+          "enumDescriptions": [
+            "Use Microsoft C/C++ extension (ms-vscode.cpptools) - generates c_cpp_properties.json",
+            "Use clangd extension (vscode-clangd) - generates compile_commands.json"
+          ],
+          "default": "cpptools",
+          "markdownDescription": "Select which C/C++ IntelliSense engine pioarduino should use. `cpptools` generates `.vscode/c_cpp_properties.json` via `pio project init`. `clangd` generates `compile_commands.json` via `pio run -t compiledb`. Changing this setting requires a window reload."
         },
         "platformio-ide.showEditorTitleShortcuts": {
           "type": "boolean",
@@ -877,7 +888,7 @@
   },
   "dependencies": {
     "fs-plus": "~3.1.1",
-    "pioarduino-node-helpers": "~12.3.1",
+    "pioarduino-node-helpers": "~12.4.1",
     "pioarduino-vscode-debug": "~1.1.1"
   },
   "overrides": {
@@ -894,7 +905,5 @@
     "webpack": "~5.105.4",
     "webpack-cli": "~6.0.1"
   },
-  "extensionDependencies": [
-    "ms-vscode.cpptools"
-  ]
+  "extensionDependencies": []
 }

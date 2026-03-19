@@ -11,6 +11,7 @@ import * as misc from './misc';
 import * as piodebug from 'pioarduino-vscode-debug';
 import * as utils from './utils';
 
+import { applyBackendConfigDefaults, warnIfBackendMissing } from './intellisense';
 import InstallationManager from './installer/manager';
 import PIOHome from './home';
 import PIOTerminal from './terminal';
@@ -105,6 +106,8 @@ class PlatformIOVSCodeExtension {
 
     // misc.maybeRateExtension();
     misc.warnAboutConflictedExtensions();
+    await applyBackendConfigDefaults();
+    warnIfBackendMissing();
     this.subscriptions.push(
       vscode.window.onDidChangeActiveTextEditor((editor) =>
         misc.warnAboutInoFile(editor),
