@@ -18,6 +18,7 @@ scripts/**
 
 # Node module bloat
 node_modules/**/*.md
+node_modules/**/*.map
 node_modules/**/*.markdown
 node_modules/**/*.txt
 node_modules/**/test.js
@@ -33,8 +34,6 @@ node_modules/**/*.min.js
 node_modules/**/tsconfig.json
 node_modules/**/webpack.config.js
 node_modules/**/jest.config.js
-node_modules/**/src/**
-node_modules/**/bin/**
 node_modules/**/LICENSE
 node_modules/**/LICENSE.*
 node_modules/**/LICENCE

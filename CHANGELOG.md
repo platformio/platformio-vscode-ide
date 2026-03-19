@@ -12,18 +12,9 @@ All notable changes to the **pioarduino IDE** VSCode extension are documented in
 - **Extended include-path handling**: Absolutize relative paths for `-I`, `-isystem`, `-iquote`, and `-idirafter` flags in both joined and separated forms
 - **Arguments-first output**: Post-processed entries are written back as `arguments` arrays (preferred by clangd), eliminating shell-quoting ambiguity
 - **Synthetic file entries**: Automatically generate compilation database entries for project files not covered by PlatformIO's `compile_commands.json`, using argv-level operations instead of fragile string replacement
-- **`--query-driver` fix**: Corrected the Windows glob pattern to `*\bin\*` so clangd matches only compiler binaries, not arbitrary files in package roots
-
-### 🐛 Bug Fixes
-
-- Fixed `SKIP_DIRS` declaration order — moved above `walkDir` to prevent potential `ReferenceError` from temporal dead zone
-- Awaited `applyBackendConfigDefaults()` in extension activation to ensure configuration is consistent before `warnIfBackendMissing()` runs
-- Awaited `notifyRescanBackend()` in `onDidRebuildIndex` handler for consistent error propagation
-- Cached `getActiveBackend()` result in `ProjectManager` constructor to avoid redundant calls
 
 ### 🔧 Maintenance
 
-- Replaced local `getPlatformIOCoreDir()` with `pioNodeHelpers.core.getCoreDir()` from `pioarduino-node-helpers`, gaining proper Windows Unicode path handling, `HOMEPATH`/`HOMEDRIVE` fallback, and `PLATFORMIO_HOME_DIR` backward compatibility
 - Reduced VSIX package size by excluding unnecessary files from node_modules (`.flow`, `.yml`, `src/`, `bin/`, `LICENSE`, `tsconfig.json`, source maps, minified duplicates)
 
 ### 📖 Documentation
