@@ -10,6 +10,14 @@
 The installation of pioarduino is like PlatformIO IDE for VSCode. Search for `pioarduino` on the [Visual Studio Code Marketplace](https://marketplace.visualstudio.com/search?term=pioarduino&target=VSCode&category=All%20categories&sortBy=Relevance) and follow the documentation [PlatformIO IDE for VSCode](http://docs.platformio.org/page/ide/vscode.html) how to install.
 
 
+## ⚠️ Breaking Change
+
+pioarduino **no longer installs a C/C++ IntelliSense extension automatically**. You must install your preferred IntelliSense backend manually:
+
+- [Microsoft C/C++ (cpptools)](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cpptools)
+- [clangd](https://marketplace.visualstudio.com/items?itemName=llvm-vs-code-extensions.vscode-clangd)
+
+
 ## IntelliSense
 
 pioarduino supports two C/C++ IntelliSense backends:

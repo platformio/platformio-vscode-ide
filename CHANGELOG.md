@@ -6,6 +6,10 @@ All notable changes to the **pioarduino IDE** VSCode extension are documented in
 
 ## [1.3.0] - 2026-03-19
 
+### ⚠️ Breaking Changes
+
+- **IntelliSense extension is no longer installed automatically.** Users must manually install their preferred C/C++ IntelliSense backend ([cpptools](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cpptools) or [clangd](https://marketplace.visualstudio.com/items?itemName=llvm-vs-code-extensions.vscode-clangd))
+
 ### 🚀 Features
 
 - **clangd IntelliSense post-processing**: Platform-aware shell tokenizer for `compile_commands.json` that correctly handles backslash escapes on POSIX and preserves Windows paths (matching LLVM's `TokenizeWindowsCommandLine`)
