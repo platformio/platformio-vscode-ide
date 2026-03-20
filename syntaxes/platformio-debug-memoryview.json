@@ -10,7 +10,7 @@
         {
             "comment": "Address",
             "name": "keyword.address.hex",
-            "match": "^([a-fA-F\\d]{8}:)"
+            "match": "^([a-fA-F\\d]{4,16}:)"
         },
         {
             "comment": "ASCII",

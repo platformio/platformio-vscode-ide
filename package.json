@@ -73,8 +73,9 @@
           ".nasm",
           ".yasm",
           ".inc",
-          ".s"
-        ],
+          ".s",
+          ".S"
+          ],
         "configuration": "./syntaxes/assembly-configuration.json"
       }
     ],

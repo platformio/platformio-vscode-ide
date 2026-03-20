@@ -9,6 +9,7 @@
 		<string>yasm</string>
 		<string>inc</string>
 		<string>s</string>
+		<string>S</string>
 	</array>
 	<key>name</key>
 	<string>Assembly</string>
@@ -270,9 +271,13 @@
 				<dict>
 					<key>include</key>
 					<string>#mnemonics-riscv</string>
-				</dict>        
-			</array>
-		</dict>
+				</dict>
+				<dict>
+					<key>include</key>
+					<string>#mnemonics-xtensa</string>
+				</dict>
+				</array>
+				</dict>
 		<key>mnemonics-64bit</key>
 		<dict>
 			<key>match</key>
@@ -940,64 +945,286 @@
 		<dict>
 			<key>patterns</key>
 			<array>
-        <dict>
-          <key>comment</key>
-          <string>Assembler directives for data storage</string>
-          <key>match</key>
-          <string>\.\b(align|ascii|asciiz|byte|double|extern|float|globl|section|space|word|eqv|half|)\b</string>
-          <key>name</key>
-          <string>keyword.pseudo-mnemonic.storage.modifier.riscv</string>
-        </dict>
-        <dict>
-          <key>comment</key>
-          <string>Segements: .data .text</string>
-          <key>match</key>
-          <string>\b\.(data|text|kdata|ktext|)\b</string>
-          <key>name</key>
-          <string>keyword.pseudo-mnemonic.entity.name.section.riscv</string>
-        </dict>
-        <dict>
-          <key>comment</key>
-          <string>Registers by id x1, x2, ...</string>
-          <key>match</key>
-          <string>\b(x((3[01])|([12]?[0-9])|[0-9])\b|zero|a[0-7]|s([1]?[01]|[0-9])|t[0-6]|gp|sp|fp|tp|ra|pc)\b</string>
-          <key>name</key>
-          <string>vkeyword.pseudo-mnemonic.ariable.parameter.riscv</string>
-        </dict>
-        <dict>
-          <key>comment</key>
-          <string>Floating point registers</string>
-          <key>match</key>
-          <string>\bf(t([0-9]|[1][01])|a[0-7]|s([0-9]|[1][01]))\b</string>
-          <key>name</key>
-          <string>keyword.pseudo-mnemonic.variable.parameter.riscv</string>
-        </dict>
-        <dict>
-          <key>comment</key>
-          <string>The RISC-V floating-point instruction set</string>
-          <key>match</key>
-          <string>\b((add|sub|div|divu|l|mov|mul|mulh|mulhu|mulhsu|neg|s|c\.eq|c\.le|c\.lt)\.[ds]|cvt\.s\.[dw]|cvt\.d\.[sw]|cvt\.w\.[ds]|bc1[tf])\b</string>
-          <key>name</key>
-          <string>keyword.pseudo-mnemonic.support.function.source.riscv</string>
-        </dict>
-        <dict>
-          <key>comment</key>
-          <string>Just the hardcoded instructions provided by the RISC-V assembly language</string>
-          <key>match</key>
-          <string>\b(add|addu|addi|addiu|sub|subu|and|andi|or|not|ori|nor|xor|xori|slt|sltu|slti|sltiu|slli|sll|rol|srli|sra|srl|ror|j|jr|jal|jalr|beq|bne|lw|sw|lb|sb|lh|sh|lui|move|mfhi|mflo|mthi|mtlo)\b</string>
-          <key>name</key>
-          <string>keyword.pseudo-mnemonic.support.function.source.riscv</string>
-        </dict>
-        <dict>
-          <key>comment</key>
-          <string>Pseudo instructions</string>
-          <key>match</key>
-          <string>\b(abs|b|beqz|bge|bgt|bgtu|ble|bleu|blt|bltu|bnez|div|divu|la|li|mv|mul|neg|not|rem|remu|seq|sge|sgt|sle|sne)\b</string>
-          <key>name</key>
-          <string>keyword.pseudo-mnemonic.support.function.other.riscv</string>
-        </dict>
+				<dict>
+					<key>comment</key>
+					<string>GNU assembler directives</string>
+					<key>match</key>
+					<string>\.\b(align|ascii|asciiz|byte|double|extern|float|globl|global|section|space|word|eqv|half|zero|balign|p2align|comm|weak|type|size|set|equ|equiv|option|attribute|macro|endm|file|loc|cfi_startproc|cfi_endproc|cfi_offset|cfi_def_cfa_offset|cfi_def_cfa)\b</string>
+					<key>name</key>
+					<string>keyword.directive.riscv</string>
+				</dict>
+				<dict>
+					<key>comment</key>
+					<string>Sections: .data .text .rodata etc.</string>
+					<key>match</key>
+					<string>\.\b(data|text|rodata|bss|init|fini)\b</string>
+					<key>name</key>
+					<string>entity.name.section.riscv</string>
+				</dict>
+				<dict>
+					<key>comment</key>
+					<string>RISC-V general purpose registers (x0-x31 and ABI names)</string>
+					<key>match</key>
+					<string>\b(x(3[01]|[12]?[0-9])|zero|ra|sp|gp|tp|fp|a[0-7]|s([0-9]|1[01])|t[0-6]|pc)\b</string>
+					<key>name</key>
+					<string>constant.language.registers.general-purpose.riscv</string>
+				</dict>
+				<dict>
+					<key>comment</key>
+					<string>RISC-V floating point registers</string>
+					<key>match</key>
+					<string>\b(f(t([0-9]|1[01])|a[0-7]|s([0-9]|1[01]))|f(3[01]|[12]?[0-9]))\b</string>
+					<key>name</key>
+					<string>constant.language.registers.floating-point.riscv</string>
+				</dict>
+				<dict>
+					<key>comment</key>
+					<string>RISC-V CSR names</string>
+					<key>match</key>
+					<string>\b(mstatus|misa|mie|mtvec|mscratch|mepc|mcause|mtval|mip|mvendorid|marchid|mimpid|mhartid|mcycle|minstret|mcycleh|minstreth|mcounteren|mcountinhibit|medeleg|mideleg|pmpcfg[0-3]|pmpaddr[0-9]|pmpaddr1[0-5]|satp|sstatus|sie|stvec|sscratch|sepc|scause|stval|sip|ustatus|uie|utvec|uscratch|uepc|ucause|utval|uip|fcsr|fflags|frm|dcsr|dpc|dscratch[01]?|tselect|tdata[123])\b</string>
+					<key>name</key>
+					<string>constant.language.registers.csr.riscv</string>
+				</dict>
+				<dict>
+					<key>comment</key>
+					<string>RV32I/RV64I base integer instructions</string>
+					<key>match</key>
+					<string>\b(add|addi|addw|addiw|sub|subw|and|andi|or|ori|xor|xori|slt|sltu|slti|sltiu|sll|slli|slliw|sllw|srl|srli|srliw|srlw|sra|srai|sraiw|sraw|lui|auipc|jal|jalr|beq|bne|blt|bge|bltu|bgeu|lb|lbu|lh|lhu|lw|lwu|ld|sb|sh|sw|sd)\b</string>
+					<key>name</key>
+					<string>keyword.mnemonic.riscv.base</string>
+				</dict>
+				<dict>
+					<key>comment</key>
+					<string>RV32M/RV64M multiply/divide instructions</string>
+					<key>match</key>
+					<string>\b(mul|mulh|mulhu|mulhsu|mulw|div|divu|divw|divuw|rem|remu|remw|remuw)\b</string>
+					<key>name</key>
+					<string>keyword.mnemonic.riscv.multiply</string>
+				</dict>
+				<dict>
+					<key>comment</key>
+					<string>RV32A/RV64A atomic instructions</string>
+					<key>match</key>
+					<string>\b(lr\.[wd]|sc\.[wd]|amo(swap|add|and|or|xor|max|maxu|min|minu)\.[wd])\b</string>
+					<key>name</key>
+					<string>keyword.mnemonic.riscv.atomic</string>
+				</dict>
+				<dict>
+					<key>comment</key>
+					<string>RV32F/RV64F/RV32D/RV64D floating-point instructions</string>
+					<key>match</key>
+					<string>\b(fl[wd]|fs[wd]|fmadd\.[sd]|fmsub\.[sd]|fnmadd\.[sd]|fnmsub\.[sd]|fadd\.[sd]|fsub\.[sd]|fmul\.[sd]|fdiv\.[sd]|fsqrt\.[sd]|fsgnj[nx]?\.[sd]|fmin\.[sd]|fmax\.[sd]|fcvt\.[sd]\.[sd]|fcvt\.[sd]\.[wl]u?|fcvt\.[wl]u?\.[sd]|fmv\.w\.x|fmv\.x\.w|fmv\.d\.x|fmv\.x\.d|feq\.[sd]|flt\.[sd]|fle\.[sd]|fclass\.[sd])\b</string>
+					<key>name</key>
+					<string>keyword.mnemonic.riscv.float</string>
+				</dict>
+				<dict>
+					<key>comment</key>
+					<string>Zicsr CSR instructions</string>
+					<key>match</key>
+					<string>\b(csrrw|csrrs|csrrc|csrrwi|csrrsi|csrrci|csrr|csrw|csrs|csrc)\b</string>
+					<key>name</key>
+					<string>keyword.mnemonic.riscv.csr</string>
+				</dict>
+				<dict>
+					<key>comment</key>
+					<string>System and fence instructions</string>
+					<key>match</key>
+					<string>\b(ecall|ebreak|sfence\.vma|fence\.tso|fence\.i|fence|mret|sret|uret|wfi)\b</string>
+					<key>name</key>
+					<string>keyword.mnemonic.riscv.system</string>
+				</dict>
+				<dict>
+					<key>comment</key>
+					<string>RVC compressed instructions</string>
+					<key>match</key>
+					<string>\b(c\.(addi|addiw|addi16sp|addi4spn|add|addw|and|andi|beqz|bnez|ebreak|fld|fldsp|flw|flwsp|fsd|fsdsp|fsw|fswsp|j|jal|jalr|jr|li|lui|lw|lwsp|ld|ldsp|mv|nop|or|sd|sdsp|slli|srai|srli|sub|subw|sw|swsp|xor))\b</string>
+					<key>name</key>
+					<string>keyword.mnemonic.riscv.compressed</string>
+				</dict>
+				<dict>
+					<key>comment</key>
+					<string>RISC-V pseudo instructions</string>
+					<key>match</key>
+					<string>\b(nop|ret|call|tail|j|jr|mv|li|la|neg|negw|not|seqz|snez|sltz|sgtz|beqz|bnez|blez|bgez|bgt|bgtu|ble|bleu|rdcycle|rdcycleh|rdtime|rdtimeh|rdinstret|rdinstreth)\b</string>
+					<key>name</key>
+					<string>keyword.mnemonic.riscv.pseudo</string>
+				</dict>
+				<dict>
+					<key>comment</key>
+					<string>RISC-V relocation functions</string>
+					<key>match</key>
+					<string>%\b(hi|lo|pcrel_hi|pcrel_lo|tprel_hi|tprel_lo|tprel_add|got_pcrel_hi)\b</string>
+					<key>name</key>
+					<string>keyword.operator.relocation.riscv</string>
+				</dict>
 			</array>
-		</dict>    
+		</dict>
+		<key>mnemonics-xtensa</key>
+		<dict>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>comment</key>
+					<string>Xtensa general purpose registers a0-a15</string>
+					<key>match</key>
+					<string>\b(a(1[0-5]|[0-9]))\b</string>
+					<key>name</key>
+					<string>constant.language.registers.general-purpose.xtensa</string>
+				</dict>
+				<dict>
+					<key>comment</key>
+					<string>Xtensa windowed registers ar0-ar63</string>
+					<key>match</key>
+					<string>\b(ar(6[0-3]|[1-5][0-9]|[0-9]))\b</string>
+					<key>name</key>
+					<string>constant.language.registers.windowed.xtensa</string>
+				</dict>
+				<dict>
+					<key>comment</key>
+					<string>Xtensa floating point registers</string>
+					<key>match</key>
+					<string>\b(f(1[0-5]|[0-9]))\b</string>
+					<key>name</key>
+					<string>constant.language.registers.floating-point.xtensa</string>
+				</dict>
+				<dict>
+					<key>comment</key>
+					<string>Xtensa boolean registers</string>
+					<key>match</key>
+					<string>\b(b(1[0-5]|[0-9]))\b</string>
+					<key>name</key>
+					<string>constant.language.registers.boolean.xtensa</string>
+				</dict>
+				<dict>
+					<key>comment</key>
+					<string>Xtensa special registers</string>
+					<key>match</key>
+					<string>\b(SAR|PS|LBEG|LEND|LCOUNT|ACCLO|ACCHI|M[0-3]|SCOMPARE1|WINDOWBASE|WINDOWSTART|IBREAKA[01]|DBREAKA[01]|DBREAKC[01]|IBREAKENABLE|ICOUNTLEVEL|ICOUNT|DEBUGCAUSE|EPC[1-7]|DEPC|EPS[2-7]|EXCSAVE[1-7]|EXCCAUSE|EXCVADDR|VECBASE|CCOUNT|CCOMPARE[0-2]|PRID|INTERRUPT|INTSET|INTCLEAR|INTENABLE|MISC[0-3]|THREADPTR|FCR|FSR|CPENABLE)\b</string>
+					<key>name</key>
+					<string>constant.language.registers.special.xtensa</string>
+				</dict>
+				<dict>
+					<key>comment</key>
+					<string>Xtensa floating-point instructions (before arithmetic to avoid bare add/sub/mov stealing .s forms)</string>
+					<key>match</key>
+					<string>\b(add\.s|sub\.s|mul\.s|madd\.s|msub\.s|abs\.s|neg\.s|mov\.s|moveqz\.s|movnez\.s|movltz\.s|movgez\.s|movf\.s|movt\.s|round\.s|trunc\.s|ceil\.s|floor\.s|float\.s|ufloat\.s|un\.s|oeq\.s|ueq\.s|olt\.s|ult\.s|ole\.s|ule\.s|lsi|lsiu|ssi|ssiu|const\.s|nexp01\.s|addexp\.s|addexpm\.s|mkdadj\.s|mksadj\.s|maddn\.s|divn\.s|rfr|wfr)\b</string>
+					<key>name</key>
+					<string>keyword.mnemonic.xtensa.float</string>
+				</dict>
+				<dict>
+					<key>comment</key>
+					<string>Xtensa multiply/accumulate instructions</string>
+					<key>match</key>
+					<string>\b(mul16[su]|mull|muluh|mulsh|mul\.(aa|ad|da|dd)\.(hh|hl|lh|ll)|mula\.(aa|ad|da|dd)\.(hh|hl|lh|ll)|muls\.(aa|ad|da|dd)\.(hh|hl|lh|ll)|umul\.aa\.(hh|hl|lh|ll)|ldinc|lddec)\b</string>
+					<key>name</key>
+					<string>keyword.mnemonic.xtensa.multiply</string>
+				</dict>
+				<dict>
+					<key>comment</key>
+					<string>Xtensa arithmetic instructions (dotted forms before bare forms)</string>
+					<key>match</key>
+					<string>\b(add\.n|addi\.n|add|addi|addmi|addx[248]|sub|subx[248]|neg|abs|min|max|minu|maxu|clamps|sext)\b</string>
+					<key>name</key>
+					<string>keyword.mnemonic.xtensa.arithmetic</string>
+				</dict>
+				<dict>
+					<key>comment</key>
+					<string>Xtensa logical instructions</string>
+					<key>match</key>
+					<string>\b(and|or|xor)\b</string>
+					<key>name</key>
+					<string>keyword.mnemonic.xtensa.logical</string>
+				</dict>
+				<dict>
+					<key>comment</key>
+					<string>Xtensa shift instructions</string>
+					<key>match</key>
+					<string>\b(ssl|ssr|ssa8[bl]|ssai|sll|srl|sra|src|slli|srli|srai|extui|nsa|nsau)\b</string>
+					<key>name</key>
+					<string>keyword.mnemonic.xtensa.shift</string>
+				</dict>
+				<dict>
+					<key>comment</key>
+					<string>Xtensa load/store instructions (dotted forms before bare forms)</string>
+					<key>match</key>
+					<string>\b(l32i\.n|s32i\.n|l8ui|l16ui|l16si|l32i|l32r|l32e|s8i|s16i|s32i|s32e|s32c1i)\b</string>
+					<key>name</key>
+					<string>keyword.mnemonic.xtensa.load-store</string>
+				</dict>
+				<dict>
+					<key>comment</key>
+					<string>Xtensa move instructions (dotted forms before bare forms)</string>
+					<key>match</key>
+					<string>\b(mov\.n|movi\.n|mov|movi|moveqz|movnez|movltz|movgez)\b</string>
+					<key>name</key>
+					<string>keyword.mnemonic.xtensa.move</string>
+				</dict>
+				<dict>
+					<key>comment</key>
+					<string>Xtensa branch instructions (dotted forms before bare forms)</string>
+					<key>match</key>
+					<string>\b(ret\.n|retw\.n|ret|retw|j|jx|call0|callx0|call4|callx4|call8|callx8|call12|callx12|entry|beq|bne|blt|bltu|bge|bgeu|beqi|bnei|blti|bltui|bgei|bgeui|beqz|bnez|bltz|bgez|ball|bany|bnall|bnone|bbc|bbs|bbci|bbsi)\b</string>
+					<key>name</key>
+					<string>keyword.mnemonic.xtensa.branch</string>
+				</dict>
+				<dict>
+					<key>comment</key>
+					<string>Xtensa loop instructions</string>
+					<key>match</key>
+					<string>\b(loop|loopnez|loopgtz)\b</string>
+					<key>name</key>
+					<string>keyword.mnemonic.xtensa.loop</string>
+				</dict>
+				<dict>
+					<key>comment</key>
+					<string>Xtensa special register read/write/exchange (dotted forms before bare forms)</string>
+					<key>match</key>
+					<string>\b(rsr\.\w+|wsr\.\w+|xsr\.\w+|rsr|wsr|xsr|rur|wur)\b</string>
+					<key>name</key>
+					<string>keyword.mnemonic.xtensa.special-register</string>
+				</dict>
+				<dict>
+					<key>comment</key>
+					<string>Xtensa synchronization and memory order instructions (dotted forms before bare forms)</string>
+					<key>match</key>
+					<string>\b(nop\.n|nop|memw|extw|isync|rsync|esync|dsync)\b</string>
+					<key>name</key>
+					<string>keyword.mnemonic.xtensa.sync</string>
+				</dict>
+				<dict>
+					<key>comment</key>
+					<string>Xtensa system/interrupt/debug instructions (dotted forms before bare forms)</string>
+					<key>match</key>
+					<string>\b(break\.n|break|waiti|syscall|simcall|excw|rfde|rfe|rfwo|rfwu|rfi)\b</string>
+					<key>name</key>
+					<string>keyword.mnemonic.xtensa.system</string>
+				</dict>
+				<dict>
+					<key>comment</key>
+					<string>Xtensa cache instructions</string>
+					<key>match</key>
+					<string>\b(dpfr|dpfro|dpfw|dpfwo|dpfl|dhu|diu|dhi|dii|dhwb|dhwbi|diwb|diwbi|ipf|ipfl|ihu|iiu|ihi|iii)\b</string>
+					<key>name</key>
+					<string>keyword.mnemonic.xtensa.cache</string>
+				</dict>
+				<dict>
+					<key>comment</key>
+					<string>Xtensa-specific directives</string>
+					<key>match</key>
+					<string>\.\b(literal|literal_position|begin|end|align)\b</string>
+					<key>name</key>
+					<string>keyword.directive.xtensa</string>
+				</dict>
+				<dict>
+					<key>comment</key>
+					<string>Espressif/IDF linker sections</string>
+					<key>match</key>
+					<string>\.\b(iram[0-9]?|dram[0-9]?|rtc|flash)\b</string>
+					<key>name</key>
+					<string>entity.name.section.espressif</string>
+				</dict>
+			</array>
+		</dict>
 		<key>mnemonics-smx</key>
 		<dict>
 			<key>patterns</key>

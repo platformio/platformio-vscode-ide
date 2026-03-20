@@ -3,28 +3,43 @@
     "scopeName": "source.platformio-debug-disassembly",
     "patterns": [
         {
-            "comment": "Address, bytes and opcode",
+            "comment": "Address, bytes and opcode (flexible width for ARM/Xtensa/RISC-V)",
             "name": "meta.instruction",
-            "match": "^(0x[A-Za-z0-9]{8}):\\s([a-zA-Z0-9]{2}\\s)+\\s+([\\w\\.]+)",
+            "match": "^\\s*(=>\\s*)?(0x[A-Fa-f0-9]+):\\s+([a-fA-F0-9]{2}[\\s,])*\\s*([\\w\\.]+)",
             "captures": {
-                "1": { "name": "constant.numeric" },
-                "3": { "name": "keyword.opcode" }
+                "2": { "name": "constant.numeric" },
+                "4": { "name": "keyword.opcode" }
             }
         },
         {
-            "comment": "Numeric constant",
+            "comment": "Numeric constant (hex and decimal, case-insensitive)",
             "name": "constant.numeric",
-            "match": "(0x[0-9A-F]+)|(#[0-9]+)"
+            "match": "(-?0x[0-9a-fA-F]+)|(-?#?[0-9]+)"
         },
         {
-            "comment": "Register",
+            "comment": "ARM Cortex-M registers",
             "name": "variable.language",
-            "match": "\b((r[0-9])|(r1[0-5])|(sp)|(lr)|(pc)|(xpsr)|(msp)|(psp)|(primask)|(basepri)|(s[0-9])|(s[1-2][0-9])|(s3[0-1]))\b"
+            "match": "\\b(r[0-9]|r1[0-5]|sp|lr|pc|xpsr|msp|psp|primask|basepri|faultmask|control|s([0-9]|[1-2][0-9]|3[0-1])|d([0-9]|1[0-5]))\\b"
         },
         {
-            "comment": "End of line comment",
+            "comment": "Xtensa registers (a0-a15, special registers)",
+            "name": "variable.language",
+            "match": "\\b(a(1[0-5]|[0-9])|ar(6[0-3]|[1-5][0-9]|[0-9])|SAR|PS|LBEG|LEND|LCOUNT|ACCLO|ACCHI|M[0-3]|SCOMPARE1|WINDOWBASE|WINDOWSTART|VECBASE|EPC[1-7]|DEPC|EPS[2-7]|EXCSAVE[1-7]|EXCCAUSE|CCOUNT|CCOMPARE[0-2]|PRID|INTENABLE|INTERRUPT|THREADPTR|CPENABLE)\\b"
+        },
+        {
+            "comment": "RISC-V registers (x0-x31 and ABI names)",
+            "name": "variable.language",
+            "match": "\\b(x(3[01]|[12]?[0-9])|zero|ra|sp|gp|tp|fp|a[0-7]|s([0-9]|1[01])|t[0-6]|pc|f(3[01]|[12]?[0-9])|f(t([0-9]|1[01])|a[0-7]|s([0-9]|1[01])))\\b"
+        },
+        {
+            "comment": "Symbol reference in disassembly (e.g. <function+0x10> or <printf@plt>)",
+            "name": "entity.name.function",
+            "match": "<[-\\w.$:@]+(?:\\+(?:0x[0-9a-fA-F]+|\\d+))?>"
+        },
+        {
+            "comment": "End of line comment (;, or # / @ only when preceded by whitespace or at start of line)",
             "name": "comment.line.semicolon",
-            "match": ";.*$"
+            "match": ";.*$|(?<=\\s)[#@].*$|^[#@].*$"
         }
     ]
 }
