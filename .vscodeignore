@@ -17,6 +17,7 @@ scripts/**
 **/*.map
 
 # Node module bloat
+node_modules/**/.*
 node_modules/**/*.md
 node_modules/**/*.map
 node_modules/**/*.markdown
@@ -38,5 +39,12 @@ node_modules/**/LICENSE
 node_modules/**/LICENSE.*
 node_modules/**/LICENCE
 node_modules/**/LICENCE.*
+node_modules/**/license
+node_modules/**/licenses
 node_modules/**/CHANGELOG*
 node_modules/**/HISTORY*
+node_modules/**/README
+node_modules/**/readme
+node_modules/**/FUNDING*
+node_modules/**/fallbacks/**
+node_modules/**/test/**
