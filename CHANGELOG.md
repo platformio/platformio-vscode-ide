@@ -4,6 +4,30 @@ All notable changes to the **pioarduino IDE** VSCode extension are documented in
 
 ---
 
+## [1.3.2] - 2026-03-23
+
+### 🐛 Bug Fixes
+
+- **Debug support for clangd backend**: When using clangd as IntelliSense engine, `launch.json` was not generated because `pio run --target compiledb` (unlike `pio project init --ide vscode`) does not create it. The debugger now automatically runs `pio project init --ide vscode` to generate a complete `launch.json` with resolved `executable`, `toolchainBinDir`, `svdPath`, `preLaunchTask`, and all three debug configurations (PIO Debug, skip Pre-Debug, without uploading)
+
+### 📖 Documentation
+
+- Updated [IntelliSense Pipeline](docs/intellisense-pipeline.md) to document the `ensureLaunchJson` step in the clangd callback chain
+
+---
+
+## [1.3.1] - 2026-03-20
+
+### 📦 Dependencies
+
+- Update `pioarduino-vscode-debug` to  v1.1.2
+
+### 🔧 Maintenance
+
+- Update asm debug JSON for actual ARM/Xtensa/RISC-V
+
+---
+
 ## [1.3.0] - 2026-03-19
 
 ### ⚠️ Breaking Changes
