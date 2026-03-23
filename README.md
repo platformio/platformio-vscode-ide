@@ -5,6 +5,12 @@
 **Frameworks**: Arduino, ESP-IDF
 
 
+## Why use this fork?
+
+Wondering how this differs from the official PlatformIO IDE and why you might want to switch? 
+Read the full breakdown: [**pioarduino-vscode-ide vs. PlatformIO IDE: Understanding the Added Value**](WHY_THIS_FORK.md).
+
+
 ## How it works
 
 The installation of pioarduino is like PlatformIO IDE for VSCode. Search for `pioarduino` on the [Visual Studio Code Marketplace](https://marketplace.visualstudio.com/search?term=pioarduino&target=VSCode&category=All%20categories&sortBy=Relevance) and follow the documentation [PlatformIO IDE for VSCode](http://docs.platformio.org/page/ide/vscode.html) how to install.
