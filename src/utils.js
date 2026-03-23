@@ -55,11 +55,23 @@ export async function notifyError(title, err) {
 }
 
 export function getIDEManifest() {
-  return vscode.extensions.getExtension('pioarduino.pioarduino-ide').packageJSON;
+  const ext = vscode.extensions.getExtension('pioarduino.pioarduino-ide');
+  if (!ext) {
+    console.warn(
+      'pioarduino: extension manifest unavailable for "pioarduino.pioarduino-ide"',
+    );
+    return {};
+  }
+  return ext.packageJSON;
 }
 
 export function getIDEVersion() {
-  return getIDEManifest().version;
+  const version = getIDEManifest().version;
+  if (!version) {
+    console.warn('pioarduino: IDE version could not be determined, using "unknown"');
+    return 'unknown';
+  }
+  return version;
 }
 
 export async function listCoreSerialPorts() {

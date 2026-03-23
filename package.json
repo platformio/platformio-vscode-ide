@@ -889,7 +889,7 @@
   "dependencies": {
     "fs-plus": "~3.1.1",
     "pioarduino-node-helpers": "~12.4.1",
-    "pioarduino-vscode-debug": "~1.1.1"
+    "pioarduino-vscode-debug": "~1.1.2"
   },
   "overrides": {
     "tar": "^7.5.11"

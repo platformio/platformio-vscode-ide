@@ -114,6 +114,9 @@ export function isBackendExtensionInstalled() {
 
 export async function applyBackendConfigDefaults() {
   const backend = getActiveBackend();
+  if (!isBackendExtensionInstalled()) {
+    return;
+  }
   const otherBackendValues = collectOtherBackendValues(backend.id);
   const config = vscode.workspace.getConfiguration();
 
@@ -152,7 +155,11 @@ function collectOtherBackendValues(activeId) {
  *     so clangd can match them (it uses directory proximity heuristics).
  */
 export async function fixupCompileCommands(projectDir) {
-  if (getActiveBackendId() !== 'clangd' || !projectDir) {
+  if (
+    getActiveBackendId() !== 'clangd' ||
+    !projectDir ||
+    !isBackendExtensionInstalled()
+  ) {
     return;
   }
   const ccPath = path.join(projectDir, 'compile_commands.json');
@@ -324,7 +331,11 @@ export async function fixupCompileCommands(projectDir) {
 }
 
 export async function ensureClangdArgs(projectDir) {
-  if (getActiveBackendId() !== 'clangd' || !projectDir) {
+  if (
+    getActiveBackendId() !== 'clangd' ||
+    !projectDir ||
+    !isBackendExtensionInstalled()
+  ) {
     return;
   }
   const config = vscode.workspace.getConfiguration('clangd');
@@ -370,7 +381,7 @@ function upsertArg(args, prefix, value) {
 
 export async function notifyRescanBackend() {
   const backend = getActiveBackend();
-  if (!backend.rescanCommand) {
+  if (!backend.rescanCommand || !isBackendExtensionInstalled()) {
     return;
   }
   try {
