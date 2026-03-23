@@ -11,6 +11,7 @@ import * as projectHelpers from './helpers';
 import { disposeSubscriptions, notifyError } from '../utils';
 import {
   ensureClangdArgs,
+  ensureLaunchJson,
   fixupCompileCommands,
   getActiveBackend,
   notifyRescanBackend,
@@ -93,6 +94,7 @@ export default class ProjectManager {
         onDidRebuildIndex: async (projectDir) => {
           await fixupCompileCommands(projectDir);
           await ensureClangdArgs(projectDir);
+          await ensureLaunchJson(projectDir);
           await notifyRescanBackend();
         },
       },

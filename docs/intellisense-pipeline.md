@@ -112,7 +112,12 @@ The IntelliSense index is rebuilt in two situations:
 │        ├─► Set --compile-commands-dir=<projectDir>                 │
 │        └─► Set --query-driver=<packages/toolchain-*/bin/*,...>      │
 │                                                                    │
-│    5c. notifyRescanBackend()                                       │
+│    5c. ensureLaunchJson(projectDir)                                │
+│        └─► Create .vscode/launch.json if it does not exist         │
+│            (needed because `pio run --target compiledb` does not   │
+│             generate it, unlike `pio project init --ide vscode`)   │
+│                                                                    │
+│    5d. notifyRescanBackend()                                       │
 │        └─► Executes "clangd.restart" command                       │
 │                                                                    │
 │ 6. LANGUAGE SERVER                                                 │
@@ -188,6 +193,7 @@ ProjectPool.switch(projectDir)
               │
               ├─► fixupCompileCommands()  ◄── clangd only
               ├─► ensureClangdArgs()      ◄── clangd only
+              ├─► ensureLaunchJson()      ◄── creates launch.json if missing
               └─► notifyRescanBackend()   ◄── both backends
 ```
 
