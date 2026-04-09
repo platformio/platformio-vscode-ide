@@ -155,8 +155,28 @@ export default class ProjectTaskManager {
     return vscodeTask;
   }
 
-  runTask(task) {
+  async runTask(task) {
     this._autoCloseSerialMonitor(task);
+
+    // Fire onWillUpload event for upload tasks and wait until all subscribers
+    // (e.g. ESP-Decoder) have released the serial port before starting the task.
+    if (this._isUploadTask(task)) {
+      try {
+        await extension.fireWillUpload(this._customPort);
+      } catch (err) {
+        utils.notifyError('Upload Port Coordination', err);
+        return;
+      }
+      // Set ownership only after coordination succeeds and the task is launched,
+      // so a fireWillUpload rejection leaves _ownedUploadTaskId unset.
+      await vscode.commands.executeCommand(
+        'workbench.action.tasks.runTask',
+        `${ProjectTaskManager.PROVIDER_TYPE}: ${task.id}`,
+      );
+      this._ownedUploadTaskId = task.id;
+      return;
+    }
+
     // use string-based task defination for Win 7 // issue #3481
     vscode.commands.executeCommand(
       'workbench.action.tasks.runTask',
@@ -205,6 +225,18 @@ export default class ProjectTaskManager {
   }
 
   onDidEndTaskProcess(event) {
+    // Only fire onDidUpload for the exact upload task started by this manager
+    // instance to avoid duplicate emissions when multiple ProjectTaskManagers
+    // are active (one per workspace folder).
+    if (
+      this._ownedUploadTaskId &&
+      event.execution.task.definition.type === ProjectTaskManager.PROVIDER_TYPE &&
+      event.execution.task.definition.task === this._ownedUploadTaskId
+    ) {
+      this._ownedUploadTaskId = undefined;
+      extension.fireDidUpload(this._customPort, event.exitCode);
+    }
+
     const skipConds = [
       !this._startedTask,
       !this.areTasksEqual(this._startedTask, event.execution.task),
@@ -232,6 +264,11 @@ export default class ProjectTaskManager {
   isMonitorAndUploadTask(task) {
     const args = this.getTaskArgs(task);
     return ['--target', 'upload', 'monitor'].every((arg) => args.includes(arg));
+  }
+
+  _isUploadTask(task) {
+    const args = this.getTaskArgs(task);
+    return args.includes('upload');
   }
 
   areTasksEqual(task1, task2) {

@@ -4,6 +4,17 @@ All notable changes to the **pioarduino IDE** VSCode extension are documented in
 
 ---
 
+## [1.3.4] - 2026-04-09
+
+### ✨ New Features
+
+- **Serial port coordination API** — the extension now exports a public API for other extensions to participate in the upload lifecycle:
+  - `onWillUpload` — fires before an upload task starts; subscribers receive a `waitUntil(promise)` callback to delay the upload until they have released the serial port. The upload is aborted if any subscriber rejects.
+  - `onDidUpload` — fires after an upload task completes (carries `port` and `exitCode`); subscribers use this to reacquire the serial port.
+  - Duplicate emissions are prevented: each `ProjectTaskManager` instance tracks its own owned upload task by ID and only fires `onDidUpload` for exactly that task.
+
+---
+
 ## [1.3.3] - 2026-04-06
 
 ### 📦 Dependencies
