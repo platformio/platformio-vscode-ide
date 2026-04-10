@@ -4,6 +4,20 @@ All notable changes to the **pioarduino IDE** VSCode extension are documented in
 
 ---
 
+## [1.3.5] - 2026-04-10
+
+### 🐛 Bug Fixes
+
+- **Upload FileSystem Image and Erase Flash now respect the configured port** — dynamically fetched targets such as `uploadfs` and `erase_flash` were ignoring the port selected in the status bar because `TaskItem.getCoreArgs()` only appends `--upload-port` for tasks that declare `optionalArgs`. The extension now appends `--upload-port` itself for any `--target` whose name starts with `upload` or `erase` ([platformio/platform-espressif32#1582](https://github.com/platformio/platform-espressif32/issues/1582))
+- **Port coordination and serial monitor auto-close extended to `erase*` tasks** — `erase_flash` (and similar targets) now wait for subscribers to release the serial port before executing, and the serial monitor is automatically closed beforehand, matching the behaviour of regular upload tasks
+- **Upload lifecycle events (`fireWillUpload` / `fireDidUpload`) correctly scoped** — `erase*` targets participate in port coordination but do not emit upload lifecycle events; only genuine upload tasks (`upload`, `uploadfs`, …) set `_ownedUploadTaskId` and trigger `fireDidUpload` on completion
+- **Port picker filters noisy ports per platform** — the port switcher quick-pick now hides irrelevant entries before listing:
+  - **macOS**: ports matching `*.Bluetooth*` or `*.debug*` are excluded
+  - **Linux**: virtual serial ports (`/dev/ttyS*`) and Bluetooth RFCOMM devices (`/dev/rfcomm*`) are excluded
+  - **Windows**: ports whose description contains `bluetooth` are excluded
+
+---
+
 ## [1.3.4] - 2026-04-09
 
 ### ✨ New Features
