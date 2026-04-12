@@ -204,7 +204,8 @@ export default class ProjectTaskManager {
     const startedArgs = this.getTaskArgs(this._startedTask);
     const closeMonitorConds = [
       extension.getConfiguration('autoCloseSerialMonitor'),
-      startedArgs.includes('test') || this._needsPortCoordinationTask(this._startedTask),
+      startedArgs.includes('test') ||
+        this._needsPortCoordinationTask(this._startedTask),
     ];
     if (!closeMonitorConds.every((value) => value)) {
       return;
@@ -303,10 +304,7 @@ export default class ProjectTaskManager {
   // (fireWillUpload / fireDidUpload) are not emitted for erase operations.
   _isUploadTask(task) {
     const args = this.getTaskArgs(task);
-    return (
-      args.includes('upload') ||
-      /^upload/i.test(this._getTarget(args) ?? '')
-    );
+    return args.includes('upload') || /^upload/i.test(this._getTarget(args) ?? '');
   }
 
   areTasksEqual(task1, task2) {
@@ -372,9 +370,7 @@ export default class ProjectTaskManager {
         (port) => !/\.(Bluetooth|debug)/i.test(port.port),
       );
     } else if (process.platform === 'linux') {
-      serialPorts = serialPorts.filter(
-        (port) => !/\/(ttyS\d+|rfcomm)/.test(port.port),
-      );
+      serialPorts = serialPorts.filter((port) => !/\/(ttyS\d+|rfcomm)/.test(port.port));
     } else if (process.platform === 'win32') {
       serialPorts = serialPorts.filter(
         (port) => !/bluetooth/i.test(port.description || ''),
