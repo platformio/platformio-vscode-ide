@@ -4,6 +4,14 @@ All notable changes to the **pioarduino IDE** VSCode extension are documented in
 
 ---
 
+## [1.3.7] - 2026-04-12
+
+### 📦 Dependencies
+
+- Update `pioarduino-vscode-debug` — replaced `xml2js` with `fast-xml-parser`
+
+---
+
 ## [1.3.6] - 2026-04-11
 
 ### 📦 Dependencies
