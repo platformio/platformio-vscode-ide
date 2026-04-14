@@ -4,6 +4,14 @@ All notable changes to the **pioarduino IDE** VSCode extension are documented in
 
 ---
 
+## [1.3.8] - 2026-04-14
+
+### ✨ New Features
+
+- **Automatic Espressif clangd detection** — the extension now automatically discovers and uses Espressif's patched clangd from the PlatformIO packages directory (`tool-clangd-esp` or `toolchain-clang-esp`). This clangd variant has native support for Xtensa and ESP RISC-V custom ISA extensions (`xespv`, `xesploop`, `xespdsp`, etc.) that the upstream clangd does not understand, providing accurate IntelliSense for ESP32 targets.
+
+---
+
 ## [1.3.7] - 2026-04-12
 
 ### 📦 Dependencies

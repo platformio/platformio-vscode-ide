@@ -91,9 +91,15 @@ To fix this, the extension:
 2. Recursively walks the project directory for all C/C++ source and header files (`.h`, `.hpp`, `.c`, `.cpp`, `.cc`, `.cxx`, `.ino`), skipping `node_modules`, `.pio`, `.git`, `build`, and `__pycache__`.
 3. For every file not already in the compilation database, creates a synthetic entry by cloning the template's `arguments` array, replacing the source file path and redirecting `-o` to `/dev/null` (or `NUL` on Windows).
 
-#### Step 6: Configure clangd Arguments
+#### Step 6: Configure clangd Path and Arguments
 
-`ensureClangdArgs()` updates the `clangd.arguments` workspace setting to include:
+`ensureClangdArgs()` first checks whether Espressif's patched clangd is available in the PlatformIO packages directory. Espressif's clangd has native support for Xtensa and ESP RISC-V custom ISA extensions (`xespv`, `xesploop`, `xespdsp`, etc.) that the upstream clangd does not understand. If found, it sets `clangd.path` to point to this binary. The search order is:
+
+1. `packages/tool-clangd-esp/bin/clangd` — dedicated lightweight clangd package (`clangd.exe` on Windows)
+2. `packages/tool-clangd-esp/esp-clangd/bin/clangd` — legacy layout of the dedicated package (`clangd.exe` on Windows)
+3. `packages/toolchain-clang-esp/esp-clang/bin/clangd` — bundled in the full Espressif clang toolchain (`clangd.exe` on Windows)
+
+It also updates the `clangd.arguments` workspace setting to include:
 
 - **`--compile-commands-dir=<projectDir>`** — tells clangd where to find `compile_commands.json`.
 - **`--query-driver=<glob>`** — allows clangd to query PlatformIO's cross-compilers for built-in system include paths. The glob covers `toolchain-*/bin/*` and `tool-*/bin/*` under the PlatformIO core directory. Without this, clangd cannot resolve system headers for embedded targets (xtensa, arm, riscv, etc.).
@@ -124,6 +130,7 @@ Extension Activation
                  │    └─ Write back as arguments arrays
                  │
                  ├─ ensureClangdArgs(projectDir)
+                 │    ├─ clangd.path → Espressif clangd (if installed)
                  │    ├─ --compile-commands-dir
                  │    └─ --query-driver
                  │

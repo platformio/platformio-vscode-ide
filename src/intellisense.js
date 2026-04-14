@@ -330,6 +330,36 @@ export async function fixupCompileCommands(projectDir) {
   await fs.writeFile(ccPath, JSON.stringify(entries, null, 2) + '\n', 'utf-8');
 }
 
+/**
+ * Search for Espressif's clangd binary in the PlatformIO packages directory.
+ *
+ * Espressif ships a patched clangd that understands Xtensa and ESP RISC-V
+ * custom extensions (xespv, xesploop, xespdsp, etc.) natively — the upstream
+ * clangd does not.  The binary may live in:
+ *   1. A dedicated clangd package:  packages/tool-clangd-esp/esp-clangd/bin/clangd
+ *   2. The full clang toolchain:    packages/toolchain-clang-esp/esp-clang/bin/clangd
+ *
+ * Returns the absolute path to the clangd binary, or null if not found.
+ */
+async function findEspClangd() {
+  const packagesDir = path.join(pioNodeHelpers.core.getCoreDir(), 'packages');
+  const exe = IS_WINDOWS ? 'clangd.exe' : 'clangd';
+  const candidates = [
+    path.join(packagesDir, 'tool-clangd-esp', 'bin', exe),
+    path.join(packagesDir, 'tool-clangd-esp', 'esp-clangd', 'bin', exe),
+    path.join(packagesDir, 'toolchain-clang-esp', 'esp-clang', 'bin', exe),
+  ];
+  for (const candidate of candidates) {
+    try {
+      await fs.access(candidate);
+      return candidate;
+    } catch {
+      // not installed here
+    }
+  }
+  return null;
+}
+
 export async function ensureClangdArgs(projectDir) {
   if (
     getActiveBackendId() !== 'clangd' ||
@@ -342,6 +372,19 @@ export async function ensureClangdArgs(projectDir) {
   const currentArgs = config.get('arguments') || [];
   const newArgs = [...currentArgs];
   let changed = false;
+
+  // Use Espressif's clangd when available — it has native Xtensa / ESP RISC-V
+  // support which the stock clangd lacks.
+  const espClangd = await findEspClangd();
+  if (espClangd) {
+    const inspected = config.inspect('path');
+    const currentPath = inspected
+      ? (inspected.workspaceValue ?? inspected.globalValue)
+      : undefined;
+    if (currentPath !== espClangd) {
+      await config.update('path', espClangd, vscode.ConfigurationTarget.Workspace);
+    }
+  }
 
   // --compile-commands-dir: tell clangd where compile_commands.json lives
   const compileCommandsFlag = `--compile-commands-dir=${projectDir}`;

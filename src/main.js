@@ -173,8 +173,10 @@ class PlatformIOVSCodeExtension {
   }
 
   patchOSEnviron() {
+    const { getActiveBackendId } = require('./intellisense');
     const extraVars = {
       PLATFORMIO_IDE: utils.getIDEVersion(),
+      PLATFORMIO_IDE_INTELLISENSE_ENGINE: getActiveBackendId(),
     };
     // handle HTTP proxy settings
     const http_proxy = vscode.workspace.getConfiguration('http').get('proxy');
