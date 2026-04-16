@@ -360,6 +360,51 @@ async function findEspClangd() {
   return null;
 }
 
+/**
+ * Ensure a .clangd config file exists in the project directory with
+ * BuiltinHeaders: QueryDriver.
+ *
+ * By default clangd replaces the cross-compiler's built-in headers
+ * (stddef.h, stdbool.h, etc.) with its own, which are built for the
+ * host rather than the embedded target.  This causes false errors such
+ * as "'stdbool.h' file not found" or libc++ vs libstdc++ mismatches.
+ *
+ * Setting BuiltinHeaders to QueryDriver tells clangd (≥ 21) to keep
+ * the headers reported by --query-driver instead of substituting its own.
+ */
+export async function ensureClangdConfig(projectDir) {
+  if (
+    getActiveBackendId() !== 'clangd' ||
+    !projectDir ||
+    !isBackendExtensionInstalled()
+  ) {
+    return;
+  }
+  const configPath = path.join(projectDir, '.clangd');
+
+  // Desired YAML block
+  const builtinHeadersBlock = 'CompileFlags:\n  BuiltinHeaders: QueryDriver\n';
+
+  let existing = '';
+  try {
+    existing = await fs.readFile(configPath, 'utf-8');
+  } catch {
+    // file does not exist yet
+  }
+
+  // Already contains the directive – nothing to do
+  if (existing.includes('BuiltinHeaders')) {
+    return;
+  }
+
+  // Prepend the block (separated by ---) so we don't clobber user settings
+  const content = existing
+    ? builtinHeadersBlock + '---\n' + existing
+    : builtinHeadersBlock;
+
+  await fs.writeFile(configPath, content, 'utf-8');
+}
+
 export async function ensureClangdArgs(projectDir) {
   if (
     getActiveBackendId() !== 'clangd' ||
