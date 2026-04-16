@@ -4,6 +4,14 @@ All notable changes to the **pioarduino IDE** VSCode extension are documented in
 
 ---
 
+## [1.3.9] - 2026-04-17
+
+### 🐛 Bug Fixes
+
+- **clangd: fix missing `stdbool.h` and wrong libc++ headers for cross-compilers** — clangd ≥ 18 replaces the cross-compiler's built-in headers with its own host headers, causing false errors such as `'stdbool.h' file not found` and `no type named '_Tp_alloc_type'` in `stl_vector.h`. The extension now generates a `.clangd` config file with `CompileFlags: BuiltinHeaders: QueryDriver`, which tells clangd (≥ 21) to keep the headers reported by `--query-driver` instead of substituting its own.
+
+---
+
 ## [1.3.8] - 2026-04-14
 
 ### ✨ New Features
