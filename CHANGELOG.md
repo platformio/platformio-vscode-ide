@@ -4,6 +4,14 @@ All notable changes to the **pioarduino IDE** VSCode extension are documented in
 
 ---
 
+## [1.3.10] - 2026-04-17
+
+### 🐛 Bug Fixes
+
+- **Conflicted extensions warning shown only once** — the warning about conflicting IntelliSense extensions (e.g. cpptools) is now persisted via global state so it no longer appears on every VS Code restart. The warning is permanently dismissed after the user uninstalls the conflicted extensions; clicking "More details" or "Remind later" will still allow it to reappear next session.
+
+---
+
 ## [1.3.9] - 2026-04-17
 
 ### 🐛 Bug Fixes

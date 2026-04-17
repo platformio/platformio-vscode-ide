@@ -56,6 +56,12 @@ export async function maybeRateExtension() {
 }
 
 export async function warnAboutConflictedExtensions() {
+  const stateKey = 'conflicted-extensions-warned';
+  const state = extension.context.globalState.get(stateKey);
+  if (state && state.done) {
+    return;
+  }
+
   const conflictedIds = getActiveConflictedExtensionIds();
   const conflicted = vscode.extensions.all.filter(
     (ext) => ext.isActive && conflictedIds.includes(ext.id),
@@ -87,7 +93,11 @@ export async function warnAboutConflictedExtensions() {
           ext.id,
         );
       });
+      extension.context.globalState.update(stateKey, { done: true });
       vscode.commands.executeCommand('workbench.action.reloadWindow');
+      break;
+    default:
+      // "Remind later" or dismissed — do not set done, will warn once more next session
       break;
   }
 }
