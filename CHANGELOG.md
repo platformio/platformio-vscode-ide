@@ -4,6 +4,14 @@ All notable changes to the **pioarduino IDE** VSCode extension are documented in
 
 ---
 
+## [1.3.12] - 2026-04-17
+
+### ✨ Improvements
+
+- **clangd: auto-generate `compile_commands.json`** — when the clangd backend is active and `compile_commands.json` is missing (e.g. first open or after a clean), the extension now automatically runs `pio run --target compiledb` to generate it.
+
+---
+
 ## [1.3.11] - 2026-04-17
 
 ### 🐛 Bug Fixes

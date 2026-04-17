@@ -12,6 +12,7 @@ import { disposeSubscriptions, notifyError } from '../utils';
 import {
   ensureClangdArgs,
   ensureClangdConfig,
+  ensureCompileCommands,
   ensureLaunchJson,
   fixupCompileCommands,
   getActiveBackend,
@@ -243,6 +244,7 @@ export default class ProjectManager {
     ) {
       disposeSubscriptions(this.internalSubscriptions);
       await this._pool.switch(projectDir);
+      await ensureCompileCommands(projectDir);
       await ensureClangdArgs(projectDir);
       this._taskManager = new ProjectTaskManager(projectDir, observer);
       this.internalSubscriptions.push(
