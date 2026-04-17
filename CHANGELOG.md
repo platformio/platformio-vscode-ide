@@ -4,6 +4,14 @@ All notable changes to the **pioarduino IDE** VSCode extension are documented in
 
 ---
 
+## [1.3.11] - 2026-04-17
+
+### 🐛 Bug Fixes
+
+- **clangd: suppress false `pp_expects_filename` diagnostic** — ESP-IDF's `build_info.h` uses `#include MBEDTLS_CONFIG_FILE` where clangd cannot resolve the macro, producing a spurious `expected "FILENAME" or <FILENAME>` error. The auto-generated `.clangd` config now includes `Diagnostics: Suppress: [pp_expects_filename]` to silence this framework-level issue.
+
+---
+
 ## [1.3.10] - 2026-04-17
 
 ### 🐛 Bug Fixes

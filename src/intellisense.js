@@ -383,7 +383,9 @@ export async function ensureClangdConfig(projectDir) {
   const configPath = path.join(projectDir, '.clangd');
 
   // Desired YAML block
-  const builtinHeadersBlock = 'CompileFlags:\n  BuiltinHeaders: QueryDriver\n';
+  const builtinHeadersBlock =
+    'CompileFlags:\n  BuiltinHeaders: QueryDriver\n' +
+    'Diagnostics:\n  Suppress: [pp_expects_filename]\n';
 
   let existing = '';
   try {
@@ -392,8 +394,8 @@ export async function ensureClangdConfig(projectDir) {
     // file does not exist yet
   }
 
-  // Already contains the directive – nothing to do
-  if (existing.includes('BuiltinHeaders')) {
+  // Already contains both directives – nothing to do
+  if (existing.includes('BuiltinHeaders') && existing.includes('pp_expects_filename')) {
     return;
   }
 
