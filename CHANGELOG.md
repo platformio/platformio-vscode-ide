@@ -4,6 +4,14 @@ All notable changes to the **pioarduino IDE** VSCode extension are documented in
 
 ---
 
+## [1.3.13] - 2026-04-17
+
+### 🐛 Bug Fixes
+
+- **clangd: generate `compile_commands.json` only for the active environment** — `ensureCompileCommands` now passes the selected environment to `pio run --target compiledb --environment <env>` so only the active env is built instead of all environments.
+
+---
+
 ## [1.3.12] - 2026-04-17
 
 ### ✨ Improvements

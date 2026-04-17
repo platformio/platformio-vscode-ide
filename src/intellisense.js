@@ -153,7 +153,7 @@ function collectOtherBackendValues(activeId) {
  * compile_commands.json is present yet (e.g. first open, or after a clean),
  * we generate it by running `pio run --target compiledb`.
  */
-export async function ensureCompileCommands(projectDir) {
+export async function ensureCompileCommands(projectDir, activeEnv) {
   if (
     getActiveBackendId() !== 'clangd' ||
     !projectDir ||
@@ -178,10 +178,11 @@ export async function ensureCompileCommands(projectDir) {
     },
     async () => {
       try {
-        await pioNodeHelpers.core.getPIOCommandOutput(
-          ['run', '--target', 'compiledb'],
-          { projectDir },
-        );
+        const args = ['run', '--target', 'compiledb'];
+        if (activeEnv) {
+          args.push('--environment', activeEnv);
+        }
+        await pioNodeHelpers.core.getPIOCommandOutput(args, { projectDir });
         // Post-process the freshly generated file (same steps as onDidRebuildIndex).
         await fixupCompileCommands(projectDir);
         await ensureClangdConfig(projectDir);

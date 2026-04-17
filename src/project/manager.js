@@ -244,7 +244,7 @@ export default class ProjectManager {
     ) {
       disposeSubscriptions(this.internalSubscriptions);
       await this._pool.switch(projectDir);
-      await ensureCompileCommands(projectDir);
+      await ensureCompileCommands(projectDir, observer.getSelectedEnv());
       await ensureClangdArgs(projectDir);
       this._taskManager = new ProjectTaskManager(projectDir, observer);
       this.internalSubscriptions.push(

@@ -1,6 +1,6 @@
 {
   "name": "pioarduino-ide",
-  "version": "1.3.12",
+  "version": "1.3.13",
   "icon": "assets/images/pioarduino-128x128.png",
   "publisher": "pioarduino",
   "engines": {
@@ -897,7 +897,7 @@
   "devDependencies": {
     "@types/node": "~25",
     "@types/vscode": "~1.95.0",
-    "@vscode/vsce": "~3.7.1",
+    "@vscode/vsce": "~3.9.0",
     "eslint": "^8",
     "eslint-import-resolver-webpack": "~0.13.11",
     "eslint-plugin-import": "^2.32.0",
