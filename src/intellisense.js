@@ -434,11 +434,6 @@ export async function ensureClangdConfig(projectDir) {
   }
   const configPath = path.join(projectDir, '.clangd');
 
-  // Desired YAML block
-  const builtinHeadersBlock =
-    'CompileFlags:\n  BuiltinHeaders: QueryDriver\n' +
-    'Diagnostics:\n  Suppress: [pp_expects_filename]\n';
-
   let existing = '';
   try {
     existing = await fs.readFile(configPath, 'utf-8');
@@ -446,15 +441,26 @@ export async function ensureClangdConfig(projectDir) {
     // file does not exist yet
   }
 
+  const hasBuiltinHeaders = existing.includes('BuiltinHeaders');
+  const hasSuppressDiag = existing.includes('pp_expects_filename');
+
   // Already contains both directives – nothing to do
-  if (existing.includes('BuiltinHeaders') && existing.includes('pp_expects_filename')) {
+  if (hasBuiltinHeaders && hasSuppressDiag) {
     return;
   }
 
+  // Build only the missing parts
+  const parts = [];
+  if (!hasBuiltinHeaders) {
+    parts.push('CompileFlags:\n  BuiltinHeaders: QueryDriver');
+  }
+  if (!hasSuppressDiag) {
+    parts.push('Diagnostics:\n  Suppress: [pp_expects_filename]');
+  }
+  const block = parts.join('\n') + '\n';
+
   // Prepend the block (separated by ---) so we don't clobber user settings
-  const content = existing
-    ? builtinHeadersBlock + '---\n' + existing
-    : builtinHeadersBlock;
+  const content = existing ? block + '---\n' + existing : block;
 
   await fs.writeFile(configPath, content, 'utf-8');
 }
