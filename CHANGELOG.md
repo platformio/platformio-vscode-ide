@@ -4,6 +4,14 @@ All notable changes to the **pioarduino IDE** VSCode extension are documented in
 
 ---
 
+## [1.3.14] - 2026-04-18
+
+### 🐛 Bug Fixes
+
+- **clangd: avoid duplicates in `.clangd`** by checking if espressif specific settings are already applied.
+
+---
+
 ## [1.3.13] - 2026-04-17
 
 ### 🐛 Bug Fixes
