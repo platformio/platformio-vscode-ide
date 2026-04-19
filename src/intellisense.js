@@ -15,73 +15,98 @@ import {
 import { extension } from './main';
 import { promises as fs } from 'fs';
 import path from 'path';
+import shellTokenizeImpl from './shellTokenize';
 import vscode from 'vscode';
 
-/**
- * Tokenize a shell command string into an argv array.
- *
- * On POSIX this follows GNU shell rules (backslash escapes, single & double
- * quotes).  On Windows backslashes are NOT treated as escape characters so
- * that paths like C:\SDK\include survive intact – matching the behaviour of
- * LLVM's TokenizeWindowsCommandLine.
- *
- * Empty quoted strings ("" or '') produce an empty-string token.
- */
 function shellTokenize(cmd) {
-  const tokens = [];
-  let current = '';
-  let hasContent = false;
-  let inSingle = false;
-  let inDouble = false;
-  for (let i = 0; i < cmd.length; i++) {
-    const ch = cmd[i];
-    if (!IS_WINDOWS && ch === '\\' && !inSingle && i + 1 < cmd.length) {
-      current += cmd[++i];
-      hasContent = true;
-    } else if (ch === "'" && !inDouble) {
-      inSingle = !inSingle;
-      hasContent = true;
-    } else if (ch === '"' && !inSingle) {
-      inDouble = !inDouble;
-      hasContent = true;
-    } else if (ch === ' ' && !inSingle && !inDouble) {
-      if (current.length > 0 || hasContent) {
-        tokens.push(current);
-        current = '';
-        hasContent = false;
-      }
-    } else {
-      current += ch;
-      hasContent = true;
-    }
-  }
-  if (current.length > 0 || hasContent) {
-    tokens.push(current);
-  }
-  return tokens;
+  return shellTokenizeImpl(cmd, IS_WINDOWS);
 }
 
 /** Include-path flags that accept a directory argument (longest first). */
 const INCLUDE_FLAGS = ['-idirafter', '-isystem', '-iquote', '-I'];
 
 /**
- * Convert relative include-path arguments to absolute.
- * Handles both joined (-Ipath) and separated (-I path) forms for every flag
- * in INCLUDE_FLAGS.
+ * Flags whose argument is a *file* path, always in separated form only
+ * (GCC/Clang never accept a joined form like -include<file>).
  */
-function absolutizeIncludes(args, dir) {
+const INCLUDE_FILE_FLAGS = ['-include-pch', '-include', '-imacros'];
+
+/**
+ * Convert relative include-path arguments to absolute.
+ *
+ * For directory-style flags (-I, -isystem, -iquote, -idirafter):
+ *   resolve relative to `dir`.
+ *
+ * For file-style flags (-include, -include-pch, -imacros):
+ *   search the full include-path list (both absolute AND relative entries,
+ *   all pre-resolved to absolute) for the file, then fall back to `dir`.
+ *   This mirrors the compiler's own resolution order.
+ */
+async function absolutizeIncludes(args, dir) {
+  // ── Pass 1: collect every include directory (absolutize relative ones). ──
+  const includeDirs = [];
   for (let i = 1; i < args.length; i++) {
     const a = args[i];
-    // Separated form: flag <path>
-    const separatedMatch = INCLUDE_FLAGS.find((f) => a === f);
-    if (separatedMatch && i + 1 < args.length) {
+
+    // Separated form:  -I <path>
+    const sep = INCLUDE_FLAGS.find((f) => a === f);
+    if (sep && i + 1 < args.length) {
+      const p = args[i + 1];
+      // ★ key change: absolutize relative dirs here, not just absolute ones
+      includeDirs.push(path.isAbsolute(p) ? p : path.join(dir, p));
+      i++;
+      continue;
+    }
+
+    // Joined form:  -I<path>
+    for (const flag of INCLUDE_FLAGS) {
+      if (a.startsWith(flag) && a.length > flag.length) {
+        const p = a.slice(flag.length);
+        includeDirs.push(path.isAbsolute(p) ? p : path.join(dir, p));
+        break;
+      }
+    }
+  }
+
+  // ── Pass 2: absolutize every include argument. ──
+  for (let i = 1; i < args.length; i++) {
+    const a = args[i];
+
+    // Separated directory flag:  -I <path>
+    const sepDirMatch = INCLUDE_FLAGS.find((f) => a === f);
+    if (sepDirMatch && i + 1 < args.length) {
       if (!path.isAbsolute(args[i + 1])) {
         args[i + 1] = path.join(dir, args[i + 1]);
       }
       i++;
       continue;
     }
-    // Joined form: flag<path> (match longest prefix first)
+
+    // Separated file flag:  -include <file>
+    const sepFileMatch = INCLUDE_FILE_FLAGS.find((f) => a === f);
+    if (sepFileMatch && i + 1 < args.length) {
+      const rel = args[i + 1];
+      if (!path.isAbsolute(rel)) {
+        // Walk include dirs in order (same as the compiler would).
+        let resolved = null;
+        for (const d of includeDirs) {
+          const candidate = path.join(d, rel);
+          try {
+            await fs.access(candidate);
+            resolved = candidate;
+            break;
+          } catch {
+            // not in this dir — keep searching
+          }
+        }
+        // Fallback: resolve relative to compilation dir (should be rare).
+        args[i + 1] = resolved ?? path.join(dir, rel);
+      }
+      i++;
+      continue;
+    }
+
+    // Joined directory flag:  -I<path>
     for (const flag of INCLUDE_FLAGS) {
       if (a.startsWith(flag) && a.length > flag.length) {
         const v = a.slice(flag.length);
@@ -147,17 +172,25 @@ function collectOtherBackendValues(activeId) {
 }
 
 /**
- * Ensure compile_commands.json exists for clangd.
+ * Ensure compile_commands.json will be generated for clangd.
  *
  * When a project is opened with the clangd backend and no
  * compile_commands.json is present yet (e.g. first open, or after a clean),
- * we generate it by running `pio run --target compiledb`.
+ * we trigger a rebuild via the project observer.  The observer's
+ * `rebuildIndex` runs `pio run --target compiledb` which waits for PIO's
+ * full pre-build process (LDF, dependency resolution, etc.) to complete
+ * before writing compile_commands.json.  The `onDidRebuildIndex` callback
+ * then post-processes the file.
+ *
+ * This avoids a race where a separate `pio run` would start in parallel
+ * with the observer's own rebuild.
  */
-export async function ensureCompileCommands(projectDir, activeEnv) {
+export async function ensureCompileCommands(projectDir, observer) {
   if (
     getActiveBackendId() !== 'clangd' ||
     !projectDir ||
-    !isBackendExtensionInstalled()
+    !isBackendExtensionInstalled() ||
+    !observer
   ) {
     return;
   }
@@ -166,36 +199,9 @@ export async function ensureCompileCommands(projectDir, activeEnv) {
     await fs.access(ccPath);
     return; // already exists
   } catch {
-    // file does not exist – generate it
+    // file does not exist – trigger a rebuild via the observer
   }
-  // Run in background with a progress notification so the UI stays responsive.
-  // Intentionally not awaited: project switching should not block on `pio run`.
-  return vscode.window.withProgress(
-    {
-      location: vscode.ProgressLocation.Notification,
-      title: 'PlatformIO: Generating compile_commands.json…',
-      cancellable: false,
-    },
-    async () => {
-      try {
-        const args = ['run', '--target', 'compiledb'];
-        if (activeEnv) {
-          args.push('--environment', activeEnv);
-        }
-        await pioNodeHelpers.core.getPIOCommandOutput(args, { projectDir });
-        // Post-process the freshly generated file (same steps as onDidRebuildIndex).
-        await fixupCompileCommands(projectDir);
-        await ensureClangdConfig(projectDir);
-        await ensureClangdArgs(projectDir);
-        await ensureLaunchJson(projectDir);
-        await notifyRescanBackend();
-      } catch (err) {
-        vscode.window.showErrorMessage(
-          `Failed to generate compile_commands.json: ${err && err.message ? err.message : err}`,
-        );
-      }
-    },
-  );
+  observer.rebuildIndex({ force: true });
 }
 
 /**
@@ -243,12 +249,19 @@ export async function fixupCompileCommands(projectDir) {
           continue;
         }
         const candidate = path.join(packagesDir, d, 'bin', bare);
-        try {
-          await fs.access(candidate);
-          resolveCache.set(bare, candidate);
-          return candidate;
-        } catch {
-          // not here
+        // On Windows, PIO emits bare names without .exe – try both variants.
+        const candidates =
+          IS_WINDOWS && !bare.endsWith('.exe')
+            ? [candidate + '.exe', candidate]
+            : [candidate];
+        for (const c of candidates) {
+          try {
+            await fs.access(c);
+            resolveCache.set(bare, c);
+            return c;
+          } catch {
+            // not here
+          }
         }
       }
     } catch {
@@ -307,7 +320,7 @@ export async function fixupCompileCommands(projectDir) {
     }
 
     // 2. Convert relative include paths to absolute
-    absolutizeIncludes(args, dir);
+    await absolutizeIncludes(args, dir);
 
     // Write back as arguments array (preferred by clangd, avoids quoting issues)
     entry.arguments = args;

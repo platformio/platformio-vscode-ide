@@ -25,6 +25,8 @@ jobs:
           node-version: 20
       - name: Install NPM
         run: npm install
+      - name: Run tests
+        run: node src/shellTokenize.test.js
       - name: Compile vsix package
         run: |
           npm run build

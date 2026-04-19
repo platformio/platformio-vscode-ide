@@ -4,6 +4,26 @@ All notable changes to the **pioarduino IDE** VSCode extension are documented in
 
 ---
 
+## [1.3.16] - 2026-04-19
+
+### 🐛 Bug Fixes
+
+- **clangd: fix `compile_commands.json` generation timing** — `ensureCompileCommands` no longer runs a separate `pio run --target compiledb` that could race with the observer's own rebuild. Instead it triggers the rebuild via the project observer, which waits for PIO's full pre-build process (LDF, dependency resolution) to complete.
+- **clangd: fix `compile_commands.json` tokenization on Windows** — implement the canonical LLVM/MSVC counted-backslash rule in `shellTokenize` so that backslash-escaped quotes and values with spaces (e.g. `-DARDUINO_BOARD=\"Espressif ESP32-S3-DevKitC-1\"`) are no longer split into multiple bogus arguments.
+- **clangd: resolve compiler paths on Windows** — `resolveCompiler` now tries the `.exe` extension when looking up bare compiler names (e.g. `riscv32-esp-elf-gcc` → `riscv32-esp-elf-gcc.exe`), so cross-compiler paths are correctly resolved in `compile_commands.json`.
+- **shellTokenize: treat tabs, `\r`, and `\n` as delimiters** — previously only spaces were recognized as token separators; tabs and carriage returns were appended literally to tokens.
+- **shellTokenize: single quotes are literal on Windows** — matches MSVC/LLVM behavior where only double quotes are quoting characters.
+
+### ♻️ Refactor
+
+- **Extract `shellTokenize` into its own module** (`src/shellTokenize.js`) — accepts an `isWindows` parameter, eliminating the duplicated copy in tests and preventing drift.
+
+### 🧪 Tests
+
+- **Add unit tests for `shellTokenize`** — covers POSIX and Windows branches including path preservation, MSVC backslash-quote counting, tab/CR/LF delimiters, Windows literal single quotes, empty quoted tokens, and edge cases. Tests run in CI (`build.yml`) and fail the workflow on regression.
+
+---
+
 ## [1.3.15] - 2026-04-19
 
 ### 🔧 Maintenance
