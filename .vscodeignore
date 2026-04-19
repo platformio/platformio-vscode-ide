@@ -31,7 +31,6 @@ node_modules/**/.github/**
 node_modules/**/appveyor.yml
 node_modules/**/.flowconfig
 node_modules/**/*.flow
-node_modules/**/*.min.js
 node_modules/**/tsconfig.json
 node_modules/**/webpack.config.js
 node_modules/**/jest.config.js
