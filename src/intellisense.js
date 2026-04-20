@@ -185,7 +185,7 @@ function collectOtherBackendValues(activeId) {
  * This avoids a race where a separate `pio run` would start in parallel
  * with the observer's own rebuild.
  */
-export async function ensureCompileCommands(projectDir, observer) {
+export async function ensureCompileCommands(projectDir, observer, envDir) {
   if (
     getActiveBackendId() !== 'clangd' ||
     !projectDir ||
@@ -194,12 +194,18 @@ export async function ensureCompileCommands(projectDir, observer) {
   ) {
     return;
   }
-  const ccPath = path.join(projectDir, 'compile_commands.json');
-  try {
-    await fs.access(ccPath);
-    return; // already exists
-  } catch {
-    // file does not exist – trigger a rebuild via the observer
+  // When an env-specific build dir is known, trust only that database; the
+  // project-root copy may belong to a different environment.
+  const candidates = envDir
+    ? [path.join(envDir, 'compile_commands.json')]
+    : [path.join(projectDir, 'compile_commands.json')];
+  for (const ccPath of candidates) {
+    try {
+      await fs.access(ccPath);
+      return; // already exists
+    } catch {
+      // not found here
+    }
   }
   observer.rebuildIndex({ force: true });
 }
@@ -212,7 +218,7 @@ export async function ensureCompileCommands(projectDir, observer) {
  *  4. Add synthetic entries for header files included from other directories
  *     so clangd can match them (it uses directory proximity heuristics).
  */
-export async function fixupCompileCommands(projectDir) {
+export async function fixupCompileCommands(projectDir, envDir) {
   if (
     getActiveBackendId() !== 'clangd' ||
     !projectDir ||
@@ -220,10 +226,10 @@ export async function fixupCompileCommands(projectDir) {
   ) {
     return;
   }
-  const ccPath = path.join(projectDir, 'compile_commands.json');
+  const srcPath = path.join(projectDir, 'compile_commands.json');
   let raw;
   try {
-    raw = await fs.readFile(ccPath, 'utf-8');
+    raw = await fs.readFile(srcPath, 'utf-8');
   } catch {
     return;
   }
@@ -392,7 +398,19 @@ export async function fixupCompileCommands(projectDir) {
     }
   }
 
-  await fs.writeFile(ccPath, JSON.stringify(entries, null, 2) + '\n', 'utf-8');
+  const destDir = envDir || projectDir;
+  await fs.mkdir(destDir, { recursive: true });
+  const destPath = path.join(destDir, 'compile_commands.json');
+  await fs.writeFile(destPath, JSON.stringify(entries, null, 2) + '\n', 'utf-8');
+
+  // Remove the root copy when the file was moved to the env build dir
+  if (envDir && destPath !== srcPath) {
+    try {
+      await fs.unlink(srcPath);
+    } catch {
+      // ignore – may already be gone
+    }
+  }
 }
 
 /**
@@ -478,7 +496,7 @@ export async function ensureClangdConfig(projectDir) {
   await fs.writeFile(configPath, content, 'utf-8');
 }
 
-export async function ensureClangdArgs(projectDir) {
+export async function ensureClangdArgs(projectDir, envDir) {
   if (!projectDir) {
     return;
   }
@@ -542,7 +560,8 @@ export async function ensureClangdArgs(projectDir) {
   }
 
   // --compile-commands-dir: tell clangd where compile_commands.json lives
-  const compileCommandsFlag = `--compile-commands-dir=${projectDir}`;
+  const ccDir = envDir || projectDir;
+  const compileCommandsFlag = `--compile-commands-dir=${ccDir}`;
   changed =
     upsertArg(newArgs, '--compile-commands-dir=', compileCommandsFlag) || changed;
 

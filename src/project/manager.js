@@ -94,9 +94,12 @@ export default class ProjectManager {
         },
         onDidNotifyError: notifyError.bind(this),
         onDidRebuildIndex: async (projectDir) => {
-          await fixupCompileCommands(projectDir);
+          const obs = this._pool.getObserver(projectDir);
+          const env = obs ? await obs.revealActiveEnvironment() : undefined;
+          const envDir = env ? path.join(projectDir, '.pio', 'build', env) : undefined;
+          await fixupCompileCommands(projectDir, envDir);
           await ensureClangdConfig(projectDir);
-          await ensureClangdArgs(projectDir);
+          await ensureClangdArgs(projectDir, envDir);
           await ensureLaunchJson(projectDir);
           await notifyRescanBackend();
         },
@@ -244,8 +247,15 @@ export default class ProjectManager {
     ) {
       disposeSubscriptions(this.internalSubscriptions);
       await this._pool.switch(projectDir);
-      await ensureCompileCommands(projectDir, this._pool.getActiveObserver());
-      await ensureClangdArgs(projectDir);
+      const activeObs = this._pool.getActiveObserver();
+      const activeEnv = activeObs
+        ? await activeObs.revealActiveEnvironment()
+        : undefined;
+      const envDir = activeEnv
+        ? path.join(projectDir, '.pio', 'build', activeEnv)
+        : undefined;
+      await ensureCompileCommands(projectDir, activeObs, envDir);
+      await ensureClangdArgs(projectDir, envDir);
       this._taskManager = new ProjectTaskManager(projectDir, observer);
       this.internalSubscriptions.push(
         this._taskManager,

@@ -54,7 +54,13 @@ function shellTokenize(cmd, isWindows) {
         }
         hasContent = true;
       } else {
-        current += cmd[++i];
+        const next = cmd[i + 1];
+        if (inDouble && next !== '$' && next !== '`' && next !== '"' && next !== '\\' && next !== '\n') {
+          current += '\\' + next;
+        } else {
+          current += next;
+        }
+        i++;
         hasContent = true;
       }
     } else if (ch === "'" && !inDouble && !isWindows) {
