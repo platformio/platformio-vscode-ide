@@ -98,7 +98,7 @@ export default class ProjectManager {
           const env = obs ? await obs.revealActiveEnvironment() : undefined;
           const envDir = env ? path.join(projectDir, '.pio', 'build', env) : undefined;
           await fixupCompileCommands(projectDir, envDir);
-          await ensureClangdConfig(projectDir);
+          await ensureClangdConfig(projectDir, obs);
           await ensureClangdArgs(projectDir, envDir);
           await ensureLaunchJson(projectDir);
           await notifyRescanBackend();

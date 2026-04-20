@@ -4,6 +4,21 @@ All notable changes to the **pioarduino IDE** VSCode extension are documented in
 
 ---
 
+## [1.3.18] - 2026-04-20
+
+### ✨ New Features
+
+- **Espressif .clangd settings** — Smart .clangd updates that add missing compile/index settings without overwriting existing configuration.
+
+### 🐛 Bug Fixes
+- **clangd:** - Avoids unnecessary changes when required ESP or compile-flag entries already exist.
+- **clangd:** - Ensures observer-aware handling during index rebuilds so ESP settings are applied reliably.
+
+### 🔧 Tests
+- **clangd tokenizer:** - Added a lightweight test script to run shell-tokenization checks.
+
+---
+
 ## [1.3.17] - 2026-04-20
 
 ### 🐛 Bug Fixes

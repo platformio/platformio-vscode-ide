@@ -443,19 +443,61 @@ async function findEspClangd() {
   return null;
 }
 
+// Flags that esp-clangd doesn't understand (ESP/GCC-specific machine flags).
+const ESP_CLANGD_REMOVE_FLAGS = [
+  '-misc-unused-parameters',
+  '-mfix-esp32-psram-cache-issue',
+  '-mfix-esp32-psram-cache-strategy=*',
+  '-fno-shrink-wrap',
+  '-fno-tree-switch-conversion',
+  '-fstrict-volatile-bitfields',
+  '-free',
+  '-fipa-pta',
+  '-march=*',
+  '-mdisable-hardware-atomics',
+  '-mlongcalls',
+  '-mtext-section-literals',
+  '-mtarget-align',
+  '-mno-target-align',
+];
+
+const ESP_CLANGD_ADD_FLAGS = [
+  '-Wall',
+  '-Wextra',
+  '-Wunused-variable',
+  '-Wunused-function',
+  '-Wno-unused-parameter',
+  '-Wno-reserved-identifier',
+];
+
 /**
  * Ensure a .clangd config file exists in the project directory with
- * BuiltinHeaders: QueryDriver.
- *
- * By default clangd replaces the cross-compiler's built-in headers
- * (stddef.h, stdbool.h, etc.) with its own, which are built for the
- * host rather than the embedded target.  This causes false errors such
- * as "'stdbool.h' file not found" or libc++ vs libstdc++ mismatches.
- *
- * Setting BuiltinHeaders to QueryDriver tells clangd (≥ 21) to keep
- * the headers reported by --query-driver instead of substituting its own.
+ * BuiltinHeaders: QueryDriver and, when esp-clangd is used, the
+ * necessary Add/Remove flags for ESP-specific compiler options that
+ * upstream clangd does not understand.
  */
-export async function ensureClangdConfig(projectDir) {
+/**
+ * Detect whether the active environment targets an Espressif platform
+ * by inspecting the platform field in platformio.ini via the observer.
+ */
+async function isEspressifProject(projectDir, observer) {
+  if (!observer) {
+    return false;
+  }
+  try {
+    const config = await observer.getConfig();
+    const env = await observer.revealActiveEnvironment();
+    if (!env) {
+      return false;
+    }
+    const platform = config.getEnvPlatform(env);
+    return typeof platform === 'string' && /espressif|esp32|esp8266/i.test(platform);
+  } catch {
+    return false;
+  }
+}
+
+export async function ensureClangdConfig(projectDir, observer) {
   if (
     getActiveBackendId() !== 'clangd' ||
     !projectDir ||
@@ -464,6 +506,8 @@ export async function ensureClangdConfig(projectDir) {
     return;
   }
   const configPath = path.join(projectDir, '.clangd');
+  const espClangd = await findEspClangd();
+  const useEspFlags = !!espClangd && (await isEspressifProject(projectDir, observer));
 
   let existing = '';
   try {
@@ -474,20 +518,45 @@ export async function ensureClangdConfig(projectDir) {
 
   const hasBuiltinHeaders = existing.includes('BuiltinHeaders');
   const hasSuppressDiag = existing.includes('pp_expects_filename');
+  const hasRemoveFlags = ESP_CLANGD_REMOVE_FLAGS.every((f) => existing.includes(f));
+  const hasAddFlags = ESP_CLANGD_ADD_FLAGS.every((f) => existing.includes(f));
+  // Respect any existing Index.Background entry (user may have set Skip, etc.)
+  const hasIndexBackground = /^Index:\s*\n(?:.*\n)*?\s+Background:/m.test(existing);
 
-  // Already contains both directives – nothing to do
-  if (hasBuiltinHeaders && hasSuppressDiag) {
+  const needsEsp =
+    useEspFlags && (!hasRemoveFlags || !hasAddFlags || !hasIndexBackground);
+
+  // Already contains all required directives – nothing to do
+  if (hasBuiltinHeaders && hasSuppressDiag && !needsEsp) {
     return;
   }
 
   // Build only the missing parts
   const parts = [];
+
+  // CompileFlags block — collect all sub-keys into one block
+  const cfParts = [];
   if (!hasBuiltinHeaders) {
-    parts.push('CompileFlags:\n  BuiltinHeaders: QueryDriver');
+    cfParts.push('  BuiltinHeaders: QueryDriver');
   }
+  if (useEspFlags && !hasAddFlags) {
+    cfParts.push('  Add:', ...ESP_CLANGD_ADD_FLAGS.map((f) => `    - "${f}"`));
+  }
+  if (useEspFlags && !hasRemoveFlags) {
+    cfParts.push('  Remove:', ...ESP_CLANGD_REMOVE_FLAGS.map((f) => `    - "${f}"`));
+  }
+  if (cfParts.length > 0) {
+    parts.push('CompileFlags:\n' + cfParts.join('\n'));
+  }
+
   if (!hasSuppressDiag) {
     parts.push('Diagnostics:\n  Suppress: [pp_expects_filename]');
   }
+
+  if (useEspFlags && !hasIndexBackground) {
+    parts.push('Index:\n  Background: Build\n  StandardLibrary: true');
+  }
+
   const block = parts.join('\n') + '\n';
 
   // Prepend the block (separated by ---) so we don't clobber user settings
