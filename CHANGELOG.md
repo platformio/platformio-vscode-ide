@@ -4,6 +4,16 @@ All notable changes to the **pioarduino IDE** VSCode extension are documented in
 
 ---
 
+## [1.3.17] - 2026-04-20
+
+### 🐛 Bug Fixes
+
+- **clangd: per-environment `compile_commands.json`** — the post-processed `compile_commands.json` is now written to `.pio/build/<env>/` instead of the project root, so multi-env projects no longer overwrite each other's compilation database. `--compile-commands-dir` is updated to point to the active environment's build directory.
+- **clangd: no settings written when cpptools is selected** — `clangd.path` and `clangd.arguments` workspace entries are no longer created when `cpptools` is the active IntelliSense engine. When switching away from clangd, only extension-managed entries (`--compile-commands-dir`, `--query-driver`, ESP clangd path) are removed; user-defined clangd arguments are preserved.
+- **shellTokenize: preserve backslashes in POSIX double quotes** — inside double-quoted strings, backslashes before non-special characters (anything other than `$`, `` ` ``, `"`, `\`, newline) are now kept literally, matching POSIX shell semantics.
+
+---
+
 ## [1.3.16] - 2026-04-19
 
 ### 🐛 Bug Fixes
