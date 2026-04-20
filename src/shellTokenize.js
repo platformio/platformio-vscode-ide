@@ -55,7 +55,14 @@ function shellTokenize(cmd, isWindows) {
         hasContent = true;
       } else {
         const next = cmd[i + 1];
-        if (inDouble && next !== '$' && next !== '`' && next !== '"' && next !== '\\' && next !== '\n') {
+        if (
+          inDouble &&
+          next !== '$' &&
+          next !== '`' &&
+          next !== '"' &&
+          next !== '\\' &&
+          next !== '\n'
+        ) {
           current += '\\' + next;
         } else {
           current += next;
