@@ -8,16 +8,22 @@
 
 import * as pioNodeHelpers from 'pioarduino-node-helpers';
 import * as projectHelpers from './helpers';
-import { disposeSubscriptions, notifyError } from '../utils';
 import {
+  disposeClangdCcWatcher,
+  disposeIdfCcWatcher,
   ensureClangdArgs,
   ensureClangdConfig,
   ensureCompileCommands,
   ensureLaunchJson,
   fixupCompileCommands,
   getActiveBackend,
+  invalidateIdfCache,
+  isIdfProject,
   notifyRescanBackend,
+  watchClangdCompileCommands,
+  watchIdfCompileCommands,
 } from '../intellisense';
+import { disposeSubscriptions, notifyError } from '../utils';
 import { ProjectConfigLanguageProvider } from './config';
 import ProjectTaskManager from './tasks';
 import ProjectTestManager from './tests';
@@ -37,11 +43,24 @@ export default class ProjectManager {
     );
     this._configProvider = new ProjectConfigLanguageProvider();
     this._configChangedTimeout = undefined;
-
+    this._activeProjectIsIdf = false; // sync flag updated on project switch
+    const self = this;
     const activeBackend = getActiveBackend();
+
+    const idfAwareBackend = {
+      ...activeBackend,
+      rebuildArgs(env) {
+        if (activeBackend.id === 'clangd' && self._activeProjectIsIdf) {
+          // Run a no-op PIO command for IDF — prevents compiledb while still
+          // triggering onDidRebuildIndex → fixupCompileCommands for the clangd cache.
+          return ['--version'];
+        }
+        return activeBackend.rebuildArgs(env);
+      },
+    };
     this._pool = new pioNodeHelpers.project.ProjectPool({
       ide: activeBackend.indexerIde,
-      intelliSenseBackend: activeBackend,
+      intelliSenseBackend: idfAwareBackend, // ← use wrapped backend
       api: {
         logOutputChannel: this._logOutputChannel,
         createFileSystemWatcher: vscode.workspace.createFileSystemWatcher,
@@ -97,9 +116,13 @@ export default class ProjectManager {
           const obs = this._pool.getObserver(projectDir);
           const env = obs ? await obs.revealActiveEnvironment() : undefined;
           const envDir = env ? path.join(projectDir, '.pio', 'build', env) : undefined;
-          await fixupCompileCommands(projectDir, envDir);
+
+          const isIdf = await isIdfProject(obs, envDir);
+          await fixupCompileCommands(projectDir, envDir, {
+            allowRootFallback: !isIdf,
+          });
           await ensureClangdConfig(projectDir, obs);
-          await ensureClangdArgs(projectDir, envDir);
+          await ensureClangdArgs(projectDir);
           await ensureLaunchJson(projectDir);
           await notifyRescanBackend();
         },
@@ -246,6 +269,47 @@ export default class ProjectManager {
       currentEnv !== observer.getSelectedEnv()
     ) {
       disposeSubscriptions(this.internalSubscriptions);
+      if (currentProjectDir && currentProjectDir !== projectDir) {
+        invalidateIdfCache(currentProjectDir);
+        disposeIdfCcWatcher(currentProjectDir);
+        disposeClangdCcWatcher(currentProjectDir);
+      }
+      const selectedEnv = await observer.revealActiveEnvironment();
+      const selectedEnvDir = selectedEnv
+        ? path.join(projectDir, '.pio', 'build', selectedEnv)
+        : undefined;
+      this._activeProjectIsIdf = await isIdfProject(observer, selectedEnvDir);
+
+      // For IDF projects, watch the CMake-generated compile_commands.json so
+      // fixupCompileCommands is triggered automatically when the build completes.
+      if (this._activeProjectIsIdf && selectedEnvDir) {
+        watchIdfCompileCommands(projectDir, selectedEnvDir, async () => {
+          try {
+            await fixupCompileCommands(projectDir, selectedEnvDir, {
+              allowRootFallback: false,
+            });
+            await ensureClangdArgs(projectDir);
+            await notifyRescanBackend();
+          } catch (err) {
+            notifyError('IDF compile_commands.json processing failed', err);
+          }
+        });
+      } else {
+        disposeIdfCcWatcher(projectDir);
+      }
+
+      // Watch the processed clangd compile_commands.json so that an external
+      // delete (e.g. user wiping .cache/clangd) triggers a rebuild rather than
+      // leaving clangd without a database.
+      watchClangdCompileCommands(projectDir, async () => {
+        const obs = this._pool.getObserver(projectDir);
+        const env = obs ? await obs.revealActiveEnvironment() : undefined;
+        const envDir = env ? path.join(projectDir, '.pio', 'build', env) : undefined;
+        await ensureCompileCommands(projectDir, obs, envDir);
+        await ensureClangdArgs(projectDir);
+        await notifyRescanBackend();
+      });
+
       await this._pool.switch(projectDir);
       const activeObs = this._pool.getActiveObserver();
       const activeEnv = activeObs
@@ -255,7 +319,7 @@ export default class ProjectManager {
         ? path.join(projectDir, '.pio', 'build', activeEnv)
         : undefined;
       await ensureCompileCommands(projectDir, activeObs, envDir);
-      await ensureClangdArgs(projectDir, envDir);
+      await ensureClangdArgs(projectDir);
       this._taskManager = new ProjectTaskManager(projectDir, observer);
       this.internalSubscriptions.push(
         this._taskManager,

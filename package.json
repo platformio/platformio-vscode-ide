@@ -885,6 +885,7 @@
     "build": "webpack --mode production && vsce package",
     "test": "node src/shellTokenize.test.js",
     "lint": "eslint .eslintrc.js src",
+    "lintandfix": "eslint .eslintrc.js src --fix",
     "format": "prettier --single-quote --print-width 88 --write \"src/**/*.js\""
   },
   "dependencies": {

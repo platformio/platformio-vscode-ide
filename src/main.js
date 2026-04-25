@@ -11,7 +11,11 @@ import * as misc from './misc';
 import * as piodebug from 'pioarduino-vscode-debug';
 import * as utils from './utils';
 
-import { applyBackendConfigDefaults, warnIfBackendMissing } from './intellisense';
+import {
+  applyBackendConfigDefaults,
+  disposeAllIdfWatchers,
+  warnIfBackendMissing,
+} from './intellisense';
 import InstallationManager from './installer/manager';
 import PIOHome from './home';
 import PIOTerminal from './terminal';
@@ -377,4 +381,5 @@ export function activate(context) {
 export function deactivate() {
   extension.deactivate();
   piodebug.deactivate();
+  disposeAllIdfWatchers();
 }

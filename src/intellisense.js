@@ -12,15 +12,22 @@ import {
   IS_WINDOWS,
   getConflictedExtensionIds,
 } from './constants';
+import { execFile } from 'child_process';
 import { extension } from './main';
 import { promises as fs } from 'fs';
 import path from 'path';
+import { promisify } from 'util';
 import shellTokenizeImpl from './shellTokenize';
 import vscode from 'vscode';
+
+const execFileAsync = promisify(execFile);
 
 function shellTokenize(cmd) {
   return shellTokenizeImpl(cmd, IS_WINDOWS);
 }
+
+/** Normalize a filesystem path to forward slashes for use in compiler arguments. */
+const toFwd = IS_WINDOWS ? (p) => p.split(path.sep).join('/') : (p) => p;
 
 /** Include-path flags that accept a directory argument (longest first). */
 const INCLUDE_FLAGS = ['-idirafter', '-isystem', '-iquote', '-I'];
@@ -76,7 +83,9 @@ async function absolutizeIncludes(args, dir) {
     const sepDirMatch = INCLUDE_FLAGS.find((f) => a === f);
     if (sepDirMatch && i + 1 < args.length) {
       if (!path.isAbsolute(args[i + 1])) {
-        args[i + 1] = path.join(dir, args[i + 1]);
+        args[i + 1] = toFwd(path.join(dir, args[i + 1]));
+      } else {
+        args[i + 1] = toFwd(args[i + 1]);
       }
       i++;
       continue;
@@ -100,7 +109,9 @@ async function absolutizeIncludes(args, dir) {
           }
         }
         // Fallback: resolve relative to compilation dir (should be rare).
-        args[i + 1] = resolved ?? path.join(dir, rel);
+        args[i + 1] = toFwd(resolved ?? path.join(dir, rel));
+      } else {
+        args[i + 1] = toFwd(args[i + 1]);
       }
       i++;
       continue;
@@ -111,7 +122,9 @@ async function absolutizeIncludes(args, dir) {
       if (a.startsWith(flag) && a.length > flag.length) {
         const v = a.slice(flag.length);
         if (!path.isAbsolute(v)) {
-          args[i] = flag + path.join(dir, v);
+          args[i] = flag + toFwd(path.join(dir, v));
+        } else {
+          args[i] = flag + toFwd(v);
         }
         break;
       }
@@ -194,19 +207,78 @@ export async function ensureCompileCommands(projectDir, observer, envDir) {
   ) {
     return;
   }
-  // When an env-specific build dir is known, trust only that database; the
-  // project-root copy may belong to a different environment.
-  const candidates = envDir
-    ? [path.join(envDir, 'compile_commands.json')]
-    : [path.join(projectDir, 'compile_commands.json')];
-  for (const ccPath of candidates) {
+
+  // ESP-IDF and Arduino-as-component projects rely on CMake / Ninja to produce
+  // compile_commands.json.  Do not trigger `pio run --target compiledb` for
+  // these project types — the build system already owns that file.
+  if (await isIdfProject(observer, envDir)) {
+    const ccPath = envDir ? path.join(envDir, 'compile_commands.json') : null;
+
+    if (!ccPath) {
+      return; // envDir unknown — watcher in manager.js will handle it when build completes
+    }
+
+    let origStat = null;
     try {
-      await fs.access(ccPath);
-      return; // already exists
+      origStat = await fs.stat(ccPath);
+    } catch {
+      // File does not exist yet — user must build first.
+      vscode.window.showInformationMessage(
+        'Build your ESP-IDF project first to generate compile_commands.json for clangd IntelliSense. ' +
+          'IntelliSense will activate automatically after the build completes.',
+      );
+      return;
+    }
+
+    // Re-process only when the CMake output is newer than the clangd copy.
+    const clangdPath = path.join(
+      projectDir,
+      '.cache',
+      'clangd',
+      'compile_commands.json',
+    );
+    let clangdStat = null;
+    try {
+      clangdStat = await fs.stat(clangdPath);
+    } catch {
+      // clangd copy missing — process now
+    }
+
+    if (!clangdStat || origStat.mtimeMs > clangdStat.mtimeMs) {
+      await fixupCompileCommands(projectDir, envDir, { allowRootFallback: false });
+    }
+    return;
+  }
+
+  // Check the processed clangd copy first – if it exists we are done.
+  const clangdPath = path.join(projectDir, '.cache', 'clangd', 'compile_commands.json');
+  const origCandidates = [
+    ...(envDir ? [path.join(envDir, 'compile_commands.json')] : []),
+    path.join(projectDir, 'compile_commands.json'),
+  ];
+
+  let clangdStat = null;
+  try {
+    clangdStat = await fs.stat(clangdPath);
+  } catch {
+    // processed copy missing
+  }
+
+  for (const ccPath of origCandidates) {
+    try {
+      const origStat = await fs.stat(ccPath);
+      if (!clangdStat || origStat.mtimeMs > clangdStat.mtimeMs) {
+        await fixupCompileCommands(projectDir, envDir);
+      }
+      return;
     } catch {
       // not found here
     }
   }
+  if (clangdStat) {
+    return; // processed copy exists and no source DB was found
+  }
+  // No compile_commands.json at all – rebuild from scratch.
   observer.rebuildIndex({ force: true });
 }
 
@@ -218,7 +290,387 @@ export async function ensureCompileCommands(projectDir, observer, envDir) {
  *  4. Add synthetic entries for header files included from other directories
  *     so clangd can match them (it uses directory proximity heuristics).
  */
-export async function fixupCompileCommands(projectDir, envDir) {
+/**
+ * For Arduino-as-component projects (framework = arduino, espidf), the
+ * CMake build system generates compile_commands.json entries for project
+ * source files without the Arduino core include paths.  This means clangd
+ * cannot resolve `#include "Arduino.h"` or any other Arduino core header.
+ *
+ * This function detects the Arduino core directories by scanning the
+ * packages directory for `framework-arduinoespressif32`, then injects
+ * the missing `-I` flags into every project entry that lacks them.
+ */
+async function injectArduinoCoreIncludes(entries, projectDir, packagesDir) {
+  // Find the Arduino core package (libs/sdkconfig.h injection is handled
+  // separately by injectLibsSdkconfigInclude).
+  let arduinoCoresDir = null;
+  try {
+    const dirs = await fs.readdir(packagesDir);
+    for (const d of dirs) {
+      if (
+        d.startsWith('framework-arduinoespressif32') &&
+        !d.includes('-libs') &&
+        !arduinoCoresDir
+      ) {
+        const coresCandidate = path.join(packagesDir, d, 'cores', 'esp32');
+        try {
+          await fs.access(path.join(coresCandidate, 'Arduino.h'));
+          arduinoCoresDir = path.join(packagesDir, d);
+        } catch {
+          // no Arduino.h here
+        }
+      }
+    }
+  } catch {
+    return; // packagesDir unreadable
+  }
+
+  if (!arduinoCoresDir) {
+    return; // no Arduino framework installed
+  }
+
+  const coresInclude = path.join(arduinoCoresDir, 'cores', 'esp32');
+
+  // Collect all variant directories that appear in any entry's arguments
+  // (the correct variant is already used by Arduino library entries).
+  const variantsBase = path.join(arduinoCoresDir, 'variants');
+  const variantDirs = new Set();
+  const isInsideDir = (parent, child) => {
+    const rel = path.relative(path.normalize(parent), path.normalize(child));
+    return (
+      rel === '' ||
+      (!!rel &&
+        rel !== '..' &&
+        !rel.startsWith(`..${path.sep}`) &&
+        !path.isAbsolute(rel))
+    );
+  };
+  for (const entry of entries) {
+    const args = entry.arguments || [];
+    for (let i = 0; i < args.length; i++) {
+      const a = args[i];
+      if (
+        a === '-I' &&
+        typeof args[i + 1] === 'string' &&
+        isInsideDir(variantsBase, args[i + 1])
+      ) {
+        variantDirs.add(path.normalize(args[i + 1]));
+        i++;
+        continue;
+      }
+      if (typeof a === 'string' && a.startsWith('-I')) {
+        const includePath = a.slice(2);
+        if (isInsideDir(variantsBase, includePath)) {
+          variantDirs.add(path.normalize(includePath));
+        }
+      }
+    }
+  }
+
+  // If no variant was found in existing entries, try to detect from the
+  // board variant used in the build directory name.
+  if (variantDirs.size === 0) {
+    try {
+      const variants = await fs.readdir(variantsBase);
+      for (const entry of entries) {
+        const args = entry.arguments || [];
+        for (const v of variants) {
+          const define = `-DCONFIG_IDF_TARGET_${v.toUpperCase()}`;
+          const match = args.some((a) => a === define || a.startsWith(`${define}=`));
+          if (match) {
+            const variantPath = path.join(variantsBase, v);
+            try {
+              await fs.access(variantPath);
+              variantDirs.add(variantPath);
+            } catch {
+              // variant dir doesn't exist
+            }
+            break;
+          }
+        }
+        if (variantDirs.size > 0) {
+          break;
+        }
+      }
+    } catch {
+      // variants dir unreadable
+    }
+  }
+
+  // Build the list of -I flags to inject (libs/sdkconfig.h is handled
+  // separately by injectLibsSdkconfigInclude in fixupCompileCommands).
+  const injectFlags = [`-I${toFwd(coresInclude)}`];
+  for (const v of variantDirs) {
+    injectFlags.push(`-I${toFwd(v)}`);
+  }
+
+  // Inject into project source entries that are missing the Arduino core path
+  for (const entry of entries) {
+    if (!entry.file || !entry.arguments) {
+      continue;
+    }
+    // Only patch project source files, not framework/library files
+    if (!isInsideDir(projectDir, entry.file)) {
+      continue;
+    }
+    const normalizedArgs = entry.arguments.map((arg) => path.normalize(arg)).join('\0');
+    const missingFlags = injectFlags.filter(
+      (flag) => !normalizedArgs.includes(path.normalize(flag.slice(2))),
+    );
+    if (missingFlags.length === 0) {
+      continue; // already has all Arduino includes
+    }
+
+    // Insert the flags before the source file argument (last -c <file>)
+    const cIdx = entry.arguments.lastIndexOf('-c');
+    const insertAt = cIdx !== -1 ? cIdx : entry.arguments.length;
+    entry.arguments.splice(insertAt, 0, ...missingFlags);
+  }
+}
+
+/**
+ * Query a GCC/Clang compiler for its built-in system include directories.
+ *
+ * Runs `<compiler> -E -x c -v /dev/null` (or NUL on Windows) and parses the
+ * `#include <...> search starts here:` block from stderr.  Results are cached
+ * per compiler path.
+ */
+const _sysIncludeCache = new Map();
+
+async function querySystemIncludes(compilerPath) {
+  // Detect language from compiler basename (g++/clang++ → c++, else c)
+  const base = path.basename(compilerPath);
+  const lang = base.endsWith('g++') || base.endsWith('clang++') ? 'c++' : 'c';
+  const cacheKey = `${compilerPath}::${lang}`;
+
+  if (_sysIncludeCache.has(cacheKey)) {
+    return _sysIncludeCache.get(cacheKey);
+  }
+  const dirs = [];
+  try {
+    const nullDev = IS_WINDOWS ? 'NUL' : '/dev/null';
+    const { stderr } = await execFileAsync(
+      compilerPath,
+      ['-E', '-x', lang, '-v', nullDev],
+      { timeout: 10000, env: { ...process.env, LC_ALL: 'C' } },
+    );
+    // Parse the include search path block from GCC/Clang verbose output
+    const lines = stderr.split('\n');
+    let inBlock = false;
+    for (const line of lines) {
+      if (line.includes('#include <...> search starts here:')) {
+        inBlock = true;
+        continue;
+      }
+      if (inBlock) {
+        if (line.includes('End of search list.')) {
+          break;
+        }
+        const trimmed = line.trim();
+        if (trimmed) {
+          dirs.push(path.normalize(trimmed));
+        }
+      }
+    }
+  } catch {
+    // compiler not runnable or timed out
+  }
+  _sysIncludeCache.set(cacheKey, dirs);
+  return dirs;
+}
+
+/**
+ * Expand GCC/Clang @file (response file) arguments inline.
+ *
+ * The compiler reads additional flags from the referenced file when it sees
+ * an argument starting with `@`.  clangd supports this too, but expanding
+ * them here ensures the fixup logic (absolutizeIncludes, system-include
+ * injection, etc.) can see every flag.
+ */
+async function expandResponseFiles(args, dir) {
+  const result = [];
+  for (const a of args) {
+    if (typeof a === 'string' && a.startsWith('@') && a.length > 1) {
+      const filePath = a.slice(1);
+      const absPath = path.isAbsolute(filePath) ? filePath : path.join(dir, filePath);
+      try {
+        const content = await fs.readFile(absPath, 'utf-8');
+        // Response files may contain quoted or escaped paths – use the shell
+        // tokenizer so those are handled correctly.
+        const tokens = shellTokenize(content);
+        result.push(...tokens);
+      } catch {
+        // File unreadable – keep the original @file argument
+        result.push(a);
+      }
+    } else {
+      result.push(a);
+    }
+  }
+  return result;
+}
+
+/**
+ * Inject the framework-arduinoespressif32-libs SDK include path into entries.
+ *
+ * PIO's compiledb target does not emit the pre-compiled libs SDK include path
+ * (`<libs>/<chip>/<memory_type>/include`) which contains `sdkconfig.h`.
+ * Without it clangd cannot resolve `#include "sdkconfig.h"`.
+ *
+ * The correct memory_type sub-directory (e.g. `qio_qspi`, `dio_qspi`) is
+ * determined by querying PIO for `build.arduino.memory_type` /
+ * `build.flash_mode`, falling back to `dio_qspi` (the pioarduino default).
+ */
+async function injectLibsSdkconfigInclude(entries, projectDir, packagesDir, envDir) {
+  // 1. Find the libs package
+  let libsDir = null;
+  try {
+    const dirs = await fs.readdir(packagesDir);
+    for (const d of dirs) {
+      if (d.startsWith('framework-arduinoespressif32-libs')) {
+        libsDir = path.join(packagesDir, d);
+        break;
+      }
+    }
+  } catch {
+    return;
+  }
+  if (!libsDir) {
+    return;
+  }
+
+  // 2. Detect chip from Arduino variant -I paths in existing entries
+  let chip = null;
+  for (const entry of entries) {
+    const args = entry.arguments || [];
+    for (const a of args) {
+      if (typeof a !== 'string') {
+        continue;
+      }
+      const m = a.match(/framework-arduinoespressif32[/\\]variants[/\\]([^/\\]+)/);
+      if (m) {
+        chip = m[1];
+        break;
+      }
+    }
+    if (chip) {
+      break;
+    }
+  }
+  if (!chip) {
+    return;
+  }
+
+  // 3. Determine memory_type sub-directory
+  const chipDir = path.join(libsDir, chip);
+  let candidates;
+  try {
+    const subdirs = await fs.readdir(chipDir, { withFileTypes: true });
+    candidates = [];
+    for (const d of subdirs) {
+      if (!d.isDirectory()) {
+        continue;
+      }
+      const candidate = path.join(chipDir, d.name, 'include');
+      try {
+        await fs.access(path.join(candidate, 'sdkconfig.h'));
+        candidates.push({ name: d.name, dir: candidate });
+      } catch {
+        // no sdkconfig.h here
+      }
+    }
+  } catch {
+    return;
+  }
+  if (candidates.length === 0) {
+    return;
+  }
+
+  let libsInclude = null;
+  if (candidates.length === 1) {
+    libsInclude = candidates[0].dir;
+  } else {
+    // Multiple candidates — query PIO for the board's memory_type
+    const envName = envDir ? path.basename(envDir) : null;
+    if (envName) {
+      try {
+        const script = `
+import json, sys
+from platformio.public import ProjectConfig
+env = sys.argv[1]
+config = ProjectConfig()
+section = "env:" + env
+board_id = config.get(section, "board", default="")
+memory_type = ""
+if board_id:
+    try:
+        from platformio.platform.factory import PlatformFactory
+        pkg = config.get(section, "platform", default="espressif32")
+        p = PlatformFactory.new(pkg)
+        board = p.board_config(board_id)
+        flash_mode = board.get("build.flash_mode", "dio")
+        memory_type = board.get("build.arduino.memory_type", flash_mode + "_qspi")
+    except Exception:
+        pass
+print(json.dumps({"memory_type": memory_type}))
+`.trim();
+        const output = await pioNodeHelpers.core.getCorePythonCommandOutput(
+          ['-c', script, envName],
+          { projectDir },
+        );
+        const data = JSON.parse(output.trim());
+        if (data.memory_type) {
+          const match = candidates.find((c) => c.name === data.memory_type);
+          if (match) {
+            libsInclude = match.dir;
+          }
+        }
+      } catch {
+        // PIO query failed — fall through to default
+      }
+    }
+    // Fallback: pioarduino defaults to flash_mode "dio" → "dio_qspi"
+    if (!libsInclude) {
+      const fallback = candidates.find((c) => c.name === 'dio_qspi');
+      if (fallback) {
+        libsInclude = fallback.dir;
+      }
+    }
+  }
+
+  if (!libsInclude) {
+    return;
+  }
+
+  // 4. Check if any entry already references this path — skip if so
+  const normalizedLibs = path.normalize(libsInclude);
+  for (const entry of entries) {
+    const args = entry.arguments || [];
+    const joined = args
+      .map((a) => (typeof a === 'string' ? path.normalize(a) : ''))
+      .join('\0');
+    if (joined.includes(normalizedLibs)) {
+      return; // at least one entry already has it
+    }
+  }
+
+  // 5. Inject into every entry that has arguments
+  const libsFlag = `-I${toFwd(libsInclude)}`;
+  for (const entry of entries) {
+    if (!entry.arguments) {
+      continue;
+    }
+    const cIdx = entry.arguments.lastIndexOf('-c');
+    const insertAt = cIdx !== -1 ? cIdx : entry.arguments.length;
+    entry.arguments.splice(insertAt, 0, libsFlag);
+  }
+}
+
+export async function fixupCompileCommands(
+  projectDir,
+  envDir,
+  { allowRootFallback = true } = {},
+) {
   if (
     getActiveBackendId() !== 'clangd' ||
     !projectDir ||
@@ -226,12 +678,30 @@ export async function fixupCompileCommands(projectDir, envDir) {
   ) {
     return;
   }
-  const srcPath = path.join(projectDir, 'compile_commands.json');
+  // Read the original compile_commands.json – try the env build dir first
+  // (CMake / ninja output for Arduino-as-component / ESP-IDF projects), then
+  // fall back to project root (PIO compiledb output).  The original is never
+  // modified.
+  const rootPath = path.join(projectDir, 'compile_commands.json');
+  const envPath = envDir ? path.join(envDir, 'compile_commands.json') : undefined;
+
   let raw;
-  try {
-    raw = await fs.readFile(srcPath, 'utf-8');
-  } catch {
+  if (envPath) {
+    try {
+      raw = await fs.readFile(envPath, 'utf-8');
+    } catch {
+      // not found in envDir – try root
+    }
+  }
+  if (!raw && !allowRootFallback) {
     return;
+  }
+  if (!raw) {
+    try {
+      raw = await fs.readFile(rootPath, 'utf-8');
+    } catch {
+      return;
+    }
   }
 
   let entries;
@@ -304,36 +774,92 @@ export async function fixupCompileCommands(projectDir, envDir) {
   const existingFiles = new Set();
   for (const entry of entries) {
     const dir = entry.directory || projectDir;
+    entry.directory = toFwd(dir);
 
     if (entry.file && !path.isAbsolute(entry.file)) {
-      entry.file = path.join(dir, entry.file);
+      entry.file = toFwd(path.join(dir, entry.file));
+    } else if (entry.file) {
+      entry.file = toFwd(path.normalize(entry.file));
     }
-    existingFiles.add(entry.file);
+    if (entry.file) {
+      existingFiles.add(path.normalize(entry.file));
+    }
 
     if (!entry.command && !entry.arguments) {
       continue;
     }
 
-    const args = entry.arguments || shellTokenize(entry.command);
+    let args = entry.arguments || shellTokenize(entry.command);
+
+    // 0. Expand @file response-file arguments inline
+    args = await expandResponseFiles(args, dir);
 
     // 1. Resolve bare compiler name
     const compiler = args[0];
     if (compiler && !compiler.includes('/') && !compiler.includes('\\')) {
       const resolved = await resolveCompiler(compiler);
       if (resolved) {
-        args[0] = resolved;
+        args[0] = toFwd(resolved);
       }
+    } else if (compiler) {
+      args[0] = toFwd(compiler);
     }
 
     // 2. Convert relative include paths to absolute
     await absolutizeIncludes(args, dir);
+
+    // 3. Inject GCC/Clang built-in system include paths so clangd can resolve
+    //    standard library headers like <math.h>, <stdio.h>, <stdint.h>, etc.
+    const resolvedCompiler = args[0];
+    if (resolvedCompiler && path.isAbsolute(resolvedCompiler)) {
+      const sysDirs = await querySystemIncludes(resolvedCompiler);
+      if (sysDirs.length > 0) {
+        // Collect existing -isystem paths to avoid duplicates
+        const existingSys = new Set();
+        for (let j = 0; j < args.length; j++) {
+          if (args[j] === '-isystem' && j + 1 < args.length) {
+            existingSys.add(path.normalize(args[j + 1]));
+            j++;
+          } else if (
+            typeof args[j] === 'string' &&
+            args[j].startsWith('-isystem') &&
+            args[j].length > '-isystem'.length
+          ) {
+            existingSys.add(path.normalize(args[j].slice('-isystem'.length)));
+          }
+        }
+        const newFlags = [];
+        for (const d of sysDirs) {
+          if (!existingSys.has(path.normalize(d))) {
+            newFlags.push('-isystem', toFwd(d));
+          }
+        }
+        if (newFlags.length > 0) {
+          // Insert before the source file argument (last -c <file>)
+          const cIdx = args.lastIndexOf('-c');
+          const insertAt = cIdx !== -1 ? cIdx : args.length;
+          args.splice(insertAt, 0, ...newFlags);
+        }
+      }
+    }
 
     // Write back as arguments array (preferred by clangd, avoids quoting issues)
     entry.arguments = args;
     delete entry.command;
   }
 
-  // 3. Add synthetic entries for project header/source files that aren't in
+  // 4. For Arduino-as-component projects (framework = arduino, espidf), the
+  //    CMake-generated compile_commands.json for project src/ files does not
+  //    include the Arduino core headers (cores/esp32, variants/<variant>).
+  //    Scan all entries for Arduino core include paths and inject them into
+  //    project entries that are missing them.
+  await injectArduinoCoreIncludes(entries, projectDir, packagesDir);
+
+  // 4b. Inject framework-arduinoespressif32-libs SDK include path
+  //     (contains sdkconfig.h) which PIO's compiledb target omits.
+  await injectLibsSdkconfigInclude(entries, projectDir, packagesDir, envDir);
+
+  // 5. Add synthetic entries for project header/source files that aren't in
   //    the compilation database. clangd uses directory proximity to match
   //    headers to compile commands; files in directories like usermods/ that
   //    have no .cpp entry nearby get no flags and lose all IntelliSense.
@@ -341,14 +867,25 @@ export async function fixupCompileCommands(projectDir, envDir) {
   //    missing file.
   const pioBuildDir = `${path.sep}.pio${path.sep}`;
   const pioCoreDir = `${path.sep}.platformio${path.sep}`;
-  const projectSrcEntries = entries.filter(
-    (e) =>
-      e.file &&
-      (e.arguments || e.command) &&
-      e.file.startsWith(projectDir) &&
-      !e.file.includes(pioBuildDir) &&
-      !e.file.includes(pioCoreDir),
-  );
+  const normalizedProjectDir = path.normalize(projectDir);
+  const projectSrcEntries = entries.filter((e) => {
+    if (!e.file || (!e.arguments && !e.command)) {
+      return false;
+    }
+    const normalizedFile = path.normalize(e.file);
+    const relativeToProject = path.relative(normalizedProjectDir, normalizedFile);
+    const isProjectFile =
+      relativeToProject === '' ||
+      (!!relativeToProject &&
+        relativeToProject !== '..' &&
+        !relativeToProject.startsWith(`..${path.sep}`) &&
+        !path.isAbsolute(relativeToProject));
+    return (
+      isProjectFile &&
+      !normalizedFile.includes(path.normalize(pioBuildDir.slice(1))) &&
+      !normalizedFile.includes(path.normalize(pioCoreDir.slice(1)))
+    );
+  });
 
   // Pick the entry with the richest include set (most -I flags) as template
   let templateEntry = projectSrcEntries[0];
@@ -381,15 +918,19 @@ export async function fixupCompileCommands(projectDir, envDir) {
     const allProjectFiles = await walkDir(projectDir);
     const syntheticEntries = [];
 
+    const templateFileNorm = path.normalize(templateFile);
     for (const file of allProjectFiles) {
       if (existingFiles.has(file)) {
         continue;
       }
-      const syntheticArgs = filteredArgs.map((a) => (a === templateFile ? file : a));
+      const fwdFile = toFwd(file);
+      const syntheticArgs = filteredArgs.map((a) =>
+        typeof a === 'string' && path.normalize(a) === templateFileNorm ? fwdFile : a,
+      );
       syntheticEntries.push({
         directory: templateDir,
         arguments: syntheticArgs,
-        file,
+        file: fwdFile,
       });
     }
 
@@ -398,19 +939,32 @@ export async function fixupCompileCommands(projectDir, envDir) {
     }
   }
 
-  const destDir = envDir || projectDir;
-  await fs.mkdir(destDir, { recursive: true });
-  const destPath = path.join(destDir, 'compile_commands.json');
-  await fs.writeFile(destPath, JSON.stringify(entries, null, 2) + '\n', 'utf-8');
+  // Write the processed database to a dedicated clangd directory so the
+  // original compile_commands.json (project root or env build dir) is never
+  // modified.  --compile-commands-dir is pointed here by ensureClangdArgs().
+  const clangdDir = path.join(projectDir, '.cache', 'clangd');
+  await fs.mkdir(clangdDir, { recursive: true });
+  const destPath = path.join(clangdDir, 'compile_commands.json');
+  const newContent = JSON.stringify(entries, null, 2) + '\n';
 
-  // Remove the root copy when the file was moved to the env build dir
-  if (envDir && destPath !== srcPath) {
-    try {
-      await fs.unlink(srcPath);
-    } catch {
-      // ignore – may already be gone
-    }
+  // Skip the write when the content is byte-identical to the existing file.
+  // Rewriting the file (even with the same bytes) bumps mtime and forces
+  // clangd to discard its preamble and reparse every open TU.
+  let unchanged = false;
+  try {
+    const existing = await fs.readFile(destPath, 'utf-8');
+    unchanged = existing === newContent;
+  } catch {
+    // file does not exist yet — write it
   }
+
+  if (!unchanged) {
+    await fs.writeFile(destPath, newContent, 'utf-8');
+  }
+
+  vscode.window.showInformationMessage(
+    `Processed ${entries.length} entries from compile_commands.json — clangd is ready. `,
+  );
 }
 
 /**
@@ -459,6 +1013,7 @@ const ESP_CLANGD_REMOVE_FLAGS = [
   '-mtext-section-literals',
   '-mtarget-align',
   '-mno-target-align',
+  '-isysroot',
 ];
 
 const ESP_CLANGD_ADD_FLAGS = [
@@ -497,6 +1052,305 @@ async function isEspressifProject(projectDir, observer) {
   }
 }
 
+// ── In-memory cache for isIdfProject results ──
+// Keyed by `${projectDir}::${env}`, values are { result: boolean, ts: number }.
+const _idfCache = new Map();
+const _IDF_CACHE_TTL_MS = 30_000; // 30 seconds
+const _idfIniWatchers = new Map(); // projectDir → Disposable
+
+function _idfCacheKey(projectDir, env) {
+  return `${path.normalize(projectDir)}::${env}`;
+}
+
+function _idfCacheGet(key) {
+  const entry = _idfCache.get(key);
+  if (entry && Date.now() - entry.ts < _IDF_CACHE_TTL_MS) {
+    return entry.result;
+  }
+  _idfCache.delete(key);
+  return undefined;
+}
+
+function _idfCacheSet(key, result) {
+  _idfCache.set(key, { result, ts: Date.now() });
+}
+
+/**
+ * Invalidate all cache entries whose key starts with the given projectDir.
+ */
+export function invalidateIdfCache(projectDir) {
+  const normalized = path.normalize(projectDir);
+  for (const key of _idfCache.keys()) {
+    if (key.startsWith(`${normalized}::`)) {
+      _idfCache.delete(key);
+    }
+  }
+  const watcher = _idfIniWatchers.get(normalized);
+  if (watcher) {
+    watcher.dispose();
+    _idfIniWatchers.delete(normalized);
+  }
+}
+
+export function disposeAllIdfWatchers() {
+  for (const watcher of _idfIniWatchers.values()) {
+    watcher.dispose();
+  }
+  _idfIniWatchers.clear();
+  disposeAllIdfCcWatchers();
+  disposeAllClangdCcWatchers();
+}
+
+// ── Watchers for CMake-generated compile_commands.json (IDF projects) ──
+const _idfCcWatchers = new Map(); // normalized projectDir → Disposable
+
+export function disposeIdfCcWatcher(projectDir) {
+  const key = path.normalize(projectDir);
+  const watcher = _idfCcWatchers.get(key);
+  if (watcher) {
+    watcher.dispose();
+    _idfCcWatchers.delete(key);
+  }
+}
+
+function disposeAllIdfCcWatchers() {
+  for (const w of _idfCcWatchers.values()) {
+    w.dispose();
+  }
+  _idfCcWatchers.clear();
+}
+
+// ── Watchers for the processed clangd compile_commands.json (non-IDF) ──
+// If the user (or some external tool) deletes .cache/clangd/compile_commands.json
+// while the project is open, we re-run ensureCompileCommands so clangd gets a
+// fresh database (regenerated from the original PIO/CMake output, or rebuilt
+// from scratch if no source DB is left).
+const _clangdCcWatchers = new Map(); // normalized projectDir → Disposable
+
+export function disposeClangdCcWatcher(projectDir) {
+  const key = path.normalize(projectDir);
+  const watcher = _clangdCcWatchers.get(key);
+  if (watcher) {
+    watcher.dispose();
+    _clangdCcWatchers.delete(key);
+  }
+}
+
+function disposeAllClangdCcWatchers() {
+  for (const w of _clangdCcWatchers.values()) {
+    w.dispose();
+  }
+  _clangdCcWatchers.clear();
+}
+
+/**
+ * Watch the processed clangd compile_commands.json in `<projectDir>/.cache/clangd/`.
+ * Calls onMissing() when the file OR any of its ancestor cache directories is deleted.
+ *
+ * Three watchers are needed because VS Code's FileSystemWatcher only fires onDidDelete
+ * for the exact path that was removed — deleting a parent directory does NOT propagate
+ * a delete event to child paths.
+ */
+export function watchClangdCompileCommands(projectDir, onMissing) {
+  disposeClangdCcWatcher(projectDir);
+  if (!projectDir) {
+    return;
+  }
+
+  const handleMissing = async () => {
+    try {
+      await onMissing();
+    } catch (err) {
+      console.warn(
+        `Failed to regenerate clangd compile_commands.json: ${err?.message ?? err}`,
+      );
+    }
+  };
+
+  const baseUri = vscode.Uri.file(projectDir);
+  const disposables = [];
+
+  // 1. Direct file deletion: .cache/clangd/compile_commands.json
+  const fileWatcher = vscode.workspace.createFileSystemWatcher(
+    new vscode.RelativePattern(baseUri, '.cache/clangd/compile_commands.json'),
+    true, // ignoreCreateEvents
+    true, // ignoreChangeEvents
+    false, // listen for delete
+  );
+  fileWatcher.onDidDelete(handleMissing);
+  disposables.push(fileWatcher);
+
+  // 2. Containing directory deletion: .cache/clangd/
+  //    VS Code fires onDidDelete when a directory matching the pattern is removed.
+  const clangdDirWatcher = vscode.workspace.createFileSystemWatcher(
+    new vscode.RelativePattern(baseUri, '.cache/clangd'),
+    true,
+    true,
+    false,
+  );
+  clangdDirWatcher.onDidDelete(handleMissing);
+  disposables.push(clangdDirWatcher);
+
+  // 3. Parent directory deletion: .cache/
+  const cacheDirWatcher = vscode.workspace.createFileSystemWatcher(
+    new vscode.RelativePattern(baseUri, '.cache'),
+    true,
+    true,
+    false,
+  );
+  cacheDirWatcher.onDidDelete(handleMissing);
+  disposables.push(cacheDirWatcher);
+
+  // Store a composite disposable so disposeClangdCcWatcher cleans all three.
+  _clangdCcWatchers.set(path.normalize(projectDir), {
+    dispose() {
+      for (const d of disposables) {
+        d.dispose();
+      }
+    },
+  });
+}
+
+/**
+ * Watch the CMake-generated compile_commands.json in envDir.
+ * Calls onReady() whenever the file is created or changed (e.g. after a build).
+ */
+export function watchIdfCompileCommands(projectDir, envDir, onReady) {
+  disposeIdfCcWatcher(projectDir);
+  if (!envDir) {
+    return;
+  }
+  const pattern = new vscode.RelativePattern(envDir, 'compile_commands.json');
+  const watcher = vscode.workspace.createFileSystemWatcher(pattern);
+  const handler = async () => {
+    try {
+      await fs.access(path.join(envDir, 'compile_commands.json'));
+      await onReady();
+    } catch (err) {
+      // file not yet accessible (will fire again when ready), or onReady threw
+      if (err && err.code !== 'ENOENT') {
+        console.warn(`IDF compile_commands.json watcher: ${err.message || err}`);
+      }
+    }
+  };
+  watcher.onDidCreate(handler);
+  watcher.onDidChange(handler);
+  _idfCcWatchers.set(path.normalize(projectDir), watcher);
+}
+
+function _ensureIniWatcher(projectDir) {
+  const normalized = path.normalize(projectDir);
+  if (_idfIniWatchers.has(normalized)) {
+    return;
+  }
+  const pattern = new vscode.RelativePattern(normalized, 'platformio.ini');
+  const watcher = vscode.workspace.createFileSystemWatcher(pattern);
+  const handler = () => invalidateIdfCache(normalized);
+  watcher.onDidChange(handler);
+  watcher.onDidCreate(handler);
+  watcher.onDidDelete(handler);
+  _idfIniWatchers.set(normalized, watcher);
+}
+
+// After a first build, CMakeCache.txt in envDir is IDF-specific (CMake build system).
+// .ninja_log in envDir is also IDF-specific.
+async function isIdfProjectByFilesystem(projectDir, envDir) {
+  const checks = [
+    projectDir ? path.join(projectDir, 'sdkconfig') : null,
+    envDir ? path.join(envDir, 'CMakeCache.txt') : null,
+    envDir ? path.join(envDir, '.ninja_log') : null,
+  ].filter(Boolean);
+
+  for (const p of checks) {
+    try {
+      await fs.access(p);
+      return true; // file exists → IDF
+    } catch {
+      // not found, try next
+    }
+  }
+  return false;
+}
+
+/**
+ * Detect whether the active environment uses ESP-IDF — either as a standalone
+ * framework or as the base for Arduino-as-a-component.
+ *
+ * For these project types the build system (CMake / Ninja) already generates
+ * compile_commands.json natively, so pioarduino-vscode-ide must not trigger
+ * `pio run --target compiledb`.  Post-processing (fixupCompileCommands) must
+ * still run to copy/rewrite the CMake-generated file into .cache/clangd/.
+ */
+export async function isIdfProject(observer, envDir) {
+  if (!observer) {
+    return false;
+  }
+  try {
+    const env = await observer.revealActiveEnvironment();
+    if (!env) {
+      return false;
+    }
+
+    const projectDir = observer.projectDir;
+
+    // ── Cache lookup ──
+    const cacheKey = _idfCacheKey(projectDir, env);
+    const cached = _idfCacheGet(cacheKey);
+    if (cached !== undefined) {
+      return cached;
+    }
+
+    // Watch platformio.ini for changes so we can invalidate
+    _ensureIniWatcher(projectDir);
+
+    const sectionKey = `env:${env}`;
+    const script = `
+import json
+import sys
+from platformio.public import ProjectConfig
+section_key = sys.argv[1]
+config = ProjectConfig()
+try:
+    framework = config.get(section_key, 'framework', default='') or ''
+    print(json.dumps({'framework': framework, 'resolverOk': True}))
+except Exception:
+    print(json.dumps({'framework': '', 'resolverOk': False}))
+`.trim();
+
+    const output = await pioNodeHelpers.core.getCorePythonCommandOutput(
+      ['-c', script, sectionKey],
+      { projectDir },
+    );
+    const data = JSON.parse(output.trim());
+    const framework = String(data.framework || '');
+    if (/\bespidf\b/i.test(framework)) {
+      _idfCacheSet(cacheKey, true);
+      return true;
+    }
+    if (data.resolverOk) {
+      _idfCacheSet(cacheKey, false);
+      return false;
+    }
+    // Fallback: check build artifacts (reliable post-first-build, no subprocess)
+    const fsResult = await isIdfProjectByFilesystem(projectDir, envDir);
+    _idfCacheSet(cacheKey, fsResult);
+    return fsResult;
+  } catch {
+    // Python subprocess failed — still try filesystem
+    try {
+      const projectDir = observer.projectDir;
+      const env = await observer.revealActiveEnvironment().catch(() => null);
+      const fsResult = await isIdfProjectByFilesystem(projectDir, envDir);
+      if (env) {
+        _idfCacheSet(_idfCacheKey(projectDir, env), fsResult);
+      }
+      return fsResult;
+    } catch {
+      return false;
+    }
+  }
+}
+
 export async function ensureClangdConfig(projectDir, observer) {
   if (
     getActiveBackendId() !== 'clangd' ||
@@ -517,7 +1371,8 @@ export async function ensureClangdConfig(projectDir, observer) {
   }
 
   const hasBuiltinHeaders = existing.includes('BuiltinHeaders');
-  const hasSuppressDiag = existing.includes('pp_expects_filename');
+  const hasSuppressDiag =
+    existing.includes('pp_expects_filename') && existing.includes('unused-includes');
   const hasRemoveFlags = ESP_CLANGD_REMOVE_FLAGS.every((f) => existing.includes(f));
   const hasAddFlags = ESP_CLANGD_ADD_FLAGS.every((f) => existing.includes(f));
   // Respect any existing Index.Background entry (user may have set Skip, etc.)
@@ -550,7 +1405,7 @@ export async function ensureClangdConfig(projectDir, observer) {
   }
 
   if (!hasSuppressDiag) {
-    parts.push('Diagnostics:\n  Suppress: [pp_expects_filename]');
+    parts.push('Diagnostics:\n  Suppress: [pp_expects_filename, unused-includes]');
   }
 
   if (useEspFlags && !hasIndexBackground) {
@@ -565,7 +1420,7 @@ export async function ensureClangdConfig(projectDir, observer) {
   await fs.writeFile(configPath, content, 'utf-8');
 }
 
-export async function ensureClangdArgs(projectDir, envDir) {
+export async function ensureClangdArgs(projectDir) {
   if (!projectDir) {
     return;
   }
@@ -628,21 +1483,21 @@ export async function ensureClangdArgs(projectDir, envDir) {
     }
   }
 
-  // --compile-commands-dir: tell clangd where compile_commands.json lives
-  const ccDir = envDir || projectDir;
-  const compileCommandsFlag = `--compile-commands-dir=${ccDir}`;
+  // --compile-commands-dir: point clangd to the processed compile_commands.json
+  // in .cache/clangd/ (written by fixupCompileCommands) so the original database
+  // generated by the build system is never consumed directly.
+  const ccDir = path.join(projectDir, '.cache', 'clangd');
+  const compileCommandsFlag = `--compile-commands-dir=${toFwd(ccDir)}`;
   changed =
     upsertArg(newArgs, '--compile-commands-dir=', compileCommandsFlag) || changed;
 
   // --query-driver: let clangd query PlatformIO cross-compilers for built-in
   // include paths (C++ stdlib, GCC internals, sysroot). Without this, clangd
   // can't resolve system headers for embedded targets like xtensa, arm, riscv.
-  const pioDir = pioNodeHelpers.core.getCoreDir();
-  const sep = IS_WINDOWS ? '\\' : '/';
-  const glob = IS_WINDOWS ? '*\\bin\\*' : '*/bin/*';
+  const pioDir = toFwd(pioNodeHelpers.core.getCoreDir());
   const queryDriverGlob = [
-    `${pioDir}${sep}packages${sep}toolchain-${glob}`,
-    `${pioDir}${sep}packages${sep}tool-${glob}`,
+    `${pioDir}/packages/toolchain-*/bin/*`,
+    `${pioDir}/packages/tool-*/bin/*`,
   ].join(',');
   const queryDriverFlag = `--query-driver=${queryDriverGlob}`;
   changed = upsertArg(newArgs, '--query-driver=', queryDriverFlag) || changed;
