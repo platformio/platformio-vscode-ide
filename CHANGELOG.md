@@ -4,6 +4,14 @@ All notable changes to the **pioarduino IDE** VSCode extension are documented in
 
 ---
 
+## [1.3.20] - 2026-04-25
+
+### 🐛 Bug Fixes
+- **clangd IntelliSense:** Injects per-chip include paths from `framework-arduinoespressif32-libs` for Arduino as components of IDF projects.
+  - Ensures that headers for pre-compiled Arduino libraries (e.g., WiFi, BLE) are available to clangd, fixing unresolved include errors for `#include <WiFiClient.h>`, `#include <BLEDevice.h>`, etc.
+
+---
+
 ## [1.3.19] - 2026-04-25
 
 ### 🐛 Bug Fixes
