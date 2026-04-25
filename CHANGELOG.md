@@ -4,6 +4,13 @@ All notable changes to the **pioarduino IDE** VSCode extension are documented in
 
 ---
 
+## [1.3.19] - 2026-04-25
+
+### 🐛 Bug Fixes
+- **clangd:** Added support for IDF projects. Several bug fixes and enhancements.
+
+---
+
 ## [1.3.18] - 2026-04-20
 
 ### ✨ New Features
