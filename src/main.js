@@ -101,6 +101,7 @@ class PlatformIOVSCodeExtension {
 
     misc.maybeRateExtension();
     misc.warnAboutConflictedExtensions();
+    misc.warnMissingIntelliSenseEngine();
     this.subscriptions.push(
       vscode.window.onDidChangeActiveTextEditor((editor) =>
         misc.warnAboutInoFile(editor),
@@ -115,10 +116,7 @@ class PlatformIOVSCodeExtension {
   loadEnterpriseSettings() {
     const myId = this.context.extension.id;
     const ext = vscode.extensions.all.find(
-      (item) =>
-        item.id.startsWith('platformio.') &&
-        item.id !== myId &&
-        item.isActive,
+      (item) => item.id.startsWith('platformio.') && item.id !== myId && item.isActive,
     );
     return ext && ext.exports ? ext.exports.settings : undefined;
   }

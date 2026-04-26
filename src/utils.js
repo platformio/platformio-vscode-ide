@@ -61,7 +61,9 @@ export function setExtensionContext(context) {
 
 export function getIDEManifest() {
   if (!_extensionContext) {
-    console.warn("Attempting to get IDE manifest before extension context was injected.");
+    console.warn(
+      'Attempting to get IDE manifest before extension context was injected.',
+    );
     return { version: '0.0.0' }; // safe fallback
   }
   return _extensionContext.extension.packageJSON;
