@@ -35,6 +35,7 @@ class PlatformIOVSCodeExtension {
 
   async activate(context) {
     this.context = context;
+    utils.setExtensionContext(context);
     this.pioHome = new PIOHome();
     this.pioTerm = new PIOTerminal();
     this.subscriptions.push(this.pioHome, this.pioTerm, new PIOReleaseNotes());
@@ -100,6 +101,7 @@ class PlatformIOVSCodeExtension {
 
     misc.maybeRateExtension();
     misc.warnAboutConflictedExtensions();
+    misc.warnMissingIntelliSenseEngine();
     this.subscriptions.push(
       vscode.window.onDidChangeActiveTextEditor((editor) =>
         misc.warnAboutInoFile(editor),
@@ -112,11 +114,9 @@ class PlatformIOVSCodeExtension {
   }
 
   loadEnterpriseSettings() {
+    const myId = this.context.extension.id;
     const ext = vscode.extensions.all.find(
-      (item) =>
-        item.id.startsWith('platformio.') &&
-        item.id !== 'platformio.platformio-ide' &&
-        item.isActive,
+      (item) => item.id.startsWith('platformio.') && item.id !== myId && item.isActive,
     );
     return ext && ext.exports ? ext.exports.settings : undefined;
   }

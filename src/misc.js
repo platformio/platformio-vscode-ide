@@ -6,7 +6,11 @@
  * the root directory of this source tree.
  */
 
-import { CONFLICTED_EXTENSION_IDS } from './constants';
+import {
+  CLANGD_EXTENSION_ID,
+  CONFLICTED_EXTENSION_IDS,
+  CPPTOOLS_EXTENSION_ID,
+} from './constants';
 import { extension } from './main';
 import vscode from 'vscode';
 
@@ -115,6 +119,46 @@ export async function warnAboutInoFile(editor) {
       vscode.commands.executeCommand(
         'vscode.open',
         vscode.Uri.parse('https://bit.ly/convert-ino-to-cpp'),
+      );
+      break;
+    case 'Do not show again':
+      extension.context.globalState.update(stateKey, 1);
+      break;
+  }
+}
+
+export async function warnMissingIntelliSenseEngine() {
+  const hasCppTools = vscode.extensions.getExtension(CPPTOOLS_EXTENSION_ID);
+  const hasClangd = vscode.extensions.getExtension(CLANGD_EXTENSION_ID);
+
+  if (hasCppTools || hasClangd) {
+    return;
+  }
+
+  const stateKey = 'intellisense-warn-disabled';
+  if (extension.context.globalState.get(stateKey)) {
+    return;
+  }
+
+  const selectedItem = await vscode.window.showWarningMessage(
+    'PlatformIO recommends installing a C/C++ Language Server (like Microsoft C/C++ or Clangd) for full IntelliSense.',
+    { title: 'Install Microsoft C/C++', isCloseAffordance: false },
+    { title: 'Install Clangd', isCloseAffordance: false },
+    { title: 'Do not show again', isCloseAffordance: false },
+    { title: 'Remind later', isCloseAffordance: true },
+  );
+
+  switch (selectedItem ? selectedItem.title : undefined) {
+    case 'Install Microsoft C/C++':
+      vscode.commands.executeCommand(
+        'workbench.extensions.installExtension',
+        CPPTOOLS_EXTENSION_ID,
+      );
+      break;
+    case 'Install Clangd':
+      vscode.commands.executeCommand(
+        'workbench.extensions.installExtension',
+        CLANGD_EXTENSION_ID,
       );
       break;
     case 'Do not show again':
