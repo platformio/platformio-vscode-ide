@@ -143,6 +143,7 @@ export async function warnMissingIntelliSenseEngine() {
   const selectedItem = await vscode.window.showWarningMessage(
     'PlatformIO recommends installing a C/C++ Language Server (like Microsoft C/C++ or Clangd) for full IntelliSense.',
     { title: 'Install Microsoft C/C++', isCloseAffordance: false },
+    { title: 'Install Clangd', isCloseAffordance: false },
     { title: 'Do not show again', isCloseAffordance: false },
     { title: 'Remind later', isCloseAffordance: true },
   );
@@ -152,6 +153,12 @@ export async function warnMissingIntelliSenseEngine() {
       vscode.commands.executeCommand(
         'workbench.extensions.installExtension',
         CPPTOOLS_EXTENSION_ID,
+      );
+      break;
+    case 'Install Clangd':
+      vscode.commands.executeCommand(
+        'workbench.extensions.installExtension',
+        CLANGD_EXTENSION_ID,
       );
       break;
     case 'Do not show again':
