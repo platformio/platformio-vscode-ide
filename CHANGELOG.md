@@ -4,6 +4,15 @@ All notable changes to the **pioarduino IDE** VSCode extension are documented in
 
 ---
 
+## [1.3.21] - 2026-04-27
+
+### ✨ New Features
+- **clangd IntelliSense:** Added support for alternative Arduino libs path.
+  - Falls back to `framework-arduinoespressif32/tools/esp32-arduino-libs` when the standalone `framework-arduinoespressif32-libs` package is not found.
+  - Ensures clangd can locate pre-compiled library headers in non-standard Tasmota-style Platform installations.
+
+---
+
 ## [1.3.20] - 2026-04-25
 
 ### 🐛 Bug Fixes

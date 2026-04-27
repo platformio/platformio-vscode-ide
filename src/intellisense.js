@@ -538,13 +538,29 @@ async function expandResponseFiles(args, dir) {
  * Locate the framework-arduinoespressif32-libs PIO package directory.
  * Returns the absolute path to the package, or null if not installed /
  * packagesDir unreadable.
+ *
+ * Also checks the alternative path inside framework-arduinoespressif32:
+ * <packagesDir>/framework-arduinoespressif32/tools/esp32-arduino-libs
  */
 async function findArduinoLibsPkgDir(packagesDir) {
   try {
     const dirs = await fs.readdir(packagesDir);
+    // Primary: framework-arduinoespressif32-libs package
     for (const d of dirs) {
       if (d.startsWith('framework-arduinoespressif32-libs')) {
         return path.join(packagesDir, d);
+      }
+    }
+    // Alternative: framework-arduinoespressif32/tools/esp32-arduino-libs
+    for (const d of dirs) {
+      if (d.startsWith('framework-arduinoespressif32') && !d.includes('-libs')) {
+        const altPath = path.join(packagesDir, d, 'tools', 'esp32-arduino-libs');
+        try {
+          await fs.access(altPath);
+          return altPath;
+        } catch {
+          // Alternative path doesn't exist
+        }
       }
     }
   } catch {
