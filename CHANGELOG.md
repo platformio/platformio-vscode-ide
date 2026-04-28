@@ -4,6 +4,13 @@ All notable changes to the **pioarduino IDE** VSCode extension are documented in
 
 ---
 
+## [1.3.22] - 2026-04-29
+
+### 🐛 Bug Fixes
+- **clangd IntelliSense:** Improved IntelliSense for picolibc projects: better detection of picolibc build flags, exclusion of incompatible toolchain libc includes, correct probing of picolibc system include paths, filtered C vs C++ include handling, conditional clangd stdinc behavior, and injection of platform-specific Arduino ESP32 includes for accurate completion and diagnostics.
+
+---
+
 ## [1.3.21] - 2026-04-27
 
 ### ✨ New Features
