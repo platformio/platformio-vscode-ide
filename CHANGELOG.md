@@ -4,6 +4,13 @@ All notable changes to the **pioarduino IDE** VSCode extension are documented in
 
 ---
 
+## [1.3.23] - 2026-04-29
+
+### 🐛 Bug Fix
+- **clangd IntelliSense:** Add `-mtune=*` and `-fzero-init-padding-bits=*` to the list of flags to remove from clangd configuration.
+
+---
+
 ## [1.3.22] - 2026-04-29
 
 ### 🐛 Bug Fixes
