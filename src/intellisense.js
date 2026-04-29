@@ -1319,6 +1319,7 @@ const ESP_CLANGD_REMOVE_FLAGS = [
   '-mfix-esp32-psram-cache-issue',
   '-mfix-esp32-psram-cache-strategy=*',
   '-fno-shrink-wrap',
+  '-fno-malloc-dce',
   '-fno-tree-switch-conversion',
   '-fstrict-volatile-bitfields',
   '-fzero-init-padding-bits=*',
