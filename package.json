@@ -1,6 +1,6 @@
 {
   "name": "pioarduino-ide",
-  "version": "1.3.23",
+  "version": "1.4.0",
   "icon": "assets/images/pioarduino-128x128.png",
   "publisher": "pioarduino",
   "engines": {
@@ -292,6 +292,63 @@
         "command": "platformio-debug.setForceDisassembly",
         "title": "Set Force Disassembly",
         "enablement": "pioProjectReady"
+      },
+      {
+        "category": "pioarduino Debug",
+        "command": "platformio-debug.peripherals.search",
+        "title": "Search Peripherals",
+        "icon": "$(search)",
+        "enablement": "pioProjectReady"
+      },
+      {
+        "category": "pioarduino Debug",
+        "command": "platformio-debug.reloadSVD",
+        "title": "Reload SVD File",
+        "icon": "$(refresh)",
+        "enablement": "pioProjectReady"
+      },
+      {
+        "category": "pioarduino Debug",
+        "command": "platformio-debug.memory.setDataType",
+        "title": "Set Memory View Data Type",
+        "enablement": "pioProjectReady"
+      },
+      {
+        "category": "pioarduino Debug",
+        "command": "platformio-debug.memory.toggleEndianness",
+        "title": "Toggle Memory View Endianness",
+        "enablement": "pioProjectReady"
+      },
+      {
+        "category": "pioarduino Debug",
+        "command": "platformio-debug.memory.edit",
+        "title": "Edit Memory",
+        "icon": "$(edit)",
+        "enablement": "pioProjectReady"
+      },
+      {
+        "category": "pioarduino Debug",
+        "command": "platformio-debug.memory.writeByte",
+        "title": "Write Byte to Memory",
+        "enablement": "pioProjectReady"
+      },
+      {
+        "category": "pioarduino Debug",
+        "command": "platformio-debug.diagnostics.showLog",
+        "title": "Show Debug Diagnostics Log",
+        "enablement": "pioProjectReady"
+      },
+      {
+        "category": "pioarduino Debug",
+        "command": "platformio-debug.diagnostics.exportLog",
+        "title": "Export Debug Diagnostics Log",
+        "enablement": "pioProjectReady"
+      },
+      {
+        "category": "pioarduino Debug",
+        "command": "platformio-debug.diagnostics.clearLog",
+        "title": "Clear Debug Diagnostics Log",
+        "enablement": "pioProjectReady"
       }
     ],
     "breakpoints": [
@@ -350,6 +407,24 @@
                 "default": false,
                 "description": "Prints all GDB responses to the console",
                 "type": "boolean"
+              },
+              "rtos": {
+                "description": "RTOS thread awareness configuration",
+                "type": "object",
+                "default": {},
+                "properties": {
+                  "enabled": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Enable RTOS thread awareness (FreeRTOS, ThreadX, Zephyr)"
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": ["auto", "FreeRTOS", "ThreadX", "Zephyr", "none"],
+                    "default": "auto",
+                    "description": "RTOS type, or 'auto' to detect automatically"
+                  }
+                }
               }
             },
             "required": [
@@ -401,6 +476,42 @@
         },
         {
           "command": "platformio-debug.setForceDisassembly",
+          "when": "debugType == platformio-debug"
+        },
+        {
+          "command": "platformio-debug.peripherals.search",
+          "when": "debugType == platformio-debug"
+        },
+        {
+          "command": "platformio-debug.reloadSVD",
+          "when": "debugType == platformio-debug"
+        },
+        {
+          "command": "platformio-debug.memory.setDataType",
+          "when": "debugType == platformio-debug"
+        },
+        {
+          "command": "platformio-debug.memory.toggleEndianness",
+          "when": "debugType == platformio-debug"
+        },
+        {
+          "command": "platformio-debug.memory.edit",
+          "when": "debugType == platformio-debug"
+        },
+        {
+          "command": "platformio-debug.memory.writeByte",
+          "when": "debugType == platformio-debug"
+        },
+        {
+          "command": "platformio-debug.diagnostics.showLog",
+          "when": "debugType == platformio-debug"
+        },
+        {
+          "command": "platformio-debug.diagnostics.exportLog",
+          "when": "debugType == platformio-debug"
+        },
+        {
+          "command": "platformio-debug.diagnostics.clearLog",
           "when": "debugType == platformio-debug"
         }
       ],
@@ -476,6 +587,21 @@
           "command": "platformio-debug.memory.clearHistory",
           "when": "debugType == platformio-debug && view == platformio-debug.memory",
           "group": "navigation"
+        },
+        {
+          "command": "platformio-debug.peripherals.search",
+          "when": "debugType == platformio-debug && view == platformio-debug.peripherals",
+          "group": "navigation"
+        },
+        {
+          "command": "platformio-debug.reloadSVD",
+          "when": "debugType == platformio-debug && view == platformio-debug.peripherals",
+          "group": "navigation"
+        },
+        {
+          "command": "platformio-debug.diagnostics.showLog",
+          "when": "debugType == platformio-debug && view == platformio-debug.peripherals",
+          "group": "overflow"
         }
       ],
       "editor/title/run": [
@@ -889,6 +1015,54 @@
               "commands": "platformio-ide.newTerminal"
             }
           ]
+        },
+        "platformio-debug.rtos.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable RTOS thread awareness (FreeRTOS, ThreadX, Zephyr)"
+        },
+        "platformio-debug.rtos.type": {
+          "type": "string",
+          "enum": [
+            "auto",
+            "FreeRTOS",
+            "ThreadX",
+            "Zephyr",
+            "none"
+          ],
+          "default": "auto",
+          "description": "RTOS type for thread awareness. Use 'auto' to detect automatically."
+        },
+        "platformio-debug.memory.defaultDataType": {
+          "type": "string",
+          "enum": [
+            "u8",
+            "u16",
+            "u32",
+            "u64",
+            "i8",
+            "i16",
+            "i32",
+            "i64",
+            "float",
+            "double"
+          ],
+          "default": "u8",
+          "description": "Default data type for the memory view"
+        },
+        "platformio-debug.memory.defaultEndianness": {
+          "type": "string",
+          "enum": [
+            "little",
+            "big"
+          ],
+          "default": "little",
+          "description": "Default byte order (endianness) for the memory view"
+        },
+        "platformio-debug.diagnostics.showDevDebugOutput": {
+          "type": "boolean",
+          "default": false,
+          "description": "Show detailed GDB/MI diagnostic logs in the Debug Diagnostics output channel"
         }
       }
     }
@@ -903,7 +1077,7 @@
   "dependencies": {
     "fs-plus": "~3.1.1",
     "pioarduino-node-helpers": "~12.4.7",
-    "pioarduino-vscode-debug": "~1.1.4",
+    "pioarduino-vscode-debug": "~1.2.0",
     "tar": "^7.5.13"
   },
   "devDependencies": {

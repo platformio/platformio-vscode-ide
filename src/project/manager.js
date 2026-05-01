@@ -123,7 +123,7 @@ export default class ProjectManager {
           });
           await ensureClangdConfig(projectDir, obs);
           await ensureClangdArgs(projectDir);
-          await ensureLaunchJson(projectDir);
+          await ensureLaunchJson(projectDir, env);
           await notifyRescanBackend();
         },
       },

@@ -4,6 +4,24 @@ All notable changes to the **pioarduino IDE** VSCode extension are documented in
 
 ---
 
+## [1.4.0] - 2026-05-01
+
+### 🐛 Bug Fix
+- **clangd + launch.json:** When clangd was active, `launch.json` was always generated using the default environment instead of the currently selected one. `ensureLaunchJson` now accepts the active environment and passes `--environment <env>` to `pio project init --ide vscode`, ensuring the correct executable path, `toolchainBinDir`, `svdPath`, and `preLaunchTask` are written for the selected environment.
+
+### 📦 Dependencies
+- Update `pioarduino-vscode-debug` to v1.2.0
+
+### 🚀 Debug — New Features (pioarduino-vscode-debug v1.2.0)
+
+- **RTOS Thread Awareness** — Auto-detects and displays threads for FreeRTOS, ThreadX, and Zephyr with stack info, enriched labels (name / state / priority / source), and thread-aware stack-trace mapping in the debugger.
+- **Memory Editor** — Supports in-editor memory writes, typed value views (u8 → u64, i8 → i64, float, double) with endianness toggle, ASCII view, byte-diff highlighting, and per-document state when multiple memory windows are open.
+- **Peripheral Viewer (SVD)** — SVD file auto-discovery, peripheral search/filter UI, register change highlighting (previous value tracking with icon/tooltip), `<derivedFrom>` inheritance with transitive chains and circular-reference detection, and enriched bit-field tooltips (description, Reset, Current, Previous).
+- **Diagnostics Panel** — Centralized diagnostic log output channel with export and clear commands, domain-specific error handlers (GDB, connection, SVD, memory), and configurable dev-debug verbosity via `platformio-debug.diagnostics.showDevDebugOutput`.
+- **Configuration wiring** — `platformio-debug.memory.defaultDataType`, `platformio-debug.memory.defaultEndianness`, and `platformio-debug.diagnostics.showDevDebugOutput` workspace settings are now read and applied on startup and on configuration change.
+
+---
+
 ## [1.3.23] - 2026-04-29
 
 ### 🐛 Bug Fix

@@ -1918,23 +1918,30 @@ function upsertArg(args, prefix, value) {
  * debugger has no configuration to start from, so we run
  * `pio project init --ide vscode` to generate the full debug configuration
  * (executable, toolchainBinDir, svdPath, preLaunchTask, etc.).
+ *
+ * When `env` is provided the file is always regenerated so that it reflects the
+ * currently selected environment (not just the default one).
  */
-export async function ensureLaunchJson(projectDir) {
+export async function ensureLaunchJson(projectDir, env) {
   if (!projectDir) {
     return;
   }
-  const launchPath = path.join(projectDir, '.vscode', 'launch.json');
-  try {
-    await fs.access(launchPath);
-    return; // already exists
-  } catch {
-    // file does not exist – generate it via CLI
+  if (!env) {
+    // Without a known env, only create the file if it is completely missing.
+    const launchPath = path.join(projectDir, '.vscode', 'launch.json');
+    try {
+      await fs.access(launchPath);
+      return; // already exists
+    } catch {
+      // file does not exist – generate it via CLI
+    }
+  }
+  const args = ['project', 'init', '--ide', 'vscode'];
+  if (env) {
+    args.push('--environment', env);
   }
   try {
-    await pioNodeHelpers.core.getPIOCommandOutput(
-      ['project', 'init', '--ide', 'vscode'],
-      { projectDir },
-    );
+    await pioNodeHelpers.core.getPIOCommandOutput(args, { projectDir });
   } catch (err) {
     console.warn(`Failed to generate launch.json: ${err.message}`);
   }
