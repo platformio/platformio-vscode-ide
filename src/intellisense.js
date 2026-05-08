@@ -560,7 +560,12 @@ function detectPicolibcFlags(args) {
 async function detectPicolibcInProject(projectDir) {
   try {
     // Check the processed clangd compile_commands.json
-    const clangdPath = path.join(projectDir, '.cache', 'clangd', 'compile_commands.json');
+    const clangdPath = path.join(
+      projectDir,
+      '.cache',
+      'clangd',
+      'compile_commands.json',
+    );
     const content = await fs.readFile(clangdPath, 'utf-8');
     return content.includes('-specs=picolibc.specs');
   } catch {
@@ -608,8 +613,7 @@ async function querySystemIncludes(compilerPath, extraFlags = []) {
     // compiler not runnable or timed out
   }
   // Filter out C++ specific paths when querying for C to avoid confusing clangd
-  const filteredDirs =
-    lang === 'c' ? dirs.filter((d) => !d.includes('/c++/')) : dirs;
+  const filteredDirs = lang === 'c' ? dirs.filter((d) => !d.includes('/c++/')) : dirs;
   _sysIncludeCache.set(cacheKey, filteredDirs);
   return filteredDirs;
 }
@@ -900,7 +904,7 @@ async function injectArduinoNewlibPlatformInclude(entries, packagesDir) {
     }
     // Find first -I flag to insert before it (simplified: -I but not -isystem)
     const firstIncludeIdx = entry.arguments.findIndex(
-      (a) => typeof a === 'string' && a.startsWith('-I') && !a.startsWith('-isystem')
+      (a) => typeof a === 'string' && a.startsWith('-I') && !a.startsWith('-isystem'),
     );
     const insertAt = firstIncludeIdx !== -1 ? firstIncludeIdx : entry.arguments.length;
     entry.arguments.splice(insertAt, 0, newlibFlag);
@@ -1084,7 +1088,12 @@ export async function fixupCompileCommands(
             shouldFilter = true;
           }
         }
-        if (!shouldFilter && typeof arg === 'string' && arg.startsWith('-isystem') && arg.length > '-isystem'.length) {
+        if (
+          !shouldFilter &&
+          typeof arg === 'string' &&
+          arg.startsWith('-isystem') &&
+          arg.length > '-isystem'.length
+        ) {
           const p = arg.slice('-isystem'.length);
           if (isToolchainLibcPath(p)) {
             shouldFilter = true;
@@ -1126,9 +1135,10 @@ export async function fixupCompileCommands(
         let filteredDirs = sysDirs;
         if (hasPicolibcPath) {
           // Strip only the known-bad patterns (same regex used in step 2b)
-          filteredDirs = sysDirs.filter((d) =>
-            !/xtensa-esp-elf[/\\]include$/.test(d) &&
-            !/riscv\d+-esp-elf[/\\]include$/.test(d)
+          filteredDirs = sysDirs.filter(
+            (d) =>
+              !/xtensa-esp-elf[/\\]include$/.test(d) &&
+              !/riscv\d+-esp-elf[/\\]include$/.test(d),
           );
         }
 

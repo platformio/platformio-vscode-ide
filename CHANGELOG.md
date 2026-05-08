@@ -4,6 +4,16 @@ All notable changes to the **pioarduino IDE** VSCode extension are documented in
 
 ---
 
+## [1.4.1] - 2026-05-08
+
+### ✨ New Features
+- **ESP Crash Decoder integration** — When the standalone "Monitor" task is triggered and the [ESP Crash Decoder](https://marketplace.visualstudio.com/items?itemName=Jason2866.esp-decoder) extension (`Jason2866.esp-decoder`) is installed, pioarduino now launches its serial monitor instead of the PlatformIO CLI terminal. The currently selected port (from the status-bar Port Switcher) and the project's configured `monitor_speed` baud rate are forwarded automatically so ESP Decoder connects immediately without prompting. Falls back to the regular CLI monitor on failure.
+
+### 📦 Dependencies
+- Update `pioarduino-node-helpers` to v12.5.0
+
+---
+
 ## [1.4.0] - 2026-05-01
 
 ### 🐛 Bug Fix

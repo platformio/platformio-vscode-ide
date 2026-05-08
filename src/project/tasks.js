@@ -168,6 +168,37 @@ export default class ProjectTaskManager {
   }
 
   async runTask(task) {
+    // If the user triggers the standalone "Monitor" task and the
+    // ESP Crash Decoder extension (Jason2866.esp-decoder) is installed,
+    // launch its serial monitor instead of the PlatformIO CLI terminal.
+    // The currently selected upload/monitor port (set via the pioarduino
+    // status-bar Port Switcher) is handed over so ESP Decoder connects
+    // immediately without prompting the user again. When the port is "Auto"
+    // (i.e. no explicit selection) we still ask the decoder to connect, in
+    // which case it will fall back to its own port picker.
+    if (task && task.name === 'Monitor') {
+      const decoder = vscode.extensions.getExtension('Jason2866.esp-decoder');
+      if (decoder) {
+        try {
+          if (!decoder.isActive) {
+            await decoder.activate();
+          }
+          const baudRate = await this._getMonitorSpeed(
+            this.projectObserver.getSelectedEnv(),
+          );
+          await vscode.commands.executeCommand('esp-decoder.openMonitor', {
+            port: this._customPort || undefined,
+            baudRate: baudRate || undefined,
+            autoConnect: true,
+          });
+          return;
+        } catch (err) {
+          notifyError('ESP Crash Decoder Monitor', err);
+          // fall through to the regular CLI monitor on failure
+        }
+      }
+    }
+
     this._autoCloseSerialMonitor(task);
 
     // Wait for all port-owning tasks (upload*, erase*) until all subscribers
@@ -297,6 +328,24 @@ export default class ProjectTaskManager {
       args.includes('upload') ||
       ProjectTaskManager._isPortOwningTarget(this._getTarget(args))
     );
+  }
+
+  // Returns the configured `monitor_speed` for the given environment via the
+  // PlatformIO config API exposed by pioarduino-node-helpers (handles section
+  // interpolation, `extends = …`, [platformio] defaults). Returns undefined
+  // when nothing is configured so that ESP Decoder keeps its own default
+  // baud rate.
+  async _getMonitorSpeed(envName) {
+    try {
+      const config = await this.projectObserver.getConfig();
+      const speed = config.getEnvMonitorSpeed(envName);
+      if (Number.isInteger(speed) && speed > 0) {
+        return speed;
+      }
+    } catch {
+      // ignore — keep ESP Decoder default
+    }
+    return undefined;
   }
 
   // Returns true only for real upload tasks (upload, uploadfs, …).
