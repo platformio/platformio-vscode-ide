@@ -4,6 +4,13 @@ All notable changes to the **pioarduino IDE** VSCode extension are documented in
 
 ---
 
+## [1.4.2] - 2026-05-09
+
+### 📦 Dependencies
+- Update `pioarduino-node-helpers` to v12.6.0
+
+---
+
 ## [1.4.1] - 2026-05-08
 
 ### ✨ New Features
