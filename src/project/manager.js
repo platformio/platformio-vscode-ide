@@ -44,23 +44,16 @@ export default class ProjectManager {
     this._configProvider = new ProjectConfigLanguageProvider();
     this._configChangedTimeout = undefined;
     this._activeProjectIsIdf = false; // sync flag updated on project switch
-    const self = this;
     const activeBackend = getActiveBackend();
 
-    const idfAwareBackend = {
-      ...activeBackend,
-      rebuildArgs(env) {
-        if (activeBackend.id === 'clangd' && self._activeProjectIsIdf) {
-          // Run a no-op PIO command for IDF — prevents compiledb while still
-          // triggering onDidRebuildIndex → fixupCompileCommands for the clangd cache.
-          return ['--version'];
-        }
-        return activeBackend.rebuildArgs(env);
-      },
-    };
+    // Always use the SCons `pio run -t compiledb` flow, including for IDF.
+    // CMake/Ninja's compile_commands.json is incomplete: SCons applies
+    // additional include paths and flags after CMake configuration, and only
+    // the SCons-generated root file reflects the final command line that
+    // actually compiled each source.
     this._pool = new pioNodeHelpers.project.ProjectPool({
       ide: activeBackend.indexerIde,
-      intelliSenseBackend: idfAwareBackend, // ← use wrapped backend
+      intelliSenseBackend: activeBackend,
       api: {
         logOutputChannel: this._logOutputChannel,
         createFileSystemWatcher: vscode.workspace.createFileSystemWatcher,
@@ -117,10 +110,7 @@ export default class ProjectManager {
           const env = obs ? await obs.revealActiveEnvironment() : undefined;
           const envDir = env ? path.join(projectDir, '.pio', 'build', env) : undefined;
 
-          const isIdf = await isIdfProject(obs, envDir);
-          await fixupCompileCommands(projectDir, envDir, {
-            allowRootFallback: !isIdf,
-          });
+          await fixupCompileCommands(projectDir, envDir);
           await ensureClangdConfig(projectDir, obs);
           await ensureClangdArgs(projectDir);
           await ensureLaunchJson(projectDir, env);
@@ -285,9 +275,7 @@ export default class ProjectManager {
       if (this._activeProjectIsIdf && selectedEnvDir) {
         watchIdfCompileCommands(projectDir, selectedEnvDir, async () => {
           try {
-            await fixupCompileCommands(projectDir, selectedEnvDir, {
-              allowRootFallback: false,
-            });
+            await fixupCompileCommands(projectDir, selectedEnvDir);
             await ensureClangdArgs(projectDir);
             await notifyRescanBackend();
           } catch (err) {
