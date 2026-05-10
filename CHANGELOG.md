@@ -4,6 +4,13 @@ All notable changes to the **pioarduino IDE** VSCode extension are documented in
 
 ---
 
+## [1.4.3] - 2026-05-10
+
+### 🐛 Bug Fixes
+
+- **clangd IntelliSense: prefer SCons `compile_commands.json` for IDF projects** — `fixupCompileCommands` and `ensureCompileCommands` now prefer the project-root `compile_commands.json` produced by `pio run -t compiledb` (SCons) over the CMake/Ninja one in the build environment directory.
+---
+
 ## [1.4.2] - 2026-05-09
 
 ### 📦 Dependencies
