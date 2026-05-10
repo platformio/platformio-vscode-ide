@@ -243,16 +243,24 @@ export async function ensureCompileCommands(projectDir, observer, envDir) {
     // processed copy missing
   }
 
+  let highestMtime = -Infinity;
+  let anyFound = false;
   for (const ccPath of origCandidates) {
     try {
       const origStat = await fs.stat(ccPath);
-      if (!clangdStat || origStat.mtimeMs > clangdStat.mtimeMs) {
-        await fixupCompileCommands(projectDir, envDir);
+      anyFound = true;
+      if (origStat.mtimeMs > highestMtime) {
+        highestMtime = origStat.mtimeMs;
       }
-      return;
     } catch {
-      // not found here
+      // not found here — check next candidate
     }
+  }
+  if (anyFound) {
+    if (!clangdStat || highestMtime > clangdStat.mtimeMs) {
+      await fixupCompileCommands(projectDir, envDir);
+    }
+    return;
   }
   if (clangdStat) {
     return; // processed copy exists and no source DB was found
@@ -884,10 +892,7 @@ async function injectArduinoNewlibPlatformInclude(entries, packagesDir) {
   }
 }
 
-export async function fixupCompileCommands(
-  projectDir,
-  envDir,
-) {
+export async function fixupCompileCommands(projectDir, envDir) {
   if (
     getActiveBackendId() !== 'clangd' ||
     !projectDir ||
@@ -1527,9 +1532,14 @@ export function watchIdfCompileCommands(projectDir, envDir, onReady) {
 
   // Guard against double-firing: when both the root and envDir files change
   // at nearly the same time (e.g. after a full build), only run onReady once.
+  // If a second event arrives while onReady is still running, coalesce it so
+  // it is not silently dropped — the handler re-runs once after the current
+  // invocation completes.
   let pending = false;
+  let queued = false;
   const makeHandler = (filePath) => async () => {
     if (pending) {
+      queued = true;
       return;
     }
     pending = true;
@@ -1543,6 +1553,15 @@ export function watchIdfCompileCommands(projectDir, envDir, onReady) {
       }
     } finally {
       pending = false;
+      if (queued) {
+        queued = false;
+        // Re-invoke onReady directly so the coalesced event is not lost.
+        onReady().catch((err) => {
+          if (err && err.code !== 'ENOENT') {
+            console.warn(`IDF compile_commands.json watcher: ${err.message || err}`);
+          }
+        });
+      }
     }
   };
 

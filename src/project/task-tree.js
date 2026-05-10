@@ -35,7 +35,8 @@ export default class ProjectTasksTreeProvider {
           (task) =>
             cmpGroup(task) &&
             env !== ProjectTasksTreeProvider.DEFAULT_ENV_NAME &&
-            !task.multienv,
+            !task.multienv &&
+            task.coreEnv === undefined,
         ),
       );
     }

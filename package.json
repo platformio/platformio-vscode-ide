@@ -87,7 +87,7 @@
           ".inc",
           ".s",
           ".S"
-          ],
+        ],
         "configuration": "./syntaxes/assembly-configuration.json"
       }
     ],
@@ -420,7 +420,13 @@
                   },
                   "type": {
                     "type": "string",
-                    "enum": ["auto", "FreeRTOS", "ThreadX", "Zephyr", "none"],
+                    "enum": [
+                      "auto",
+                      "FreeRTOS",
+                      "ThreadX",
+                      "Zephyr",
+                      "none"
+                    ],
                     "default": "auto",
                     "description": "RTOS type, or 'auto' to detect automatically"
                   }
@@ -1069,7 +1075,8 @@
   },
   "scripts": {
     "build": "webpack --mode production && vsce package",
-    "test": "node src/shellTokenize.test.js",
+    "test": "jest",
+    "test:shellTokenize": "node src/shellTokenize.test.js",
     "lint": "eslint .eslintrc.js src",
     "lintandfix": "eslint .eslintrc.js src --fix",
     "format": "prettier --single-quote --print-width 88 --write \"src/**/*.js\""
@@ -1081,12 +1088,16 @@
     "tar": "^7.5.13"
   },
   "devDependencies": {
+    "@babel/core": "^7.29.0",
+    "@babel/preset-env": "^7.29.5",
     "@types/node": "~25",
     "@types/vscode": "~1.95.0",
     "@vscode/vsce": "~3.9.1",
+    "babel-jest": "^29.7.0",
     "eslint": "^8",
     "eslint-import-resolver-webpack": "~0.13.11",
     "eslint-plugin-import": "^2.32.0",
+    "jest": "^29.7.0",
     "prettier": "~3.8.3",
     "webpack": "~5.106.2",
     "webpack-cli": "~7.0.2"
