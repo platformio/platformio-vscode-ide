@@ -4,11 +4,28 @@ All notable changes to the **pioarduino IDE** VSCode extension are documented in
 
 ---
 
+## [1.x.x] - not yet released
+
+
+
+### 🧪 Tests
+
+- **Migrated test suite to Jest** — added Babel config, Jest config, and `__mocks__/vscode.js` mock module; all existing and new tests run via `npm test`.
+- **`src/project/task-tree.test.js`** — comprehensive tests for `ProjectTasksTreeProvider`: constructor, `getEnvTasks` (env filtering, group filtering, env-independent task merging, multienv exclusion, DEFAULT_ENV_NAME guard), `taskToTreeItem` (label, tooltip, command shape, " All" suffix logic), `getTreeItem`, `getRootChildren` (id/iconPath attributes, expand/collapse state), `getEnvChildren` (group node attributes, collapsible state, env-independent tasks), `getTaskGroups` (ordering, deduplication), and `getChildren` routing.
+- **`src/project/helpers.test.js`** — full coverage of `isPIOProjectSync`, `getPIOProjectDirs`, `getActiveEditorProjectDir` (including null `getWorkspaceFolder` case), `getProjectItemState`, `updateProjectItemState` (cleanup behaviour, key overwrite), and `getLastProjectDir`.
+- **`src/project/config.test.js`** — full coverage of `ProjectConfigLanguageProvider`: constructor, dispose, `getOptions` (fetch + cache), `renderOptionDocs` (all attribute types), `getScopeAt`, `getOptionAt` (direct match + walk-back), `isOptionValueLocation`, `provideHover`, `providePackageHover` (platform, lib_deps, search link, no-value), `provideCompletionItems` (cancellation, routing), `provideCompletionOptions`, `provideCompletionValues` (port/baudrate/typed routing), `provideTypedCompletionValues`, `createCustomCompletionValueItem`, `provideCompletionBaudrates`, `provideCompletionPorts` (caching), and `lintConfig` (ignore non-ini, warnings, errors, absolute/relative source paths).
+- **`src/intellisense.test.js`** — tests for all exported functions: `getActiveBackendId`, `getActiveBackend`, `getActiveConflictedExtensionIds`, `isBackendExtensionInstalled`, `applyBackendConfigDefaults` (skip when not installed, set unset keys, overwrite other-backend keys, preserve user keys), `invalidateIdfCache`, `disposeAllIdfWatchers`, `disposeIdfCcWatcher`, `disposeClangdCcWatcher`, `watchClangdCompileCommands` (3 watchers, onDidDelete, dispose-on-re-register), `watchIdfCompileCommands` (1 vs 2 watchers, onReady, coalescing), `isIdfProject` (null observer, null env, espidf detection, arduino negative, filesystem fallback, caching), and `warnIfBackendMissing`.
+- **`src/installer/manager.test.js`** — tests for `InstallationManager`: constructor, `lock`/`unlock`/`locked` (timestamp, expiry), `onDidStatusChange`, `createStages` (lazy init, no double-create), `check` (pass, fail, throw+warn), `install` (PIO Home shutdown, stage install, Finished message, increment scaling), and `destroy` (calls stage destroy, resets to null, handles missing destroy method). All `afterEach` blocks call both `jest.clearAllMocks()` and `jest.restoreAllMocks()`.
+- **`src/installer/python-prompt.test.js`** — tests for `PythonPrompt`: status constants, `prompt()` for all branches (dismiss, Try again, Install Python URL open, Abort, I have Python with valid/cancelled/empty path), and `validateInput` function (rejects invalid paths, accepts valid paths). The `fs-plus` mock shares a single `jest.fn()` instance across `default.isFileSync` and the top-level export so both the implementation and tests hit the same mock.
+
+---
+
 ## [1.4.3] - 2026-05-10
 
 ### 🐛 Bug Fixes
 
 - **clangd IntelliSense: prefer SCons `compile_commands.json` for IDF projects** — `fixupCompileCommands` and `ensureCompileCommands` now prefer the project-root `compile_commands.json` produced by `pio run -t compiledb` (SCons) over the CMake/Ninja one in the build environment directory.
+
 ---
 
 ## [1.4.2] - 2026-05-09
