@@ -217,24 +217,15 @@ export async function ensureCompileCommands(projectDir, observer, envDir) {
     return;
   }
 
-  // For ESP-IDF projects, prefer the SCons-generated root file (created by
-  // `pio run -t compiledb`) over the CMake/Ninja envDir file: only the SCons
-  // version reflects the full set of include paths and flags actually applied
-  // when the source was compiled.  Fall back to the CMake file if the SCons
-  // one is not yet present (first build before compiledb finishes), and fall
-  // through to the rebuild path below if neither exists.
+  // For all project types (including ESP-IDF and Arduino-as-IDF-component)
+  // we use exclusively the project-root compile_commands.json produced by
+  // PIO/SCons (`pio run -t compiledb`).  The CMake/Ninja envDir file is
+  // never consulted: only the SCons-generated root DB reflects the full set
+  // of include paths and flags actually applied when the source was compiled.
 
   // Check the processed clangd copy first – if it exists we are done.
   const clangdPath = path.join(projectDir, '.cache', 'clangd', 'compile_commands.json');
-  // Prefer the project-root compile_commands.json (produced by PIO/SCons
-  // `pio run -t compiledb`) over the CMake/ninja one in envDir.  For ESP-IDF
-  // projects the CMake DB only covers files actually built by CMake — project
-  // src/ files compiled by SCons end up with missing -I flags there, while
-  // the SCons-generated root DB has the complete set.
-  const origCandidates = [
-    path.join(projectDir, 'compile_commands.json'),
-    ...(envDir ? [path.join(envDir, 'compile_commands.json')] : []),
-  ];
+  const origPath = path.join(projectDir, 'compile_commands.json');
 
   let clangdStat = null;
   try {
@@ -243,21 +234,15 @@ export async function ensureCompileCommands(projectDir, observer, envDir) {
     // processed copy missing
   }
 
-  let highestMtime = -Infinity;
-  let anyFound = false;
-  for (const ccPath of origCandidates) {
-    try {
-      const origStat = await fs.stat(ccPath);
-      anyFound = true;
-      if (origStat.mtimeMs > highestMtime) {
-        highestMtime = origStat.mtimeMs;
-      }
-    } catch {
-      // not found here — check next candidate
-    }
+  let origStat = null;
+  try {
+    origStat = await fs.stat(origPath);
+  } catch {
+    // project-root compile_commands.json not present
   }
-  if (anyFound) {
-    if (!clangdStat || highestMtime > clangdStat.mtimeMs) {
+
+  if (origStat) {
+    if (!clangdStat || origStat.mtimeMs > clangdStat.mtimeMs) {
       await fixupCompileCommands(projectDir, envDir);
     }
     return;
@@ -282,9 +267,10 @@ export async function ensureCompileCommands(projectDir, observer, envDir) {
  */
 /**
  * For Arduino-as-component projects (framework = arduino, espidf), the
- * CMake build system generates compile_commands.json entries for project
- * source files without the Arduino core include paths.  This means clangd
- * cannot resolve `#include "Arduino.h"` or any other Arduino core header.
+ * project-root compile_commands.json (produced by `pio run -t compiledb`)
+ * generates entries for project source files without the Arduino core
+ * include paths.  This means clangd cannot resolve `#include "Arduino.h"`
+ * or any other Arduino core header.
  *
  * This function detects the Arduino core directories by scanning the
  * packages directory for `framework-arduinoespressif32`, then injects
@@ -900,26 +886,18 @@ export async function fixupCompileCommands(projectDir, envDir) {
   ) {
     return;
   }
-  // Read the original compile_commands.json – prefer the project-root file
-  // produced by PIO/SCons (`pio run -t compiledb`) over the CMake/ninja one
-  // in envDir.  For ESP-IDF projects the CMake DB only covers files actually
-  // built by CMake; project src/ files compiled by SCons end up with missing
-  // -I flags there.  The SCons-generated root DB reflects the final build
-  // command line that actually compiled each file and thus has the complete
-  // include set.  The original file is never modified.
-  const rootPath = path.join(projectDir, 'compile_commands.json');
-  const envPath = envDir ? path.join(envDir, 'compile_commands.json') : undefined;
+  // Read the original compile_commands.json – exclusively from the project
+  // root, produced by PIO/SCons (`pio run -t compiledb`).  The CMake/ninja
+  // envDir file is intentionally NOT used: for ESP-IDF and Arduino-as-IDF
+  // projects the CMake DB only covers files actually built by CMake, and
+  // project src/ files compiled by SCons end up with missing -I flags there.
+  // The SCons-generated root DB reflects the final build command line that
+  // actually compiled each file and is the single source of truth.
+  // The original file is never modified.
+  const sourcePath = path.join(projectDir, 'compile_commands.json');
 
-  const rootStat = await fs.stat(rootPath).catch(() => null);
-  const envStat = envPath ? await fs.stat(envPath).catch(() => null) : null;
-  const sourcePath =
-    rootStat && (!envStat || rootStat.mtimeMs >= envStat.mtimeMs)
-      ? rootPath
-      : envStat
-        ? envPath
-        : null;
-
-  if (!sourcePath) {
+  const sourceStat = await fs.stat(sourcePath).catch(() => null);
+  if (!sourceStat) {
     return;
   }
 
@@ -1140,7 +1118,7 @@ export async function fixupCompileCommands(projectDir, envDir) {
   }
 
   // 4. For Arduino-as-component projects (framework = arduino, espidf), the
-  //    CMake-generated compile_commands.json for project src/ files does not
+  //    project-root compile_commands.json for project src/ files does not
   //    include the Arduino core headers (cores/esp32, variants/<variant>).
   //    Scan all entries for Arduino core include paths and inject them into
   //    project entries that are missing them.
@@ -1242,8 +1220,8 @@ export async function fixupCompileCommands(projectDir, envDir) {
   }
 
   // Write the processed database to a dedicated clangd directory so the
-  // original compile_commands.json (project root or env build dir) is never
-  // modified.  --compile-commands-dir is pointed here by ensureClangdArgs().
+  // original project-root compile_commands.json is never modified.
+  // --compile-commands-dir is pointed here by ensureClangdArgs().
   const clangdDir = path.join(projectDir, '.cache', 'clangd');
   await fs.mkdir(clangdDir, { recursive: true });
   const destPath = path.join(clangdDir, 'compile_commands.json');
@@ -1406,7 +1384,10 @@ export function disposeAllIdfWatchers() {
   disposeAllClangdCcWatchers();
 }
 
-// ── Watchers for CMake-generated compile_commands.json (IDF projects) ──
+// ── Watchers for the project-root compile_commands.json (IDF projects) ──
+// The file is produced by PIO/SCons (`pio run -t compiledb`) and is the only
+// source consumed for clangd post-processing — the CMake/Ninja envDir copy
+// is intentionally ignored.
 const _idfCcWatchers = new Map(); // normalized projectDir → Disposable
 
 export function disposeIdfCcWatcher(projectDir) {
@@ -1425,11 +1406,11 @@ function disposeAllIdfCcWatchers() {
   _idfCcWatchers.clear();
 }
 
-// ── Watchers for the processed clangd compile_commands.json (non-IDF) ──
+// ── Watchers for the processed clangd compile_commands.json ──
 // If the user (or some external tool) deletes .cache/clangd/compile_commands.json
 // while the project is open, we re-run ensureCompileCommands so clangd gets a
-// fresh database (regenerated from the original PIO/CMake output, or rebuilt
-// from scratch if no source DB is left).
+// fresh database (regenerated from the project-root PIO/SCons compile_commands.json,
+// or rebuilt from scratch if no source DB is left).
 const _clangdCcWatchers = new Map(); // normalized projectDir → Disposable
 
 export function disposeClangdCcWatcher(projectDir) {
@@ -1517,34 +1498,33 @@ export function watchClangdCompileCommands(projectDir, onMissing) {
 }
 
 /**
- * Watch compile_commands.json files for an IDF project.  Both the project-root
- * file (produced by PIO/SCons `pio run -t compiledb`) and the envDir file
- * (produced by CMake/Ninja) are watched, with the root file being the preferred
+ * Watch the project-root compile_commands.json (produced by PIO/SCons
+ * `pio run -t compiledb`) for an IDF project.  The CMake/Ninja envDir file
+ * is intentionally NOT watched — the SCons-generated root DB is the only
  * source for clangd post-processing.
  * Calls onReady() whenever the file is created or changed (e.g. after a build).
  */
-export function watchIdfCompileCommands(projectDir, envDir, onReady) {
+export function watchIdfCompileCommands(projectDir, _envDir, onReady) {
   disposeIdfCcWatcher(projectDir);
   if (!projectDir) {
     return;
   }
   const disposables = [];
 
-  // Guard against double-firing: when both the root and envDir files change
-  // at nearly the same time (e.g. after a full build), only run onReady once.
   // If a second event arrives while onReady is still running, coalesce it so
   // it is not silently dropped — the handler re-runs once after the current
   // invocation completes.
   let pending = false;
   let queued = false;
-  const makeHandler = (filePath) => async () => {
+  const rootFile = path.join(projectDir, 'compile_commands.json');
+  const handler = async () => {
     if (pending) {
       queued = true;
       return;
     }
     pending = true;
     try {
-      await fs.access(filePath);
+      await fs.access(rootFile);
       await onReady();
     } catch (err) {
       // file not yet accessible (will fire again when ready), or onReady threw
@@ -1565,25 +1545,12 @@ export function watchIdfCompileCommands(projectDir, envDir, onReady) {
     }
   };
 
-  const rootFile = path.join(projectDir, 'compile_commands.json');
   const rootWatcher = vscode.workspace.createFileSystemWatcher(
     new vscode.RelativePattern(projectDir, 'compile_commands.json'),
   );
-  const rootHandler = makeHandler(rootFile);
-  rootWatcher.onDidCreate(rootHandler);
-  rootWatcher.onDidChange(rootHandler);
+  rootWatcher.onDidCreate(handler);
+  rootWatcher.onDidChange(handler);
   disposables.push(rootWatcher);
-
-  if (envDir) {
-    const envFile = path.join(envDir, 'compile_commands.json');
-    const envWatcher = vscode.workspace.createFileSystemWatcher(
-      new vscode.RelativePattern(envDir, 'compile_commands.json'),
-    );
-    const envHandler = makeHandler(envFile);
-    envWatcher.onDidCreate(envHandler);
-    envWatcher.onDidChange(envHandler);
-    disposables.push(envWatcher);
-  }
 
   _idfCcWatchers.set(path.normalize(projectDir), {
     dispose() {

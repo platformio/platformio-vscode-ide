@@ -382,18 +382,20 @@ describe('watchIdfCompileCommands', () => {
     expect(vscode.workspace.createFileSystemWatcher).not.toHaveBeenCalled();
   });
 
-  it('creates one watcher when no envDir is provided', () => {
+  it('creates exactly one watcher (project-root only) when no envDir is provided', () => {
     watchIdfCompileCommands('/workspace/project', undefined, jest.fn());
     expect(vscode.workspace.createFileSystemWatcher).toHaveBeenCalledTimes(1);
   });
 
-  it('creates two watchers when envDir is provided', () => {
+  it('still creates only one watcher (project-root only) even when envDir is provided', () => {
     watchIdfCompileCommands(
       '/workspace/project',
       '/workspace/project/.pio/build/env1',
       jest.fn(),
     );
-    expect(vscode.workspace.createFileSystemWatcher).toHaveBeenCalledTimes(2);
+    // The envDir compile_commands.json is intentionally not watched — only
+    // the project-root file produced by `pio run -t compiledb` is used.
+    expect(vscode.workspace.createFileSystemWatcher).toHaveBeenCalledTimes(1);
   });
 
   it('calls onReady when the root watcher fires onCreate', async () => {
@@ -406,17 +408,14 @@ describe('watchIdfCompileCommands', () => {
 
   it('coalesces a second event that arrives while the first is still running', async () => {
     const onReady = jest.fn().mockResolvedValue(undefined);
-    watchIdfCompileCommands(
-      '/workspace/project',
-      '/workspace/project/.pio/build/env1',
-      onReady,
-    );
-    // Both handlers fire at the same time — the second sets queued=true and
-    // returns immediately; after the first completes, onReady is called once
-    // more for the queued event.
-    const rootHandler = mockWatcher.onDidCreate.mock.calls[0][0];
-    const envHandler = mockWatcher.onDidCreate.mock.calls[1][0];
-    await Promise.all([rootHandler(), envHandler()]);
+    watchIdfCompileCommands('/workspace/project', undefined, onReady);
+    // Both onDidCreate and onDidChange share the same handler — fire them
+    // simultaneously: the second sets queued=true and returns immediately;
+    // after the first completes, onReady is called once more for the
+    // coalesced queued event.
+    const createHandler = mockWatcher.onDidCreate.mock.calls[0][0];
+    const changeHandler = mockWatcher.onDidChange.mock.calls[0][0];
+    await Promise.all([createHandler(), changeHandler()]);
     // onReady is called once for the first event, then once more for the
     // coalesced queued event — total 2 calls, not 1 dropped.
     expect(onReady).toHaveBeenCalledTimes(2);
