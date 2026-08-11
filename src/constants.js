@@ -11,8 +11,10 @@ export const IS_OSX = process.platform == 'darwin';
 export const IS_LINUX = !IS_WINDOWS && !IS_OSX;
 export const PIO_CORE_VERSION_SPEC = '>=6.1.6';
 export const STATUS_BAR_PRIORITY_START = 10;
+export const CPPTOOLS_EXTENSION_ID = 'ms-vscode.cpptools';
+export const CLANGD_EXTENSION_ID = 'llvm-vs-code-extensions.vscode-clangd';
+
 export const CONFLICTED_EXTENSION_IDS = [
-  'llvm-vs-code-extensions.vscode-clangd',
   'vsciot-vscode.vscode-arduino',
   'vscode-openapi',
 ];

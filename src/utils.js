@@ -53,8 +53,20 @@ export async function notifyError(title, err) {
   console.error(err);
 }
 
+let _extensionContext = null;
+
+export function setExtensionContext(context) {
+  _extensionContext = context;
+}
+
 export function getIDEManifest() {
-  return vscode.extensions.getExtension('platformio.platformio-ide').packageJSON;
+  if (!_extensionContext) {
+    console.warn(
+      'Attempting to get IDE manifest before extension context was injected.',
+    );
+    return { version: '0.0.0' }; // safe fallback
+  }
+  return _extensionContext.extension.packageJSON;
 }
 
 export function getIDEVersion() {
